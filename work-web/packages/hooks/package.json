@@ -1,0 +1,8 @@
+{
+  "name": "@work-web/hooks",
+  "version": "0.0.1",
+  "description": "all hooks are settled here",
+  "dependencies": {
+    "element-plus": "^2.3.10"
+  }
+}

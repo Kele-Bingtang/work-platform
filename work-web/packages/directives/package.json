@@ -1,0 +1,8 @@
+{
+  "name": "@work-web/directives",
+  "version": "0.0.1",
+  "description": "all directives are settled here",
+  "dependencies": {
+    "element-plus": "^2.3.10"
+  }
+}

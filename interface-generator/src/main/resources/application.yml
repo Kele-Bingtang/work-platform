@@ -1,0 +1,17 @@
+server:
+  port: 8093
+
+# ====== springdoc配置 ====== #
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+
+# ===== swagger配置 =====#
+swagger:
+  title: B2B开发平台
+  description: 提供管理后台、用户 App 的所有功能
+  version: 1.0.0

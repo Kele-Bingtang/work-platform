@@ -1,0 +1,8 @@
+{
+  "name": "@work-web/constants",
+  "version": "0.0.1",
+  "description": "all constants are settled here",
+  "dependencies": {
+    "element-plus": "^2.3.10"
+  }
+}

@@ -156,6 +156,7 @@
     
     <build>
         <plugins>
+            <!-- 解决 MapStruct 和 Lombok 冲突 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

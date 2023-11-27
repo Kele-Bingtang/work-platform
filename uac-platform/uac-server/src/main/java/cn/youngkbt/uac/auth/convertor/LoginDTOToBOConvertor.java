@@ -1,7 +1,6 @@
 package cn.youngkbt.uac.auth.convertor;
 
-import cn.youngkbt.core.base.BaseMapperConvertor;
-import cn.youngkbt.uac.auth.dto.LoginUserDTO;
+import cn.youngkbt.uac.auth.model.dto.LoginUserDto;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import org.mapstruct.Mapper;
@@ -14,10 +13,10 @@ import org.mapstruct.factory.Mappers;
  * @note
  */
 @Mapper
-public interface LoginDTOToBOConvertor extends BaseMapperConvertor<LoginUserDTO, LoginUserBO> {
+public interface LoginDTOToBOConvertor {
     LoginDTOToBOConvertor INSTANCE = Mappers.getMapper(LoginDTOToBOConvertor.class);
 
-    @Mapping(source = "loginUserDTO.appId", target = "appId")
-    @Mapping(source = "loginUserDTO.tenantId", target = "tenantId")
-    LoginUserBO convert(LoginUserDTO loginUserDTO, SysApp sysApp);
+    @Mapping(source = "loginUserDto.appId", target = "appId")
+    @Mapping(source = "loginUserDto.tenantId", target = "tenantId")
+    LoginUserBO convert(LoginUserDto loginUserDto, SysApp sysApp);
 }

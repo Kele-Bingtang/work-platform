@@ -74,3 +74,23 @@ thread-pool:
   queueCapacity: 128
   # 线程池维护线程所允许的空闲时间
   keepAliveSeconds: 300
+  
+# 多租户配置
+tenant:
+  enable: true
+  excludes-table:
+    - t_role_dept_link
+    - t_role_group_link
+    - t_role_group_menu_link
+    - t_role_menu_link
+    - t_user_group_link
+    - t_user_group_role_group_link
+    - t_user_group_role_link
+    - t_user_post_link
+    - t_user_role_group_link
+    - t_user_role_link
+    - t_sys_client
+    - t_sys_menu
+    - t_sys_role
+    - t_sys_role_group
+    - sys_tenant

@@ -1,5 +1,6 @@
 package cn.youngkbt.security.utils;
 
+import cn.hutool.core.codec.Base64Decoder;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.jwt.properties.JwtProperties;
 import cn.youngkbt.security.JwtAuthenticationToken;
@@ -29,17 +30,22 @@ import java.util.*;
 @Component
 public class JwtTokenUtils {
 
-    private static final String AUTHORITIES = "authorities";
+    private static  String AUTHORITIES;
     /**
      * 密钥，自定义，根据密钥生成 token，或还原 token
      */
-    @Value("${jwt.secret:work}")
-    private static String SECRET;
+    private static String SECRET_KEY;
     /**
      * 有效期 12 小时：12 * 60 * 60 * 1000
      */
-    @Value("${jwt.expire-time:#{12 * 60 * 60 * 1000}}")
     private static long EXPIRE_TIME;
+    
+    public JwtTokenUtils(@Value("${jwt-token.authorities:authorities}") String authorities, @Value("${jwt.secret:work-uac-platform-abcdefghijklmnopqrstuvwxyz}") String secretKey,
+                         @Value("${jwt.expire-time:#{12 * 60 * 60 * 1000}}") Long expireTime) {
+        JwtTokenUtils.AUTHORITIES = authorities;
+        JwtTokenUtils.SECRET_KEY = secretKey;
+        JwtTokenUtils.EXPIRE_TIME = expireTime;
+    }
 
     /**
      * 生成令牌
@@ -96,7 +102,7 @@ public class JwtTokenUtils {
      * 加密明文密钥
      */
     public static SecretKey generateKey() {
-        byte[] decodeKey = Base64.getDecoder().decode(SECRET);
+        byte[] decodeKey = Base64Decoder.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(decodeKey);
     }
 

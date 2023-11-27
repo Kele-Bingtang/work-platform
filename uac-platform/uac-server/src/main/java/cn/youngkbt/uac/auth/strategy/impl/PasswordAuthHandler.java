@@ -11,7 +11,7 @@ import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.sys.listen.LoginEventListen;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.utils.ServletUtil;
-import cn.youngkbt.utils.ValidatorUtils;
+import cn.youngkbt.utils.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +37,7 @@ public class PasswordAuthHandler implements AuthHandler {
 
     @Override
     public void validate(LoginUserBO loginUserBO) {
-        ValidatorUtils.validate(loginUserBO, AuthGroup.PasswordGroup.class);
+        ValidatorUtil.validate(loginUserBO, AuthGroup.PasswordGroup.class);
     }
 
     @Override

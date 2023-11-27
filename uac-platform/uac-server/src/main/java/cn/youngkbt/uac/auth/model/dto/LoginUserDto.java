@@ -1,4 +1,4 @@
-package cn.youngkbt.uac.auth.dto;
+package cn.youngkbt.uac.auth.model.dto;
 
 import cn.youngkbt.core.validate.AuthGroup;
 import cn.youngkbt.uac.core.constant.AuthConstant;
@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Length;
  * @note
  */
 @Data
-public class LoginUserDTO {
+public class LoginUserDto {
     /**
      * 租户 ID
      */

@@ -1,11 +1,14 @@
-package cn.youngkbt.uac.auth.vo;
+package cn.youngkbt.uac.auth.model.vo;
+
+import lombok.Data;
 
 /**
  * @author Kele-Bingtang
  * @date 2023/11/12 14:37
  * @note
  */
-public class LoginVO {
+@Data
+public class LoginVo {
     /**
      * 授权令牌
      */

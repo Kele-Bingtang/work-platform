@@ -7,8 +7,8 @@
     <resultMap id="BaseResultMap" type="cn.youngkbt.uac.sys.model.po.SysUser">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
-            <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+            <result property="username" column="user_name" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nick_name" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
             <result property="sex" column="sex" jdbcType="TINYINT"/>
@@ -32,8 +32,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,user_name,
-        nick_name,password,email,
+        id,user_id,username,
+        nickname,password,email,
         sex,birthday,phone,
         user_status,avatar,register_time,
         login_ip,login_date,create_by,

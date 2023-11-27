@@ -9,7 +9,6 @@ import lombok.Data;
  */
 @Data
 public class LoginSuccessBO {
-    
     /**
      * 授权令牌
      */

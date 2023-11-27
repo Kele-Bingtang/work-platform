@@ -2,13 +2,13 @@ package cn.youngkbt.mp.config;
 
 import cn.hutool.core.net.NetUtil;
 import cn.youngkbt.mp.handler.MybatisPlusMetaObjectHandler;
-import cn.youngkbt.mp.interceptor.WorkPaginationInnerInterceptor;
 import cn.youngkbt.mp.revolver.SqlFilterArgumentResolver;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ public class MyBatisPlusAutoConfiguration implements WebMvcConfigurer {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 自定义分页插件
-        interceptor.addInnerInterceptor(new WorkPaginationInnerInterceptor());
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         // 乐观锁插件
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         return interceptor;

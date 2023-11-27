@@ -104,6 +104,10 @@ public class HttpResult {
         return response;
     }
 
+    public static <T> Response<T> ok(Integer code, String message) {
+        return returnOKResponse(code, message);
+    }
+
     public static <T> Response<T> fail(T data) {
         Response<T> response = Response.instance();
         response.setData(data);
@@ -144,8 +148,8 @@ public class HttpResult {
         return response;
     }
 
-    public static <T> Response<T> failMessage(Integer code, String message) {
-        return returnResponse(code, message);
+    public static <T> Response<T> fail(Integer code, String message) {
+        return returnFailResponse(code, message);
     }
 
     public static <T> Response<T> error(T data) {
@@ -188,8 +192,8 @@ public class HttpResult {
         return response;
     }
 
-    public static <T> Response<T> errorMessage(Integer code, String message) {
-        return returnResponse(code, message);
+    public static <T> Response<T> error(Integer code, String message) {
+        return returnErrorResponse(code, message);
     }
 
     public static <T> Response<T> okOrFail(T data, String message) {
@@ -233,7 +237,27 @@ public class HttpResult {
         return response;
     }
 
-    private static <T> Response<T> returnResponse(Integer code, String message) {
+    private static <T> Response<T> returnOKResponse(Integer code, String message) {
+        Response<T> response = Response.instance();
+        response.setData(null);
+        response.setCode(code);
+        response.setStatus(ResponseStatusEnum.SUCCESS.getStatus());
+        response.setMessage(message);
+        response.setTimestamp(Instant.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        return response;
+    }
+
+    private static <T> Response<T> returnFailResponse(Integer code, String message) {
+        Response<T> response = Response.instance();
+        response.setData(null);
+        response.setCode(code);
+        response.setStatus(ResponseStatusEnum.FAIL.getStatus());
+        response.setMessage(message);
+        response.setTimestamp(Instant.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        return response;
+    }
+
+    private static <T> Response<T> returnErrorResponse(Integer code, String message) {
         Response<T> response = Response.instance();
         response.setData(null);
         response.setCode(code);

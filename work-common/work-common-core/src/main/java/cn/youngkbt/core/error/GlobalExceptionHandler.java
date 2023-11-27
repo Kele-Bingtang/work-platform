@@ -16,6 +16,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -135,32 +136,33 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ServiceException.class)
     public Response<Object> handleError(ServiceException e) {
-        log.error("业务异常", e);
-        return HttpResult.errorMessage(e.getCode(), e.getMessage());
+        log.error("业务异常：{}", e.getMessage());
+        return HttpResult.error(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(BaseException.class)
     public Response<Object> handleError(BaseException e) {
-        log.error("业务异常", e);
-        return HttpResult.errorMessage(e.getCode(), e.getMessage());
+        log.error("业务异常：{}", e.getMessage());
+        return HttpResult.error(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response<Object> handleError(Throwable e) {
-        log.error("服务器异常", e);
+        log.error("服务器异常：{}", e.getMessage());
         // 发送服务异常事件
         return HttpResult.error(ResponseStatusEnum.INTERNAL_SERVER_ERROR, (Objects.isNull(e.getMessage()) ? ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage() : e.getMessage()));
     }
 
-
     /**
      * 处理系统异常，兜底处理所有的一切
      */
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(Exception.class)
     public Response<Object> defaultExceptionHandler(Throwable e) {
-        log.error("服务器异常", e);
-        // 返回 ERROR CommonResult
+        log.error("服务器异常：{}", e.getMessage());
+        if(StringUtils.hasText(e.getMessage())) {
+            return HttpResult.error(e.getMessage());
+        }
         return HttpResult.error(ResponseStatusEnum.INTERNAL_SERVER_ERROR);
     }
 }

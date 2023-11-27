@@ -10,7 +10,6 @@ import java.util.List;
  * @date 2023/9/19 0:29
  * @note
  */
-@Mapper
 public interface BaseMapperConvertor<S, T> {
     
     T convert(S sourceClass);

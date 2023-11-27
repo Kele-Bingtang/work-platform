@@ -1,7 +1,6 @@
 package cn.youngkbt.mp.base;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -29,7 +28,7 @@ public class SysUserBO extends User {
     /**
      * 部门ID
      */
-    private Long deptId;
+    private String deptId;
 
     /**
      * 用户账号
@@ -54,12 +53,12 @@ public class SysUserBO extends User {
     /**
      * 用户性别（0 未知 1 男 2 女）
      */
-    private String sex;
+    private Integer sex;
 
     /**
      * 头像地址
      */
-    private Long avatar;
+    private String avatar;
 
     /**
      * 最后登录IP
@@ -75,6 +74,7 @@ public class SysUserBO extends User {
      * 注册时间
      */
     private Date registerTime;
+
 
     public SysUserBO(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);

@@ -1,8 +1,7 @@
 package cn.youngkbt.uac.sys.config;
 
 import cn.youngkbt.uac.sys.security.UserDetailsServiceImpl;
-import cn.youngkbt.uac.sys.security.handler.LoginFailureHandler;
-import cn.youngkbt.uac.sys.security.handler.LoginSuccessHandler;
+import cn.youngkbt.uac.sys.security.handler.*;
 import cn.youngkbt.uac.sys.security.interceptor.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +30,7 @@ public class WebSecurityConfig {
     public static final String LOGIN_URL = "/auth/login";
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,14 +42,16 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.ignoringRequestMatchers(LOGIN_URL))
                 // 使用 JWT，所以禁用 session 机制
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/", LOGIN_URL).permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/", LOGIN_URL, "/uuid", "/ids/**").anonymous()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(form -> form.loginProcessingUrl(LOGIN_URL).permitAll()
-                        .successHandler(loginSuccessHandler())
-                        .failureHandler(loginFailureHandler()));
+                .formLogin(form -> form.successHandler(loginSuccessHandler())
+                        .failureHandler(loginFailureHandler()))
+                .logout(logout -> logout.logoutSuccessHandler(workLogoutSuccessHandler()))
+                .exceptionHandling(exception -> exception.accessDeniedHandler(workAccessDeniedHandler())
+                        .authenticationEntryPoint(workAuthenticationEntryPoint()));
 
-        http.addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         http.userDetailsService(userDetailsService);
         return http.build();
     }
@@ -65,19 +66,27 @@ public class WebSecurityConfig {
         return new LoginFailureHandler();
     }
 
+    @Bean
+    public WorkAccessDeniedHandler workAccessDeniedHandler() {
+        return new WorkAccessDeniedHandler();
+    }
+
+    @Bean
+    public WorkAuthenticationEntryPoint workAuthenticationEntryPoint() {
+        return new WorkAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public WorkLogoutSuccessHandler workLogoutSuccessHandler() {
+        return new WorkLogoutSuccessHandler();
+    }
+
+
     /**
      * 获取 AuthenticationManager（认证管理器），登录时认证使用
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    /**
-     * 忽视请求，否则还是会走过滤器
-     */
-    @Bean
-    public WebSecurityCustomizer ignoringCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(LOGIN_URL);
     }
 }

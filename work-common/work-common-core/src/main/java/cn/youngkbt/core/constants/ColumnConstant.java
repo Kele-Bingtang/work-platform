@@ -7,8 +7,8 @@ package cn.youngkbt.core.constants;
  */
 public interface ColumnConstant {
     
-    Integer STATUS_NORMAL = 0;
-    Integer STATUS_EXCEPTION = 1;
+    Integer STATUS_NORMAL = 1;
+    Integer STATUS_EXCEPTION = 0;
     Integer NON_ISOLATE_AUTH = 0;
     Integer IS_ISOLATE_AUTH= 1;
 }

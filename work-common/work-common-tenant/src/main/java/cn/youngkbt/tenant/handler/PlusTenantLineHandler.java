@@ -11,6 +11,7 @@ import net.sf.jsqlparser.expression.StringValue;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -47,11 +48,13 @@ public class PlusTenantLineHandler implements TenantLineHandler {
 
     @Override
     public boolean ignoreTable(String tableName) {
-        //忽略指定用户对租户的数据过滤
+        // 忽略指定用户对租户的数据过滤
         List<String> excludesUsername = tenantProperties.getExcludesUsername();
-        String username = SecurityUtils.getUsername();
-        if (excludesUsername.contains(username)) {
-            return true;
+        if (Objects.nonNull(excludesUsername) && !excludesUsername.isEmpty()) {
+            String username = SecurityUtils.getUsername();
+            if (excludesUsername.contains(username)) {
+                return true;
+            }
         }
 
         String tenantId = SecurityUtils.getTenantId();

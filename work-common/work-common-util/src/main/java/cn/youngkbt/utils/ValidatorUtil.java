@@ -16,7 +16,7 @@ import java.util.Set;
  * @note
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ValidatorUtils {
+public class ValidatorUtil {
 
     private static final Validator VALIDATOR = SpringHelper.getBean(Validator.class);
 

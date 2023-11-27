@@ -46,13 +46,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         // 登录成功则往下走
         String userId = loginInfoEvent.getUserId();
-        SysUser user = SysUser.builder()
-                .userId(userId)
-                .loginIp(ServletUtil.getClientIp(loginInfoEvent.getRequest()))
-                .loginDate(new Date())
-                .build();
-
+        SysUser user = new SysUser();
+        user.setUserId(userId);
+        user.setLoginIp(ServletUtil.getClientIp(loginInfoEvent.getRequest()));
+        user.setLoginDate(new Date());
         user.setUpdateBy(userId);
+        
         baseMapper.update(user, Wrappers.<SysUser>lambdaUpdate().eq(SysUser::getUserId, userId));
     }
 }

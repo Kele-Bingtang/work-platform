@@ -1,14 +1,13 @@
 package cn.youngkbt.uac.sys.security.handler;
 
-import cn.hutool.core.io.IoUtil;
 import cn.youngkbt.core.base.BaseCommonEnum;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.uac.core.constant.AuthConstant;
+import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.ServletUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 
 /**
  * @author Kele-Bingtang
@@ -30,19 +28,6 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        String username = request.getParameter(AuthConstant.USERNAME);
-        String tenantId = request.getParameter(AuthConstant.TENANT_ID);
-        LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
-                .tenantId(tenantId)
-                .username(username)
-                .status(AuthConstant.LOGIN_FAIL)
-                .request(ServletUtil.getRequest())
-                .build();
-
-        // 设置客户端响应编码格式
-        response.setContentType("application/json;charset=UTF-8");
-        // 获取输出流
-        PrintWriter writer = response.getWriter();
         // 判断异常类型
         BaseCommonEnum authErrorCodeEnum = AuthErrorCodeEnum.LOGIN_FAIL;
         if (exception instanceof AccountExpiredException) {
@@ -59,12 +44,27 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
             authErrorCodeEnum = AuthErrorCodeEnum.USER_ACCOUNT_NOT_EXIST;
         }
         log.error("Exception：{}", authErrorCodeEnum.getMessage());
-        loginInfoEvent.setMessage(authErrorCodeEnum.getMessage());
-        // 发布登录失败事件
-        SpringHelper.publishEvent(loginInfoEvent);
+        // 该异常是在 UserDetailsService.loadUserByUsername 里抛出的，不需要记录
+        if (!(exception instanceof InternalAuthenticationServiceException)) {
+            String username = request.getParameter(AuthConstant.USERNAME);
+            String tenantId = request.getParameter(AuthConstant.TENANT_ID);
+            LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
+                    .tenantId(tenantId)
+                    .username(username)
+                    .status(AuthConstant.LOGIN_FAIL)
+                    .request(ServletUtil.getRequest())
+                    .build();
+            loginInfoEvent.setMessage(authErrorCodeEnum.getMessage());
+            // 发布登录失败事件
+            SpringHelper.publishEvent(loginInfoEvent);
+        }
 
+        // 设置客户端响应编码格式
+        response.setContentType("application/json;charset=UTF-8");
+        // 获取输出流
+        PrintWriter writer = response.getWriter();
         // 将错误信息转换成 JSON
-        writer.println(new ObjectMapper().writeValueAsString(HttpResult.response(null, authErrorCodeEnum)));
+        writer.println(JacksonUtil.toJsonStr(HttpResult.response(null, authErrorCodeEnum)));
         writer.flush();
         writer.close();
     }

@@ -63,7 +63,7 @@ public class LoginEventListen {
         String errorKey = AuthRedisConstant.PWD_ERR_CNT_KEY + loginInfoEvent.getUsername();
         BoundValueOperations<String, Object> valueOps = redisTemplate.boundValueOps(errorKey);
         // 获取登录失败次数
-        Integer errorCount = (Integer) ObjectUtil.defaultIfNull(valueOps.get(), 0);
+        int errorCount = ObjectUtil.defaultIfNull((Integer) valueOps.get(), 0);
         errorCount++;
         valueOps.set(errorCount, Duration.ofMinutes(lockTime));
         // 到达锁定次数阈值
@@ -84,10 +84,10 @@ public class LoginEventListen {
         String errorKey = AuthRedisConstant.PWD_ERR_CNT_KEY + loginUserBO.getUsername();
         BoundValueOperations<String, Object> valueOps = redisTemplate.boundValueOps(errorKey);
         // 获取登录失败次数
-        int errorCount = ObjectUtil.defaultIfNull((int) valueOps.get(), 0);
+        int errorCount = ObjectUtil.defaultIfNull((Integer) valueOps.get(), 0);
         if (errorCount >= maxRetryCount) {
             String message = "密码输入错误 " + maxRetryCount + " 次，帐户锁定 " + lockTime + " 分钟";
-            
+
             LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
                     .tenantId(loginUserBO.getTenantId())
                     .userId("")

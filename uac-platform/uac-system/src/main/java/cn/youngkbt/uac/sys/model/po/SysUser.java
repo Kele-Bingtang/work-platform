@@ -6,7 +6,6 @@ import cn.youngkbt.mp.base.BaseDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,7 +19,6 @@ import java.util.Date;
 @TableName("t_sys_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class SysUser extends BaseDO {
     /**
      * 用户 ID
@@ -32,12 +30,12 @@ public class SysUser extends BaseDO {
     /**
      * 用户名
      */
-    private String userName;
+    private String username;
 
     /**
      * 用户昵称
      */
-    private String nickName;
+    private String nickname;
 
     /**
      * 密码

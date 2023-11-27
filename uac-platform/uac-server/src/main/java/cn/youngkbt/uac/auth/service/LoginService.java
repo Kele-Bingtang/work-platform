@@ -4,9 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.uac.auth.convertor.LoginBOToVOConvertor;
 import cn.youngkbt.uac.auth.convertor.LoginDTOToBOConvertor;
-import cn.youngkbt.uac.auth.dto.LoginUserDTO;
+import cn.youngkbt.uac.auth.model.dto.LoginUserDto;
 import cn.youngkbt.uac.auth.strategy.AuthHandler;
-import cn.youngkbt.uac.auth.vo.LoginVO;
+import cn.youngkbt.uac.auth.model.vo.LoginVo;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.exception.TenantException;
@@ -39,8 +39,8 @@ public class LoginService {
     /**
      * 登录
      */
-    public LoginVO login(LoginUserDTO loginUserDTO, SysApp sysApp, SysClient sysClient) {
-        LoginUserBO loginUserBO = LoginDTOToBOConvertor.INSTANCE.convert(loginUserDTO, sysApp);
+    public LoginVo login(LoginUserDto loginUserDto, SysApp sysApp, SysClient sysClient) {
+        LoginUserBO loginUserBO = LoginDTOToBOConvertor.INSTANCE.convert(loginUserDto, sysApp);
         LoginSuccessBO login = AuthHandler.loginDispatch(loginUserBO, sysClient);
         return LoginBOToVOConvertor.INSTANCE.convert(login);
     }
@@ -63,7 +63,7 @@ public class LoginService {
     public void checkTenant(String tenantId) {
         // 校验租户是否存在
         if (!StringUtils.hasText(tenantId)) {
-            throw new TenantException("该租户不存在.");
+            throw new TenantException("该租户不存在");
         }
         // 校验租户模式是否启用
         if (!TenantHelper.isEnable()) {
@@ -72,16 +72,16 @@ public class LoginService {
         SysTenant sysTenant = tenantService.queryByTenantId(tenantId);
         if (Objects.isNull(sysTenant)) {
             log.info("租户 {} 不存在.", tenantId);
-            throw new TenantException("租户不存在.");
+            throw new TenantException("租户不存在");
         }
         if (!ColumnConstant.STATUS_NORMAL.equals(sysTenant.getStatus())) {
             log.info("租户 {} 已被停用.", tenantId);
-            throw new TenantException("租户已被停用.");
+            throw new TenantException("租户已被停用");
         }
         if (ObjectUtil.isNotNull(sysTenant.getExpireTime())
                 && new Date().after(sysTenant.getExpireTime())) {
             log.info("租户 {} 已超过有效期.", tenantId);
-            throw new TenantException("租户已超过有效期.");
+            throw new TenantException("租户已超过有效期");
         }
     }
 }

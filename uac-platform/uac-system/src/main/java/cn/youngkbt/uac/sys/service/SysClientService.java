@@ -1,7 +1,12 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.dto.SysClientDto;
 import cn.youngkbt.uac.sys.model.po.SysClient;
+import cn.youngkbt.uac.sys.model.vo.SysClientVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -11,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface SysClientService extends IService<SysClient> {
 
     SysClient checkClientIdThenGet(String clientId);
+
+    SysClientVo queryById(Long id);
+
+    List<SysClientVo> queryListWithPage(SysClientDto sysClientDto, PageQuery pageQuery);
+
 }

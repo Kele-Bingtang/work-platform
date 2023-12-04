@@ -1,7 +1,12 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.dto.SysPostDto;
 import cn.youngkbt.uac.sys.model.po.SysPost;
+import cn.youngkbt.uac.sys.model.vo.SysPostVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,4 +15,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysPostService extends IService<SysPost> {
 
+    SysPostVo queryById(Long id);
+
+    List<SysPostVo> queryListWithPage(SysPostDto sysPostDto, PageQuery pageQuery);
+
+    Boolean insertOne(SysPostDto sysPostDto);
+
+    Boolean updateOne(SysPostDto sysPostDto);
+
+    Boolean removeOne(List<Long> ids);
 }

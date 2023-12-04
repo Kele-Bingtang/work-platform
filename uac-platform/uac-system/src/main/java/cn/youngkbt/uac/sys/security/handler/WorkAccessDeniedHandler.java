@@ -5,6 +5,7 @@ import cn.youngkbt.core.http.ResponseStatusEnum;
 import cn.youngkbt.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
@@ -13,9 +14,10 @@ import org.springframework.security.web.access.AccessDeniedHandler;
  * @date 2023/11/27 23:43
  * @note 登录后，访问缺失权限的资源会调用
  */
+@Slf4j
 public class WorkAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
-        ServletUtil.writeJSON(response, HttpResult.fail(ResponseStatusEnum.REQ_REJECT));
+        ServletUtil.writeJSON(response, HttpResult.fail(ResponseStatusEnum.REQ_REJECT, accessDeniedException.getMessage()));
     }
 }

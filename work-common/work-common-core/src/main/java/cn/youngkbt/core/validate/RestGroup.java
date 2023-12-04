@@ -13,6 +13,10 @@ public interface RestGroup {
 
     }
 
+    interface DeleteGroup {
+
+    }
+
     interface QueryGroup {
     }
 

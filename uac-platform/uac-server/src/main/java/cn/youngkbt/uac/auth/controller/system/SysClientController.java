@@ -2,6 +2,7 @@ package cn.youngkbt.uac.auth.controller.system;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysClientDto;
 import cn.youngkbt.uac.sys.model.vo.SysClientVo;
@@ -27,6 +28,9 @@ public class SysClientController {
 
     private final SysClientService clientService;
 
+    /**
+     * 查询某个客户端
+     */
     @GetMapping("/{id}")
     public Response<SysClientVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
         SysClientVo sysClientVo = clientService.queryById(id);
@@ -34,35 +38,43 @@ public class SysClientController {
     }
 
     /**
-     * 查询客户端列表
+     * 客户端列表查询
      */
     @GetMapping("/list")
     public Response<List<SysClientVo>> list(SysClientDto sysClientDto, PageQuery pageQuery) {
-        List<SysClientVo> sysClientVo = clientService.queryListWithPage(sysClientDto, pageQuery);
-        return HttpResult.ok(sysClientVo);
+        List<SysClientVo> sysClientVoList = clientService.queryListWithPage(sysClientDto, pageQuery);
+        return HttpResult.ok(sysClientVoList);
     }
 
     /**
-     * 新增客户端管理
+     * 客户端新增
      */
-    @PostMapping()
-    public Response<List<SysClientVo>> add(@RequestBody SysClientDto sysClientDto) {
-        return null;
+    @PostMapping
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDto sysClientDto) {
+        return HttpResult.ok(clientService.insertOne(sysClientDto));
     }
 
     /**
-     * 修改客户端管理
+     * 客户端修改
      */
-    @PutMapping()
-    public Response<List<SysClientVo>> edit(@RequestBody SysClientDto sysClientDto) {
-        return null;
+    @PutMapping
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDto sysClientDto) {
+        return HttpResult.ok(clientService.updateOne(sysClientDto));
     }
 
     /**
-     * 删除客户端管理
+     * 客户端状态修改
      */
-    @DeleteMapping()
-    public Response<List<SysClientVo>> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return null;
+    @PutMapping("/updateStatus")
+    public Response<Boolean> updateStatus(@RequestBody SysClientDto sysClientDto) {
+        return HttpResult.ok(clientService.updateStatus(sysClientDto.getId(), sysClientDto.getStatus()));
+    }
+
+    /**
+     * 客户端删除
+     */
+    @DeleteMapping("/{ids}")
+    public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        return HttpResult.ok(clientService.removeOne(List.of(ids)));
     }
 }

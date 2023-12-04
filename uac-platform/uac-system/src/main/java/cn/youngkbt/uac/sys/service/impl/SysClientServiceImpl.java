@@ -1,19 +1,22 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.hutool.crypto.SecureUtil;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.convertor.SysClientToVoConvertor;
 import cn.youngkbt.uac.sys.mapper.SysClientMapper;
 import cn.youngkbt.uac.sys.model.dto.SysClientDto;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.model.vo.SysClientVo;
 import cn.youngkbt.uac.sys.service.SysClientService;
+import cn.youngkbt.utils.IdsUtil;
+import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +37,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     public SysClientVo queryById(Long id) {
         SysClient sysClient = baseMapper.selectById(id);
         Assert.nonNull(sysClient, "客户端不存在");
-        SysClientVo result = SysClientToVoConvertor.INSTANCE.convert(sysClient);
+        SysClientVo result = MapstructUtil.convert(sysClient, SysClientVo.class);
         result.setGrantTypeList(List.of(result.getGrantTypes().split(",")));
         return result;
     }
@@ -54,10 +57,42 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
         } else {
             sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        List<SysClientVo> result = SysClientToVoConvertor.INSTANCE.convert(sysClientList);
+        List<SysClientVo> result = MapstructUtil.convert(sysClientList, SysClientVo.class);
         result.forEach(r -> r.setGrantTypeList(List.of(r.getGrantTypes().split(","))));
         return result;
     }
+
+    @Override
+    public Boolean insertOne(SysClientDto sysClientDto) {
+        SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
+        if (Objects.isNull(sysClient.getClientSecret())) {
+            sysClient.setClientSecret(IdsUtil.simpleUUID());
+        }
+        String clientSecret = sysClient.getClientSecret();
+        String clientKey = sysClient.getClientKey();
+        String appId = SecureUtil.md5(clientSecret + clientKey);
+        sysClient.setClientId(appId);
+        return baseMapper.insert(sysClient) > 0;
+    }
+
+    @Override
+    public Boolean updateOne(SysClientDto sysClientDto) {
+        SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
+        return baseMapper.updateById(sysClient) > 0;
+    }
+
+    @Override
+    public Boolean updateStatus(Long id, Integer status) {
+        return baseMapper.update(null, Wrappers.<SysClient>lambdaUpdate()
+                .eq(SysClient::getId, id)
+                .set(SysClient::getStatus, status)) > 0;
+    }
+
+    @Override
+    public Boolean removeOne(Collection<Long> ids) {
+        return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
 }
 
 

@@ -18,6 +18,11 @@ public class SysClientVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * id
+     */
+    public Long id;
+
+    /**
      * 客户端 ID
      */
     private String clientId;

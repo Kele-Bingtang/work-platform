@@ -1,7 +1,12 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.po.SysDept;
+import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,4 +15,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysDeptService extends IService<SysDept> {
 
+    SysDeptVo queryById(Long id);
+
+    List<SysDeptVo> queryListWithPage(SysDeptDto sysDeptDto, PageQuery pageQuery);
+
+    Boolean insertOne(SysDeptDto sysDeptDto);
+
+    Boolean updateOne(SysDeptDto sysDeptDto);
+
+    Boolean removeOne(List<Long> ids);
 }

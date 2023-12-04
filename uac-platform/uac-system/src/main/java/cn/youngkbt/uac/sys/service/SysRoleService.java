@@ -1,7 +1,12 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.dto.SysRoleDto;
 import cn.youngkbt.uac.sys.model.po.SysRole;
+import cn.youngkbt.uac.sys.model.vo.SysRoleVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,4 +15,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysRoleService extends IService<SysRole> {
 
+    SysRoleVo queryById(Long id);
+
+    List<SysRoleVo> queryListWithPage(SysRoleDto sysRoleDto, PageQuery pageQuery);
+
+    Boolean insertOne(SysRoleDto sysRoleDto);
+
+    Boolean updateOne(SysRoleDto sysRoleDto);
+
+    Boolean removeOne(List<Long> ids);
 }

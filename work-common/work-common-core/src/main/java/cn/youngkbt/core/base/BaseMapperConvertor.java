@@ -1,6 +1,5 @@
 package cn.youngkbt.core.base;
 
-import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;

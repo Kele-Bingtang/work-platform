@@ -1,6 +1,8 @@
 package cn.youngkbt.uac.sys.model.dto;
 
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.uac.sys.model.po.SysClient;
+import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -11,6 +13,7 @@ import lombok.Data;
  * @note
  */
 @Data
+@AutoMapper(target = SysClient.class)
 public class SysClientDto {
 
     /**
@@ -38,7 +41,6 @@ public class SysClientDto {
     /**
      * 客户端秘钥
      */
-    @NotBlank(message = "客户端秘钥不能为空", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
     private String clientSecret;
 
     /**
@@ -56,6 +58,9 @@ public class SysClientDto {
      * token 有效期，超出则 token 失效，默认 30 天（单位秒），isolate_auth 为 1 生效
      */
     private Long timeout;
-    
+
+    /**
+     * 状态（0 异用 1 正常）
+     */
     private Integer status;
 }

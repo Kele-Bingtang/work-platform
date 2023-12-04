@@ -45,7 +45,7 @@ import java.util.Set;
 @ResponseBody
 @Slf4j
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnClass({ Servlet.class, DispatcherServlet.class })
+@ConditionalOnClass({Servlet.class, DispatcherServlet.class})
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
 
     private Response<Object> handleError(BindingResult result) {
         FieldError error = result.getFieldError();
-        if(Objects.isNull(error)) {
+        if (Objects.isNull(error)) {
             return HttpResult.fail(ResponseStatusEnum.PARAM_BIND_ERROR);
         }
         String message = String.format("%s：%s", error.getField(), error.getDefaultMessage());
@@ -160,8 +160,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Response<Object> defaultExceptionHandler(Throwable e) {
         log.error("服务器异常：{}", e.getMessage());
-        if(StringUtils.hasText(e.getMessage())) {
+        if (StringUtils.hasText(e.getMessage())) {
             return HttpResult.error(e.getMessage());
+        } else if (StringUtils.hasText(e.getCause().getMessage())) {
+            return HttpResult.error(e.getCause().getMessage());
         }
         return HttpResult.error(ResponseStatusEnum.INTERNAL_SERVER_ERROR);
     }

@@ -1,7 +1,12 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.dto.SysMenuDto;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
+import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,4 +15,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysMenuService extends IService<SysMenu> {
 
+    SysMenuVo queryById(Long id);
+
+    List<SysMenuVo> queryListWithPage(SysMenuDto sysMenuDto, PageQuery pageQuery);
+
+    Boolean insertOne(SysMenuDto sysMenuDto);
+
+    Boolean updateOne(SysMenuDto sysMenuDto);
+
+    Boolean removeOne(List<Long> ids);
 }

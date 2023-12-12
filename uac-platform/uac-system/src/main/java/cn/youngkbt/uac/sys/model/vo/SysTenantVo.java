@@ -19,7 +19,7 @@ public class SysTenantVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
 
     /**
      * 租户编号

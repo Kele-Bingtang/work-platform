@@ -3,7 +3,9 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
 import com.baomidou.mybatisplus.annotation.*;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_dept")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = SysDeptVo.class)
 public class SysDept extends BaseDO {
     /**
      * 部门 ID

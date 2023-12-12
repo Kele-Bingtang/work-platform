@@ -47,22 +47,10 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
                 .eq(StringUtils.hasText(sysAppDto.getAppName()), SysApp::getAppName, sysAppDto.getAppName())
                 .eq(StringUtils.hasText(sysAppDto.getGrantTypes()), SysApp::getGrantTypes, sysAppDto.getGrantTypes())
                 .eq(Objects.nonNull(sysAppDto.getStatus()), SysApp::getStatus, sysAppDto.getStatus())
+                .eq(Objects.nonNull(sysAppDto.getDeptId()), SysApp::getDeptId, sysAppDto.getDeptId())
+                .eq(Objects.nonNull(sysAppDto.getClientId()), SysApp::getClientId, sysAppDto.getClientId())
                 .orderByAsc(SysApp::getOrderNum);
 
-        List<SysApp> sysClientList;
-        if (Objects.isNull(pageQuery)) {
-            sysClientList = baseMapper.selectList(wrapper);
-        } else {
-            sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        List<SysAppVo> result = MapstructUtil.convert(sysClientList, SysAppVo.class);
-        result.forEach(r -> r.setGrantTypeList(List.of(r.getGrantTypes().split(","))));
-        return result;
-    }
-
-    @Override
-    public List<SysAppVo> queryListFromClientWithPage(Long clientId, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysApp> wrapper = Wrappers.<SysApp>lambdaQuery().eq(SysApp::getClientId, clientId);
         List<SysApp> sysClientList;
         if (Objects.isNull(pageQuery)) {
             sysClientList = baseMapper.selectList(wrapper);

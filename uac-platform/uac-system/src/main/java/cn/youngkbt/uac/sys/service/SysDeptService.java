@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.po.SysDept;
@@ -19,9 +20,31 @@ public interface SysDeptService extends IService<SysDept> {
 
     List<SysDeptVo> queryListWithPage(SysDeptDto sysDeptDto, PageQuery pageQuery);
 
+    List<Tree<String>> selectDeptTreeList(SysDeptDto sysDeptDto);
+
+    List<Tree<String>> buildDeptTree(List<SysDept> sysDeptList);
+    
+    SysDeptVo queryParentDeptByDeptId(String deptId);
+    
+    List<String> queryDeptNamesByIds(List<String> ids);
+    
+    Long queryChildrenDeptCountById(String deptId);
+    
+    Boolean hasChild(String deptId);
+    
+    Boolean checkDeptExistUser(String deptId);
+
+    Boolean checkDeptNameUnique(SysDeptDto sysDeptDto);
+    
+    Integer getDeptUserCount(String deptId);
+    
     Boolean insertOne(SysDeptDto sysDeptDto);
 
     Boolean updateOne(SysDeptDto sysDeptDto);
 
-    Boolean removeOne(List<Long> ids);
+    Boolean removeOne(String deptId);
+
+    Boolean removeBatch(List<Long> ids);
+
+    
 }

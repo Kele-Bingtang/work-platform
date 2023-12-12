@@ -5,6 +5,7 @@ import cn.youngkbt.uac.sys.model.po.SysApp;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -13,6 +14,7 @@ import lombok.Data;
  * @note 应用信息
  */
 @Data
+@Builder
 @AutoMapper(target = SysApp.class)
 public class SysAppDto {
     /**

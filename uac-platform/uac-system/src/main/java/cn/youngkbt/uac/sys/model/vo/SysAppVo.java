@@ -19,7 +19,7 @@ public class SysAppVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
     /**
      * 应用 ID
      */
@@ -49,16 +49,6 @@ public class SysAppVo implements Serializable {
      * 授权类型
      */
     private String grantTypes;
-
-    /**
-     * 部门 ID
-     */
-    private String deptId;
-
-    /**
-     * 客户端 ID
-     */
-    private String clientId;
 
     /**
      * 授权类型

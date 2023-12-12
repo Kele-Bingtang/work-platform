@@ -29,11 +29,11 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
     @Override
     public void recordLoginLog(LoginInfoEvent loginInfoEvent) {
         HttpServletRequest request = loginInfoEvent.getRequest();
-        // 获取客户端标识
-        UserAgent userAgent = UserAgentUtil.parse(ServletUtil.getUserAgent(request));
         // 获取 IP
         String clientIp = ServletUtil.getClientIp(request);
         String address = AddressUtil.getRealAddressByIp(clientIp);
+        // 获取客户端标识
+        UserAgent userAgent = UserAgentUtil.parse(ServletUtil.getUserAgent(request));
         // 获取客户端操作系统
         String os = userAgent.getOs().getName();
         // 获取客户端浏览器

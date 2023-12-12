@@ -18,7 +18,7 @@ public class SysDeptVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
     /**
      * 部门 ID
      */
@@ -28,6 +28,11 @@ public class SysDeptVo implements Serializable {
      * 父级部门 ID
      */
     private String parentId;
+
+    /**
+     * 父级部门名字
+     */
+    private String parentName;
 
     /**
      * 祖级列表

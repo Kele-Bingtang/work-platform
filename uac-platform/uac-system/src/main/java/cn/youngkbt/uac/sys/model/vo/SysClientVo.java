@@ -20,7 +20,7 @@ public class SysClientVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
 
     /**
      * 客户端 ID

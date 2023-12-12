@@ -1,5 +1,7 @@
 package cn.youngkbt.uac.auth.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
@@ -24,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/system/dept")
 public class SysDeptController {
-    
+
     private final SysDeptService sysDeptService;
 
     @GetMapping("/{id}")
@@ -34,7 +36,7 @@ public class SysDeptController {
     }
 
     /**
-     * 客户端列表查询
+     * 部门列表查询
      */
     @GetMapping("/list")
     public Response<List<SysDeptVo>> list(SysDeptDto sysDeptDto, PageQuery pageQuery) {
@@ -42,8 +44,32 @@ public class SysDeptController {
         return HttpResult.ok(sysDeptVoList);
     }
 
+    @GetMapping("/selectDeptTreeList")
+    public Response<List<Tree<String>>> selectDeptTreeList(SysDeptDto sysDeptDto) {
+        List<Tree<String>> treeList = sysDeptService.selectDeptTreeList(sysDeptDto);
+        return HttpResult.ok(treeList);
+    }
+
+    @GetMapping("/parentDept")
+    public Response<SysDeptVo> queryParentDeptByDeptId(String deptId) {
+        SysDeptVo sysDeptVo = sysDeptService.queryParentDeptByDeptId(deptId);
+        return HttpResult.ok(sysDeptVo);
+    }
+
+    @GetMapping("/deptNames")
+    public Response<List<String>> queryDeptNamesByIds(List<String> ids) {
+        List<String> deptNameList = sysDeptService.queryDeptNamesByIds(ids);
+        return HttpResult.ok(deptNameList);
+    }
+
+    @GetMapping("/userCount")
+    public Response<Integer> getDeptUserCount(String deptId) {
+        Integer deptsUserCount = sysDeptService.getDeptUserCount(deptId);
+        return HttpResult.ok(deptsUserCount);
+    }
+
     /**
-     * 客户端新增
+     * 部门新增
      */
     @PostMapping
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDeptDto sysDeptDto) {
@@ -51,18 +77,52 @@ public class SysDeptController {
     }
 
     /**
-     * 客户端修改
+     * 部门修改
      */
     @PutMapping
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDeptDto sysDeptDto) {
+        String deptId = sysDeptDto.getDeptId();
+        if (sysDeptDto.getParentId().equals(deptId)) {
+            return HttpResult.fail("修改部门'" + sysDeptDto.getDeptName() + "'失败，上级部门不能是自己");
+        }
+
+        if (!sysDeptService.checkDeptNameUnique(sysDeptDto)) {
+            return HttpResult.fail("修改部门'" + sysDeptDto.getDeptName() + "'失败，部门名称已存在");
+        }
+
+        if (ColumnConstant.STATUS_EXCEPTION.equals(sysDeptDto.getStatus())) {
+            if (sysDeptService.queryChildrenDeptCountById(deptId) > 0) {
+                return HttpResult.fail("该部门包含未停用的子部门，不能禁用");
+            }
+
+            if (sysDeptService.checkDeptExistUser(deptId)) {
+                return HttpResult.fail("该部门下已存在用户，不能禁用!");
+            }
+        }
+
         return HttpResult.ok(sysDeptService.updateOne(sysDeptDto));
+    }
+
+    /**
+     * 部门删除
+     */
+    @DeleteMapping("/{deptId}")
+    public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable String deptId) {
+        if (sysDeptService.hasChild(deptId)) {
+            return HttpResult.fail("存在下级部门，不允许删除");
+        }
+
+        if (sysDeptService.checkDeptExistUser(deptId)) {
+            return HttpResult.fail("部门存在用户，不允许删除");
+        }
+        return HttpResult.ok(sysDeptService.removeOne(deptId));
     }
 
     /**
      * 客户端删除
      */
-    @DeleteMapping("/{ids}")
-    public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(sysDeptService.removeOne(List.of(ids)));
+    @DeleteMapping("/batch/{ids}")
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        return HttpResult.ok(sysDeptService.removeBatch(List.of(ids)));
     }
 }

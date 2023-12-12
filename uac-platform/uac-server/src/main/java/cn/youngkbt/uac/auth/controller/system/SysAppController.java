@@ -37,7 +37,7 @@ public class SysAppController {
     }
 
     /**
-     * 客户端列表查询
+     * 应用列表查询
      */
     @GetMapping("/list")
     public Response<List<SysAppVo>> list(SysAppDto sysAppDto, PageQuery pageQuery) {
@@ -46,16 +46,17 @@ public class SysAppController {
     }
 
     @GetMapping("/list/{clientId}")
-    public Response<List<SysAppVo>> listFromClient(@NotNull(message = "客户端 ID 不能为空") @PathVariable Long clientId, PageQuery pageQuery) {
-        if (Objects.isNull(sysClientService.queryById(clientId))) {
+    public Response<List<SysAppVo>> listFromClient(@NotNull(message = "客户端 ID 不能为空") @PathVariable String clientId, PageQuery pageQuery) {
+        if (Objects.isNull(sysClientService.checkClientIdThenGet(clientId))) {
             return HttpResult.error("客户端 ID 不存在");
         }
-        List<SysAppVo> sysAppVoList = sysAppService.queryListFromClientWithPage(clientId, pageQuery);
+        SysAppDto sysAppDto = SysAppDto.builder().clientId(clientId).build();
+        List<SysAppVo> sysAppVoList = sysAppService.queryListWithPage(sysAppDto, pageQuery);
         return HttpResult.ok(sysAppVoList);
     }
 
     /**
-     * 客户端新增
+     * 应用新增
      */
     @PostMapping
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysAppDto sysAppDto) {
@@ -63,7 +64,7 @@ public class SysAppController {
     }
 
     /**
-     * 客户端修改
+     * 应用修改
      */
     @PutMapping
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysAppDto sysAppDto) {
@@ -71,7 +72,7 @@ public class SysAppController {
     }
 
     /**
-     * 客户端删除
+     * 应用删除
      */
     @DeleteMapping("/{ids}")
     public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {

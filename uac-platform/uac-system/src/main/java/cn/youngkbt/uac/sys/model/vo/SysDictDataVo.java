@@ -18,7 +18,7 @@ public class SysDictDataVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
     /**
      * 字典标签
      */

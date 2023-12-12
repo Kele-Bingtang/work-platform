@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
@@ -50,6 +51,33 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
+    public List<SysMenuVo> buildMenuTree(List<SysMenu> sysMenuList) {
+        
+        return null;
+    }
+
+    @Override
+    public Boolean checkMenuNameUnique(SysMenuDto sysMenuDto) {
+        boolean exist = baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
+                .eq(SysMenu::getMenuName, sysMenuDto.getMenuName())
+                .eq(SysMenu::getParentId, sysMenuDto.getParentId())
+                .ne(ObjectUtil.isNotNull(sysMenuDto.getMenuId()), SysMenu::getMenuId, sysMenuDto.getMenuId()));
+
+        return !exist;
+    }
+
+    @Override
+    public Boolean hasChild(Long menuId) {
+        return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
+                .eq(SysMenu::getParam, menuId));
+    }
+
+    @Override
+    public Boolean checkMenuExistRole(Long menuId) {
+        return null;
+    }
+
+    @Override
     public Boolean insertOne(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = MapstructUtil.convert(sysMenuDto, SysMenu.class);
         return baseMapper.insert(sysMenu) > 0;
@@ -62,9 +90,16 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public Boolean removeOne(Long menuId) {
+        return baseMapper.delete(Wrappers.<SysMenu>lambdaQuery()
+                .eq(SysMenu::getMenuId, menuId)) > 0;
+    }
+
+    @Override
+    public Boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
+
 }
 
 

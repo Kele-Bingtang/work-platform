@@ -18,7 +18,7 @@ public class SysMenuVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
     /**
      * 主键
      */

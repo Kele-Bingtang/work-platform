@@ -18,7 +18,7 @@ public class SysPostVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
     /**
      * 岗位 ID
      */

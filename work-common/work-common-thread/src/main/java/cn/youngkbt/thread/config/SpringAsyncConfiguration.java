@@ -25,7 +25,7 @@ public class SpringAsyncConfiguration implements AsyncConfigurer {
      */
     @Override
     public Executor getAsyncExecutor() {
-        return SpringHelper.getBean(ThreadConstant.SCHEDULED_EXECUTOR_SERVICE_BEAN_NAME);
+        return SpringHelper.getBean(ThreadConstant.THREAD_POOL_TASK_EXECUTOR_BEAN_NAME);
     }
 
     /**

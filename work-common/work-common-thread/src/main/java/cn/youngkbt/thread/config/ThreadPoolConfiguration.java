@@ -33,7 +33,7 @@ public class ThreadPoolConfiguration {
 
     private ScheduledExecutorService scheduledExecutorService;
 
-    @Bean(ThreadConstant.SCHEDULED_EXECUTOR_SERVICE_BEAN_NAME)
+    @Bean(ThreadConstant.THREAD_POOL_TASK_EXECUTOR_BEAN_NAME)
     @ConditionalOnProperty(prefix = ThreadConstant.THREAD_POOL_NAME_PREFIX, name = "enabled", havingValue = "true")
     public ThreadPoolTaskExecutor threadPoolTaskExecutor(ThreadPoolProperties threadPoolProperties) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -46,14 +46,14 @@ public class ThreadPoolConfiguration {
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
-
+        
         return executor;
     }
 
     /**
      * 执行周期性或定时任务
      */
-    @Bean(name = "scheduledExecutorService")
+    @Bean(ThreadConstant.SCHEDULED_EXECUTOR_SERVICE_BEAN_NAME)
     protected ScheduledExecutorService scheduledExecutorService() {
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(core,
                 new BasicThreadFactory.Builder().namingPattern("schedule-pool-%d").daemon(true).build(),

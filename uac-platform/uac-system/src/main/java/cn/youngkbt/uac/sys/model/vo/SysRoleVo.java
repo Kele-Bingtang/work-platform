@@ -18,7 +18,7 @@ public class SysRoleVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
     /**
      * 角色 ID
      */

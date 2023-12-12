@@ -21,8 +21,6 @@ public interface SysAppService extends IService<SysApp> {
 
     List<SysAppVo> queryListWithPage(SysAppDto sysAppDto, PageQuery pageQuery);
 
-    List<SysAppVo> queryListFromClientWithPage(Long clientId, PageQuery pageQuery);
-
     Boolean insertOne(SysAppDto sysAppDto);
 
     Boolean updateOne(SysAppDto sysAppDto);

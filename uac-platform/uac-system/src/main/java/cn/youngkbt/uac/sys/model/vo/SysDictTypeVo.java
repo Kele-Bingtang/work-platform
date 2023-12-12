@@ -19,7 +19,7 @@ public class SysDictTypeVo implements Serializable {
     /**
      * id
      */
-    public Long id;
+    private Long id;
     /**
      * 字典主键
      */

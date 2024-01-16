@@ -1,0 +1,45 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/work_uac?useSSL-=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true
+    username: root
+    password: YoungKbt1234
+    type: com.alibaba.druid.pool.DruidDataSource
+  data:
+    redis:
+#      host: 192.168.199.27
+      host: localhost
+      port: 6379
+#      password: YoungKbt1234
+      database: 0
+      timeout: 10s
+  #  cloud:
+#    nacos:
+#      config: # 配置中心
+#        server-addr: 172.16.138.184:8848 # Nacos 地址
+#        file-extension: yaml # 文件后缀名
+#        namespace: d6824001-7103-4238-a4d5-05bee4a39d2f # 命名空间 ID
+#        group: WORK_GROUP # 读取文件所在的组
+  
+  #      discovery: # 服务注册
+  #        service: ${spring.application.name} # 使用微服务的名称作为注册的服务名称
+  #        server-addr: 172.16.138.184:8848 # Nacos服务地址
+  #        namespace: d6824001-7103-4238-a4d5-05bee4a39d2f # 命名空间 ID
+  #        group: WORK_GROUP # 读取文件所在的组
+#  config: # 指定该项目读取配置中心的文件名
+#    import:
+#      - optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+#      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+#      - optional:nacos:nacos-discovery.yaml?group=WORK_GROUP&refreshEnabled=true
+#      - nacos:datasource.yaml?group=WORK_GROUP&refreshEnabled=true
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  secret: work-uac-platform-abcdefghijklmnopqrstuvwxyz
+  expire-time: 43200000 # 12 小时

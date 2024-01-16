@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.youngkbt.uac.sys.mapper.SysMenuMapper">
+
+    <resultMap id="BaseResultMap" type="cn.youngkbt.uac.sys.model.po.SysMenu">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="menuId" column="menu_id" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+            <result property="menuCode" column="menu_code" jdbcType="VARCHAR"/>
+            <result property="meunName" column="meun_name" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="param" column="param" jdbcType="VARCHAR"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+            <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="visible" column="visible" jdbcType="TINYINT"/>
+            <result property="isCache" column="is_cache" jdbcType="TINYINT"/>
+            <result property="isFrame" column="is_frame" jdbcType="TINYINT"/>
+            <result property="meta" column="meta" jdbcType="VARCHAR"/>
+            <result property="intro" column="intro" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateById" column="update_by_id" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,menu_id,parent_id,
+        menu_code,meun_name,path,
+        param,icon,order_num,
+        component,visible,is_cache,
+        is_frame,meta,intro,
+        create_by,create_by_id,create_time,
+        update_by,update_by_id,update_time,
+        status,is_deleted,app_id
+    </sql>
+</mapper>

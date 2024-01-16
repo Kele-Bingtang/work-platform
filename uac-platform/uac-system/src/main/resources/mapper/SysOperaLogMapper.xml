@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.youngkbt.uac.sys.mapper.SysOperaLogMapper">
+
+    <resultMap id="BaseResultMap" type="cn.youngkbt.uac.sys.model.po.SysOperaLog">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="operaId" column="opera_id" jdbcType="VARCHAR"/>
+            <result property="businessType" column="business_type" jdbcType="TINYINT"/>
+            <result property="method" column="method" jdbcType="VARCHAR"/>
+            <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+            <result property="operatorType" column="operator_type" jdbcType="TINYINT"/>
+            <result property="operaName" column="opera_name" jdbcType="VARCHAR"/>
+            <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+            <result property="operaUrl" column="opera_url" jdbcType="VARCHAR"/>
+            <result property="operaIp" column="opera_ip" jdbcType="VARCHAR"/>
+            <result property="operaLocation" column="opera_location" jdbcType="VARCHAR"/>
+            <result property="operaParam" column="opera_param" jdbcType="VARCHAR"/>
+            <result property="jsonResult" column="json_result" jdbcType="VARCHAR"/>
+            <result property="errorMsg" column="error_msg" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="costTime" column="cost_time" jdbcType="INTEGER"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+            <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="menuId" column="menu_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,opera_id,business_type,
+        method,request_method,operator_type,
+        opera_name,dept_name,opera_url,
+        opera_ip,opera_location,opera_param,
+        json_result,error_msg,status,
+        create_time,cost_time,tenant_id,
+        app_id,menu_id
+    </sql>
+</mapper>

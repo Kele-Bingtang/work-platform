@@ -1,0 +1,96 @@
+# 项目相关配置
+uac:
+  # 名称
+  name: work-uac
+  # 版本
+  version: 1.0.0
+  # 版权年份
+  copyrightYear: 2023
+
+server:
+  port: 8090
+  servlet:
+    # 应用的访问路径
+    context-path: /
+    
+spring:
+  application:
+    name: ${uac.name} # 项目名
+  profiles:
+    active: dev # 运行环境
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 10MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss    
+  jackson:
+    # 日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      # 格式化输出
+      indent_output: false
+      # 忽略无法转换的对象
+      fail_on_empty_beans: false
+    deserialization:
+      # 允许对象忽略 json 中不存在的属性
+      fail_on_unknown_properties: false
+      
+      
+mybatis-plus:
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  scanPackage: cn.youngkbt.**.mapper
+
+# springdoc 配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+  info:
+    title: UAC 平台
+    description: 提供管理后台、用户 App 的所有功能
+    version: ${uac.version}
+
+# 用户配置
+login:
+  fail:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
+    
+# 全局线程池相关配置
+thread-pool:
+  # 是否开启线程池
+  enabled: false
+  # 队列最大长度
+  queueCapacity: 128
+  # 线程池维护线程所允许的空闲时间
+  keepAliveSeconds: 300
+  
+# 多租户配置
+tenant:
+  enable: true
+  excludes-table:
+    - t_role_dept_link
+    - t_role_group_link
+    - t_role_group_menu_link
+    - t_role_menu_link
+    - t_user_group_link
+    - t_user_group_role_group_link
+    - t_user_group_role_link
+    - t_user_post_link
+    - t_user_role_group_link
+    - t_user_role_link
+    - t_sys_client
+    - t_sys_menu
+    - t_sys_role
+    - t_sys_role_group
+    - sys_tenant

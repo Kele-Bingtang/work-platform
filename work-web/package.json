@@ -1,0 +1,98 @@
+{
+  "name": "work-platform-web",
+  "version": "0.0.1",
+  "private": true,
+  "packageManager": "pnpm@8.5.1",
+  "workspaces": [
+    "packages/*",
+    "docs",
+    "uac"
+  ],
+  "scripts": {
+    "uac": "pnpm -C uac",
+    "cloc": "NODE_OPTIONS=--max-old-space-size=4096 cloc . --exclude-dir=node_modules",
+    "clean:cache": "rm -rf node_modules && rm -rf .eslintcache && yarn install",
+    "prepare": "husky install",
+    "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",
+    "lint:stylelint": "stylelint \"**/*.{vue,css,scss,postcss,less}\" --fix",
+    "lint:prettier": "prettier --write  \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\"",
+    "lint:eslint": "eslint --max-warnings 0  \"{src,mock,build}/**/*.{vue,js,ts,tsx}\" --fix",
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:stylelint",
+    "release": "standard-version",
+    "commit": "git add . && git-cz && git push"
+  },
+  "browserslist": [
+    "> 1%",
+    "not ie 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "work": "workspace:*",
+    "@work/components": "workspace:*",
+    "@work/constants": "workspace:*",
+    "@work/directives": "workspace:*",
+    "@work/hooks": "workspace:*",
+    "@work/utils": "workspace:*",
+    "@work/i18n": "workspace:*",
+    "@work/request": "workspace:*",
+    "@work/styles": "workspace:*",
+    "@work/static": "workspace:*"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
+    "@rushstack/eslint-patch": "^1.3.3",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "@vue/tsconfig": "^0.4.0",
+    "rimraf": "^5.0.1",
+    "autoprefixer": "^10.4.14",
+    "cloc": "^2.11.0",
+    "commitizen": "^4.3.0",
+    "cssnano": "^6.0.1",
+    "cz-git": "^1.7.0",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.46.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.27",
+    "postcss-html": "^1.5.0",
+    "postcss-import": "^15.1.0",
+    "postcss-scss": "^4.0.7",
+    "prettier": "^3.0.0",
+    "rollup-plugin-visualizer": "^5.9.2",
+    "sass": "^1.64.2",
+    "standard-version": "^9.5.0",
+    "stylelint": "^15.10.2",
+    "stylelint-config-html": "^1.1.0",
+    "stylelint-config-recess-order": "^4.3.0",
+    "stylelint-config-recommended-scss": "^12.0.0",
+    "stylelint-config-recommended-vue": "^1.5.0",
+    "stylelint-config-standard": "^34.0.0",
+    "stylelint-config-standard-scss": "^10.0.0",
+    "typescript": "~5.1.6"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "vite"
+      ]
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  },
+  "standard-version": {
+    "skip": {
+      "bump": true,
+      "commit": true,
+      "tag": true
+    }
+  }
+}

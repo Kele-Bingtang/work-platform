@@ -1,0 +1,41 @@
+import http from "@/config/request";
+
+export namespace Auth {
+  export interface LoginBody {
+    tenantId: string;
+    appId: string;
+    username: string;
+    password: string;
+    grantType: string;
+  }
+
+  export interface LoginResponse {
+    accessToken: string;
+    refreshToken: string;
+    expireIn: number;
+    refreshExpireIn: number;
+  }
+
+  export interface TenantSelectList {
+    tenantEnabled: boolean;
+    tenantSelectList: TenantSelect[];
+  }
+
+  export interface TenantSelect {
+    tenantId: string;
+    tenantName: string;
+    domain: string;
+  }
+}
+
+export const login = (loginBody: Auth.LoginBody) => {
+  return http.post<http.Response<Auth.LoginResponse>>("/auth/login", loginBody);
+};
+
+export const getTenantSelectList = () => {
+  return http.get<http.Response<Auth.TenantSelectList>>("/auth/tenant/list");
+};
+
+export const getUserInfo = () => {
+  return http.get<http.Response<any>>("/auth/getUserInfo");
+};

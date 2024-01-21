@@ -28,5 +28,7 @@ public interface SysUserService extends IService<SysUser> {
 
     Boolean updateOne(SysUserDto sysUserDto);
 
+    Boolean updateOneByUserId(SysUserDto sysUserDto);
+
     Boolean removeOne(List<Long> ids);
 }

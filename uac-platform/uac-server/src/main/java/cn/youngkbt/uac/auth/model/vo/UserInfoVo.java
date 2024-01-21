@@ -1,6 +1,10 @@
 package cn.youngkbt.uac.auth.model.vo;
 
+import cn.youngkbt.uac.sys.model.bo.LoginUserBo;
 import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -8,5 +12,19 @@ import lombok.Data;
  * @note
  */
 @Data
+@Accessors(chain = true)
 public class UserInfoVo {
+    /**
+     * 用户基本信息
+     */
+    private LoginUserBo user;
+    /**
+     * 菜单权限
+     */
+    private Set<String> permissions;
+
+    /**
+     * 角色权限
+     */
+    private Set<String> roles;
 }

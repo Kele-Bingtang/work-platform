@@ -81,6 +81,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    public Boolean updateOneByUserId(SysUserDto sysUserDto) {
+        SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
+        return baseMapper.update(sysUser, Wrappers.<SysUser>lambdaUpdate()
+                .eq(SysUser::getUserId, sysUserDto.getUserId())) > 0;
+    }
+
+    @Override
     public Boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }

@@ -5,15 +5,19 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysLoginLogMapper;
+import cn.youngkbt.uac.sys.model.dto.SysUserDto;
 import cn.youngkbt.uac.sys.model.po.SysLoginLog;
 import cn.youngkbt.uac.sys.service.SysLoginLogService;
+import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.ServletUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -24,9 +28,13 @@ import java.util.Date;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLoginLog> implements SysLoginLogService {
+    
+    private final SysUserService sysUserService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void recordLoginLog(LoginInfoEvent loginInfoEvent) {
         HttpServletRequest request = loginInfoEvent.getRequest();
         // 获取 IP
@@ -58,6 +66,16 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         } else if (loginInfoEvent.getStatus().equals(AuthConstant.LOGIN_FAIL)) {
             loginLog.setStatus(0);
         }
+        
+        baseMapper.insert(loginLog);
+        
+        // 更新用户的登录记录
+        SysUserDto sysUserDto = new SysUserDto();
+        sysUserDto.setUserId(loginInfoEvent.getUserId())
+                .setLoginIp(clientIp)
+                .setLoginDate(new Date());
+        
+        sysUserService.updateOneByUserId(sysUserDto);
     }
 }
 

@@ -30,16 +30,16 @@ import java.util.*;
 @Component
 public class JwtTokenUtils {
 
-    private static  String AUTHORITIES;
+    public static String AUTHORITIES;
     /**
      * 密钥，自定义，根据密钥生成 token，或还原 token
      */
-    private static String SECRET_KEY;
+    public static String SECRET_KEY;
     /**
      * 有效期 12 小时：12 * 60 * 60 * 1000
      */
-    private static long EXPIRE_TIME;
-    
+    public static long EXPIRE_TIME;
+
     public JwtTokenUtils(@Value("${jwt-token.authorities:authorities}") String authorities, @Value("${jwt.secret:work-uac-platform-abcdefghijklmnopqrstuvwxyz}") String secretKey,
                          @Value("${jwt.expire-time:#{12 * 60 * 60 * 1000}}") Long expireTime) {
         JwtTokenUtils.AUTHORITIES = authorities;
@@ -286,5 +286,5 @@ public class JwtTokenUtils {
         JwtProperties jwtProperties = SpringHelper.getBean(JwtProperties.class);
         return jwtProperties.getExpireTime();
     }
-    
+
 }

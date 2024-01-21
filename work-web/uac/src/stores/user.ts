@@ -4,7 +4,7 @@ import { removeCacheToken, setCacheToken } from "@/utils/cache";
 import { useRoutes } from "@/hooks/useRoutes";
 import { resetRouter } from "@/router";
 import { useLayoutStore } from "./layout";
-import { getUserInfo, login, type LoginBody } from "@/api/auth";
+import { getUserInfo, login, type Auth } from "@/api/auth";
 import settings from "@/config/settings";
 
 export const useUserStore = defineStore(
@@ -13,13 +13,21 @@ export const useUserStore = defineStore(
     const token = ref("");
     const userInfo = ref<UserInfo>({
       userId: "",
+      tenantId: "",
+      deptId: "",
       username: "",
+      nickName: "",
+      email: "",
+      phone: "",
       sex: "",
-      roles: [],
+      avatar: "",
+      loginIp: "",
+      loginDate: "",
+      registerTime: "",
     });
     const roles = ref<string[]>([]);
 
-    const tryLogin = async (loginBody: LoginBody) => {
+    const tryLogin = async (loginBody: Auth.LoginBody) => {
       const res = await login(loginBody);
       const token = res.data.accessToken;
       setCacheToken(token);
@@ -40,9 +48,9 @@ export const useUserStore = defineStore(
 
     const tryGetUserInfo = async () => {
       const res = await getUserInfo();
-      const roles = res.roles || ["admin"];
+      const roles = res.data.roles || ["admin"];
       setRoles(roles);
-      setUserInfo(res);
+      setUserInfo(res.data.user);
       return roles;
     };
 

@@ -89,6 +89,19 @@ public class ServletUtil extends JakartaServletUtil {
         return ((ServletRequestAttributes) requestAttributes).getRequest();
     }
 
+    /**
+     * 获取响应
+     *
+     * @return HttpServletRequest
+     */
+    public static HttpServletResponse getResponse() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (!(requestAttributes instanceof ServletRequestAttributes)) {
+            return null;
+        }
+        return ((ServletRequestAttributes) requestAttributes).getResponse();
+    }
+
     public static String getUserAgent() {
         HttpServletRequest request = getRequest();
         if (request == null) {

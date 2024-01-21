@@ -56,6 +56,7 @@ public class SecurityUtils {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // 生成令牌并返回给客户端 
         token.setAccessToken(Objects.nonNull(expireTime) ? JwtTokenUtils.generateToken(authentication, expireTime) : JwtTokenUtils.generateToken(authentication));
+        token.setAuthentication(authentication);
         return token;
     }
 
@@ -109,7 +110,7 @@ public class SecurityUtils {
             if (principal instanceof UserDetails userdetails) {
                 username = userdetails.getUsername();
             } else {
-                return String.valueOf(authentication);
+                return String.valueOf(authentication.getPrincipal());
             }
         }
         return username;
@@ -127,6 +128,14 @@ public class SecurityUtils {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
+    public static Object getPrincipal() {
+        Authentication authentication = getAuthentication();
+        if (Objects.nonNull(authentication)) {
+            return authentication.getPrincipal();
+        }
+        return null;
+    }
+
     public static String getTenantId() {
         // username 实际由 TenantID + username 组成
         String username = SecurityUtils.getUsername();
@@ -134,6 +143,19 @@ public class SecurityUtils {
             String[] split = username.split(":");
             if (split.length == 2) {
                 return split[0];
+            }
+            return null;
+        }
+        return null;
+    }
+
+    public static String getUserKey() {
+        // username 实际由 TenantID + username 组成
+        String username = SecurityUtils.getUsername();
+        if (Objects.nonNull(username)) {
+            String[] split = username.split(":");
+            if (split.length == 2) {
+                return split[1];
             }
             return null;
         }

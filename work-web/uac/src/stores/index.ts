@@ -1,3 +1,4 @@
+import type { Auth } from "@/api/auth";
 import type { IconifyIcon } from "@iconify/vue";
 import type { Component } from "vue";
 
@@ -74,16 +75,7 @@ export interface SettingsState {
   headerTheme: LayoutThemeType; // 是否开启灰色模式
 }
 // UserState
-export interface UserInfo {
-  userId: string; // 用户 ID
-  username: string; // 用户名
-  sex: string; // 用户性别
-  email?: string; // 用户邮箱
-  phone?: string; // 用户联系方式
-  avatar?: string; // 用户头像
-  roles: string[]; // 用户角色
-  registerTime?: string; // 用户角色
-}
+export type UserInfo = Auth.LoginUserInfo;
 
 export interface UserState {
   token: string; // 用户的认证 token

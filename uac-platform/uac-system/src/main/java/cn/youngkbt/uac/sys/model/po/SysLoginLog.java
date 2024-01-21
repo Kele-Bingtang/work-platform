@@ -17,7 +17,7 @@ import java.util.Date;
  * @date 2023-22-12 00:22:36
  * @note 操作日志记
 */
-@TableName("t_sys_login_info")
+@TableName("t_sys_login_log")
 @Data
 @Builder
 @AllArgsConstructor

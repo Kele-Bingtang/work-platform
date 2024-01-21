@@ -149,7 +149,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Response<Object> handleError(Throwable e) {
-        log.error("服务器异常：{}", e.getMessage());
+        log.error("服务器异常：{}", Objects.nonNull(e.getMessage()) ? e.getMessage() : e.getCause().getMessage());
         // 发送服务异常事件
         return HttpResult.error(ResponseStatusEnum.INTERNAL_SERVER_ERROR, (Objects.isNull(e.getMessage()) ? ResponseStatusEnum.INTERNAL_SERVER_ERROR.getMessage() : e.getMessage()));
     }
@@ -159,7 +159,9 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Response<Object> defaultExceptionHandler(Throwable e) {
-        log.error("服务器异常：{}", e.getMessage());
+        // log.error("服务器异常：{}", Objects.nonNull(e.getMessage()) ? e.getMessage() : e.getCause().getMessage());
+        // 本地调式，知道在哪里发生异常
+        log.error("服务器异常", e);
         if (StringUtils.hasText(e.getMessage())) {
             return HttpResult.errorMessage(e.getMessage());
         } else if (StringUtils.hasText(e.getCause().getMessage())) {

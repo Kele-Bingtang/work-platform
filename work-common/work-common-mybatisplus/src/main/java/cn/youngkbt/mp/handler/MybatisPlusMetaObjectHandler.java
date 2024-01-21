@@ -36,8 +36,8 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
 
         fillValIfNullByName("createTime", now, metaObject, false);
         fillValIfNullByName("updateTime", now, metaObject, false);
-        fillValIfNullByName("createBy", getUser().getUserName(), metaObject, false);
-        fillValIfNullByName("updateBy", getUser().getUserName(), metaObject, false);
+        fillValIfNullByName("createBy", getUser().getUsername(), metaObject, false);
+        fillValIfNullByName("updateBy", getUser().getUsername(), metaObject, false);
         fillValIfNullByName("createById", getUser().getUserId(), metaObject, false);
         fillValIfNullByName("updateById", getUser().getUserId(), metaObject, false);
         fillValIfNullByName("isDeleted", MyBatisDefaultConstants.DEFAULT_DELETED, metaObject, false);
@@ -62,7 +62,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
                 if (fieldValueFill.value().equals(ValueStrategy.UUID)) {
                     fillValIfNullByName(field.getName(), IdsUtil.simpleUUID(), metaObject, false);
                 } else if (fieldValueFill.value().equals(ValueStrategy.SNOWFLAKE)) {
-                    fillValIfNullByName(field.getName(), IdWorker.getId(), metaObject, false);
+                    fillValIfNullByName(field.getName(), String.valueOf(IdWorker.getId()), metaObject, false);
                 }
             }
         }
@@ -100,6 +100,6 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
      * @return 当前用户名
      */
     private SysUserBO getUser() {
-        return (SysUserBO) SecurityUtils.getAuthentication();
+        return (SysUserBO) SecurityUtils.getPrincipal();
     }
 }

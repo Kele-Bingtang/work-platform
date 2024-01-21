@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.redis.utils.RedisUtil;
 import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.model.dto.LoginUserDto;
@@ -11,6 +12,8 @@ import cn.youngkbt.uac.auth.model.vo.LoginVo;
 import cn.youngkbt.uac.auth.model.vo.TenantSelectVo;
 import cn.youngkbt.uac.auth.model.vo.UserInfoVo;
 import cn.youngkbt.uac.auth.service.LoginService;
+import cn.youngkbt.uac.core.constant.AuthRedisConstant;
+import cn.youngkbt.uac.sys.model.bo.LoginUserBo;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDto;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import cn.youngkbt.uac.sys.model.po.SysClient;
@@ -25,7 +28,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -123,12 +125,17 @@ public class AuthController {
      */
     @GetMapping("/getUserInfo")
     public Response<UserInfoVo> getUserInfo() {
-        // 获取登录的用户信息
-        Authentication authentication = SecurityUtils.getAuthentication();
-        if("anonymousUser".equals(authentication.getPrincipal())) {
+        if("anonymousUser".equals(SecurityUtils.getPrincipal())) {
             return HttpResult.failMessage("您没有登录！");
         }
-        return null;
+        // 获取登录的用户信息
+        LoginUserBo loginUserBo = (LoginUserBo) RedisUtil.getForValue(AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
+        UserInfoVo userInfoVo = new UserInfoVo();
+
+        userInfoVo.setUser(loginUserBo)
+                .setRoles(null)
+                .setPermissions(null);
+        return HttpResult.ok(userInfoVo);
     }
 
     @GetMapping("/test")

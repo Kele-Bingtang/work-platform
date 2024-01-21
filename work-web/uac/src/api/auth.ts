@@ -26,6 +26,27 @@ export namespace Auth {
     tenantName: string;
     domain: string;
   }
+
+  export interface UserInfo {
+    user: LoginUserInfo;
+    permissions: string[];
+    roles: string[];
+  }
+
+  export interface LoginUserInfo {
+    userId: string;
+    tenantId: string;
+    deptId: string;
+    username: string;
+    nickName: string;
+    email: string;
+    phone: string;
+    sex: string;
+    avatar: string;
+    loginIp: string;
+    loginDate: string;
+    registerTime: string;
+  }
 }
 
 export const login = (loginBody: Auth.LoginBody) => {
@@ -37,5 +58,5 @@ export const getTenantSelectList = () => {
 };
 
 export const getUserInfo = () => {
-  return http.get<http.Response<any>>("/auth/getUserInfo");
+  return http.get<http.Response<Auth.UserInfo>>("/auth/getUserInfo");
 };

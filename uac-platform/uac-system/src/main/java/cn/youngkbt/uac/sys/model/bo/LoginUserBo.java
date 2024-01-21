@@ -1,21 +1,19 @@
-package cn.youngkbt.mp.base;
+package cn.youngkbt.uac.sys.model.bo;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import cn.youngkbt.mp.base.SysUserBO;
+import io.github.linpeilie.annotations.AutoMapper;
+import lombok.Data;
 
-import java.util.Collection;
 import java.util.Date;
 
 /**
  * @author Kele-Bingtang
- * @date 2023/11/16 0:52
+ * @date 2024/1/21 23:10
  * @note
  */
-@Setter
-@Getter
-public class SysUserBO extends User {
+@Data
+@AutoMapper(target = SysUserBO.class)
+public class LoginUserBo {
     /**
      * 用户ID
      */
@@ -75,10 +73,4 @@ public class SysUserBO extends User {
      * 注册时间
      */
     private Date registerTime;
-
-
-    public SysUserBO(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
-        this.username = username;
-    }
 }

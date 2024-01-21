@@ -1,5 +1,6 @@
 package cn.youngkbt.redis.config;
 
+import cn.youngkbt.redis.utils.RedisUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +37,9 @@ public class RedisTemplateConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        return initRedisTemplate(new RedisTemplate<>());
+        RedisTemplate<String, Object> redisTemplate = initRedisTemplate(new RedisTemplate<>());
+        RedisUtil.init(redisTemplate);
+        return redisTemplate;
     }
 
     /**
@@ -51,7 +54,7 @@ public class RedisTemplateConfig {
         redisTemplate.setEnableTransactionSupport(true);
         return redisTemplate;
     }
-
+    
     public <T> RedisTemplate<String, T> initRedisTemplate(RedisTemplate<String, T> redisTemplate) {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 

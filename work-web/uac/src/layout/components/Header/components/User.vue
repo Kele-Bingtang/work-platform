@@ -7,7 +7,7 @@
             <el-image :src="defaultAvatar" alt="头像" />
           </template>
         </el-image>
-        <span class="username">{{ user.username }}</span>
+        <span class="username">{{ user.nickName }}</span>
       </template>
 
       <el-icon><ArrowDownBold /></el-icon>

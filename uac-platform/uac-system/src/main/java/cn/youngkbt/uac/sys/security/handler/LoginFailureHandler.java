@@ -27,7 +27,7 @@ import java.io.PrintWriter;
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
         // 判断异常类型
         BaseCommonEnum authErrorCodeEnum = AuthErrorCodeEnum.LOGIN_FAIL;
         if (exception instanceof AccountExpiredException) {
@@ -62,7 +62,12 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         // 设置客户端响应编码格式
         response.setContentType("application/json;charset=UTF-8");
         // 获取输出流
-        PrintWriter writer = response.getWriter();
+        PrintWriter writer = null;
+        try {
+            writer = response.getWriter();
+        } catch (IOException e) {
+            log.error("获取输出流失败：{}", e.getMessage());
+        }
         // 将错误信息转换成 JSON
         writer.println(JacksonUtil.toJsonStr(HttpResult.response(null, authErrorCodeEnum)));
         writer.flush();

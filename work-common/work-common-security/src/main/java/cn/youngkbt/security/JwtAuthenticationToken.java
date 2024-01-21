@@ -3,6 +3,7 @@ package cn.youngkbt.security;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serial;
@@ -23,6 +24,7 @@ public class JwtAuthenticationToken extends UsernamePasswordAuthenticationToken 
 
     private String accessToken;
     private String refreshToken;
+    private Authentication authentication;
 
     public JwtAuthenticationToken(Object principal, Object credentials) {
         super(principal, credentials);

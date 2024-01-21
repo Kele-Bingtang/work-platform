@@ -50,6 +50,7 @@ public class SecurityUtils {
         JwtAuthenticationToken token = new JwtAuthenticationToken(username, password);
         // token 存入 request 的相关信息
         token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        // 取代 org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.attemptAuthentication() 的 this.getAuthenticationManager().authenticate(authRequest) 方法
         // 执行登录认证过程，获取调用 UserDetailsServiceImpl 的 loadUserByUsername 方法
         Authentication authentication = authenticationManager.authenticate(token);
         // 认证成功存储认证信息到上下文

@@ -1,7 +1,9 @@
 package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.uac.sys.model.vo.SysDictDataVo;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,6 +15,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_dict_data")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = SysDictDataVo.class, reverseConvertGenerate = false)
 public class SysDictData extends BaseDO {
     /**
      * 字典标签

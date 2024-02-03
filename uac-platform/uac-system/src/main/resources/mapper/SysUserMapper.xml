@@ -43,8 +43,8 @@
     </sql>
     
     
-    <select id="selectTenantUserByUsername" resultType="cn.youngkbt.mp.base.SysUserBO"></select>
+    <select id="selectTenantUserByUsername" resultType="cn.youngkbt.security.domain.SecurityUser"></select>
     
     
-    <select id="selectUserByUsername" resultType="cn.youngkbt.mp.base.SysUserBO"></select>
+    <select id="selectUserByUsername" resultType="cn.youngkbt.security.domain.SecurityUser"></select>
 </mapper>

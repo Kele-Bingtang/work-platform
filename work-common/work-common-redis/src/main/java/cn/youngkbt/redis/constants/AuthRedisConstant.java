@@ -1,4 +1,4 @@
-package cn.youngkbt.uac.core.constant;
+package cn.youngkbt.redis.constants;
 
 /**
  * @author Kele-Bingtang

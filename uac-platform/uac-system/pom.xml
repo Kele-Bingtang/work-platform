@@ -24,7 +24,7 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>cn.youngkbt.work</groupId>
+            <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-security</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -39,7 +39,7 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>cn.youngkbt.work</groupId>
+            <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-doc</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -48,12 +48,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.youngkbt.work</groupId>
+            <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-mybatisplus</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>cn.youngkbt.work</groupId>
+            <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-redis</artifactId>
             <version>1.0.0</version>
         </dependency>

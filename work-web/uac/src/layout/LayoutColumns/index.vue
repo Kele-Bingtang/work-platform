@@ -80,7 +80,7 @@ watch(
     const item = menuList.value.filter(
       item => route.path === item.path || `/${route.path.split("/")[1]}` === item.path
     );
-    if (item[0].children?.length) return (menuItem.value = item[0].children);
+    if (item[0]?.children?.length) return (menuItem.value = item[0].children);
     menuItem.value = [];
   },
   {

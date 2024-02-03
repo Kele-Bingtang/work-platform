@@ -23,5 +23,7 @@ public interface SysDictDataService extends IService<SysDictData> {
 
     Boolean updateOne(SysDictDataDto sysDictDataDto);
 
+    Boolean updateDictCode(String oldDictCode, String newDictCodeS);
+
     Boolean removeOne(List<Long> ids);
 }

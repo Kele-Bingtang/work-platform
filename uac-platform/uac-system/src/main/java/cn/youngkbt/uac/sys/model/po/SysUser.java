@@ -3,9 +3,11 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.uac.sys.model.vo.SysUserVo;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,10 +17,11 @@ import java.util.Date;
  * @author Kele-Bingtang
  * @date 2023-27-12 00:27:03
  * @note 用户信息
-*/
+ */
 @TableName("t_sys_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = SysUserVo.class, reverseConvertGenerate = false)
 public class SysUser extends BaseDO {
     /**
      * 用户 ID
@@ -96,5 +99,5 @@ public class SysUser extends BaseDO {
      * 部门 ID
      */
     private String deptId;
-
+    
 }

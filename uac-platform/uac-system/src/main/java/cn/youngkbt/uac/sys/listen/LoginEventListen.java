@@ -5,7 +5,7 @@ import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.redis.utils.RedisUtil;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.constant.AuthConstant;
-import cn.youngkbt.uac.core.constant.AuthRedisConstant;
+import cn.youngkbt.redis.constants.AuthRedisConstant;
 import cn.youngkbt.uac.core.exception.AuthException;
 import cn.youngkbt.uac.sys.service.SysLoginLogService;
 import cn.youngkbt.utils.ServletUtil;

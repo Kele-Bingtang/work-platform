@@ -1,4 +1,4 @@
-package cn.youngkbt.mp.base;
+package cn.youngkbt.security.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @Setter
 @Getter
-public class SysUserBO extends User {
+public class SecurityUser extends User {
     /**
      * 用户ID
      */
@@ -76,8 +76,7 @@ public class SysUserBO extends User {
      */
     private Date registerTime;
 
-
-    public SysUserBO(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
         this.username = username;
     }

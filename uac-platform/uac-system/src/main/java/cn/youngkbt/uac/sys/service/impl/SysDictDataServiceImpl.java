@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -36,6 +37,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     public List<SysDictDataVo> queryListWithPage(SysDictDataDto sysDictDataDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictData> wrapper = Wrappers.<SysDictData>lambdaQuery()
                 .eq(Objects.nonNull(sysDictDataDto.getDictSort()), SysDictData::getDictSort, sysDictDataDto.getDictSort())
+                .eq(StringUtils.hasText(sysDictDataDto.getDictLabel()), SysDictData::getDictLabel, sysDictDataDto.getDictCode())
+                .eq(StringUtils.hasText(sysDictDataDto.getAppId()), SysDictData::getAppId, sysDictDataDto.getAppId())
                 .eq(StringUtils.hasText(sysDictDataDto.getDictCode()), SysDictData::getDictCode, sysDictDataDto.getDictCode())
                 .orderByAsc(SysDictData::getDictSort);
 
@@ -55,9 +58,18 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     }
 
     @Override
+    @Transactional
     public Boolean updateOne(SysDictDataDto sysDictDataDto) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDto, SysDictData.class);
         return baseMapper.updateById(sysDictData) > 0;
+    }
+
+    @Override
+    public Boolean updateDictCode(String oldDictCode, String newDictCode) {
+        SysDictData sysDictData = new SysDictData();
+        sysDictData.setDictCode(newDictCode);
+        return baseMapper.update(sysDictData, Wrappers.<SysDictData>lambdaUpdate()
+                .eq(SysDictData::getDictCode, oldDictCode)) > 1;
     }
 
     @Override

@@ -25,7 +25,7 @@ public class JwtAuthenticationToken extends UsernamePasswordAuthenticationToken 
     private String accessToken;
     private String refreshToken;
     private Authentication authentication;
-
+    
     public JwtAuthenticationToken(Object principal, Object credentials) {
         super(principal, credentials);
     }

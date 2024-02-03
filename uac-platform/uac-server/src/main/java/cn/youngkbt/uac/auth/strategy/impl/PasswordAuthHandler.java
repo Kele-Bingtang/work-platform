@@ -1,18 +1,17 @@
 package cn.youngkbt.uac.auth.strategy.impl;
 
 import cn.youngkbt.core.validate.AuthGroup;
-import cn.youngkbt.redis.utils.RedisUtil;
 import cn.youngkbt.security.JwtAuthenticationToken;
+import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.enumeration.AuthGrantTypeEnum;
 import cn.youngkbt.security.utils.JwtTokenUtils;
 import cn.youngkbt.security.utils.SecurityUtils;
+import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.strategy.AuthHandler;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
-import cn.youngkbt.uac.core.constant.AuthRedisConstant;
 import cn.youngkbt.uac.sys.listen.LoginEventListen;
-import cn.youngkbt.uac.sys.model.bo.LoginUserBo;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.security.handler.LoginFailureHandler;
 import cn.youngkbt.uac.sys.security.handler.LoginSuccessHandler;
@@ -26,7 +25,6 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.Objects;
 
 /**
@@ -59,14 +57,14 @@ public class PasswordAuthHandler implements AuthHandler {
         // 检查用户是否被锁定登录
         loginEventListen.checkLogin(loginUserBO);
 
-        JwtAuthenticationToken token = null;
+        JwtAuthenticationToken token = new JwtAuthenticationToken(null, null);
         try {
             token = SecurityUtils.login(ServletUtil.getRequest(),
                     TenantHelper.isEnable() ? loginUserBO.getTenantId() + ":" + loginUserBO.getUsername() : loginUserBO.getUsername(),
                     loginUserBO.getPassword(),
                     authenticationManager,
                     sysClient.getTimeout());
-            
+
             // 走了自定义认证，则 Spring Security 不会调用自定义的成功处理器，这里需要手动调用
             // 参考 org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter()
             loginSuccessHandler.onAuthenticationSuccess(null, null, token.getAuthentication());
@@ -89,8 +87,8 @@ public class PasswordAuthHandler implements AuthHandler {
         loginSuccessBO.setExpireIn(timeout);
 
         // 用户基本信息存入 Redis
-        LoginUserBo loginUserBo = MapstructUtil.convert(token.getAuthentication().getPrincipal(), LoginUserBo.class);
-        RedisUtil.setForValue(AuthRedisConstant.USER_INFO_KEY + loginUserBo.getUsername(), loginUserBo, Duration.ofMillis(timeout));
+        LoginUser loginUser = MapstructUtil.convert(token.getAuthentication().getPrincipal(), LoginUser.class);
+        UacHelper.cacheUserInfo(loginUser, timeout);
         return loginSuccessBO;
     }
 }

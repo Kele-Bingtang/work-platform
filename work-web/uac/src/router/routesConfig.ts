@@ -123,4 +123,96 @@ export const rolesRoutes: RouterConfigRaw[] = [
       icon: HomeFilled,
     },
   },
+  {
+    path: "/system-manage",
+    name: "SystemManage",
+    meta: {
+      title: "系统管理",
+      icon: HomeFilled,
+    },
+    children: [
+      {
+        path: "/tenant-manage",
+        name: "TenantManage",
+        component: "/tenant/index",
+        meta: {
+          title: "租户管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "/user-manage",
+        name: "UserManage",
+        component: "/user/index",
+        meta: {
+          title: "用户管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "/role-manage",
+        name: "RoleManage",
+        component: "/home/index",
+        meta: {
+          title: "角色管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "/dept-manage",
+        name: "DeptManage",
+        component: "/home/index",
+        meta: {
+          title: "部门管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "/post-manage",
+        name: "PostManage",
+        component: "/home/index",
+        meta: {
+          title: "岗位管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "/dict-manage",
+        name: "DictManage",
+        component: "/dict/index",
+        meta: {
+          title: "字典管理",
+          icon: HomeFilled,
+        },
+      },
+    ],
+  },
+  {
+    path: "/application-manage",
+    name: "ApplicationManage",
+    meta: {
+      title: "应用管理",
+      icon: HomeFilled,
+    },
+    children: [
+      {
+        path: "/client-manage",
+        name: "ClientManage",
+        component: "/home/index",
+        meta: {
+          title: "客户端管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "/app-manage",
+        name: "AppManage",
+        component: "/home/index",
+        meta: {
+          title: "App 管理",
+          icon: HomeFilled,
+        },
+      },
+    ],
+  },
 ];

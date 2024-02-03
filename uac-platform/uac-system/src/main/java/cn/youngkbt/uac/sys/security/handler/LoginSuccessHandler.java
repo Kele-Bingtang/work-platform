@@ -2,7 +2,7 @@ package cn.youngkbt.uac.sys.security.handler;
 
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.helper.SpringHelper;
-import cn.youngkbt.mp.base.SysUserBO;
+import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         // 获取当登录用户信息
-        SysUserBO user = (SysUserBO) authentication.getPrincipal();
+        SecurityUser user = (SecurityUser) authentication.getPrincipal();
 
         LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
                 .tenantId(user.getTenantId())

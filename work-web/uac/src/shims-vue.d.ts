@@ -3,7 +3,7 @@ declare module "vue" {
   export interface GlobalComponents {
     Role: typeof import("./components/Permission/role.vue")["default"];
     Auth: typeof import("./components/Permission/auth")["default"];
-    Icon: typeof import("./components/Icon/index.vue")["default"];
+    Icon: typeof import("@work/components/Icon/src/index.vue")["default"];
   }
 
   interface ComponentCustomProperties {

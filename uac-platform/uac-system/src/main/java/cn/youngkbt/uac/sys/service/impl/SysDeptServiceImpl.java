@@ -88,7 +88,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
                 tree.setId(treeNode.getDeptId())
                         .setParentId(treeNode.getParentId())
                         .setName(treeNode.getDeptName())
-                        .setWeight(treeNode.getOrderNum()));
+                        .setWeight(treeNode.getOrderNum())
+                        .putExtra("icon", treeNode.getIcon()));
     }
 
     /**
@@ -159,7 +160,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
                 .eq(SysDept::getDeptName, sysDeptDto.getDeptName())
                 .eq(SysDept::getParentId, sysDeptDto.getParentId())
                 .ne(ObjectUtil.isNotNull(sysDeptDto.getDeptId()), SysDept::getDeptId, sysDeptDto.getDeptId()));
-        
+
         return !exist;
     }
 

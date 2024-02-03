@@ -17,6 +17,11 @@ public class SysUserVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 主键
+     */
+    private Integer id;
+
+    /**
      * 用户 ID
      */
     private String userId;
@@ -30,11 +35,6 @@ public class SysUserVo implements Serializable {
      * 用户昵称
      */
     private String nickname;
-
-    /**
-     * 密码
-     */
-    private String password;
 
     /**
      * 邮箱
@@ -60,6 +60,11 @@ public class SysUserVo implements Serializable {
      * 状态（0 离线 1 在线）
      */
     private Integer userStatus;
+
+    /**
+     * 状态（0 禁用 1 启用）
+     */
+    private Integer status;
 
     /**
      * 头像

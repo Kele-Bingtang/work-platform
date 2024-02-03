@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.security;
 
 import cn.youngkbt.core.constants.ColumnConstant;
-import cn.youngkbt.mp.base.SysUserBO;
+import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.core.exception.AuthException;
 import cn.youngkbt.uac.sys.model.po.SysUser;
@@ -47,20 +47,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new AuthException("用户已被停用");
         }
 
-        SysUserBO sysUserBO = new SysUserBO(user.getUsername(), user.getPassword(), AuthorityUtils.NO_AUTHORITIES);
-        sysUserBO.setUserId(user.getUserId());
-        sysUserBO.setDeptId(user.getDeptId());
-        sysUserBO.setTenantId(user.getTenantId());
-        sysUserBO.setNickName(user.getNickname());
-        sysUserBO.setEmail(user.getEmail());
-        sysUserBO.setPhone(user.getPhone());
-        sysUserBO.setSex(user.getSex());
-        sysUserBO.setAvatar(user.getAvatar());
-        sysUserBO.setRegisterTime(user.getRegisterTime());
-        sysUserBO.setLoginDate(user.getLoginDate());
-        sysUserBO.setLoginIp(user.getLoginIp());
+        SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(), AuthorityUtils.NO_AUTHORITIES);
+        securityUser.setUserId(user.getUserId());
+        securityUser.setDeptId(user.getDeptId());
+        securityUser.setTenantId(user.getTenantId());
+        securityUser.setNickName(user.getNickname());
+        securityUser.setEmail(user.getEmail());
+        securityUser.setPhone(user.getPhone());
+        securityUser.setSex(user.getSex());
+        securityUser.setAvatar(user.getAvatar());
+        securityUser.setRegisterTime(user.getRegisterTime());
+        securityUser.setLoginDate(user.getLoginDate());
+        securityUser.setLoginIp(user.getLoginIp());
         
-        return sysUserBO;
+        return securityUser;
 
         // 用户权限列表，根据用户拥有的权限标识与如 @PreAuthorize("hasAuthority('sys:menu:view')") 标注的接口对比，决定是否可以调用接口
         // List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

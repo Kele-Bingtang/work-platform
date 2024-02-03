@@ -1,4 +1,4 @@
-import { INSTALLER_SYMBOL } from "@kbt-ui/constants";
+import { INSTALLER_SYMBOL } from "@work/constants";
 
 import type { App, Plugin } from "vue";
 

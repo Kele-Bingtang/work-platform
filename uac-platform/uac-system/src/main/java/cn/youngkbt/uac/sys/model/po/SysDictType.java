@@ -1,7 +1,13 @@
 package cn.youngkbt.uac.sys.model.po;
 
+import cn.youngkbt.mp.annotation.FieldValueFill;
+import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.uac.sys.model.vo.SysDictTypeVo;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,10 +19,13 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_dict_type")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = SysDictTypeVo.class, reverseConvertGenerate = false)
 public class SysDictType extends BaseDO {
     /**
-     * 字典主键
+     * 字典 ID
      */
+    @TableField(fill = FieldFill.INSERT)
+    @FieldValueFill(ValueStrategy.SNOWFLAKE)
     private String dictId;
     /**
      * 字典类型

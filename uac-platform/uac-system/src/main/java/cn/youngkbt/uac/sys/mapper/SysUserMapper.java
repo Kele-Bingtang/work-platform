@@ -1,6 +1,6 @@
 package cn.youngkbt.uac.sys.mapper;
 
-import cn.youngkbt.mp.base.SysUserBO;
+import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,9 +12,9 @@ import org.apache.ibatis.annotations.Param;
 */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    SysUserBO selectTenantUserByUsername(@Param("tenantId") String tenantId, @Param("username") String username);
+    SecurityUser selectTenantUserByUsername(@Param("tenantId") String tenantId, @Param("username") String username);
 
-    SysUserBO selectUserByUsername(@Param("username") String username);
+    SecurityUser selectUserByUsername(@Param("username") String username);
 }
 
 

@@ -82,6 +82,7 @@ public class JwtTokenUtils {
      */
     private static String generateToken(Map<String, Object> claims, Long expireTime) {
         Date expirationDate = new Date(System.currentTimeMillis() + expireTime);
+        String tenantId = SecurityUtils.getTenantId();
         String username = SecurityUtils.getUsername();
         return Jwts.builder()
                 .header()
@@ -91,7 +92,7 @@ public class JwtTokenUtils {
                 .claims(claims)
                 .id(IdsUtil.simpleUUID())
                 .expiration(expirationDate)
-                .subject(username)
+                .subject(Objects.isNull(tenantId) ? username : tenantId + ":" + username)
                 .issuer("work-uac")
                 .issuedAt(new Date())
                 .signWith(generateKey(), Jwts.SIG.HS256)
@@ -153,8 +154,8 @@ public class JwtTokenUtils {
             if (claims == null) {
                 return null;
             }
-            String username = claims.getSubject();
-            if (username == null) {
+            String subject = claims.getSubject();
+            if (subject == null) {
                 return null;
             }
             // 如果 token 过期
@@ -170,7 +171,7 @@ public class JwtTokenUtils {
             //         authorities.add(new SimpleGrantedAuthority((String) ((Map) object).get("authority")));
             //     }
             // }
-            authentication = new JwtAuthenticationToken(username, new WebAuthenticationDetailsSource().buildDetails(ServletUtil.getRequest()), authors, token, null);
+            authentication = new JwtAuthenticationToken(subject, new WebAuthenticationDetailsSource().buildDetails(ServletUtil.getRequest()), authors, token, null);
         } else {
             // 如果上下文有用户登录过，则检查是否是当前用户
             if (validateToken(token, SecurityUtils.getUsername())) {

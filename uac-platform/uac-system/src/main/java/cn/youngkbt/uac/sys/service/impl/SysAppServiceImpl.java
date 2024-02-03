@@ -5,6 +5,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysAppMapper;
 import cn.youngkbt.uac.sys.model.dto.SysAppDto;
 import cn.youngkbt.uac.sys.model.po.SysApp;
+import cn.youngkbt.uac.sys.model.vo.SysAppTreeVo;
 import cn.youngkbt.uac.sys.model.vo.SysAppVo;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.utils.MapstructUtil;
@@ -60,6 +61,13 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
         List<SysAppVo> result = MapstructUtil.convert(sysClientList, SysAppVo.class);
         result.forEach(r -> r.setGrantTypeList(List.of(r.getGrantTypes().split(","))));
         return result;
+    }
+
+    @Override
+    public List<SysAppTreeVo> appTreeList() {
+        // TODO 是否分页
+        List<SysApp> sysAppList = baseMapper.selectList(null);
+        return MapstructUtil.convert(sysAppList, SysAppTreeVo.class);
     }
 
     @Override

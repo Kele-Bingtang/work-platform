@@ -3,10 +3,13 @@ package cn.youngkbt.mp.handler;
 import cn.hutool.core.util.StrUtil;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
-import cn.youngkbt.mp.base.SysUserBO;
 import cn.youngkbt.mp.constant.MyBatisDefaultConstants;
+import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.security.utils.SecurityUtils;
+import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.utils.IdsUtil;
+import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -99,7 +103,14 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
      *
      * @return 当前用户名
      */
-    private SysUserBO getUser() {
-        return (SysUserBO) SecurityUtils.getPrincipal();
+    private LoginUser getUser() {
+        LoginUser userInfo = UacHelper.getUserInfo();
+        Object principal = SecurityUtils.getPrincipal();
+
+        if (Objects.isNull(userInfo) && principal instanceof SecurityUser) {
+            return MapstructUtil.convert(principal, LoginUser.class);
+        }
+        
+        return userInfo;
     }
 }

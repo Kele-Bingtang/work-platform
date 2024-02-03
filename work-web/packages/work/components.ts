@@ -1,8 +1,25 @@
 import { Icon } from "@work/components/icon";
-import { ErrorLog } from "@work/components/errorLog";
 import { ImageVerify } from "@work/components/imageVerify";
 import { Pagination } from "@work/components/pagination";
-import { SwitchDark } from "@work/components/switchDark";
 import { Tooltip } from "@work/components/tooltip";
+import { TreeFilter } from "@work/components/treeFilter";
+import { ProForm } from "@work/components/proForm";
+import { ProTable } from "@work/components/proTable";
+import { SearchForm } from "@work/components/searchForm";
+import { Grid } from "@work/components/grid";
+import { WangEditor } from "@work/components/wangEditor";
+import { Drawer } from "@work/components/drawer";
 
-export default [Icon, ErrorLog, ImageVerify, Pagination, SwitchDark, Tooltip];
+export default [
+  Icon,
+  ImageVerify,
+  Pagination,
+  Tooltip,
+  TreeFilter,
+  ProForm,
+  ProTable,
+  SearchForm,
+  Grid,
+  WangEditor,
+  Drawer,
+];

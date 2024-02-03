@@ -67,16 +67,16 @@ interface Settings {
 }
 
 const themeSettings: Partial<Settings> = {
-  title: "kbt-vue3-admin",
+  title: "UAC",
   titleMode: "0",
   layoutMode: LayoutModeType.Vertical,
-  tabsNavMode: TabsNavModeType.Classic,
+  tabsNavMode: TabsNavModeType.Popular,
   showBreadcrumb: true,
   showTabsNav: true,
   showLayoutLogo: true,
   showBreadcrumbIcon: true,
   showTabsNavIcon: false,
-  recordTabsNav: true,
+  recordTabsNav: false,
   isCollapse: false,
   isDark: false,
   isWeak: false,

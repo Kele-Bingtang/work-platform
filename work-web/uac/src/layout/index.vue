@@ -42,5 +42,3 @@ watchEffect(() => setStyleVar("--aside-width", getPx(settingsStore.menuWidth)));
 
 watchEffect(() => setStyleVar("--el-menu-horizontal-height", getPx(settingsStore.headerHeight)));
 </script>
-
-<style lang="scss"></style>

@@ -23,7 +23,7 @@ public class SysDictTypeDto {
     @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
     public Long id;
     /**
-     * 字典主键
+     * 字典 ID
      */
     private String dictId;
     /**

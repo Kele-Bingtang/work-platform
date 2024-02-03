@@ -1,8 +1,7 @@
 package cn.youngkbt.security.utils;
 
-import cn.hutool.core.convert.Convert;
-import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.security.JwtAuthenticationToken;
+import cn.youngkbt.security.domain.SecurityUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -83,38 +82,26 @@ public class SecurityUtils {
     }
 
     /**
-     * 从上下文获取当前用户名：检查是否开启租户模式
-     *
-     * @return 当前用户名
-     */
-    public static String getUsername(boolean checkTenant) {
-        String username = getUsername(getAuthentication());
-        if (Objects.nonNull(username) && checkTenant) {
-            Boolean isStartTenant = Convert.toBool(SpringHelper.getProperty("tenant.enable"), false);
-            if (Boolean.TRUE.equals(isStartTenant)) {
-                String[] split = username.split(":");
-                return split.length == 2 ? split[1] : null;
-            }
-        }
-        return username;
-    }
-
-    /**
      * 从传入的认证信息中获取用户名
      *
      * @return 用户名
      */
     public static String getUsername(Authentication authentication) {
-        String username = null;
         if (authentication != null) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof UserDetails userdetails) {
-                username = userdetails.getUsername();
-            } else {
-                return String.valueOf(authentication.getPrincipal());
+                return userdetails.getUsername();
             }
+
+            // JWT token 可能格式为 tenantId:username
+            String userKey = String.valueOf(authentication.getPrincipal());
+
+            if (userKey.contains(":")) {
+                return userKey.split(":")[1];
+            }
+            return String.valueOf(authentication.getPrincipal());
         }
-        return username;
+        return null;
     }
 
     /**
@@ -138,27 +125,19 @@ public class SecurityUtils {
     }
 
     public static String getTenantId() {
-        // username 实际由 TenantID + username 组成
-        String username = SecurityUtils.getUsername();
-        if (Objects.nonNull(username)) {
-            String[] split = username.split(":");
-            if (split.length == 2) {
-                return split[0];
+        Authentication authentication = getAuthentication();
+        if (authentication != null) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof SecurityUser securityUser) {
+                return securityUser.getTenantId();
             }
-            return null;
-        }
-        return null;
-    }
 
-    public static String getUserKey() {
-        // username 实际由 TenantID + username 组成
-        String username = SecurityUtils.getUsername();
-        if (Objects.nonNull(username)) {
-            String[] split = username.split(":");
-            if (split.length == 2) {
-                return split[1];
+            // JWT token 可能格式为 tenantId:username
+            String userKey = String.valueOf(authentication.getPrincipal());
+            
+            if (userKey.contains(":")) {
+                return userKey.split(":")[0];
             }
-            return null;
         }
         return null;
     }

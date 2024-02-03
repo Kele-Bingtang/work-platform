@@ -5,6 +5,7 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysAppDto;
+import cn.youngkbt.uac.sys.model.vo.SysAppTreeVo;
 import cn.youngkbt.uac.sys.model.vo.SysAppVo;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.uac.sys.service.SysClientService;
@@ -53,6 +54,12 @@ public class SysAppController {
         SysAppDto sysAppDto = SysAppDto.builder().clientId(clientId).build();
         List<SysAppVo> sysAppVoList = sysAppService.queryListWithPage(sysAppDto, pageQuery);
         return HttpResult.ok(sysAppVoList);
+    }
+    
+    @GetMapping("/appTreeList")
+    public Response<List<SysAppTreeVo>> appTreeList() {
+        List<SysAppTreeVo> sysAppTreeVoList = sysAppService.appTreeList();
+        return HttpResult.ok(sysAppTreeVoList);
     }
 
     /**

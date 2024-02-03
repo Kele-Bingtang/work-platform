@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.mp.base.SysUserBO;
+import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserDto;
@@ -16,8 +16,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,13 +36,16 @@ import java.util.Objects;
 @Slf4j
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
+    @Value("${default.password}")
+    private String password;
+
     @Override
-    public SysUserBO selectTenantUserByUsername(String tenantId, String username) {
+    public SecurityUser selectTenantUserByUsername(String tenantId, String username) {
         return baseMapper.selectTenantUserByUsername(tenantId, username);
     }
 
     @Override
-    public SysUserBO selectUserByUsername(String username) {
+    public SecurityUser selectUserByUsername(String username) {
         return baseMapper.selectUserByUsername(username);
     }
 
@@ -55,6 +60,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public List<SysUserVo> queryListWithPage(SysUserDto sysUserDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysUser> wrapper = Wrappers.<SysUser>lambdaQuery()
                 .eq(StringUtils.hasText(sysUserDto.getUserId()), SysUser::getTenantId, sysUserDto.getUserId())
+                .eq(StringUtils.hasText(sysUserDto.getDeptId()), SysUser::getDeptId, sysUserDto.getDeptId())
                 .eq(Objects.nonNull(sysUserDto.getUsername()), SysUser::getUsername, sysUserDto.getUsername())
                 .eq(Objects.nonNull(sysUserDto.getStatus()), SysUser::getStatus, sysUserDto.getStatus())
                 .orderByAsc(SysUser::getId);
@@ -71,6 +77,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public Boolean insertOne(SysUserDto sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
+        sysUser.setRegisterTime(new Date());
+        if (Objects.isNull(sysUser.getPassword())) {
+            sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
+        }
         return baseMapper.insert(sysUser) > 0;
     }
 

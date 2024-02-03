@@ -54,8 +54,8 @@
       "@": ["src"],
       "@/*": ["src/*"]
     },
-    "types": ["element-plus/global", "node"]
+    "types": ["vite/client", "element-plus/global", "node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.mts"],
   "exclude": ["node_modules", "dist", "**/*.js"]
 }

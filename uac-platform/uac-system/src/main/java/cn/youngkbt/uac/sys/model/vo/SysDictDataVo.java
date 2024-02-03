@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -68,5 +69,10 @@ public class SysDictDataVo implements Serializable {
      * 字典编码
      */
     private String dictCode;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 
 }

@@ -1,9 +1,11 @@
 import { defineStore } from "pinia";
 import { setCacheTabNavList, getCacheTabNavList, removeCacheTabNavList } from "@/utils/cache";
-import { DeviceType, type LanguageType, type LayoutSizeType, type TabProp } from "./";
+import { DeviceType, type LanguageType, type LayoutSizeType, type TabProp, type Dict } from "./";
 import { useSettingsStore } from "./settings";
 import defaultSettings from "@/config/settings";
 import type { Frame } from "@/layout/components/FrameLayout/useFrame";
+import { listDictDataByDictCode } from "@/api/dictData";
+import { uacAppSecret } from "work";
 
 export const useLayoutStore = defineStore(
   "layoutStore",
@@ -13,7 +15,8 @@ export const useLayoutStore = defineStore(
     const device = ref(DeviceType.Desktop);
     const layoutSize = ref<LayoutSizeType>(defaultSettings.layoutSize);
     const language = ref(defaultSettings.language);
-    const frameList = ref<Array<Frame>>([]);
+    const frameList = ref<Frame[]>([]);
+    const dictList = ref<Dict>({});
 
     const toggleDevice = (deviceParam: DeviceType) => {
       device.value = deviceParam;
@@ -124,6 +127,13 @@ export const useLayoutStore = defineStore(
       }
     };
 
+    const getDictData = async (dictCode: string) => {
+      if (dictList.value[dictCode]) return dictList.value[dictCode];
+      const res = await listDictDataByDictCode({ dictCode, appId: uacAppSecret });
+      dictList.value[dictCode] = res.data;
+      return res.data;
+    };
+
     const settingsStore = useSettingsStore();
 
     watch(
@@ -168,6 +178,7 @@ export const useLayoutStore = defineStore(
       setKeepAliveName,
       addFrame,
       removeFrame,
+      getDictData,
     };
   },
   {

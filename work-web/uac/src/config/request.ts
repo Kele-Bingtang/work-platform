@@ -67,7 +67,6 @@ class RequestHttp {
         config.params?._type && config.method?.toLocaleLowerCase() === "post" && processParamsType(config);
         config.params?._type === "multi" && processArray(config);
         config.params && delete config.params._type;
-        console.log(userStore.token);
         config.headers.token = userStore.token;
         return config;
       },
@@ -97,7 +96,7 @@ class RequestHttp {
         // 全局错误信息拦截
         if (data.code && data.code !== ResultEnum.SUCCESS) {
           message.error(data.message);
-          return Promise.reject(data);
+          return Promise.reject(data.message);
         }
         return data;
       },

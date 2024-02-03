@@ -94,3 +94,7 @@ tenant:
     - t_sys_role
     - t_sys_role_group
     - sys_tenant
+
+# 默认配置
+default:
+  password: 123456 # 新用户的默认密码

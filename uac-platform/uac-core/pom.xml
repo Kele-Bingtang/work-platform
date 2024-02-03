@@ -19,7 +19,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.youngkbt.work</groupId>
+            <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-core</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -28,7 +28,7 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.youngkbt.work</groupId>
+            <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-security</artifactId>
             <version>1.0.0</version>
         </dependency>

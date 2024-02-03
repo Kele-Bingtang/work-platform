@@ -1,6 +1,6 @@
 package cn.youngkbt.uac.auth.model.vo;
 
-import cn.youngkbt.uac.sys.model.bo.LoginUserBo;
+import cn.youngkbt.security.domain.LoginUser;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -17,7 +17,7 @@ public class UserInfoVo {
     /**
      * 用户基本信息
      */
-    private LoginUserBo user;
+    private LoginUser user;
     /**
      * 菜单权限
      */

@@ -5,4 +5,10 @@ declare namespace http {
     message: string; // 消息
     data: T; // 数据
   }
+
+  interface Page<T> {
+    params: T;
+    pageNum: number; // 页码
+    pageSize: number; // 每页数量
+  }
 }

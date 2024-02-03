@@ -96,3 +96,15 @@ export interface ErrorLog {
   token?: string; // 用户 token
   roles?: string[]; // 用户的角色
 }
+
+export interface Dict {
+  [key: string]: {
+    dictLabel: string; // 字典标签
+    dictValue: string; // 字典键值
+    dictSort: number; // 字典排序
+    cssClass: string; // 样式属性（其他样式扩展）
+    listClass: string; // 表格回显样式
+    isDefault: string; // 是否默认（Y是 N否）
+    dictCode: string; // 字典类型
+  }[];
+}

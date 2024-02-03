@@ -3,8 +3,9 @@ package cn.youngkbt.uac.auth.controller;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
-import cn.youngkbt.redis.utils.RedisUtil;
+import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.utils.SecurityUtils;
+import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.model.dto.LoginUserDto;
 import cn.youngkbt.uac.auth.model.vo.LoginTenantSelectVo;
@@ -12,8 +13,6 @@ import cn.youngkbt.uac.auth.model.vo.LoginVo;
 import cn.youngkbt.uac.auth.model.vo.TenantSelectVo;
 import cn.youngkbt.uac.auth.model.vo.UserInfoVo;
 import cn.youngkbt.uac.auth.service.LoginService;
-import cn.youngkbt.uac.core.constant.AuthRedisConstant;
-import cn.youngkbt.uac.sys.model.bo.LoginUserBo;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDto;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import cn.youngkbt.uac.sys.model.po.SysClient;
@@ -125,14 +124,14 @@ public class AuthController {
      */
     @GetMapping("/getUserInfo")
     public Response<UserInfoVo> getUserInfo() {
-        if("anonymousUser".equals(SecurityUtils.getPrincipal())) {
+        if ("anonymousUser".equals(SecurityUtils.getUsername())) {
             return HttpResult.failMessage("您没有登录！");
         }
         // 获取登录的用户信息
-        LoginUserBo loginUserBo = (LoginUserBo) RedisUtil.getForValue(AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
+        LoginUser loginUser = UacHelper.getUserInfo();
         UserInfoVo userInfoVo = new UserInfoVo();
 
-        userInfoVo.setUser(loginUserBo)
+        userInfoVo.setUser(loginUser)
                 .setRoles(null)
                 .setPermissions(null);
         return HttpResult.ok(userInfoVo);

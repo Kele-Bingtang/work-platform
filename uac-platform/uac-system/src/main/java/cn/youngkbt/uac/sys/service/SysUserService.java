@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.mp.base.SysUserBO;
+import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.dto.SysUserDto;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysUserVo;
@@ -16,9 +16,9 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
-    SysUserBO selectTenantUserByUsername(String tenantId, String username);
+    SecurityUser selectTenantUserByUsername(String tenantId, String username);
 
-    SysUserBO selectUserByUsername(String username);
+    SecurityUser selectUserByUsername(String username);
 
     SysUserVo queryById(Long id);
 

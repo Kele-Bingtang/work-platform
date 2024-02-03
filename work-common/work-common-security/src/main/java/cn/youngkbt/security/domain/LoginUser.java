@@ -1,6 +1,5 @@
-package cn.youngkbt.uac.sys.model.bo;
+package cn.youngkbt.security.domain;
 
-import cn.youngkbt.mp.base.SysUserBO;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
@@ -12,8 +11,8 @@ import java.util.Date;
  * @note
  */
 @Data
-@AutoMapper(target = SysUserBO.class)
-public class LoginUserBo {
+@AutoMapper(target = SecurityUser.class, convertGenerate = false)
+public class LoginUser {
     /**
      * 用户ID
      */

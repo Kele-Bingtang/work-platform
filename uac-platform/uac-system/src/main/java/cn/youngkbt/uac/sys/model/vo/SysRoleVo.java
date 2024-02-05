@@ -35,14 +35,15 @@ public class SysRoleVo implements Serializable {
     private String roleName;
 
     /**
+     * 显示顺序
+     */
+    private Integer orderNum;
+
+    /**
      * 角色介绍
      */
     private String intro;
 
-    /**
-     * 显示顺序
-     */
-    private Integer orderNum;
 
     /**
      * 应用 ID

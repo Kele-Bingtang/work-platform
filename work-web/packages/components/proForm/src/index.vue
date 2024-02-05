@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts" name="ProForm">
-import { computed, shallowRef, ref, provide, watch, isProxy } from "vue";
-import type { FormColumnProps, FormOptionsProps } from "./interface";
+import { computed, shallowRef, ref, provide, watch, isProxy, type ComputedRef } from "vue";
+import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
 
@@ -39,9 +39,9 @@ const setEnumMap = async (column: FormColumnProps) => {
   const formItem = column.formItem;
   if (!attrs.enum) return;
   // 如果当前 enum 为后台数据需要请求数据，则调用该请求接口，并存储到 enumMap
-  if (isProxy(attrs.enum)) return enumMap.value.set(formItem.prop!, attrs.enum.value!);
-  if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop!, attrs.enum!);
-  const data = await attrs.enum();
+  if (isRef(attrs.enum)) return enumMap.value.set(formItem.prop!, (attrs.enum as ComputedRef).value!);
+  if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop!, (attrs.enum as FormEnumProps[])!);
+  const { data } = await attrs.enum(enumMap.value);
   enumMap.value.set(formItem.prop!, data);
 };
 
@@ -53,7 +53,7 @@ const initDefaultValue = (column: FormColumnProps, index: number) => {
   if (attrs?.defaultValue !== undefined && attrs?.defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
     if (form.value[formItem.prop]) return;
-    if (isProxy(attrs.enum)) return (form.value[formItem.prop] = attrs?.defaultValue.value);
+    if (isProxy(attrs.enum)) return (form.value[formItem.prop] = (attrs?.defaultValue as ComputedRef).value);
     if (typeof attrs?.defaultValue === "function") return (form.value[formItem.prop] = attrs?.defaultValue());
     else return (form.value[formItem.prop] = attrs?.defaultValue);
   }

@@ -5,6 +5,7 @@ import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.dto.SysUserDto;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysUserVo;
+import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -31,4 +32,6 @@ public interface SysUserService extends IService<SysUser> {
     Boolean updateOneByUserId(SysUserDto sysUserDto);
 
     Boolean removeOne(List<Long> ids);
+
+    RolePostVo rolePostList();
 }

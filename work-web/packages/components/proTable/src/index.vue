@@ -187,7 +187,7 @@
 </template>
 
 <script setup lang="ts" name="ProTable">
-import { ref, watch, provide, onMounted, computed, nextTick } from "vue";
+import { ref, watch, provide, onMounted, computed, nextTick, ComputedRef } from "vue";
 import { ElTable } from "element-plus";
 import { useTable, type Table } from "./hooks/useTable";
 import { useSelection } from "./hooks/useSelection";
@@ -300,8 +300,9 @@ provide("enumMap", enumMap);
 const setEnumMap = async (col: TableColumnProps) => {
   if (!col.enum) return;
   // 如果当前 enum 为后台数据需要请求数据，则调用该请求接口，并存储到 enumMap
+  if (isRef(col.enum)) return enumMap.value.set(col.prop!, (col.enum as ComputedRef).value!);
   if (typeof col.enum !== "function") return enumMap.value.set(col.prop!, col.enum!);
-  const data = await col.enum();
+  const { data } = await col.enum(enumMap);
   enumMap.value.set(col.prop!, data);
 };
 

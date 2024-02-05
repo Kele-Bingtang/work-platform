@@ -1,5 +1,15 @@
 import { useLayoutStore } from "@/stores/layout";
 import type { FormOptionsProps } from "@work/components";
+import type { FormRules } from "element-plus";
+import { validatePassword, validatePhone } from "./rules";
+import { getRolePostList } from "@/api/user";
+
+const rules = reactive<FormRules>({
+  username: [{ required: true, message: "请输入用户名称", trigger: "blur" }],
+  password: [{ validator: validatePassword, trigger: "blur" }],
+  phone: [{ validator: validatePhone, trigger: "blur" }],
+  email: [{ required: true, type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
+});
 
 export const options: FormOptionsProps = {
   form: {
@@ -8,10 +18,11 @@ export const options: FormOptionsProps = {
     labelWidth: "50px",
     size: "default",
     fixWidth: true,
+    rules: rules,
   },
   columns: [
     {
-      formItem: { label: "用户名称", prop: "username", required: true },
+      formItem: { label: "用户名称", prop: "username" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 用户名称" } },
     },
     {
@@ -35,11 +46,6 @@ export const options: FormOptionsProps = {
       formItem: { label: "性别", prop: "sex" },
       attrs: {
         el: "el-select",
-        // enum: [
-        //   { value: 0, label: "保密" },
-        //   { value: 1, label: "男" },
-        //   { value: 2, label: "女" },
-        // ],
         enum: () => useLayoutStore().getDictData("sys_user_sex"),
         fieldNames: { value: "dictValue", label: "dictLabel" },
         props: { clearable: true, placeholder: "请输入 性别" },
@@ -50,7 +56,7 @@ export const options: FormOptionsProps = {
       attrs: { el: "el-date-picker", props: { clearable: true, placeholder: "请选择 生日" } },
     },
     {
-      formItem: { label: "电话号码", prop: "phone", required: true },
+      formItem: { label: "电话号码", prop: "phone" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 电话号码" } },
     },
     {
@@ -59,7 +65,24 @@ export const options: FormOptionsProps = {
     },
     {
       formItem: { label: "岗位", prop: "postId" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 岗位" } },
+      attrs: {
+        el: "el-select",
+        enum: () => getRolePostList(),
+        enumKey: "postList",
+        fieldNames: { value: "postId", label: "postName" },
+        props: { clearable: true, placeholder: "请输入 岗位" },
+      },
+    },
+    {
+      formItem: { label: "岗位", prop: "roleId" },
+      attrs: {
+        el: "el-select",
+        // useEnumMap: "postId",
+        // enumKey: "roleList",
+        useEnumMap: enumMap => enumMap.get("postId")?.roleList,
+        fieldNames: { value: "roleId", label: "roleName" },
+        props: { clearable: true, placeholder: "请输入 岗位" },
+      },
     },
     {
       formItem: { label: "头像上传", prop: "avatar" },

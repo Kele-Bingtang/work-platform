@@ -6,15 +6,23 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
+import cn.youngkbt.uac.sys.model.dto.SysPostDto;
+import cn.youngkbt.uac.sys.model.dto.SysRoleDto;
 import cn.youngkbt.uac.sys.model.dto.SysUserDto;
 import cn.youngkbt.uac.sys.model.po.SysUser;
+import cn.youngkbt.uac.sys.model.vo.SysPostVo;
+import cn.youngkbt.uac.sys.model.vo.SysRoleVo;
 import cn.youngkbt.uac.sys.model.vo.SysUserVo;
+import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
+import cn.youngkbt.uac.sys.service.SysPostService;
+import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
@@ -32,12 +40,16 @@ import java.util.Objects;
  * @date 2023-11-11 23:40:21
  * @note 针对表【t_sys_user(用户信息表)】的数据库操作Service实现
  */
+@RequiredArgsConstructor
 @Service
 @Slf4j
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
     @Value("${default.password}")
     private String password;
+    
+    private final SysPostService sysPostService;
+    private final SysRoleService sysRoleService;
 
     @Override
     public SecurityUser selectTenantUserByUsername(String tenantId, String username) {
@@ -72,6 +84,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             sysUserList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
         return MapstructUtil.convert(sysUserList, SysUserVo.class);
+    }
+
+    @Override
+    public RolePostVo rolePostList() {
+        List<SysPostVo> sysPostVoList = sysPostService.queryListWithPage(new SysPostDto(), null);
+        List<SysRoleVo> sysRoleVoList = sysRoleService.queryListWithPage(new SysRoleDto(), null);
+
+        RolePostVo rolePostVo = new RolePostVo();
+        rolePostVo.setPostList(sysPostVoList)
+                .setRoleList(sysRoleVoList);
+        
+        return rolePostVo;
     }
 
     @Override

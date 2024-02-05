@@ -35,12 +35,10 @@
 </template>
 
 <script setup lang="tsx" name="DictType">
-import { TreeFilter, Drawer, type TableColumnProps } from "work";
+import { ProTable, TreeFilter, Drawer } from "work";
 import { getAppTreeList } from "@/api/app";
-import { ProTable } from "work";
 import { addOneDictType, editOneDictType, removeOneDictType, listDictTypeByApp } from "@/api/dictType";
-// import { options } from "./formOptions";
-import { type DialogForm, type FormOptionsProps } from "@work/components";
+import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
 import DictData from "./dictData.vue";
 
 const initRequestParam = reactive({

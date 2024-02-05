@@ -74,13 +74,28 @@ const fieldNames = computed(() => {
 // 接收 enumMap (el 为 select-v 2 需单独处理 enumData)
 const enumMap = inject("enumMap", ref(new Map()));
 const columnEnum = computed(() => {
+  const attrs = props.column.attrs;
+
+  if (attrs.useEnumMap) {
+    if (typeof attrs.useEnumMap === "function") {
+      return attrs.useEnumMap(enumMap.value);
+    }
+
+    const data = enumMap.value.get(attrs.useEnumMap);
+    if (!data) return [];
+    if (attrs.enumKey) return data[attrs.enumKey] || [];
+    return data;
+  }
+
   let enumData = enumMap.value.get(props.column.formItem.prop);
+
   if (!enumData) return [];
   if (props.column.attrs?.el === "el-select-v 2" && props.column.attrs.fieldNames) {
     enumData = enumData.map((item: { [key: string]: any }) => {
       return { ...item, label: item[fieldNames.value.label], value: item[fieldNames.value.value] };
     });
   }
+  if (attrs.enumKey) return enumData[attrs.enumKey];
   return enumData;
 });
 

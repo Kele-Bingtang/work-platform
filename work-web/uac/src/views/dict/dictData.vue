@@ -77,7 +77,7 @@ const options: FormOptionsProps = {
           { value: "Y", label: "选中" },
           { value: "N", label: "不选中" },
         ],
-        props: { clearable: true, placeholder: "请输入 是否默认选中" },
+        props: { clearable: true, placeholder: "请选择" },
       },
     },
   ],

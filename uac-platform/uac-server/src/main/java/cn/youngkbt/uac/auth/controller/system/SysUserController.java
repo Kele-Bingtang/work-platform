@@ -4,6 +4,7 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import cn.youngkbt.uac.sys.model.dto.SysUserDto;
 import cn.youngkbt.uac.sys.model.vo.SysUserVo;
 import cn.youngkbt.uac.sys.service.SysUserService;
@@ -40,6 +41,12 @@ public class SysUserController {
     public Response<List<SysUserVo>> list(SysUserDto sysUserDto, PageQuery pageQuery) {
         List<SysUserVo> sysUserVoList = sysUserService.queryListWithPage(sysUserDto, pageQuery);
         return HttpResult.ok(sysUserVoList);
+    }
+
+    @GetMapping("/rolePostList")
+    public Response<RolePostVo> rolePostList() {
+        RolePostVo rolePostVo = sysUserService.rolePostList();
+        return HttpResult.ok(rolePostVo);
     }
 
     /**

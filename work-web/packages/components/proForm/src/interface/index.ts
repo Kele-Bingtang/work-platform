@@ -49,7 +49,9 @@ export interface FormColumnProps {
   formItem: FormItem;
   attrs: {
     el?: FormType;
-    enum?: FormEnumProps[] | ((params?: any) => Promise<any>) | ComputedRef<any>;
+    enum?: FormEnumProps[] | ((enumMap?: any) => Promise<any>) | ComputedRef<FormEnumProps[]>;
+    enumKey?: string; // 如果 enum 是接口调用，那么可以指定哪个 key 获取 enum 数据，默认返回的数据作为 enum
+    useEnumMap?: string | ((enumMap?: any) => any); // 从 enumMap 中获取其他的 enum 数据
     // 枚举类型（字典）
     fieldNames?: FormFieldNamesProps; // 字典指定 label && value && children 的 key 值
     props?: any; // 搜索项参数，根据 element plus 官方文档来传递，该属性所有值会透传到组件

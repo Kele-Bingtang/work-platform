@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -83,5 +84,15 @@ public class SysDeptVo implements Serializable {
      * 部门层级
      */
     private Integer level;
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 
 }

@@ -16,18 +16,41 @@ export namespace Dept {
     email: string; // 邮箱
     intro: string; // 部门介绍
     level: string; // 部门层级
+    status: number; // 状态
   }
 
-  export interface DeptTree {
+  export interface DeptTreeList {
     id: string;
     label: string;
     parentId: string;
     weight: number;
     icon: string;
-    children: DeptTree[];
+    children: DeptTreeList[];
+  }
+
+  export interface DeptTreeTable extends DeptList {
+    children: DeptTreeTable[];
   }
 }
 
+const baseUri = "/system/dept";
+
 export const getDeptTreeList = () => {
-  return http.get("/system/dept/deptTreeList");
+  return http.get<Dept.DeptTreeList>(`${baseUri}/deptTreeList`);
+};
+
+export const getDeptTreeTable = () => {
+  return http.get<Dept.DeptTreeTable>(`${baseUri}/deptTreeTable`);
+};
+
+export const addOne = (data: Dept.DeptList) => {
+  return http.post<http.Response<string>>(baseUri, data);
+};
+
+export const editOne = (data: Dept.DeptList) => {
+  return http.put<http.Response<string>>(baseUri, data);
+};
+
+export const deleteOne = (data: Dept.DeptList) => {
+  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
 };

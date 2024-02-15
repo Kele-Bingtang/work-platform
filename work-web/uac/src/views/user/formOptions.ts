@@ -48,7 +48,7 @@ export const options: FormOptionsProps = {
         el: "el-select",
         enum: () => useLayoutStore().getDictData("sys_user_sex"),
         fieldNames: { value: "dictValue", label: "dictLabel" },
-        props: { clearable: true, placeholder: "请输入 性别" },
+        props: { clearable: true, placeholder: "请选择 性别" },
       },
     },
     {
@@ -74,7 +74,7 @@ export const options: FormOptionsProps = {
       },
     },
     {
-      formItem: { label: "岗位", prop: "roleId" },
+      formItem: { label: "角色", prop: "roleId" },
       attrs: {
         el: "el-select",
         // useEnumMap: "postId",
@@ -83,10 +83,6 @@ export const options: FormOptionsProps = {
         fieldNames: { value: "roleId", label: "roleName" },
         props: { clearable: true, placeholder: "请输入 岗位" },
       },
-    },
-    {
-      formItem: { label: "头像上传", prop: "avatar" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "头像上传" } },
     },
   ],
 };

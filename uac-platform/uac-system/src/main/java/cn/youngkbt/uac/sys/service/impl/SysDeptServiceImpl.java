@@ -12,7 +12,9 @@ import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
+import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import cn.youngkbt.uac.sys.service.SysDeptService;
+import cn.youngkbt.uac.sys.utils.DeptTreeUtil;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -78,18 +80,27 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     /**
      * 构建前端所需要下拉树结构
      */
-    @Override
-    public List<Tree<String>> buildDeptTree(List<SysDept> sysDeptList) {
+    private List<Tree<String>> buildDeptTree(List<SysDept> sysDeptList) {
         if (CollUtil.isEmpty(sysDeptList)) {
             return Collections.emptyList();
         }
 
-        return TreeUtil.build(sysDeptList, "0", TreeNodeConfig.DEFAULT_CONFIG.setNameKey("label"), (treeNode, tree) ->
-                tree.setId(treeNode.getDeptId())
-                        .setParentId(treeNode.getParentId())
-                        .setName(treeNode.getDeptName())
-                        .setWeight(treeNode.getOrderNum())
-                        .putExtra("icon", treeNode.getIcon()));
+        return TreeUtil.build(sysDeptList, "0", TreeNodeConfig.DEFAULT_CONFIG.setNameKey("label"), (treeNode, tree) -> 
+                    tree.setId(treeNode.getDeptId())
+                            .setParentId(treeNode.getParentId())
+                            .setName(treeNode.getDeptName())
+                            .setWeight(treeNode.getOrderNum())
+                            .putExtra("icon", treeNode.getIcon()));
+    }
+
+    @Override
+    public List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto) {
+        // 查询正常状态的部门
+        sysDeptDto.setStatus(ColumnConstant.STATUS_NORMAL);
+        LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
+        List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
+        List<DeptTree> sysDeptVoList = MapstructUtil.convert(sysDeptList, DeptTree.class);
+        return DeptTreeUtil.build(sysDeptVoList);
     }
 
     /**
@@ -210,7 +221,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             // 将子部门的 ancestors 更新
             updateDeptChildren(sysDept.getDeptId(), newAncestors, oldAncestors);
         }
-        return baseMapper.updateById(sysDept) > 0;
+            return baseMapper.updateById(sysDept) > 0;
     }
 
     /**

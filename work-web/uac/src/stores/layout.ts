@@ -128,10 +128,10 @@ export const useLayoutStore = defineStore(
     };
 
     const getDictData = async (dictCode: string) => {
-      if (dictList.value[dictCode]) return dictList.value[dictCode];
+      if (dictList.value[dictCode]) return { data: dictList.value[dictCode] };
       const res = await listDictDataByDictCode({ dictCode, appId: uacAppSecret });
       dictList.value[dictCode] = res.data;
-      return res.data;
+      return res;
     };
 
     const settingsStore = useSettingsStore();

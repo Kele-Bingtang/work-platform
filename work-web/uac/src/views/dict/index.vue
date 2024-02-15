@@ -1,5 +1,5 @@
 <template>
-  <div class="user-container">
+  <div class="dict-container">
     <TreeFilter
       ref="treeFilterRef"
       title="应用清单"
@@ -14,7 +14,7 @@
       </template>
     </TreeFilter>
 
-    <div class="user-table">
+    <div class="dict-table">
       <ProTable
         ref="proTable"
         :request-api="listDictTypeByApp"
@@ -124,20 +124,15 @@ const detailForm: DialogForm = {
 </script>
 
 <style lang="scss" scoped>
-.user-container {
+.dict-container {
   display: flex;
   width: 100%;
   height: 100%;
   padding: 10px;
 
-  .iconify {
-    margin-right: 5px;
-    vertical-align: -2px;
-  }
-
-  .user-table {
+  .dict-table {
     width: calc(100% - 230px);
-    height: 100%;
+    height: 97%;
   }
 
   .drawer-content {
@@ -149,8 +144,8 @@ const detailForm: DialogForm = {
 </style>
 
 <style lang="scss">
-.user-container {
-  .user-table .el-dialog__body {
+.dict-container {
+  .dict-table .el-dialog__body {
     margin-left: 20px;
   }
 }

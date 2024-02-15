@@ -30,7 +30,7 @@ const getTagType = (item: TableColumnProps, scope: RenderScope<any>) => {
   );
 };
 
-// 获取枚举信息，存放到 [prop.prop]EnumValue 里
+// 获取枚举信息，存放到 [item.prop]EnumValue 里
 const tryCreateEnumValue = (item: TableColumnProps, scope: RenderScope<any>) => {
   if (enumMap.value.get(item.prop) && item.isFilterEnum) {
     scope.row[`${item.prop}EnumValue`] = filterEnum(
@@ -54,7 +54,7 @@ const RenderTableColumn = (item: TableColumnProps) => {
           {{
             default: (scope: RenderScope<any>) => {
               if (item._children) return item._children.map(child => RenderTableColumn(child));
-              if (item.render) return item.render(scope);
+              if (item.render) return item.render(tryCreateEnumValue(item, scope));
               if (slots[lastProp(item.prop!)]) return slots[lastProp(item.prop!)]!(tryCreateEnumValue(item, scope));
               if (item.tag && renderCellData(item, scope)) {
                 return <el-tag type={getTagType(item, scope)}>{renderCellData(item, scope)}</el-tag>;

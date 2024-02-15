@@ -37,6 +37,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         LambdaQueryWrapper<SysRole> wrapper = Wrappers.<SysRole>lambdaQuery()
                 .eq(StringUtils.hasText(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId())
                 .eq(StringUtils.hasText(sysRoleDto.getRoleCode()), SysRole::getRoleCode, sysRoleDto.getRoleCode())
+                .eq(StringUtils.hasText(sysRoleDto.getAppId()), SysRole::getAppId, sysRoleDto.getAppId())
                 .eq(Objects.nonNull(sysRoleDto.getStatus()), SysRole::getStatus, sysRoleDto.getStatus())
                 .orderByAsc(SysRole::getOrderNum);
 

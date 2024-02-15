@@ -101,7 +101,6 @@ class RequestHttp {
         return data;
       },
       async (error: AxiosError) => {
-        console.log(error);
         const errorStore = useErrorLogStore();
         if (error.config?.headers?.loading) tryHideFullScreenLoading();
         else axiosCanceler.removePendingRequest(error.config || {});

@@ -8,7 +8,9 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
+import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import cn.youngkbt.uac.sys.service.SysDeptService;
+import cn.youngkbt.uac.sys.utils.DeptTreeUtil;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +51,12 @@ public class SysDeptController {
         List<Tree<String>> treeList = sysDeptService.selectDeptTreeList(sysDeptDto);
         return HttpResult.ok(treeList);
     }
+    
+    @GetMapping("/deptTreeTable")
+    public Response<List<DeptTree>> deptTreeTable(SysDeptDto sysDeptDto){
+        List<DeptTree> treeTable = sysDeptService.buildDeptTreeTable(sysDeptDto);
+        return HttpResult.ok(treeTable);
+    }
 
     @GetMapping("/parentDept")
     public Response<SysDeptVo> queryParentDeptByDeptId(String deptId) {
@@ -86,7 +94,7 @@ public class SysDeptController {
             return HttpResult.failMessage("修改部门'" + sysDeptDto.getDeptName() + "'失败，上级部门不能是自己");
         }
 
-        if (!sysDeptService.checkDeptNameUnique(sysDeptDto)) {
+        if (sysDeptService.checkDeptNameUnique(sysDeptDto).equals(Boolean.FALSE)) {
             return HttpResult.failMessage("修改部门'" + sysDeptDto.getDeptName() + "'失败，部门名称已存在");
         }
 
@@ -95,7 +103,7 @@ public class SysDeptController {
                 return HttpResult.failMessage("该部门包含未停用的子部门，不能禁用");
             }
 
-            if (sysDeptService.checkDeptExistUser(deptId)) {
+            if (sysDeptService.checkDeptExistUser(deptId).equals(Boolean.TRUE)) {
                 return HttpResult.failMessage("该部门下已存在用户，不能禁用!");
             }
         }

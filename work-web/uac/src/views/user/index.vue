@@ -22,31 +22,31 @@
 </template>
 
 <script setup lang="ts" name="User">
-import { TreeFilter, type TableColumnProps } from "work";
+import { TreeFilter, ProTable, type TableColumnProps } from "work";
 import { getDeptTreeList } from "@/api/dept";
-import { ProTable } from "work";
 import { addOne, editOne, deleteOne, getUserListByDept } from "@/api/user";
 import { options } from "./formOptions";
 import type { DialogForm } from "@work/components";
 
 const columns: TableColumnProps[] = [
   { type: "index", label: "#", width: 80 },
-  { prop: "username", label: "用户名称", search: { el: "el-input" } },
-  { prop: "nickname", label: "用户昵称", search: { el: "el-input" } },
-  { prop: "deptName", label: "部门", search: { el: "el-input" } },
-  { prop: "phone", label: "手机号码", search: { el: "el-input" } },
-  { prop: "email", label: "邮箱", search: { el: "el-input" } },
+  { prop: "username", label: "用户名称", width: 170, search: { el: "el-input" } },
+  { prop: "nickname", label: "用户昵称", width: 170, search: { el: "el-input" } },
+  { prop: "deptName", label: "部门", width: 170, search: { el: "el-input" } },
+  { prop: "phone", label: "手机号码", width: 130, search: { el: "el-input" } },
+  { prop: "email", label: "邮箱", width: 170, search: { el: "el-input" } },
   {
     prop: "status",
     label: "状态",
+    width: 80,
     enum: [
       { label: "启用", value: 1 },
       { label: "禁用", value: 0 },
     ],
     search: { el: "el-select" },
   },
-  { prop: "registerTime", label: "注册时间", search: { el: "el-input" } },
-  { prop: "operation", label: "操作" },
+  { prop: "registerTime", width: 160, label: "注册时间" },
+  { prop: "operation", width: 140, fixed: "right", label: "操作" },
 ];
 
 const detailForm: DialogForm = {
@@ -56,7 +56,7 @@ const detailForm: DialogForm = {
   deleteApi: deleteOne,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "30%",
+    width: "40%",
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -85,7 +85,7 @@ const handleTreeChange = (nodeId: number) => {
 
   .user-table {
     width: calc(100% - 230px);
-    height: 100%;
+    height: 97%;
   }
 }
 </style>

@@ -152,7 +152,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/role-manage",
         name: "RoleManage",
-        component: "/home/index",
+        component: "/role/index",
         meta: {
           title: "角色管理",
           icon: HomeFilled,
@@ -161,7 +161,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/dept-manage",
         name: "DeptManage",
-        component: "/home/index",
+        component: "/dept/index",
         meta: {
           title: "部门管理",
           icon: HomeFilled,
@@ -170,7 +170,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/post-manage",
         name: "PostManage",
-        component: "/home/index",
+        component: "/post/index",
         meta: {
           title: "岗位管理",
           icon: HomeFilled,

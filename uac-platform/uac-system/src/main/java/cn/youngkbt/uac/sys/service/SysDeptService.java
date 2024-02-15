@@ -5,6 +5,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
+import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
+import cn.youngkbt.uac.sys.utils.DeptTreeUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public interface SysDeptService extends IService<SysDept> {
 
     List<Tree<String>> selectDeptTreeList(SysDeptDto sysDeptDto);
 
-    List<Tree<String>> buildDeptTree(List<SysDept> sysDeptList);
+    List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto);
     
     SysDeptVo queryParentDeptByDeptId(String deptId);
     
@@ -46,5 +48,5 @@ public interface SysDeptService extends IService<SysDept> {
 
     Boolean removeBatch(List<Long> ids);
 
-    
+
 }

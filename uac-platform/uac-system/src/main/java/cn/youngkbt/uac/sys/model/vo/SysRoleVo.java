@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -35,6 +36,11 @@ public class SysRoleVo implements Serializable {
     private String roleName;
 
     /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
      * 显示顺序
      */
     private Integer orderNum;
@@ -44,6 +50,10 @@ public class SysRoleVo implements Serializable {
      */
     private String intro;
 
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 
     /**
      * 应用 ID

@@ -1,7 +1,8 @@
 <template>
   <component :is="'el-form'" v-bind="options.form" ref="formRef" :model="form">
-    <template v-for="item in options.columns" :key="item.formItem.prop">
+    <template v-for="item in options.columns">
       <component
+        :key="item.formItem.prop"
         v-if="!item.attrs.isHidden"
         :is="'el-form-item'"
         v-bind="item.formItem"
@@ -16,7 +17,7 @@
 </template>
 
 <script setup lang="ts" name="ProForm">
-import { computed, shallowRef, ref, provide, watch, isProxy, type ComputedRef } from "vue";
+import { computed, shallowRef, ref, provide, watch, isRef, type ComputedRef } from "vue";
 import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
@@ -42,6 +43,7 @@ const setEnumMap = async (column: FormColumnProps) => {
   if (isRef(attrs.enum)) return enumMap.value.set(formItem.prop!, (attrs.enum as ComputedRef).value!);
   if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop!, (attrs.enum as FormEnumProps[])!);
   const { data } = await attrs.enum(enumMap.value);
+  console.log(data);
   enumMap.value.set(formItem.prop!, data);
 };
 

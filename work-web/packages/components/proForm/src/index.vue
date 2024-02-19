@@ -43,7 +43,6 @@ const setEnumMap = async (column: FormColumnProps) => {
   if (isRef(attrs.enum)) return enumMap.value.set(formItem.prop!, (attrs.enum as ComputedRef).value!);
   if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop!, (attrs.enum as FormEnumProps[])!);
   const { data } = await attrs.enum(enumMap.value);
-  console.log(data);
   enumMap.value.set(formItem.prop!, data);
 };
 

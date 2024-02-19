@@ -9,6 +9,8 @@ import org.springframework.util.StringUtils;
  */
 public class StringUtil extends StringUtils {
 
+    public static final String SEPARATOR =",";
+
     public static boolean hasText(String... content) {
         for (String s : content) {
             if (!hasText(s)) {
@@ -17,5 +19,5 @@ public class StringUtil extends StringUtils {
         }
         return true;
     }
-    
+
 }

@@ -28,7 +28,7 @@
 
     <Drawer v-model="drawer" size="55%" title="字典数据配置">
       <div class="drawer-content">
-        <DictData :dict-code="dictCode" :app-id="initRequestParam.appId" />
+        <DictData :dict-code="dictCode" :app-id="dictDataAppId" />
       </div>
     </Drawer>
   </div>
@@ -46,11 +46,13 @@ const initRequestParam = reactive({
 });
 
 const dictCode = ref("");
+const dictDataAppId = ref("");
 const drawer = ref(false);
 const treeFilterRef = shallowRef();
 
-const clickDictCode = (code: string) => {
+const clickDictCode = (code: string, appId: string) => {
   dictCode.value = code;
+  dictDataAppId.value = appId;
   drawer.value = true;
 };
 
@@ -67,7 +69,7 @@ const columns: TableColumnProps[] = [
     render: ({ row }) => {
       return (
         <>
-          <el-link type="primary" underline={false} onClick={() => clickDictCode(row.dictCode)}>
+          <el-link type="primary" underline={false} onClick={() => clickDictCode(row.dictCode, row.appId)}>
             {row.dictCode}
           </el-link>
         </>

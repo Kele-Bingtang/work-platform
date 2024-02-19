@@ -30,7 +30,7 @@ const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
     label: "状态",
     width: "80px",
     fieldNames: { value: "dictValue", label: "dictLabel" },
-    enum: () => useLayoutStore().getDictData("sys_normal_disable"),
+    enum: () => useLayoutStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
     render: ({ row }) => {
       return (
@@ -50,6 +50,10 @@ const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
       );
     },
   },
+  { prop: "userCount", label: "成员数量", width: "100px" },
+  { prop: "leader", label: "领导", width: "120px" },
+  { prop: "phone", label: "电话", width: "120px" },
+  { prop: "email", label: "邮箱", width: "120px" },
   { prop: "createTime", label: "创建时间", width: "160px" },
   { prop: "operation", label: "操作" },
 ];
@@ -68,11 +72,13 @@ const detailForm: DialogForm = {
 };
 
 const statusChange = async (value: number, row: Dept.DeptTreeTable) => {
-  const statusEnum = await useLayoutStore().getDictData("sys_normal_disable");
+  const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
   const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
 
+  if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
+
   ElMessageBox.confirm(
-    `确认要 <span style="color: teal">${filterData.dictLabel}</span> 【${row.deptName}】部门吗`,
+    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.deptName}】部门吗`,
     "系统提示",
     {
       dangerouslyUseHTMLString: true,
@@ -82,14 +88,21 @@ const statusChange = async (value: number, row: Dept.DeptTreeTable) => {
     }
   )
     .then(() => {
-      editOne({ id: row.id, status: value }).then(res => {
-        if (res.status === "success") message.success("修改成功");
-      });
+      editOne({ id: row.id, deptId: row.deptId, parentId: row.parentId, status: value })
+        .then(res => {
+          if (res.status === "success") message.success("修改成功");
+          else {
+            statusRecover(value, row);
+          }
+        })
+        .catch(() => statusRecover(value, row));
     })
-    .catch(() => {
-      if (value === 0) return (row.status = 1);
-      if (value === 1) return (row.status = 0);
-    });
+    .catch(() => statusRecover(value, row));
+};
+
+const statusRecover = (value: number, row: Dept.DeptTreeTable) => {
+  if (value === 0) return (row.status = 1);
+  if (value === 1) return (row.status = 0);
 };
 </script>
 
@@ -98,6 +111,7 @@ const statusChange = async (value: number, row: Dept.DeptTreeTable) => {
   width: 100%;
   height: 100%;
   padding: 10px;
+
   .dept-table {
     width: 100%;
     height: 97%;

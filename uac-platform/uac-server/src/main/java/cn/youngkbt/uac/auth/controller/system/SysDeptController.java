@@ -10,7 +10,6 @@ import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
 import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import cn.youngkbt.uac.sys.service.SysDeptService;
-import cn.youngkbt.uac.sys.utils.DeptTreeUtil;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +50,9 @@ public class SysDeptController {
         List<Tree<String>> treeList = sysDeptService.selectDeptTreeList(sysDeptDto);
         return HttpResult.ok(treeList);
     }
-    
+
     @GetMapping("/deptTreeTable")
-    public Response<List<DeptTree>> deptTreeTable(SysDeptDto sysDeptDto){
+    public Response<List<DeptTree>> deptTreeTable(SysDeptDto sysDeptDto) {
         List<DeptTree> treeTable = sysDeptService.buildDeptTreeTable(sysDeptDto);
         return HttpResult.ok(treeTable);
     }
@@ -81,6 +80,10 @@ public class SysDeptController {
      */
     @PostMapping
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDeptDto sysDeptDto) {
+        if (sysDeptService.checkDeptNameUnique(sysDeptDto).equals(Boolean.FALSE)) {
+            return HttpResult.failMessage("新增部门'" + sysDeptDto.getDeptName() + "'失败，部门名称已存在");
+        }
+
         return HttpResult.ok(sysDeptService.insertOne(sysDeptDto));
     }
 
@@ -115,7 +118,7 @@ public class SysDeptController {
      * 部门删除
      */
     @DeleteMapping("/{deptId}")
-    public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable String deptId) {
+    public Response<Boolean> removeOne(@NotEmpty(message = "部门 ID 不能为空") @PathVariable String deptId) {
         if (sysDeptService.hasChild(deptId)) {
             return HttpResult.failMessage("存在下级部门，不允许删除");
         }

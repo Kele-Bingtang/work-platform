@@ -96,7 +96,7 @@ class RequestHttp {
         // 全局错误信息拦截
         if (data.code && data.code !== ResultEnum.SUCCESS) {
           message.error(data.message);
-          return Promise.reject(data.message);
+          return Promise.reject(data);
         }
         return data;
       },

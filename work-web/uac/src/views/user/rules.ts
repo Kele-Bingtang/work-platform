@@ -29,7 +29,7 @@ export const validatePassword = (rule: any, value: any, callback: any) => {
 
 export const validatePhone = (rule: any, value: any, callback: any) => {
   if (!value) {
-    return callback(new Error("请输入电话号码"));
+    return callback();
   }
 
   // 示例：检查电话号码是否符合中国大陆手机号码格式

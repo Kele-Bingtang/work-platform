@@ -26,6 +26,7 @@ export namespace Dept {
     weight: number;
     icon: string;
     children: DeptTreeList[];
+    status: number;
   }
 
   export interface DeptTreeTable extends DeptList {
@@ -47,10 +48,10 @@ export const addOne = (data: Dept.DeptList) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
-export const editOne = (data: Dept.DeptList) => {
+export const editOne = (data: RequiredKeyPartialOther<Dept.DeptList, "id">) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 
 export const deleteOne = (data: Dept.DeptList) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+  return http.delete<http.Response<string>>(`${baseUri}/${data.deptId}`);
 };

@@ -6,9 +6,9 @@ import { getRolePostList } from "@/api/user";
 
 const rules = reactive<FormRules>({
   username: [{ required: true, message: "请输入用户名称", trigger: "blur" }],
-  password: [{ validator: validatePassword, trigger: "blur" }],
+  password: [{ required: true, validator: validatePassword, trigger: "blur" }],
   phone: [{ validator: validatePhone, trigger: "blur" }],
-  email: [{ required: true, type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
+  email: [{ type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
 });
 
 export const options: FormOptionsProps = {

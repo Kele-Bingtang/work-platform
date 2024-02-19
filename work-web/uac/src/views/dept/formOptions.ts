@@ -1,10 +1,12 @@
-import { useLayoutStore } from "@/stores/layout";
+import { getDeptTreeList } from "@/api/dept";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
+import { validatePhone } from "@/views/user/rules";
 
 const rules = reactive<FormRules>({
-  roleCode: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
-  roleName: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+  deptName: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
+  phone: [{ validator: validatePhone, trigger: "blur" }],
+  email: [{ type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
 });
 
 export const options: FormOptionsProps = {
@@ -18,8 +20,34 @@ export const options: FormOptionsProps = {
   },
   columns: [
     {
+      formItem: { label: "上级部门", prop: "parentId" },
+      attrs: {
+        el: "el-tree-select",
+        props: {
+          placeholder: "请输入 角色编码",
+          filterable: true,
+          checkStrictly: true,
+          valueKey: "id",
+        },
+        fieldNames: { value: "id", label: "label" },
+        enum: () => getDeptTreeList(),
+      },
+    },
+    {
       formItem: { label: "部门名称", prop: "deptName" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 角色编码" } },
+    },
+    {
+      formItem: { label: "领导", prop: "leader" },
+      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 领导" } },
+    },
+    {
+      formItem: { label: "电话", prop: "phone" },
+      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 电话" } },
+    },
+    {
+      formItem: { label: "邮箱", prop: "email" },
+      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 电话" } },
     },
     {
       formItem: { label: "显示顺序", prop: "orderNum" },

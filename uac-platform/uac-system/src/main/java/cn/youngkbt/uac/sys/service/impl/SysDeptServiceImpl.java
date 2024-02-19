@@ -7,6 +7,7 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
+import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
@@ -85,12 +86,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             return Collections.emptyList();
         }
 
-        return TreeUtil.build(sysDeptList, "0", TreeNodeConfig.DEFAULT_CONFIG.setNameKey("label"), (treeNode, tree) -> 
-                    tree.setId(treeNode.getDeptId())
-                            .setParentId(treeNode.getParentId())
-                            .setName(treeNode.getDeptName())
-                            .setWeight(treeNode.getOrderNum())
-                            .putExtra("icon", treeNode.getIcon()));
+        return TreeUtil.build(sysDeptList, "0", TreeNodeConfig.DEFAULT_CONFIG.setNameKey("label"), (treeNode, tree) ->
+                tree.setId(treeNode.getDeptId())
+                        .setParentId(treeNode.getParentId())
+                        .setName(treeNode.getDeptName())
+                        .setWeight(treeNode.getOrderNum())
+                        .putExtra("icon", treeNode.getIcon()));
     }
 
     @Override
@@ -158,8 +159,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public Boolean checkDeptExistUser(String deptId) {
         return baseMapper.selectOne(Wrappers.<SysDept>lambdaQuery()
-                        .eq(SysDept::getDeptId, deptId))
-                .getUserCount() > 0;
+                .eq(SysDept::getDeptId, deptId)).getUserCount() > 0;
     }
 
     /**
@@ -196,6 +196,21 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public Boolean insertOne(SysDeptDto sysDeptDto) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDto, SysDept.class);
+        
+        if (Objects.nonNull(sysDeptDto.getParentId())) {
+            SysDept dept = baseMapper.selectOne(Wrappers.<SysDept>lambdaQuery()
+                    .eq(SysDept::getDeptId, sysDeptDto.getParentId()));
+
+            // 如果父节点不为正常状态,则不允许新增子节点
+            if (!ColumnConstant.STATUS_NORMAL.equals(dept.getStatus())) {
+                throw new ServiceException("部门停用，不允许新增");
+            }
+
+            dept.setAncestors(dept.getAncestors() + StringUtil.SEPARATOR + dept.getParentId());
+            return baseMapper.insert(sysDept) > 0;
+        }
+
+        sysDept.setParentId("0");
         return baseMapper.insert(sysDept) > 0;
     }
 
@@ -221,7 +236,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             // 将子部门的 ancestors 更新
             updateDeptChildren(sysDept.getDeptId(), newAncestors, oldAncestors);
         }
-            return baseMapper.updateById(sysDept) > 0;
+        return baseMapper.updateById(sysDept) > 0;
     }
 
     /**

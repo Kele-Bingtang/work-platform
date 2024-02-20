@@ -3,7 +3,7 @@
     <template v-for="item in options.columns">
       <component
         :key="item.formItem.prop"
-        v-if="!item.attrs.isHidden"
+        v-if="!isHidden(item)"
         :is="'el-form-item'"
         v-bind="item.formItem"
         :style="{ display: item.formItem.br ? 'flex' : false }"
@@ -82,6 +82,16 @@ const cascadeEnum = (column: FormColumnProps) => {
       );
     }
   }
+};
+
+/**
+ * 是否隐藏表单项
+ */
+const isHidden = (column: FormColumnProps) => {
+  if (typeof column.attrs.isHidden === "function") {
+    return column.attrs.isHidden(form.value);
+  }
+  return column.attrs.isHidden;
 };
 
 props.options.columns.forEach((item, index) => {

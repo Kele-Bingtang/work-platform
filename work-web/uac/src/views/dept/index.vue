@@ -1,16 +1,14 @@
 <template>
   <div class="dept-container">
-    <div class="dept-table">
-      <ProTable
-        ref="proTable"
-        :request-api="getDeptTreeTable"
-        :columns="columns"
-        :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90%"
-        :detailForm="detailForm"
-        :border="false"
-      ></ProTable>
-    </div>
+    <ProTable
+      ref="proTable"
+      :request-api="getDeptTreeTable"
+      :columns="columns"
+      :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
+      style="height: 90%"
+      :detailForm="detailForm"
+      :border="false"
+    ></ProTable>
   </div>
 </template>
 
@@ -24,11 +22,11 @@ import { ElMessageBox } from "element-plus";
 
 const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
   { prop: "deptName", label: "部门名称", align: "left", search: { el: "el-input" } },
-  { prop: "orderNum", label: "排序", width: "80px" },
+  { prop: "orderNum", label: "排序", width: 80 },
   {
     prop: "status",
     label: "状态",
-    width: "80px",
+    width: 80,
     fieldNames: { value: "dictValue", label: "dictLabel" },
     enum: () => useLayoutStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
@@ -50,12 +48,12 @@ const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
       );
     },
   },
-  { prop: "userCount", label: "成员数量", width: "100px" },
-  { prop: "leader", label: "领导", width: "120px" },
-  { prop: "phone", label: "电话", width: "120px" },
-  { prop: "email", label: "邮箱", width: "120px" },
-  { prop: "createTime", label: "创建时间", width: "160px" },
-  { prop: "operation", label: "操作" },
+  { prop: "userCount", label: "成员数量", width: 100 },
+  { prop: "leader", label: "领导", width: 120 },
+  { prop: "phone", label: "电话", width: 120 },
+  { prop: "email", label: "邮箱", width: 120 },
+  { prop: "createTime", label: "创建时间", width: 160 },
+  { prop: "operation", label: "操作", width: 160 },
 ];
 
 const detailForm: DialogForm = {
@@ -111,10 +109,5 @@ const statusRecover = (value: number, row: Dept.DeptTreeTable) => {
   width: 100%;
   height: 100%;
   padding: 10px;
-
-  .dept-table {
-    width: 100%;
-    height: 97%;
-  }
 }
 </style>

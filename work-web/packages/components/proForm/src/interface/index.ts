@@ -61,7 +61,7 @@ export interface FormColumnProps {
     subProp?: string; // 级联表单的 prop
     subEnum?: FormEnumProps[] | ((params?: any) => Promise<any>); // 级联表单的 prop
     render?: (scope: FormRenderScope) => VNode; // 自定义搜索内容渲染（tsx 语法）
-    isHidden?: boolean | any; // 是否渲染，true 不渲染，false 渲染
+    isHidden?: boolean | ((form: any) => boolean) | any; // 是否渲染，true 不渲染，false 渲染
     show?: Array<"add" | "edit">; // 给 ProTable 的 DialogOperate.vue 使用
     [key: string]: any;
   };

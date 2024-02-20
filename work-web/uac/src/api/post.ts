@@ -1,3 +1,5 @@
+import http from "@/config/request";
+
 export namespace Post {
   export interface PostInfo {
     id: number; // 主键
@@ -8,3 +10,21 @@ export namespace Post {
     intro: string; // 岗位介绍
   }
 }
+
+const baseUri = "/system/post";
+
+export const list = () => {
+  return http.get<Post.PostInfo>(`${baseUri}/list`);
+};
+
+export const addOne = (data: Post.PostInfo) => {
+  return http.post<http.Response<string>>(baseUri, data);
+};
+
+export const editOne = (data: RequiredKeyPartialOther<Post.PostInfo, "id">) => {
+  return http.put<http.Response<string>>(baseUri, data);
+};
+
+export const deleteOne = (data: Post.PostInfo) => {
+  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+};

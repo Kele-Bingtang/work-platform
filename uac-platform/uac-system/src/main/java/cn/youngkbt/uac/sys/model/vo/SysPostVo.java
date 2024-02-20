@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -43,5 +44,15 @@ public class SysPostVo implements Serializable {
      * 岗位介绍
      */
     private String intro;
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 
 }

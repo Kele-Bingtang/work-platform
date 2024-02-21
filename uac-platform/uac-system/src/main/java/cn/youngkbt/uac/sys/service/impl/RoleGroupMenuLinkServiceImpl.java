@@ -42,31 +42,31 @@ public class RoleGroupMenuLinkServiceImpl extends ServiceImpl<RoleGroupMenuLinkM
     }
 
     @Override
-    public Boolean checkRoleGroupExistMenu(String roleGroupId) {
+    public boolean checkRoleGroupExistMenu(String roleGroupId) {
         return baseMapper.exists(Wrappers.<RoleGroupMenuLink>lambdaQuery()
                 .eq(RoleGroupMenuLink::getRoleGroupId, roleGroupId));
     }
 
     @Override
-    public Boolean checkMenuExistRoleGroup(String menuId) {
+    public boolean checkMenuExistRoleGroup(String menuId) {
         return baseMapper.exists(Wrappers.<RoleGroupMenuLink>lambdaQuery()
                 .eq(RoleGroupMenuLink::getMenuId, menuId));
     }
 
     @Override
-    public Boolean addOneLink(RoleGroupMenuLinkDto roleGroupMenuLinkDto) {
+    public boolean addOneLink(RoleGroupMenuLinkDto roleGroupMenuLinkDto) {
         RoleGroupMenuLink roleGroupMenuLink = MapstructUtil.convert(roleGroupMenuLinkDto, RoleGroupMenuLink.class);
         return baseMapper.insert(roleGroupMenuLink) > 0;
     }
 
     @Override
-    public Boolean updateOneLink(RoleGroupMenuLinkDto roleGroupMenuLinkDto) {
+    public boolean updateOneLink(RoleGroupMenuLinkDto roleGroupMenuLinkDto) {
         RoleGroupMenuLink roleGroupMenuLink = MapstructUtil.convert(roleGroupMenuLinkDto, RoleGroupMenuLink.class);
         return baseMapper.updateById(roleGroupMenuLink) > 0;
     }
 
     @Override
-    public Boolean removeOneLink(Long id) {
+    public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 }

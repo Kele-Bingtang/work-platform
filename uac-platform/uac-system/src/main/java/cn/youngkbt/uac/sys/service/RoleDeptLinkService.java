@@ -16,13 +16,13 @@ import java.util.List;
 public interface RoleDeptLinkService extends IService<RoleDeptLink> {
     List<RoleDeptLinkVo> queryLinkByAppId(RoleDeptLinkDto roleDeptLinkDto, PageQuery pageQuery);
 
-    Boolean checkDeptExistRole(String deptId);
+    boolean checkDeptExistRole(String deptId);
 
-    Boolean checkRoleExistDept(String roleId);
+    boolean checkRoleExistDept(String roleId);
 
-    Boolean addOneLink(RoleDeptLinkDto roleDeptLinkDto);
+    boolean addOneLink(RoleDeptLinkDto roleDeptLinkDto);
 
-    Boolean updateOneLink(RoleDeptLinkDto roleDeptLinkDto);
+    boolean updateOneLink(RoleDeptLinkDto roleDeptLinkDto);
 
-    Boolean removeOneLink(Long id);
+    boolean removeOneLink(Long id);
 }

@@ -19,9 +19,9 @@ public interface SysDictTypeService extends IService<SysDictType> {
 
     List<SysDictTypeVo> queryListWithPage(SysDictTypeDto sysDictTypeDto, PageQuery pageQuery);
 
-    Boolean insertOne(SysDictTypeDto sysDictTypeDto);
+    boolean insertOne(SysDictTypeDto sysDictTypeDto);
 
-    Boolean updateOne(SysDictTypeDto sysDictTypeDto);
+    boolean updateOne(SysDictTypeDto sysDictTypeDto);
 
-    Boolean removeOne(List<Long> ids);
+    boolean removeOne(List<Long> ids);
 }

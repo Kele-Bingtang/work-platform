@@ -19,6 +19,7 @@ export namespace User {
     loginIp: string; // 最后登录 IP
     loginDate: string; // 最后登录时间
     deptId: string; // 部门 ID
+    status: number; // 状态
   }
 
   export interface RolePost {
@@ -41,7 +42,7 @@ export const addOne = (data: User.UserInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
-export const editOne = (data: User.UserInfo) => {
+export const editOne = (data: RequiredKeyPartialOther<User.UserInfo, "id">) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 

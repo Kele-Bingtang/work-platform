@@ -10,6 +10,7 @@ export namespace Role {
     orderNum: string; // 显示顺序
     intro: string; // 角色介绍
     appId: string; // 应用 ID
+    createTime: string; // 创建时间
   }
 }
 
@@ -23,7 +24,7 @@ export const addOne = (data: Role.RoleInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
-export const editOne = (data: Role.RoleInfo) => {
+export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 

@@ -71,19 +71,19 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public Boolean insertOne(SysAppDto sysAppDto) {
+    public boolean insertOne(SysAppDto sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
         return baseMapper.insert(sysApp) > 0;
     }
 
     @Override
-    public Boolean updateOne(SysAppDto sysAppDto) {
+    public boolean updateOne(SysAppDto sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
         return baseMapper.updateById(sysApp) > 0;
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

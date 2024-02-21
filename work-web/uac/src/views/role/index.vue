@@ -49,7 +49,7 @@ const columns: TableColumnProps<Role.RoleInfo[]>[] = [
     prop: "status",
     label: "状态",
     fieldNames: { value: "dictValue", label: "dictLabel" },
-    enum: () => useLayoutStore().getDictData("sys_normal_disable"),
+    enum: () => useLayoutStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
     render: ({ row }) => {
       return (
@@ -92,11 +92,13 @@ const handleTreeChange = (nodeId: number) => {
 };
 
 const statusChange = async (value: number, row: Role.RoleInfo) => {
-  const statusEnum = await useLayoutStore().getDictData("sys_normal_disable");
+  const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
   const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
 
+  if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
+
   ElMessageBox.confirm(
-    `确认要 <span style="color: teal">${filterData.dictLabel}</span> 【${row.roleName}】角色吗`,
+    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.roleName}】角色吗`,
     "系统提示",
     {
       dangerouslyUseHTMLString: true,
@@ -106,7 +108,7 @@ const statusChange = async (value: number, row: Role.RoleInfo) => {
     }
   )
     .then(() => {
-      editOne({ id: row.id, status: value }).then(res => {
+      editOne({ id: row.id, roleId: row.roleId, status: value }).then(res => {
         if (res.status === "success") message.success("修改成功");
       });
     })

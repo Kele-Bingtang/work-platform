@@ -56,14 +56,14 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     }
 
     @Override
-    public Boolean insertOne(SysDictTypeDto sysDictTypeDto) {
+    public boolean insertOne(SysDictTypeDto sysDictTypeDto) {
         SysDictType sysDictType = MapstructUtil.convert(sysDictTypeDto, SysDictType.class);
         return baseMapper.insert(sysDictType) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean updateOne(SysDictTypeDto sysDictTypeDto) {
+    public boolean updateOne(SysDictTypeDto sysDictTypeDto) {
         SysDictType newSysDictType = MapstructUtil.convert(sysDictTypeDto, SysDictType.class);
         // 同步更新 dictData d的 dictCode
         SysDictType oldDictType = baseMapper.selectById(sysDictTypeDto.getId());
@@ -72,7 +72,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

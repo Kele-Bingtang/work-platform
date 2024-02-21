@@ -42,31 +42,31 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
     }
 
     @Override
-    public Boolean checkMenuExistRole(String menuId) {
+    public boolean checkMenuExistRole(String menuId) {
         return baseMapper.exists(Wrappers.<RoleMenuLink>lambdaQuery()
                 .eq(RoleMenuLink::getMenuId, menuId));
     }
 
     @Override
-    public Boolean checkRoleExistMenu(String roleId) {
+    public boolean checkRoleExistMenu(String roleId) {
         return baseMapper.exists(Wrappers.<RoleMenuLink>lambdaQuery()
                 .eq(RoleMenuLink::getRoleId, roleId));
     }
 
     @Override
-    public Boolean addOneLink(RoleMenuLinkDto roleMenuLinkDto) {
+    public boolean addOneLink(RoleMenuLinkDto roleMenuLinkDto) {
         RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDto, RoleMenuLink.class);
         return baseMapper.insert(menuLink) > 0;
     }
 
     @Override
-    public Boolean updateOneLink(RoleMenuLinkDto roleMenuLinkDto) {
+    public boolean updateOneLink(RoleMenuLinkDto roleMenuLinkDto) {
         RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDto, RoleMenuLink.class);
         return baseMapper.updateById(menuLink) > 0;
     }
 
     @Override
-    public Boolean removeOneLink(Long id) {
+    public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 }

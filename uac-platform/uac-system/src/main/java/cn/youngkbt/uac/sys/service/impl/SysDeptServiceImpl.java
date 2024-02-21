@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
@@ -148,7 +147,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 是否存在子部门
      */
     @Override
-    public Boolean hasChild(String deptId) {
+    public boolean hasChild(String deptId) {
         return baseMapper.exists(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getParentId, deptId));
     }
@@ -157,7 +156,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 校验部门是否用用户
      */
     @Override
-    public Boolean checkDeptExistUser(String deptId) {
+    public boolean checkDeptExistUser(String deptId) {
         return baseMapper.selectOne(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptId, deptId)).getUserCount() > 0;
     }
@@ -166,13 +165,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 校验部门名称是否唯一
      */
     @Override
-    public Boolean checkDeptNameUnique(SysDeptDto sysDeptDto) {
-        boolean exist = baseMapper.exists(Wrappers.<SysDept>lambdaQuery()
+    public boolean checkDeptNameUnique(SysDeptDto sysDeptDto) {
+        return baseMapper.exists(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptName, sysDeptDto.getDeptName())
                 .eq(SysDept::getParentId, sysDeptDto.getParentId())
-                .ne(ObjectUtil.isNotNull(sysDeptDto.getDeptId()), SysDept::getDeptId, sysDeptDto.getDeptId()));
-
-        return !exist;
+                .ne(Objects.nonNull(sysDeptDto.getDeptId()), SysDept::getDeptId, sysDeptDto.getDeptId()));
     }
 
     /**
@@ -194,7 +191,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public Boolean insertOne(SysDeptDto sysDeptDto) {
+    public boolean insertOne(SysDeptDto sysDeptDto) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDto, SysDept.class);
         
         if (Objects.nonNull(sysDeptDto.getParentId())) {
@@ -216,7 +213,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean updateOne(SysDeptDto sysDeptDto) {
+    public boolean updateOne(SysDeptDto sysDeptDto) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDto, SysDept.class);
 
         // 如果更新为启用状态，则上级上级所有部门都启用
@@ -276,13 +273,13 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public Boolean removeOne(String deptId) {
+    public boolean removeOne(String deptId) {
         return baseMapper.delete(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptId, deptId)) > 0;
     }
 
     @Override
-    public Boolean removeBatch(List<Long> ids) {
+    public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

@@ -78,7 +78,7 @@ public class LoginService {
             log.info("租户 {} 已被停用.", tenantId);
             throw new TenantException("租户已被停用");
         }
-        if (ObjectUtil.isNotNull(sysTenant.getExpireTime())
+        if (Objects.nonNull(sysTenant.getExpireTime())
                 && new Date().after(sysTenant.getExpireTime())) {
             log.info("租户 {} 已超过有效期.", tenantId);
             throw new TenantException("租户已超过有效期");

@@ -119,7 +119,7 @@ module.exports = {
     "no-new-object": 2, // 不允许使用Object构造函数
     "no-new-require": 2, // 禁止调用 require 时使用 new 操作符
     "no-new-symbol": 2, // 禁止new Symbol
-    "no-new-wrappers": 2, // 禁止对 String，Number 和 Boolean 使用 new 操作符
+    "no-new-wrappers": 2, // 禁止对 String，Number 和 boolean 使用 new 操作符
     "no-obj-calls": 2, // 禁止把全局对象作为函数调用
     "no-octal": 2, // 禁用八进制字面量
     "no-octal-escape": 2, // 禁止在字符串字面量中使用八进制转义序列

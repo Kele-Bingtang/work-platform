@@ -159,6 +159,15 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
+        path: "/menu-manage",
+        name: "MenuManage",
+        component: "/menu/index",
+        meta: {
+          title: "菜单管理",
+          icon: HomeFilled,
+        },
+      },
+      {
         path: "/dept-manage",
         name: "DeptManage",
         component: "/dept/index",

@@ -42,31 +42,31 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
-    public Boolean checkUserExistUserGroup(String userId) {
+    public boolean checkUserExistUserGroup(String userId) {
         return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
                 .eq(UserGroupLink::getUserId, userId));
     }
 
     @Override
-    public Boolean checkUserGroupExistUser(String userGroupId) {
+    public boolean checkUserGroupExistUser(String userGroupId) {
         return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
                 .eq(UserGroupLink::getUserGroupId, userGroupId));
     }
 
     @Override
-    public Boolean addOneLink(UserGroupLinkDto userGroupLinkDto) {
+    public boolean addOneLink(UserGroupLinkDto userGroupLinkDto) {
         UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDto, UserGroupLink.class);
         return baseMapper.insert(userGroupLink) > 0;
     }
 
     @Override
-    public Boolean updateOneLink(UserGroupLinkDto userGroupLinkDto) {
+    public boolean updateOneLink(UserGroupLinkDto userGroupLinkDto) {
         UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDto, UserGroupLink.class);
         return baseMapper.updateById(userGroupLink) > 0;
     }
 
     @Override
-    public Boolean removeOneLink(Long id) {
+    public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 }

@@ -21,18 +21,18 @@ public interface SysMenuService extends IService<SysMenu> {
     
     List<SysMenuVo> buildMenuTree(List<SysMenu> sysMenuList);
 
-    Boolean checkMenuNameUnique(SysMenuDto sysMenuDto);
+    boolean checkMenuNameUnique(SysMenuDto sysMenuDto);
 
-    Boolean hasChild(Long menuId);
+    boolean hasChild(Long menuId);
 
-    Boolean checkMenuExistRole(Long menuId);
+    boolean checkMenuExistRole(Long menuId);
 
-    Boolean insertOne(SysMenuDto sysMenuDto);
+    boolean insertOne(SysMenuDto sysMenuDto);
 
-    Boolean updateOne(SysMenuDto sysMenuDto);
+    boolean updateOne(SysMenuDto sysMenuDto);
 
-    Boolean removeOne(Long menuId);
+    boolean removeOne(Long menuId);
     
-    Boolean removeBatch(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
     
 }

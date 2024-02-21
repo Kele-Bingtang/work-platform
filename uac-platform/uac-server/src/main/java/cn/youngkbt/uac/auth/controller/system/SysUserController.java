@@ -8,6 +8,7 @@ import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import cn.youngkbt.uac.sys.model.dto.SysUserDto;
 import cn.youngkbt.uac.sys.model.vo.SysUserVo;
 import cn.youngkbt.uac.sys.service.SysUserService;
+import cn.youngkbt.utils.StringUtil;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,14 @@ public class SysUserController {
      */
     @PostMapping
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDto sysUserDto) {
+        if (sysUserService.checkUserNameUnique(sysUserDto)) {
+            return HttpResult.failMessage("新增用户「" + sysUserDto.getUsername() + "」失败，登录账号已存在");
+        } else if (StringUtil.hasText(sysUserDto.getPhone()) && sysUserService.checkPhoneUnique(sysUserDto)) {
+            return HttpResult.failMessage("新增用户「" + sysUserDto.getUsername() + "」失败，手机号码已存在");
+        } else if (StringUtil.hasText(sysUserDto.getEmail()) && sysUserService.checkEmailUnique(sysUserDto)) {
+            return HttpResult.failMessage("新增用户「" + sysUserDto.getUsername() + "」失败，邮箱账号已存在");
+        }
+        
         return HttpResult.ok(sysUserService.insertOne(sysUserDto));
     }
 
@@ -62,6 +71,14 @@ public class SysUserController {
      */
     @PutMapping
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDto sysUserDto) {
+        if (sysUserService.checkUserNameUnique(sysUserDto)) {
+            return HttpResult.failMessage("修改用户「" + sysUserDto.getUsername() + "」失败，登录账号已存在");
+        } else if (StringUtil.hasText(sysUserDto.getPhone()) && sysUserService.checkPhoneUnique(sysUserDto)) {
+            return HttpResult.failMessage("修改用户「" + sysUserDto.getUsername() + "」失败，手机号码已存在");
+        } else if (StringUtil.hasText(sysUserDto.getEmail()) && sysUserService.checkEmailUnique(sysUserDto)) {
+            return HttpResult.failMessage("修改用户「" + sysUserDto.getUsername() + "」失败，邮箱账号已存在");
+        }
+        
         return HttpResult.ok(sysUserService.updateOne(sysUserDto));
     }
 

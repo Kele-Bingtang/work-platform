@@ -13,6 +13,6 @@ import java.util.List;
 @Data
 @Builder
 public class LoginTenantSelectVo {
-    private Boolean tenantEnabled;
+    private boolean tenantEnabled;
     private List<TenantSelectVo> tenantSelectList;
 }

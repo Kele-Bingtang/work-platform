@@ -72,7 +72,7 @@ const statusChange = async (value: number, row: Post.PostInfo) => {
   if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
 
   ElMessageBox.confirm(
-    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.deptName}】部门吗`,
+    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.postName}】部门吗`,
     "系统提示",
     {
       dangerouslyUseHTMLString: true,
@@ -82,7 +82,7 @@ const statusChange = async (value: number, row: Post.PostInfo) => {
     }
   )
     .then(() => {
-      editOne({ id: row.id, deptId: row.deptId, parentId: row.parentId, status: value })
+      editOne({ id: row.id, postId: row.postId, status: value })
         .then(res => {
           if (res.status === "success") message.success("修改成功");
           else {

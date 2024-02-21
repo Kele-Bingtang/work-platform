@@ -63,7 +63,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public Boolean insertOne(SysClientDto sysClientDto) {
+    public boolean insertOne(SysClientDto sysClientDto) {
         SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
         if (Objects.isNull(sysClient.getClientSecret())) {
             sysClient.setClientSecret(IdsUtil.simpleUUID());
@@ -76,20 +76,20 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public Boolean updateOne(SysClientDto sysClientDto) {
+    public boolean updateOne(SysClientDto sysClientDto) {
         SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
         return baseMapper.updateById(sysClient) > 0;
     }
 
     @Override
-    public Boolean updateStatus(Long id, Integer status) {
+    public boolean updateStatus(Long id, Integer status) {
         return baseMapper.update(null, Wrappers.<SysClient>lambdaUpdate()
                 .eq(SysClient::getId, id)
                 .set(SysClient::getStatus, status)) > 0;
     }
 
     @Override
-    public Boolean removeOne(Collection<Long> ids) {
+    public boolean removeOne(Collection<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 

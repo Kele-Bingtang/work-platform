@@ -50,19 +50,39 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
-    public Boolean insertOne(SysPostDto sysPostDto) {
+    public boolean checkPostNameUnique(SysPostDto sysPostDto) {
+        return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
+                .eq(SysPost::getPostName, sysPostDto.getPostName())
+                .ne(Objects.nonNull(sysPostDto.getPostId()), SysPost::getPostId, sysPostDto.getPostId()));
+    }
+
+    @Override
+    public boolean checkPostCodeUnique(SysPostDto sysPostDto) {
+        return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
+                .eq(SysPost::getPostCode, sysPostDto.getPostCode())
+                .ne(Objects.nonNull(sysPostDto.getPostId()), SysPost::getPostId, sysPostDto.getPostId()));
+    }
+
+    @Override
+    public boolean checkPostExitUser(SysPostDto sysPostDto) {
+        return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
+                .eq(SysPost::getPostId, sysPostDto.getPostId()));
+    }
+
+    @Override
+    public boolean insertOne(SysPostDto sysPostDto) {
         SysPost sysPost = MapstructUtil.convert(sysPostDto, SysPost.class);
         return baseMapper.insert(sysPost) > 0;
     }
 
     @Override
-    public Boolean updateOne(SysPostDto sysPostDto) {
+    public boolean updateOne(SysPostDto sysPostDto) {
         SysPost sysPost = MapstructUtil.convert(sysPostDto, SysPost.class);
         return baseMapper.updateById(sysPost) > 0;
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

@@ -42,31 +42,31 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
-    public Boolean checkDeptExistRole(String deptId) {
+    public boolean checkDeptExistRole(String deptId) {
         return baseMapper.exists(Wrappers.<RoleDeptLink>lambdaQuery()
                 .eq(RoleDeptLink::getDeptId, deptId));
     }
 
     @Override
-    public Boolean checkRoleExistDept(String roleId) {
+    public boolean checkRoleExistDept(String roleId) {
         return baseMapper.exists(Wrappers.<RoleDeptLink>lambdaQuery()
                 .eq(RoleDeptLink::getRoleId, roleId));
     }
 
     @Override
-    public Boolean addOneLink(RoleDeptLinkDto roleDeptLinkDto) {
+    public boolean addOneLink(RoleDeptLinkDto roleDeptLinkDto) {
         RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDto, RoleDeptLink.class);
         return baseMapper.insert(roleDeptLink) > 0;
     }
 
     @Override
-    public Boolean updateOneLink(RoleDeptLinkDto roleDeptLinkDto) {
+    public boolean updateOneLink(RoleDeptLinkDto roleDeptLinkDto) {
         RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDto, RoleDeptLink.class);
         return baseMapper.updateById(roleDeptLink) > 0;
     }
 
     @Override
-    public Boolean removeOneLink(Long id) {
+    public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 }

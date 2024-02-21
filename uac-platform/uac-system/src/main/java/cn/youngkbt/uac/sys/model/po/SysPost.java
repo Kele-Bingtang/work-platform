@@ -44,6 +44,11 @@ public class SysPost extends BaseDO {
     private Integer orderNum;
 
     /**
+     * 岗位用户数量
+     */
+    private Integer userCount;
+
+    /**
      * 岗位介绍
      */
     private String intro;

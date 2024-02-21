@@ -47,7 +47,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Value("${default.password}")
     private String password;
-    
+
     private final SysPostService sysPostService;
     private final SysRoleService sysRoleService;
 
@@ -87,6 +87,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    public boolean checkUserNameUnique(SysUserDto sysUserDto) {
+        return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
+                .eq(SysUser::getUsername, sysUserDto.getUsername())
+                .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
+    }
+
+    @Override
+    public boolean checkPhoneUnique(SysUserDto sysUserDto) {
+        return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
+                .eq(SysUser::getPhone, sysUserDto.getPhone())
+                .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
+    }
+
+    @Override
+    public boolean checkEmailUnique(SysUserDto sysUserDto) {
+        return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
+                .eq(SysUser::getEmail, sysUserDto.getEmail())
+                .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
+    }
+
+    @Override
     public RolePostVo rolePostList() {
         List<SysPostVo> sysPostVoList = sysPostService.queryListWithPage(new SysPostDto(), null);
         List<SysRoleVo> sysRoleVoList = sysRoleService.queryListWithPage(new SysRoleDto(), null);
@@ -94,12 +115,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         RolePostVo rolePostVo = new RolePostVo();
         rolePostVo.setPostList(sysPostVoList)
                 .setRoleList(sysRoleVoList);
-        
+
         return rolePostVo;
     }
 
     @Override
-    public Boolean insertOne(SysUserDto sysUserDto) {
+    public boolean insertOne(SysUserDto sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         sysUser.setRegisterTime(new Date());
         if (Objects.isNull(sysUser.getPassword())) {
@@ -109,20 +130,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public Boolean updateOne(SysUserDto sysUserDto) {
+    public boolean updateOne(SysUserDto sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         return baseMapper.updateById(sysUser) > 0;
     }
 
     @Override
-    public Boolean updateOneByUserId(SysUserDto sysUserDto) {
+    public boolean updateOneByUserId(SysUserDto sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         return baseMapper.update(sysUser, Wrappers.<SysUser>lambdaUpdate()
                 .eq(SysUser::getUserId, sysUserDto.getUserId())) > 0;
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 

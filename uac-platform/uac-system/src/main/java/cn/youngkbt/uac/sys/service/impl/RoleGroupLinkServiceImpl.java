@@ -41,31 +41,31 @@ public class RoleGroupLinkServiceImpl extends ServiceImpl<RoleGroupLinkMapper, R
     }
 
     @Override
-    public Boolean checkRoleExistRoleGroup(String roleId) {
+    public boolean checkRoleExistRoleGroup(String roleId) {
         return baseMapper.exists(Wrappers.<RoleGroupLink>lambdaQuery()
                 .eq(RoleGroupLink::getRoleId, roleId));
     }
 
     @Override
-    public Boolean checkRoleGroupExistRole(String roleGroupId) {
+    public boolean checkRoleGroupExistRole(String roleGroupId) {
         return baseMapper.exists(Wrappers.<RoleGroupLink>lambdaQuery()
                 .eq(RoleGroupLink::getRoleGroupId, roleGroupId));
     }
 
     @Override
-    public Boolean addOneLink(RoleGroupLinkDto roleGroupLinkDto) {
+    public boolean addOneLink(RoleGroupLinkDto roleGroupLinkDto) {
         RoleGroupLink roleGroupLink = MapstructUtil.convert(roleGroupLinkDto, RoleGroupLink.class);
         return baseMapper.insert(roleGroupLink) > 0;
     }
 
     @Override
-    public Boolean updateOneLink(RoleGroupLinkDto roleGroupLinkDto) {
+    public boolean updateOneLink(RoleGroupLinkDto roleGroupLinkDto) {
         RoleGroupLink roleGroupLink = MapstructUtil.convert(roleGroupLinkDto, RoleGroupLink.class);
         return baseMapper.updateById(roleGroupLink) > 0;
     }
 
     @Override
-    public Boolean removeOneLink(Long id) {
+    public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 }

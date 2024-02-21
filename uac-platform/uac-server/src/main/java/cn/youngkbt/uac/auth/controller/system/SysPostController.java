@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.auth.controller.system;
 
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
@@ -46,6 +47,12 @@ public class SysPostController {
      */
     @PostMapping
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysPostDto sysPostDto) {
+        if (sysPostService.checkPostNameUnique(sysPostDto)) {
+            return HttpResult.failMessage("新增岗位「" + sysPostDto.getPostName() + "」失败，岗位名称已存在");
+        } else if (sysPostService.checkPostCodeUnique(sysPostDto)) {
+            return HttpResult.failMessage("新增岗位「" + sysPostDto.getPostName() + "」失败，岗位编码已存在");
+        }
+        
         return HttpResult.ok(sysPostService.insertOne(sysPostDto));
     }
 
@@ -54,6 +61,15 @@ public class SysPostController {
      */
     @PutMapping
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysPostDto sysPostDto) {
+        if (sysPostService.checkPostNameUnique(sysPostDto)) {
+            return HttpResult.failMessage("修改岗位「" + sysPostDto.getPostName() + "」失败，岗位名称已存在");
+        } else if (sysPostService.checkPostCodeUnique(sysPostDto)) {
+            return HttpResult.failMessage("修改岗位「" + sysPostDto.getPostName() + "」失败，岗位编码已存在");
+        } else if (ColumnConstant.STATUS_EXCEPTION.equals(sysPostDto.getStatus())
+                && sysPostService.checkPostExitUser(sysPostDto)) {
+            return HttpResult.failMessage("该岗位下存在已分配用户，不能禁用!");
+        }
+
         return HttpResult.ok(sysPostService.updateOne(sysPostDto));
     }
 

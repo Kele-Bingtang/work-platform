@@ -80,8 +80,8 @@ public class SysDeptController {
      */
     @PostMapping
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDeptDto sysDeptDto) {
-        if (sysDeptService.checkDeptNameUnique(sysDeptDto).equals(Boolean.FALSE)) {
-            return HttpResult.failMessage("新增部门'" + sysDeptDto.getDeptName() + "'失败，部门名称已存在");
+        if (sysDeptService.checkDeptNameUnique(sysDeptDto)) {
+            return HttpResult.failMessage("新增部门「" + sysDeptDto.getDeptName() + "」失败，部门名称已存在");
         }
 
         return HttpResult.ok(sysDeptService.insertOne(sysDeptDto));
@@ -94,11 +94,11 @@ public class SysDeptController {
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDeptDto sysDeptDto) {
         String deptId = sysDeptDto.getDeptId();
         if (sysDeptDto.getParentId().equals(deptId)) {
-            return HttpResult.failMessage("修改部门'" + sysDeptDto.getDeptName() + "'失败，上级部门不能是自己");
+            return HttpResult.failMessage("修改部门「" + sysDeptDto.getDeptName() + "」失败，上级部门不能是自己");
         }
 
-        if (sysDeptService.checkDeptNameUnique(sysDeptDto).equals(Boolean.FALSE)) {
-            return HttpResult.failMessage("修改部门'" + sysDeptDto.getDeptName() + "'失败，部门名称已存在");
+        if (sysDeptService.checkDeptNameUnique(sysDeptDto)) {
+            return HttpResult.failMessage("修改部门「" + sysDeptDto.getDeptName() + "」失败，部门名称已存在");
         }
 
         if (ColumnConstant.STATUS_EXCEPTION.equals(sysDeptDto.getStatus())) {
@@ -106,7 +106,7 @@ public class SysDeptController {
                 return HttpResult.failMessage("该部门包含未停用的子部门，不能禁用");
             }
 
-            if (sysDeptService.checkDeptExistUser(deptId).equals(Boolean.TRUE)) {
+            if (sysDeptService.checkDeptExistUser(deptId)) {
                 return HttpResult.failMessage("该部门下已存在用户，不能禁用!");
             }
         }

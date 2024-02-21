@@ -25,13 +25,19 @@ public interface SysUserService extends IService<SysUser> {
 
     List<SysUserVo> queryListWithPage(SysUserDto sysUserDto, PageQuery pageQuery);
 
-    Boolean insertOne(SysUserDto sysUserDto);
+    boolean checkUserNameUnique(SysUserDto sysUserDto);
 
-    Boolean updateOne(SysUserDto sysUserDto);
+    boolean checkPhoneUnique(SysUserDto sysUserDto);
 
-    Boolean updateOneByUserId(SysUserDto sysUserDto);
+    boolean checkEmailUnique(SysUserDto sysUserDto);
 
-    Boolean removeOne(List<Long> ids);
+    boolean insertOne(SysUserDto sysUserDto);
+
+    boolean updateOne(SysUserDto sysUserDto);
+
+    boolean updateOneByUserId(SysUserDto sysUserDto);
+
+    boolean removeOne(List<Long> ids);
 
     RolePostVo rolePostList();
 }

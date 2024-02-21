@@ -42,31 +42,31 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
     }
 
     @Override
-    public Boolean checkUserExistPost(String userId) {
+    public boolean checkUserExistPost(String userId) {
         return baseMapper.exists(Wrappers.<UserPostLink>lambdaQuery()
                 .eq(UserPostLink::getUserId, userId));
     }
 
     @Override
-    public Boolean checkPostGroupExistUser(String postId) {
+    public boolean checkPostGroupExistUser(String postId) {
         return baseMapper.exists(Wrappers.<UserPostLink>lambdaQuery()
                 .eq(UserPostLink::getPostId, postId));
     }
 
     @Override
-    public Boolean addOneLink(UserPostLinkDto userPostLinkDto) {
+    public boolean addOneLink(UserPostLinkDto userPostLinkDto) {
         UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDto, UserPostLink.class);
         return baseMapper.insert(userPostLink) > 0;
     }
 
     @Override
-    public Boolean updateOneLink(UserPostLinkDto userPostLinkDto) {
+    public boolean updateOneLink(UserPostLinkDto userPostLinkDto) {
         UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDto, UserPostLink.class);
         return baseMapper.updateById(userPostLink) > 0;
     }
 
     @Override
-    public Boolean removeOneLink(Long id) {
+    public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 }

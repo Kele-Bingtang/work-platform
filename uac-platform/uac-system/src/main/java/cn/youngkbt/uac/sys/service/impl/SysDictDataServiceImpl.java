@@ -52,20 +52,20 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     }
 
     @Override
-    public Boolean insertOne(SysDictDataDto sysDictDataDto) {
+    public boolean insertOne(SysDictDataDto sysDictDataDto) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDto, SysDictData.class);
         return baseMapper.insert(sysDictData) > 0;
     }
 
     @Override
     @Transactional
-    public Boolean updateOne(SysDictDataDto sysDictDataDto) {
+    public boolean updateOne(SysDictDataDto sysDictDataDto) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDto, SysDictData.class);
         return baseMapper.updateById(sysDictData) > 0;
     }
 
     @Override
-    public Boolean updateDictCode(String oldDictCode, String newDictCode) {
+    public boolean updateDictCode(String oldDictCode, String newDictCode) {
         SysDictData sysDictData = new SysDictData();
         sysDictData.setDictCode(newDictCode);
         return baseMapper.update(sysDictData, Wrappers.<SysDictData>lambdaUpdate()
@@ -73,7 +73,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

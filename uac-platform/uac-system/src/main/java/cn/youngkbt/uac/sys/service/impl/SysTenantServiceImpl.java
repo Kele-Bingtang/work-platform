@@ -55,19 +55,19 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public Boolean insertOne(SysTenantDto sysTenantDto) {
+    public boolean insertOne(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDto, SysTenant.class);
         return baseMapper.insert(sysTenant) > 0;
     }
 
     @Override
-    public Boolean updateOne(SysTenantDto sysTenantDto) {
+    public boolean updateOne(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDto, SysTenant.class);
         return baseMapper.updateById(sysTenant) > 0;
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

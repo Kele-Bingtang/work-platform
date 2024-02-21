@@ -22,11 +22,11 @@ public interface SysAppService extends IService<SysApp> {
 
     List<SysAppVo> queryListWithPage(SysAppDto sysAppDto, PageQuery pageQuery);
 
-    Boolean insertOne(SysAppDto sysAppDto);
+    boolean insertOne(SysAppDto sysAppDto);
 
-    Boolean updateOne(SysAppDto sysAppDto);
+    boolean updateOne(SysAppDto sysAppDto);
 
-    Boolean removeOne(List<Long> ids);
+    boolean removeOne(List<Long> ids);
 
     List<SysAppTreeVo> appTreeList();
 }

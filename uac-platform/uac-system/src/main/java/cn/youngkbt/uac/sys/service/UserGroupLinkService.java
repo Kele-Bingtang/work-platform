@@ -16,13 +16,13 @@ import java.util.List;
 public interface UserGroupLinkService extends IService<UserGroupLink> {
     List<UserGroupLinkVo> queryLinkByTenantId(UserGroupLinkDto userGroupLinkDto, PageQuery pageQuery);
 
-    Boolean checkUserExistUserGroup(String userId);
+    boolean checkUserExistUserGroup(String userId);
 
-    Boolean checkUserGroupExistUser(String userGroupId);
+    boolean checkUserGroupExistUser(String userGroupId);
 
-    Boolean addOneLink(UserGroupLinkDto userGroupLinkDto);
+    boolean addOneLink(UserGroupLinkDto userGroupLinkDto);
 
-    Boolean updateOneLink(UserGroupLinkDto userGroupLinkDto);
+    boolean updateOneLink(UserGroupLinkDto userGroupLinkDto);
 
-    Boolean removeOneLink(Long id);
+    boolean removeOneLink(Long id);
 }

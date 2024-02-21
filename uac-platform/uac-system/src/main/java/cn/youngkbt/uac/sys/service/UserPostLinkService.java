@@ -16,13 +16,13 @@ import java.util.List;
 public interface UserPostLinkService extends IService<UserPostLink> {
     List<UserPostLinkVo> queryLinkByTenantId(UserPostLinkDto userPostLinkDto, PageQuery pageQuery);
 
-    Boolean checkUserExistPost(String userId);
+    boolean checkUserExistPost(String userId);
 
-    Boolean checkPostGroupExistUser(String postId);
+    boolean checkPostGroupExistUser(String postId);
 
-    Boolean addOneLink(UserPostLinkDto userPostLinkDto);
+    boolean addOneLink(UserPostLinkDto userPostLinkDto);
 
-    Boolean updateOneLink(UserPostLinkDto userPostLinkDto);
+    boolean updateOneLink(UserPostLinkDto userPostLinkDto);
 
-    Boolean removeOneLink(Long id);
+    boolean removeOneLink(Long id);
 }

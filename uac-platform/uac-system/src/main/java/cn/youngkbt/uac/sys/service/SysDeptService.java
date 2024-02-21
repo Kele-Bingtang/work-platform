@@ -32,21 +32,21 @@ public interface SysDeptService extends IService<SysDept> {
     
     Long queryChildrenDeptCountById(String deptId);
     
-    Boolean hasChild(String deptId);
+    boolean hasChild(String deptId);
     
-    Boolean checkDeptExistUser(String deptId);
+    boolean checkDeptExistUser(String deptId);
 
-    Boolean checkDeptNameUnique(SysDeptDto sysDeptDto);
+    boolean checkDeptNameUnique(SysDeptDto sysDeptDto);
     
     Integer getDeptUserCount(String deptId);
     
-    Boolean insertOne(SysDeptDto sysDeptDto);
+    boolean insertOne(SysDeptDto sysDeptDto);
 
-    Boolean updateOne(SysDeptDto sysDeptDto);
+    boolean updateOne(SysDeptDto sysDeptDto);
 
-    Boolean removeOne(String deptId);
+    boolean removeOne(String deptId);
 
-    Boolean removeBatch(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
 
 
 }

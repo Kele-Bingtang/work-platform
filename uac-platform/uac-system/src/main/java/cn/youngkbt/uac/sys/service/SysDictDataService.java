@@ -19,11 +19,11 @@ public interface SysDictDataService extends IService<SysDictData> {
 
     List<SysDictDataVo> queryListWithPage(SysDictDataDto sysDictDataDto, PageQuery pageQuery);
 
-    Boolean insertOne(SysDictDataDto sysDictDataDto);
+    boolean insertOne(SysDictDataDto sysDictDataDto);
 
-    Boolean updateOne(SysDictDataDto sysDictDataDto);
+    boolean updateOne(SysDictDataDto sysDictDataDto);
 
-    Boolean updateDictCode(String oldDictCode, String newDictCodeS);
+    boolean updateDictCode(String oldDictCode, String newDictCodeS);
 
-    Boolean removeOne(List<Long> ids);
+    boolean removeOne(List<Long> ids);
 }

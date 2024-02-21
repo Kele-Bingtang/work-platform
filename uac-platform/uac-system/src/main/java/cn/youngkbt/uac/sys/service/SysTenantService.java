@@ -21,10 +21,10 @@ public interface SysTenantService extends IService<SysTenant> {
 
     List<SysTenantVo> queryListWithPage(SysTenantDto sysTenantDto, PageQuery pageQuery);
 
-    Boolean insertOne(SysTenantDto sysTenantDto);
+    boolean insertOne(SysTenantDto sysTenantDto);
 
-    Boolean updateOne(SysTenantDto sysTenantDto);
+    boolean updateOne(SysTenantDto sysTenantDto);
 
-    Boolean removeOne(List<Long> ids);
+    boolean removeOne(List<Long> ids);
 
 }

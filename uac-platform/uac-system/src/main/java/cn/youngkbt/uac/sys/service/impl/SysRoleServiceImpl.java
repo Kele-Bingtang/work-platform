@@ -51,19 +51,33 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public Boolean insertOne(SysRoleDto sysRoleDto) {
+    public boolean checkRoleCodeUnique(SysRoleDto sysRoleDto) {
+        return baseMapper.exists(new LambdaQueryWrapper<SysRole>()
+                .eq(SysRole::getRoleCode, sysRoleDto.getRoleCode())
+                .ne(Objects.nonNull(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId()));
+    }
+
+    @Override
+    public boolean checkRoleNameUnique(SysRoleDto sysRoleDto) {
+        return baseMapper.exists(new LambdaQueryWrapper<SysRole>()
+                .eq(SysRole::getRoleName, sysRoleDto.getRoleName())
+                .ne(Objects.nonNull(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId()));
+    }
+
+    @Override
+    public boolean insertOne(SysRoleDto sysRoleDto) {
         SysRole sysRole = MapstructUtil.convert(sysRoleDto, SysRole.class);
         return baseMapper.insert(sysRole) > 0;
     }
 
     @Override
-    public Boolean updateOne(SysRoleDto sysRoleDto) {
+    public boolean updateOne(SysRoleDto sysRoleDto) {
         SysRole sysRole = MapstructUtil.convert(sysRoleDto, SysRole.class);
         return baseMapper.updateById(sysRole) > 0;
     }
 
     @Override
-    public Boolean removeOne(List<Long> ids) {
+    public boolean removeOne(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

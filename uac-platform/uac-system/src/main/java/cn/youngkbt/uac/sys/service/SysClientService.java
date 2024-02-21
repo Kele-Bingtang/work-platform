@@ -22,11 +22,11 @@ public interface SysClientService extends IService<SysClient> {
 
     List<SysClientVo> queryListWithPage(SysClientDto sysClientDto, PageQuery pageQuery);
 
-    Boolean insertOne(SysClientDto sysClientDto);
+    boolean insertOne(SysClientDto sysClientDto);
 
-    Boolean updateOne(SysClientDto sysClientDto);
+    boolean updateOne(SysClientDto sysClientDto);
 
-    Boolean updateStatus(Long id, Integer status);
+    boolean updateStatus(Long id, Integer status);
 
-    Boolean removeOne(Collection<Long> ids);
+    boolean removeOne(Collection<Long> ids);
 }

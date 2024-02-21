@@ -30,7 +30,7 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(key, value, timeout);
     }
 
-    public static Boolean delete(String key) {
+    public static boolean delete(String key) {
         return redisTemplate.delete(key);
     }
 }

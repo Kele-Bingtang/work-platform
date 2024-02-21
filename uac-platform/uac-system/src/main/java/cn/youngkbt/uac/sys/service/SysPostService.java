@@ -18,10 +18,17 @@ public interface SysPostService extends IService<SysPost> {
     SysPostVo queryById(Long id);
 
     List<SysPostVo> queryListWithPage(SysPostDto sysPostDto, PageQuery pageQuery);
+    
+    boolean checkPostNameUnique(SysPostDto sysPostDto);
+    
+    boolean checkPostCodeUnique(SysPostDto sysPostDto);
 
-    Boolean insertOne(SysPostDto sysPostDto);
+    boolean checkPostExitUser(SysPostDto sysPostDto);
 
-    Boolean updateOne(SysPostDto sysPostDto);
+    boolean insertOne(SysPostDto sysPostDto);
 
-    Boolean removeOne(List<Long> ids);
+    boolean updateOne(SysPostDto sysPostDto);
+
+    boolean removeOne(List<Long> ids);
+
 }

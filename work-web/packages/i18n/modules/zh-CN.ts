@@ -12,6 +12,7 @@ export default {
     TenantManage: "租户管理",
     UserManage: "用户管理",
     RoleManage: "角色管理",
+    MenuManage: "菜单管理",
     DeptManage: "部门管理",
     PostManage: "岗位管理",
     DictManage: "字典管理",

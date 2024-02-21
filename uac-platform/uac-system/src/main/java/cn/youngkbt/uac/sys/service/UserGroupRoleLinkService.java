@@ -16,13 +16,13 @@ import java.util.List;
 public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
     List<UserGroupRoleLinkVo> queryLinkByAppId(UserGroupRoleLinkDto userGroupRoleLinkDto, PageQuery pageQuery);
 
-    Boolean checkUserGroupExistRole(String userGroupId);
+    boolean checkUserGroupExistRole(String userGroupId);
 
-    Boolean checkRoleExistUserGroup(String roleId);
+    boolean checkRoleExistUserGroup(String roleId);
 
-    Boolean addOneLink(UserGroupRoleLinkDto userGroupRoleLinkDto);
+    boolean addOneLink(UserGroupRoleLinkDto userGroupRoleLinkDto);
 
-    Boolean updateOneLink(UserGroupRoleLinkDto userGroupRoleLinkDto);
+    boolean updateOneLink(UserGroupRoleLinkDto userGroupRoleLinkDto);
 
-    Boolean removeOneLink(Long id);
+    boolean removeOneLink(Long id);
 }

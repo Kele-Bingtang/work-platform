@@ -42,31 +42,31 @@ public class UserRoleGroupLinkServiceImpl extends ServiceImpl<UserRoleGroupLinkM
     }
 
     @Override
-    public Boolean checkUserExistRoleGroup(String userId) {
+    public boolean checkUserExistRoleGroup(String userId) {
         return baseMapper.exists(Wrappers.<UserRoleGroupLink>lambdaQuery()
                 .eq(UserRoleGroupLink::getUserId, userId));
     }
 
     @Override
-    public Boolean checkRoleGroupExistUser(String roleGroupId) {
+    public boolean checkRoleGroupExistUser(String roleGroupId) {
         return baseMapper.exists(Wrappers.<UserRoleGroupLink>lambdaQuery()
                 .eq(UserRoleGroupLink::getRoleGroupId, roleGroupId));
     }
 
     @Override
-    public Boolean addOneLink(UserRoleGroupLinkDto userRoleGroupLinkDto) {
+    public boolean addOneLink(UserRoleGroupLinkDto userRoleGroupLinkDto) {
         UserRoleGroupLink userRoleGroupLink = MapstructUtil.convert(userRoleGroupLinkDto, UserRoleGroupLink.class);
         return baseMapper.insert(userRoleGroupLink) > 0;
     }
 
     @Override
-    public Boolean updateOneLink(UserRoleGroupLinkDto userRoleGroupLinkDto) {
+    public boolean updateOneLink(UserRoleGroupLinkDto userRoleGroupLinkDto) {
         UserRoleGroupLink userRoleGroupLink = MapstructUtil.convert(userRoleGroupLinkDto, UserRoleGroupLink.class);
         return baseMapper.updateById(userRoleGroupLink) > 0;
     }
 
     @Override
-    public Boolean removeOneLink(Long id) {
+    public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 }

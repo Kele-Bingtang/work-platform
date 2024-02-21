@@ -1,9 +1,11 @@
 package cn.youngkbt.uac.sys.model.dto;
 
+import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,6 +21,12 @@ import java.util.Date;
 @Accessors(chain = true)
 @AutoMapper(target = SysUser.class)
 public class SysUserDto {
+
+    /**
+     * ID
+     */
+    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    private String id;
 
     /**
      * 用户 ID

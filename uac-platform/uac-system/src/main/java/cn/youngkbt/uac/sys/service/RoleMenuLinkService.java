@@ -17,14 +17,14 @@ public interface RoleMenuLinkService extends IService<RoleMenuLink> {
 
     List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDto roleMenuLinkDto, PageQuery pageQuery);
 
-    Boolean checkMenuExistRole(String menuId);
+    boolean checkMenuExistRole(String menuId);
 
-    Boolean checkRoleExistMenu(String roleId);
+    boolean checkRoleExistMenu(String roleId);
     
-    Boolean addOneLink(RoleMenuLinkDto roleMenuLinkDto);
+    boolean addOneLink(RoleMenuLinkDto roleMenuLinkDto);
     
-    Boolean updateOneLink(RoleMenuLinkDto roleMenuLinkDto);
+    boolean updateOneLink(RoleMenuLinkDto roleMenuLinkDto);
     
-    Boolean removeOneLink(Long id);
+    boolean removeOneLink(Long id);
     
 }

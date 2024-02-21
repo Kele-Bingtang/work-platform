@@ -19,9 +19,13 @@ public interface SysRoleService extends IService<SysRole> {
 
     List<SysRoleVo> queryListWithPage(SysRoleDto sysRoleDto, PageQuery pageQuery);
 
-    Boolean insertOne(SysRoleDto sysRoleDto);
+    boolean checkRoleCodeUnique(SysRoleDto sysRoleDto);
+    
+    boolean checkRoleNameUnique(SysRoleDto sysRoleDto);
 
-    Boolean updateOne(SysRoleDto sysRoleDto);
+    boolean insertOne(SysRoleDto sysRoleDto);
 
-    Boolean removeOne(List<Long> ids);
+    boolean updateOne(SysRoleDto sysRoleDto);
+
+    boolean removeOne(List<Long> ids);
 }

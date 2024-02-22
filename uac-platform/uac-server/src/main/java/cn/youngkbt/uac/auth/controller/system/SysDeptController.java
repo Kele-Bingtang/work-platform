@@ -47,8 +47,8 @@ public class SysDeptController {
 
     @GetMapping("/deptTreeList")
     public Response<List<Tree<String>>> selectDeptTreeList(SysDeptDto sysDeptDto) {
-        List<Tree<String>> treeList = sysDeptService.selectDeptTreeList(sysDeptDto);
-        return HttpResult.ok(treeList);
+        List<Tree<String>> deptTreeList = sysDeptService.selectDeptTreeList(sysDeptDto);
+        return HttpResult.ok(deptTreeList);
     }
 
     @GetMapping("/deptTreeTable")

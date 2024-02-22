@@ -62,7 +62,7 @@ const columns: TableColumnProps<User.UserInfo>[] = [
     },
   },
   { prop: "registerTime", width: 160, label: "注册时间" },
-  { prop: "operation", width: 140, fixed: "right", label: "操作" },
+  { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
 const detailForm: DialogForm = {

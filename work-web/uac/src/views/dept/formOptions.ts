@@ -2,7 +2,6 @@ import { getDeptTreeList } from "@/api/dept";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { validatePhone } from "@/views/user/rules";
-import { useLayoutStore } from "@/stores/layout";
 
 const rules = reactive<FormRules>({
   deptName: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
@@ -32,7 +31,7 @@ export const options: FormOptionsProps = {
         },
         fieldNames: { value: "id", label: "label" },
         enum: getDeptTreeList,
-        isHidden: form => form.parentId === "0",
+        isHidden: (form: any) => form.parentId === "0",
       },
     },
     {

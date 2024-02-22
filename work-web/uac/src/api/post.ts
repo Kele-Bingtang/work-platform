@@ -16,7 +16,7 @@ export namespace Post {
 const baseUri = "/system/post";
 
 export const list = () => {
-  return http.get<Post.PostInfo>(`${baseUri}/list`);
+  return http.get<http.Response<Post.PostInfo[]>>(`${baseUri}/list`);
 };
 
 export const addOne = (data: Post.PostInfo) => {

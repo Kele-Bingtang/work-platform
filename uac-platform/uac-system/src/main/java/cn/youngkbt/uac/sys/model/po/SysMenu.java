@@ -3,7 +3,9 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
 import com.baomidou.mybatisplus.annotation.*;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,10 +13,11 @@ import lombok.EqualsAndHashCode;
  * @author Kele-Bingtang
  * @date 2023-23-12 00:23:08
  * @note 菜单
-*/
+ */
 @TableName("t_sys_menu")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = SysMenuVo.class, reverseConvertGenerate = false)
 public class SysMenu extends BaseDO {
     /**
      * 菜单 ID
@@ -57,6 +60,16 @@ public class SysMenu extends BaseDO {
      * 显示顺序
      */
     private Integer orderNum;
+
+    /**
+     * 权限标识
+     */
+    private String permission;
+
+    /**
+     * 菜单类型（M目录 C菜单 F按钮）
+     */
+    private String menuType;
 
     /**
      * 组件路径

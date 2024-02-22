@@ -78,7 +78,7 @@ const columns: TableColumnProps[] = [
   },
   { prop: "dictName", label: "字典名称", search: { el: "el-input" } },
   { prop: "createTime", label: "创建时间" },
-  { prop: "operation", label: "操作" },
+  { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
 const options: FormOptionsProps = {

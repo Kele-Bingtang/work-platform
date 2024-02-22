@@ -1,19 +1,30 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDto;
+import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
+import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import cn.youngkbt.uac.sys.service.SysMenuService;
+import cn.youngkbt.uac.sys.utils.MenuTreeUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +34,10 @@ import java.util.Objects;
  * @note 针对表【t_sys_menu(菜单表)】的数据库操作Service实现
  */
 @Service
+@RequiredArgsConstructor
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
+
+    private final RoleMenuLinkMapper roleMenuLinkMapper;
 
     @Override
     public SysMenuVo queryById(Long id) {
@@ -34,11 +48,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public List<SysMenuVo> queryListWithPage(SysMenuDto sysMenuDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysMenu> wrapper = Wrappers.<SysMenu>lambdaQuery()
-                .eq(StringUtils.hasText(sysMenuDto.getMenuCode()), SysMenu::getMenuCode, sysMenuDto.getMenuCode())
-                .eq(Objects.nonNull(sysMenuDto.getStatus()), SysMenu::getStatus, sysMenuDto.getStatus())
-                .orderByAsc(SysMenu::getParentId)
-                .orderByAsc(SysMenu::getOrderNum);
+        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
 
         List<SysMenu> sysMenuList;
         if (Objects.isNull(pageQuery)) {
@@ -53,9 +63,48 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * 构建前端需要的路由菜单
      */
     @Override
-    public List<SysMenuVo> buildMenuTree(List<SysMenu> sysMenuList) {
-        
-        return null;
+    public List<Tree<String>> selectMenuTreeList(SysMenuDto sysMenuDto) {
+        // 查询正常状态的部门
+        sysMenuDto.setStatus(ColumnConstant.STATUS_NORMAL);
+        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
+        List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
+        return buildDeptTree(sysMenuList);
+    }
+
+    @Override
+    public List<MenuTree> buildDeptTreeTable(SysMenuDto sysMenuDto) {
+        // 查询正常状态的部门
+        sysMenuDto.setStatus(ColumnConstant.STATUS_NORMAL);
+        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
+        List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
+        List<MenuTree> menuTreeList = MapstructUtil.convert(sysMenuList, MenuTree.class);
+        return MenuTreeUtil.build(menuTreeList);
+    }
+
+    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuDto sysMenuDto) {
+        return Wrappers.<SysMenu>lambdaQuery()
+                .eq(StringUtil.hasText(sysMenuDto.getMenuCode()), SysMenu::getMenuCode, sysMenuDto.getMenuCode())
+                .eq(StringUtil.hasText(sysMenuDto.getMenuName()), SysMenu::getMenuName, sysMenuDto.getMenuName())
+                .eq(StringUtil.hasText(sysMenuDto.getAppId()), SysMenu::getAppId, sysMenuDto.getAppId())
+                .eq(Objects.nonNull(sysMenuDto.getStatus()), SysMenu::getStatus, sysMenuDto.getStatus())
+                .orderByAsc(SysMenu::getParentId)
+                .orderByAsc(SysMenu::getOrderNum);
+    }
+
+    /**
+     * 构建前端所需要下拉树结构
+     */
+    private List<Tree<String>> buildDeptTree(List<SysMenu> sysMenuList) {
+        if (CollUtil.isEmpty(sysMenuList)) {
+            return Collections.emptyList();
+        }
+
+        return TreeUtil.build(sysMenuList, "0", TreeNodeConfig.DEFAULT_CONFIG.setNameKey("label"), (treeNode, tree) ->
+                tree.setId(treeNode.getMenuId())
+                        .setParentId(treeNode.getParentId())
+                        .setName(treeNode.getMenuName())
+                        .setWeight(treeNode.getOrderNum())
+                        .putExtra("icon", treeNode.getIcon()));
     }
 
     @Override
@@ -76,8 +125,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public boolean checkMenuExistRole(Long menuId) {
-        
-        return false;
+        return roleMenuLinkMapper.exists(Wrappers.<RoleMenuLink>lambdaQuery()
+                .eq(RoleMenuLink::getMenuId, menuId));
     }
 
     @Override

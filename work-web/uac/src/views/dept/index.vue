@@ -53,7 +53,7 @@ const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
   { prop: "phone", label: "电话", width: 120 },
   { prop: "email", label: "邮箱", width: 120 },
   { prop: "createTime", label: "创建时间", width: 160 },
-  { prop: "operation", label: "操作", width: 160 },
+  { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
 const detailForm: DialogForm = {

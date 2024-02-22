@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -60,6 +61,16 @@ public class SysMenuVo implements Serializable {
     private Integer orderNum;
 
     /**
+     * 权限标识
+     */
+    private String permission;
+    
+    /**
+     * 菜单类型（M目录 C菜单 F按钮）
+     */
+    private String menuType;
+
+    /**
      * 组件路径
      */
     private String component;
@@ -93,5 +104,15 @@ public class SysMenuVo implements Serializable {
      * 应用 ID
      */
     private String appId;
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 
 }

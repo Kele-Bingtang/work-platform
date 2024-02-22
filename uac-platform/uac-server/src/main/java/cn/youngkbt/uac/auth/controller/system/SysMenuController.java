@@ -7,6 +7,7 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDto;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
+import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -46,8 +47,15 @@ public class SysMenuController {
      * 菜单下拉值查询
      */
     @GetMapping("/treeSelect")
-    public Response<List<Tree<Long>>> treeSelect(SysMenuDto sysMenuDto) {
-        return null;
+    public Response<List<Tree<String>>> treeSelect(SysMenuDto sysMenuDto) {
+        List<Tree<String>> menuTreeList = sysMenuService.selectMenuTreeList(sysMenuDto);
+        return HttpResult.ok(menuTreeList);
+    }
+
+    @GetMapping("/menuTreeTable")
+    public Response<List<MenuTree>> deptTreeTable(SysMenuDto sysMenuDto) {
+        List<MenuTree> treeTable = sysMenuService.buildDeptTreeTable(sysMenuDto);
+        return HttpResult.ok(treeTable);
     }
 
     /**

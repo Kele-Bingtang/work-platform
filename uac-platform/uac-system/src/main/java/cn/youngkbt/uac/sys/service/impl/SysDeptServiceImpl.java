@@ -69,6 +69,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         return buildDeptTree(sysDeptList);
     }
 
+    @Override
+    public List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto) {
+        // 查询正常状态的部门
+        sysDeptDto.setStatus(ColumnConstant.STATUS_NORMAL);
+        LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
+        List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
+        List<DeptTree> sysDeptVoList = MapstructUtil.convert(sysDeptList, DeptTree.class);
+        return DeptTreeUtil.build(sysDeptVoList);
+    }
+
     private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptDto sysDeptDto) {
         return Wrappers.<SysDept>lambdaQuery()
                 .eq(StringUtils.hasText(sysDeptDto.getDeptId()), SysDept::getDeptId, sysDeptDto.getDeptId())
@@ -91,16 +101,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
                         .setName(treeNode.getDeptName())
                         .setWeight(treeNode.getOrderNum())
                         .putExtra("icon", treeNode.getIcon()));
-    }
-
-    @Override
-    public List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto) {
-        // 查询正常状态的部门
-        sysDeptDto.setStatus(ColumnConstant.STATUS_NORMAL);
-        LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
-        List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
-        List<DeptTree> sysDeptVoList = MapstructUtil.convert(sysDeptList, DeptTree.class);
-        return DeptTreeUtil.build(sysDeptVoList);
     }
 
     /**

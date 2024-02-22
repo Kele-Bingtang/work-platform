@@ -71,7 +71,7 @@ const columns: TableColumnProps<Role.RoleInfo[]>[] = [
   },
   { prop: "orderNum", label: "显示顺序" },
   { prop: "createTime", label: "创建时间" },
-  { prop: "operation", label: "操作" },
+  { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
 const detailForm: DialogForm = {
@@ -128,7 +128,7 @@ const statusChange = async (value: number, row: Role.RoleInfo) => {
 
   .role-table {
     width: calc(100% - 230px);
-    height: 97%;
+    height: 100%;
   }
 }
 </style>

@@ -66,6 +66,11 @@ public class SysMenuDto {
     private Integer orderNum;
 
     /**
+     * 菜单类型（M目录 C菜单 F按钮）
+     */
+    private String menuType;
+
+    /**
      * 组件路径
      */
     @Size(min = 0, max = 200, message = "组件路径不能超过 {max} 个字符")

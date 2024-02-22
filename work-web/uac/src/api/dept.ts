@@ -1,7 +1,7 @@
 import http from "@/config/request";
 
 export namespace Dept {
-  export interface DeptList {
+  export interface DeptInfo {
     id: number;
     deptId: string; // 部门 ID
     parentId: string; // 父级部门 ID
@@ -30,7 +30,7 @@ export namespace Dept {
     status: number;
   }
 
-  export interface DeptTreeTable extends DeptList {
+  export interface DeptTreeTable extends DeptInfo {
     children: DeptTreeTable[];
   }
 }
@@ -38,21 +38,21 @@ export namespace Dept {
 const baseUri = "/system/dept";
 
 export const getDeptTreeList = () => {
-  return http.get<Dept.DeptTreeList>(`${baseUri}/deptTreeList`);
+  return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/deptTreeList`);
 };
 
 export const getDeptTreeTable = () => {
-  return http.get<Dept.DeptTreeTable>(`${baseUri}/deptTreeTable`);
+  return http.get<http.Response<Dept.DeptTreeTable[]>>(`${baseUri}/deptTreeTable`);
 };
 
-export const addOne = (data: Dept.DeptList) => {
+export const addOne = (data: Dept.DeptInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<Dept.DeptList, "id">) => {
+export const editOne = (data: RequiredKeyPartialOther<Dept.DeptInfo, "id">) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 
-export const deleteOne = (data: Dept.DeptList) => {
+export const deleteOne = (data: Dept.DeptInfo) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.deptId}`);
 };

@@ -1,9 +1,11 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDto;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
+import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -19,7 +21,9 @@ public interface SysMenuService extends IService<SysMenu> {
 
     List<SysMenuVo> queryListWithPage(SysMenuDto sysMenuDto, PageQuery pageQuery);
     
-    List<SysMenuVo> buildMenuTree(List<SysMenu> sysMenuList);
+    List<Tree<String>> selectMenuTreeList(SysMenuDto sysMenuDto);
+
+    List<MenuTree> buildDeptTreeTable(SysMenuDto sysMenuDto);
 
     boolean checkMenuNameUnique(SysMenuDto sysMenuDto);
 
@@ -34,5 +38,5 @@ public interface SysMenuService extends IService<SysMenu> {
     boolean removeOne(Long menuId);
     
     boolean removeBatch(List<Long> ids);
-    
+
 }

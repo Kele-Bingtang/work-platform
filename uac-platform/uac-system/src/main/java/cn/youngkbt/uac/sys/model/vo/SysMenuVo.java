@@ -41,12 +41,17 @@ public class SysMenuVo implements Serializable {
     private String menuName;
 
     /**
+     * 菜单地址前缀
+     */
+    private String pathPrefix;
+
+    /**
      * 菜单地址
      */
     private String path;
 
     /**
-     * 查询参数
+     * 路由参数
      */
     private String param;
 

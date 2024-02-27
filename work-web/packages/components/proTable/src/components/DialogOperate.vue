@@ -92,9 +92,9 @@ const formOptions = computed(() => {
   return props.options;
 });
 
-const handleAdd = async () => {
+const handleAdd = async (row?: any) => {
   status.value = "add";
-  if (!props?.cache) form.value = {};
+  if (!props?.cache) form.value = { ...row };
   else props?.id && delete (form.value as any)[props?.id!];
   props.clickAdd && (form.value = (await props.clickAdd(form.value)) ?? form.value);
   dialogFormVisible.value = true;

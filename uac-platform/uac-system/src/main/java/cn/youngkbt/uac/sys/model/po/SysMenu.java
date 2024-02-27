@@ -47,7 +47,7 @@ public class SysMenu extends BaseDO {
     private String path;
 
     /**
-     * 查询参数
+     * 路由参数
      */
     private String param;
 

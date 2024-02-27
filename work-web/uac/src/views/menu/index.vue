@@ -19,8 +19,8 @@
       <div class="empty-box" v-if="!initRequestParam.appId"><el-empty description="请先选择一个应用" /></div>
       <ProTable
         v-show="initRequestParam.appId"
-        ref="proTable"
-        :request-api="listMenuByApp"
+        ref="proTableRef"
+        :request-api="listMenuTreeTableByApp"
         :columns="columns"
         :init-request-param="initRequestParam"
         :request-auto="false"
@@ -28,23 +28,38 @@
         style="height: 90%"
         :detailForm="detailForm"
         :border="false"
-      ></ProTable>
+      >
+        <template #operationExtra="{ row }">
+          <el-button
+            link
+            size="small"
+            :icon="Plus"
+            @click="proTableRef.dialogOperateRef?.handleAdd({ parentId: row.id })"
+          >
+            新增
+          </el-button>
+        </template>
+      </ProTable>
     </div>
   </div>
 </template>
 
 <script setup lang="tsx" name="Menu">
 import { TreeFilter, ProTable, message } from "work";
+import { httpPrefix, httpsPrefix } from "@work/constants";
 import { getAppTreeList } from "@/api/app";
-import { listMenuByApp, addOne, editOne, deleteOne, type Menu } from "@/api/menu";
-import { findItemNested, type DialogForm, type TableColumnProps } from "@work/components";
+import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/menu";
+import { findItemNested, type DialogForm, type TableColumnProps, type ProTableInstance } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { ElMessageBox } from "element-plus";
+import { Plus } from "@element-plus/icons-vue";
 
 const initRequestParam = reactive({
   appId: "",
 });
+
+const proTableRef = shallowRef<ProTableInstance>(null);
 
 const columns: TableColumnProps<Menu.MenuInfo[]>[] = [
   { prop: "menuName", label: "菜单名称", align: "left", search: { el: "el-input" } },
@@ -77,14 +92,22 @@ const columns: TableColumnProps<Menu.MenuInfo[]>[] = [
   },
   { prop: "intro", label: "介绍", width: 200 },
   { prop: "createTime", label: "创建时间", width: 160 },
-  { prop: "operation", label: "操作", width: 160, fixed: "right" },
+  { prop: "operation", label: "操作", width: 200, fixed: "right" },
 ];
 
 const detailForm: DialogForm = {
   options: options,
-  addApi: addOne,
-  editApi: editOne,
+  addApi: data => addOne({ ...data, path: (data.pathPrefix || "") + (data.path || ""), appId: initRequestParam.appId }),
+  editApi: data =>
+    editOne({ ...data, path: (data.pathPrefix || "") + (data.path || ""), appId: initRequestParam.appId }),
   deleteApi: deleteOne,
+  clickEdit: form => {
+    if ([httpPrefix, httpsPrefix].find(item => form.path.includes(item))) {
+      form.pathPrefix = form.path.split("//")[0] + "//";
+      form.path = form.path.split("//")[1];
+    } else form.pathPrefix = "";
+  },
+  apiFilterParams: ["pathPrefix"],
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

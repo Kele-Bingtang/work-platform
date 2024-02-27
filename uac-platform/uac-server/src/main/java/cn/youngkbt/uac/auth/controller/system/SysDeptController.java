@@ -10,7 +10,6 @@ import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
 import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import cn.youngkbt.uac.sys.service.SysDeptService;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -117,8 +116,8 @@ public class SysDeptController {
     /**
      * 部门删除
      */
-    @DeleteMapping("/{deptId}")
-    public Response<Boolean> removeOne(@NotEmpty(message = "部门 ID 不能为空") @PathVariable String deptId) {
+    @DeleteMapping("/{id}/{deptId}")
+    public Response<Boolean> removeOne(@PathVariable Long id, @PathVariable String deptId) {
         if (sysDeptService.hasChild(deptId)) {
             return HttpResult.failMessage("存在下级部门，不允许删除");
         }
@@ -126,14 +125,8 @@ public class SysDeptController {
         if (sysDeptService.checkDeptExistUser(deptId)) {
             return HttpResult.failMessage("部门存在用户，不允许删除");
         }
-        return HttpResult.ok(sysDeptService.removeOne(deptId));
+        
+        return HttpResult.ok(sysDeptService.removeOne(id));
     }
 
-    /**
-     * 客户端删除
-     */
-    @DeleteMapping("/batch/{ids}")
-    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(sysDeptService.removeBatch(List.of(ids)));
-    }
 }

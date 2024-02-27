@@ -27,16 +27,14 @@ public interface SysMenuService extends IService<SysMenu> {
 
     boolean checkMenuNameUnique(SysMenuDto sysMenuDto);
 
-    boolean hasChild(Long menuId);
+    boolean hasChild(String menuId);
 
-    boolean checkMenuExistRole(Long menuId);
+    boolean checkMenuExistRole(String menuId);
 
     boolean insertOne(SysMenuDto sysMenuDto);
 
     boolean updateOne(SysMenuDto sysMenuDto);
 
-    boolean removeOne(Long menuId);
-    
-    boolean removeBatch(List<Long> ids);
+    boolean removeOne(Long id);
 
 }

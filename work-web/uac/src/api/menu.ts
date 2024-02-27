@@ -7,8 +7,9 @@ export namespace Menu {
     menuCode: string; // 菜单编码
     menuName: string; // 菜单名
     parentId: string; // 父级菜单 ID
+    pathPrefix: string; // 菜单地址前缀
     path: string; // 菜单地址
-    param: string; // 查询参数
+    param: string; // 路由参数
     icon: string; // 图标
     orderNum: number; // 显示顺序
     component: string; // 组件路径
@@ -59,8 +60,12 @@ export const getMenuList = () => {
 
 const baseUri = "/system/menu";
 
-export const listMenuByApp = (params: http.Page<{ appId: number }>) => {
+export const listMenuTreeTableByApp = (params: http.Page<{ appId: number }>) => {
   return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/menuTreeTable`, params);
+};
+
+export const listMenuTreeSelectByApp = (params: http.Page<{ appId: number }>) => {
+  return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/treeSelect`, params);
 };
 
 export const addOne = (data: Menu.MenuInfo) => {
@@ -72,5 +77,5 @@ export const editOne = (data: RequiredKeyPartialOther<Menu.MenuInfo, "id">) => {
 };
 
 export const deleteOne = (data: Menu.MenuInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+  return http.delete<http.Response<string>>(`${baseUri}/${data.id}/${data.menuId}`);
 };

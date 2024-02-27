@@ -1,12 +1,12 @@
-import { getDeptTreeList } from "@/api/dept";
+import { listMenuTreeSelectByApp } from "@/api/menu";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { validatePhone } from "@/views/user/rules";
+import { httpPrefix, httpsPrefix } from "@work/constants";
 
 const rules = reactive<FormRules>({
-  deptName: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
-  phone: [{ validator: validatePhone, trigger: "blur" }],
-  email: [{ type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
+  menuCode: [{ required: true, message: "请输入菜单编码", trigger: "blur" }],
+  menuName: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
+  path: [{ required: true, message: "请输入菜单/路由地址", trigger: "blur" }],
 });
 
 export const options: FormOptionsProps = {
@@ -20,7 +20,7 @@ export const options: FormOptionsProps = {
   },
   columns: [
     {
-      formItem: { label: "上级菜单", prop: "parentId" },
+      formItem: { label: "上级菜单", prop: "parentId", br: true },
       attrs: {
         el: "el-tree-select",
         props: {
@@ -30,7 +30,7 @@ export const options: FormOptionsProps = {
           valueKey: "id",
         },
         fieldNames: { value: "id", label: "label" },
-        enum: getDeptTreeList,
+        enum: listMenuTreeSelectByApp,
         isHidden: (form: any) => form.parentId === "0",
       },
     },
@@ -43,12 +43,30 @@ export const options: FormOptionsProps = {
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 菜单名称" } },
     },
     {
-      formItem: { label: "菜单地址", prop: "path", br: true },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 菜单地址" } },
-    },
-    {
-      formItem: { label: "查询参数", prop: "param" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 查询参数" } },
+      formItem: { label: "菜单/路由地址", prop: "path", br: true },
+      attrs: {
+        render: ({ scope }) => {
+          return (
+            <>
+              <el-input
+                vModel={scope.form.path}
+                placeholder="请输入 菜单地址"
+                v-slots={{
+                  prepend: () => {
+                    return (
+                      <el-select vModel={scope.form.pathPrefix} style="width: 100px">
+                        <el-option label="" value="" />
+                        <el-option label={httpPrefix} value={httpPrefix} />
+                        <el-option label={httpsPrefix} value={httpsPrefix} />
+                      </el-select>
+                    );
+                  },
+                }}
+              ></el-input>
+            </>
+          );
+        },
+      },
     },
     {
       formItem: { label: "图标", prop: "icon" },
@@ -57,6 +75,10 @@ export const options: FormOptionsProps = {
     {
       formItem: { label: "组件路径", prop: "component" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 组件路径" } },
+    },
+    {
+      formItem: { label: "路由参数", prop: "param" },
+      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 路由参数" } },
     },
     {
       formItem: { label: "显示顺序", prop: "orderNum" },
@@ -95,7 +117,7 @@ export const options: FormOptionsProps = {
       },
     },
     {
-      formItem: { label: "是否为外链", prop: "isFrame" },
+      formItem: { label: "是否为嵌入", prop: "isFrame" },
       attrs: {
         defaultValue: 0,
         render: ({ scope }) => {
@@ -112,7 +134,7 @@ export const options: FormOptionsProps = {
     },
     {
       formItem: { label: "meta 配置", prop: "meta", br: true },
-      attrs: { el: "el-input", props: { type: "textarea", clearable: true, placeholder: "请输入 电话" } },
+      attrs: { el: "el-input", props: { type: "textarea", clearable: true, placeholder: "请输入 配置" } },
     },
     {
       formItem: { label: "介绍", prop: "intro", br: true },

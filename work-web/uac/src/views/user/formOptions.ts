@@ -3,6 +3,7 @@ import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { validatePassword, validatePhone } from "./rules";
 import { getRolePostList } from "@/api/user";
+import { getDeptTreeList } from "@/api/dept";
 
 const rules = reactive<FormRules>({
   username: [{ required: true, message: "请输入用户名称", trigger: "blur" }],
@@ -61,7 +62,12 @@ export const options: FormOptionsProps = {
     },
     {
       formItem: { label: "部门", prop: "deptId" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 部门" } },
+      attrs: {
+        el: "el-tree-select",
+        props: { clearable: true, placeholder: "请选择 部门" },
+        fieldNames: { value: "id", label: "label" },
+        enum: getDeptTreeList,
+      },
     },
     {
       formItem: { label: "岗位", prop: "postId" },
@@ -70,18 +76,16 @@ export const options: FormOptionsProps = {
         enum: () => getRolePostList(),
         enumKey: "postList",
         fieldNames: { value: "postId", label: "postName" },
-        props: { clearable: true, placeholder: "请输入 岗位" },
+        props: { clearable: true, placeholder: "请选择 岗位" },
       },
     },
     {
       formItem: { label: "角色", prop: "roleId" },
       attrs: {
         el: "el-select",
-        // useEnumMap: "postId",
-        // enumKey: "roleList",
         useEnumMap: enumMap => enumMap.get("postId")?.roleList,
         fieldNames: { value: "roleId", label: "roleName" },
-        props: { clearable: true, placeholder: "请输入 岗位" },
+        props: { clearable: true, placeholder: "请选择 角色" },
       },
     },
   ],

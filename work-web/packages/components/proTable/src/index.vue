@@ -133,7 +133,7 @@
                     </el-button>
                   </template>
                 </el-popconfirm>
-                <slot name="operationExtra"></slot>
+                <slot name="operationExtra" v-bind="scope"></slot>
               </slot>
             </template>
           </TableColumn>

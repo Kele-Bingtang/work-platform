@@ -6,7 +6,6 @@ import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
 import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
-import cn.youngkbt.uac.sys.utils.DeptTreeUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -44,9 +43,6 @@ public interface SysDeptService extends IService<SysDept> {
 
     boolean updateOne(SysDeptDto sysDeptDto);
 
-    boolean removeOne(String deptId);
-
-    boolean removeBatch(List<Long> ids);
-
+    boolean removeOne(Long id);
 
 }

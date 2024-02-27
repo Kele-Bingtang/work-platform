@@ -13,3 +13,6 @@ export const versionCacheKey = "workUac_version";
 
 export const uacAppSecret = "5c91ee29781c404ba31d011edda5ceec";
 export const uacAppGrantType = "password";
+
+export const httpPrefix = "http://";
+export const httpsPrefix = "https://";

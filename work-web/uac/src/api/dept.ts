@@ -54,5 +54,5 @@ export const editOne = (data: RequiredKeyPartialOther<Dept.DeptInfo, "id">) => {
 };
 
 export const deleteOne = (data: Dept.DeptInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.deptId}`);
+  return http.delete<http.Response<string>>(`${baseUri}/${data.id}/${data.deptId}`);
 };

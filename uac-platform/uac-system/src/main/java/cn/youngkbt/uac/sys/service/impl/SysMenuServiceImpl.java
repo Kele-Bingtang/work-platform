@@ -6,6 +6,7 @@ import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
+import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
@@ -118,13 +119,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean hasChild(Long menuId) {
+    public boolean hasChild(String menuId) {
         return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
-                .eq(SysMenu::getParam, menuId));
+                .eq(SysMenu::getParentId, menuId));
     }
 
     @Override
-    public boolean checkMenuExistRole(Long menuId) {
+    public boolean checkMenuExistRole(String menuId) {
         return roleMenuLinkMapper.exists(Wrappers.<RoleMenuLink>lambdaQuery()
                 .eq(RoleMenuLink::getMenuId, menuId));
     }
@@ -132,6 +133,20 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public boolean insertOne(SysMenuDto sysMenuDto) {
         SysMenu sysMenu = MapstructUtil.convert(sysMenuDto, SysMenu.class);
+
+        if (StringUtil.hasText(sysMenu.getParentId())) {
+            SysMenu menu = baseMapper.selectOne(Wrappers.<SysMenu>lambdaQuery()
+                    .eq(SysMenu::getMenuId, sysMenu.getParentId()));
+
+            // 如果父节点不为正常状态,则不允许新增子节点
+            if (!ColumnConstant.STATUS_NORMAL.equals(menu.getStatus())) {
+                throw new ServiceException("菜单停用，不允许新增");
+            }
+
+            return baseMapper.insert(sysMenu) > 0;
+        }
+
+        sysMenu.setParentId("0");
         return baseMapper.insert(sysMenu) > 0;
     }
 
@@ -142,14 +157,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean removeOne(Long menuId) {
-        return baseMapper.delete(Wrappers.<SysMenu>lambdaQuery()
-                .eq(SysMenu::getMenuId, menuId)) > 0;
-    }
-
-    @Override
-    public boolean removeBatch(List<Long> ids) {
-        return baseMapper.deleteBatchIds(ids) > 0;
+    public boolean removeOne(Long id) {
+        return baseMapper.deleteById(id) > 0;
     }
 
 }

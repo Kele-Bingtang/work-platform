@@ -193,8 +193,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public boolean insertOne(SysDeptDto sysDeptDto) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDto, SysDept.class);
-        
-        if (Objects.nonNull(sysDeptDto.getParentId())) {
+
+        if (StringUtil.hasText(sysDeptDto.getParentId())) {
             SysDept dept = baseMapper.selectOne(Wrappers.<SysDept>lambdaQuery()
                     .eq(SysDept::getDeptId, sysDeptDto.getParentId()));
 
@@ -273,14 +273,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public boolean removeOne(String deptId) {
-        return baseMapper.delete(Wrappers.<SysDept>lambdaQuery()
-                .eq(SysDept::getDeptId, deptId)) > 0;
-    }
-
-    @Override
-    public boolean removeBatch(List<Long> ids) {
-        return baseMapper.deleteBatchIds(ids) > 0;
+    public boolean removeOne(Long id) {
+        return baseMapper.deleteById(id) > 0;
     }
 }
 

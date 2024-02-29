@@ -27,7 +27,7 @@ import java.util.List;
  */
 @EnableTransactionManagement(proxyTargetClass = true)
 @AutoConfiguration
-@PropertySource(value = "classpath:mybatis-plus.yml", factory = YmlPropertySourceFactory.class)
+@PropertySource(value = "classpath:mybatis-plus.yml", factory = YmlPropertySourceFactory.class) // @PropertySource 官方默认只支持 properties、XML，YML 需要手动注册自定义类 YmlPropertySourceFactory
 @MapperScan("${mybatis-plus.scanPackage}")
 public class MyBatisPlusAutoConfiguration implements WebMvcConfigurer {
 

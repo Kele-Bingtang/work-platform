@@ -90,4 +90,9 @@ public class SysUserVo implements Serializable {
      * 部门 ID
      */
     private String deptId;
+
+    /**
+     * 部门对象
+     */
+    private SysDeptVo dept;
 }

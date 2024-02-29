@@ -21,7 +21,7 @@ public interface SysDeptService extends IService<SysDept> {
 
     List<SysDeptVo> queryListWithPage(SysDeptDto sysDeptDto, PageQuery pageQuery);
 
-    List<Tree<String>> selectDeptTreeList(SysDeptDto sysDeptDto);
+    List<Tree<String>> queryDeptTreeList(SysDeptDto sysDeptDto);
 
     List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto);
     

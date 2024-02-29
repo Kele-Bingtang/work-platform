@@ -117,7 +117,10 @@ export const useTable = (
       // 解构后台返回的分页数据 (如果有分页更新分页信息)
       if (isBackPage(openPage)) {
         const { pageNum, pageSize, total } = data;
-        updatePaging({ pageNum, pageSize, total });
+        if (pageNum) updatePaging({ pageNum });
+        if (pageSize) updatePaging({ pageSize });
+        if (total) updatePaging({ total });
+        else updatePaging({ total: data.length });
       }
     } catch (error) {
       console.error(error);
@@ -148,7 +151,7 @@ export const useTable = (
    * @param {Object} paging 后台返回的分页数据
    * @return void
    * */
-  const updatePaging = (paging: Table.Paging) => {
+  const updatePaging = (paging: Partial<Table.Paging>) => {
     Object.assign(state.paging, paging);
   };
 

@@ -5,9 +5,11 @@ import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
+import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.ServletUtil;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +28,7 @@ import java.io.PrintWriter;
 @Slf4j
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception, LoginUserBO loginUserBO) {
         // 判断异常类型
         BaseCommonEnum authErrorCodeEnum = AuthErrorCodeEnum.LOGIN_FAIL;
         if (exception instanceof AccountExpiredException) {
@@ -46,11 +47,9 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         log.error("Exception：{}", authErrorCodeEnum.getMessage());
         // 该异常是在 UserDetailsService.loadUserByUsername 里抛出的，不需要记录
         if (!(exception instanceof InternalAuthenticationServiceException)) {
-            String username = request.getParameter(AuthConstant.USERNAME);
-            String tenantId = request.getParameter(AuthConstant.TENANT_ID);
             LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
-                    .tenantId(tenantId)
-                    .username(username)
+                    .tenantId(loginUserBO.getTenantId())
+                    .username(loginUserBO.getUsername())
                     .status(AuthConstant.LOGIN_FAIL)
                     .request(ServletUtil.getRequest())
                     .build();
@@ -72,5 +71,14 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         writer.println(JacksonUtil.toJsonStr(HttpResult.response(null, authErrorCodeEnum)));
         writer.flush();
         writer.close();
+    }
+
+    /**
+     * Spring Security 失败默认走的方法
+     * 因为使用了 JWT，所以该方法不会被调用，需要手动调用
+     */
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        
     }
 }

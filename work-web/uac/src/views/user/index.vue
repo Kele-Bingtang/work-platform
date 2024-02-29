@@ -9,12 +9,12 @@
 
     <div class="user-table">
       <ProTable
-        ref="proTable"
+        ref="proTableRef"
         :request-api="getUserListByDept"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90%"
+        style="height: 90.5%"
         :detailForm="detailForm"
       ></ProTable>
     </div>
@@ -22,19 +22,28 @@
 </template>
 
 <script setup lang="tsx" name="User">
-import { TreeFilter, ProTable, type TableColumnProps, findItemNested, message } from "work";
+import { TreeFilter, ProTable, type TableColumnProps } from "work";
 import { getDeptTreeList } from "@/api/dept";
 import { addOne, editOne, deleteOne, getUserListByDept, type User } from "@/api/user";
 import { options } from "./formOptions";
-import type { DialogForm } from "@work/components";
+import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores/layout";
-import { ElMessageBox } from "element-plus";
+import { useChange } from "@/hooks/useChange";
+
+const proTableRef = shallowRef<ProTableInstance>();
+
+const { statusChange } = useChange(
+  "username",
+  "用户",
+  (row, status) => editOne({ id: row.id, userId: row.userId, status }),
+  () => proTableRef.value?.getTableList()
+);
 
 const columns: TableColumnProps<User.UserInfo>[] = [
   { type: "index", label: "#", width: 80 },
   { prop: "username", label: "用户名称", width: 170, search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称", width: 170, search: { el: "el-input" } },
-  { prop: "deptName", label: "部门", width: 170, search: { el: "el-input" } },
+  { prop: "dept.deptName", label: "部门", width: 170, search: { el: "el-input" } },
   { prop: "phone", label: "手机号码", width: 130, search: { el: "el-input" } },
   { prop: "email", label: "邮箱", width: 170, search: { el: "el-input" } },
   {
@@ -85,33 +94,6 @@ const initRequestParam = reactive({
 const handleTreeChange = (nodeId: number) => {
   initRequestParam.deptId = nodeId + "";
 };
-
-const statusChange = async (value: number, row: User.UserInfo) => {
-  const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
-  const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
-
-  if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
-
-  ElMessageBox.confirm(
-    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.username}】角色吗`,
-    "系统提示",
-    {
-      dangerouslyUseHTMLString: true,
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }
-  )
-    .then(() => {
-      editOne({ id: row.id, userId: row.userId, status: value }).then(res => {
-        if (res.status === "success") message.success("修改成功");
-      });
-    })
-    .catch(() => {
-      if (value === 0) return (row.status = 1);
-      if (value === 1) return (row.status = 0);
-    });
-};
 </script>
 
 <style lang="scss" scoped>
@@ -128,7 +110,7 @@ const statusChange = async (value: number, row: User.UserInfo) => {
 
   .user-table {
     width: calc(100% - 230px);
-    height: 97%;
+    height: 100%;
   }
 }
 </style>

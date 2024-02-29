@@ -46,7 +46,7 @@ public class SysDeptController {
 
     @GetMapping("/deptTreeList")
     public Response<List<Tree<String>>> selectDeptTreeList(SysDeptDto sysDeptDto) {
-        List<Tree<String>> deptTreeList = sysDeptService.selectDeptTreeList(sysDeptDto);
+        List<Tree<String>> deptTreeList = sysDeptService.queryDeptTreeList(sysDeptDto);
         return HttpResult.ok(deptTreeList);
     }
 
@@ -70,8 +70,8 @@ public class SysDeptController {
 
     @GetMapping("/userCount")
     public Response<Integer> getDeptUserCount(String deptId) {
-        Integer deptsUserCount = sysDeptService.getDeptUserCount(deptId);
-        return HttpResult.ok(deptsUserCount);
+        Integer deptUserCount = sysDeptService.getDeptUserCount(deptId);
+        return HttpResult.ok(deptUserCount);
     }
 
     /**

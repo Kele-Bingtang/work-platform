@@ -16,7 +16,7 @@
 
     <div class="dict-table">
       <ProTable
-        ref="proTable"
+        ref="proTableRef"
         :request-api="listDictTypeByApp"
         :columns="columns"
         :init-request-param="initRequestParam"

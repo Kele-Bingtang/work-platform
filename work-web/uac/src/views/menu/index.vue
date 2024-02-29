@@ -25,7 +25,7 @@
         :init-request-param="initRequestParam"
         :request-auto="false"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90%"
+        style="height: 90.5%"
         :detailForm="detailForm"
         :border="false"
       >
@@ -34,7 +34,7 @@
             link
             size="small"
             :icon="Plus"
-            @click="proTableRef.dialogOperateRef?.handleAdd({ parentId: row.id })"
+            @click="proTableRef?.dialogOperateRef?.handleAdd({ parentId: row.id })"
           >
             新增
           </el-button>
@@ -45,21 +45,28 @@
 </template>
 
 <script setup lang="tsx" name="Menu">
-import { TreeFilter, ProTable, message } from "work";
+import { TreeFilter, ProTable } from "work";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 import { getAppTreeList } from "@/api/app";
 import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/menu";
-import { findItemNested, type DialogForm, type TableColumnProps, type ProTableInstance } from "@work/components";
+import { type DialogForm, type TableColumnProps, type ProTableInstance } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
-import { ElMessageBox } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
+import { useChange } from "@/hooks/useChange";
+
+const proTableRef = shallowRef<ProTableInstance>();
+
+const { statusChange } = useChange(
+  "menuName",
+  "菜单",
+  (row, status) => editOne({ id: row.id, menuId: row.menuId, parentId: row.parentId, status }),
+  () => proTableRef.value?.getTableList()
+);
 
 const initRequestParam = reactive({
   appId: "",
 });
-
-const proTableRef = shallowRef<ProTableInstance>(null);
 
 const columns: TableColumnProps<Menu.MenuInfo[]>[] = [
   { prop: "menuName", label: "菜单名称", align: "left", search: { el: "el-input" } },
@@ -118,33 +125,6 @@ const detailForm: DialogForm = {
 
 const handleTreeChange = (nodeId: number) => {
   initRequestParam.appId = nodeId + "";
-};
-
-const statusChange = async (value: number, row: Menu.MenuInfo) => {
-  const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
-  const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
-
-  if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
-
-  ElMessageBox.confirm(
-    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.menuName}】角色吗`,
-    "系统提示",
-    {
-      dangerouslyUseHTMLString: true,
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }
-  )
-    .then(() => {
-      editOne({ id: row.id, menuId: row.menuId, parentId: row.parentId, status: value }).then(res => {
-        if (res.status === "success") message.success("修改成功");
-      });
-    })
-    .catch(() => {
-      if (value === 0) return (row.status = 1);
-      if (value === 1) return (row.status = 0);
-    });
 };
 </script>
 

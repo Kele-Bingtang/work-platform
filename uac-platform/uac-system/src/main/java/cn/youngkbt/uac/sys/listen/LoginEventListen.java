@@ -69,7 +69,7 @@ public class LoginEventListen {
             sysLoginLogService.recordLoginLog(loginInfoEvent);
             throw new AuthException(message);
         } else {
-            String message = "密码输入错误 " + maxRetryCount + " 次";
+            String message = "密码输入错误 " + errorCount + " 次，还能输入 " + (maxRetryCount - errorCount) + " 次";
             loginInfoEvent.setMessage(message);
             sysLoginLogService.recordLoginLog(loginInfoEvent);
             throw new AuthException(message);

@@ -5,10 +5,12 @@ import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
+import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
 import cn.youngkbt.uac.sys.model.dto.SysPostDto;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDto;
 import cn.youngkbt.uac.sys.model.dto.SysUserDto;
+import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysPostVo;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVo;
@@ -19,7 +21,8 @@ import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,7 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Kele-Bingtang
@@ -48,6 +52,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Value("${default.password}")
     private String password;
 
+    private final SysDeptMapper sysDeptMapper;
     private final SysPostService sysPostService;
     private final SysRoleService sysRoleService;
 
@@ -70,20 +75,37 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public List<SysUserVo> queryListWithPage(SysUserDto sysUserDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysUser> wrapper = Wrappers.<SysUser>lambdaQuery()
-                .eq(StringUtils.hasText(sysUserDto.getUserId()), SysUser::getTenantId, sysUserDto.getUserId())
-                .eq(StringUtils.hasText(sysUserDto.getDeptId()), SysUser::getDeptId, sysUserDto.getDeptId())
-                .eq(Objects.nonNull(sysUserDto.getUsername()), SysUser::getUsername, sysUserDto.getUsername())
-                .eq(Objects.nonNull(sysUserDto.getStatus()), SysUser::getStatus, sysUserDto.getStatus())
-                .orderByAsc(SysUser::getId);
-
-        List<SysUser> sysUserList;
+        Wrapper<SysUser> wrapper = buildQueryWrapper(sysUserDto);
+        List<SysUserVo> sysUserVoList;
         if (Objects.isNull(pageQuery)) {
-            sysUserList = baseMapper.selectList(wrapper);
+            sysUserVoList = baseMapper.selectListWithPage(null, wrapper);
         } else {
-            sysUserList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
+            sysUserVoList = baseMapper.selectListWithPage(pageQuery.buildPage(), wrapper);
         }
-        return MapstructUtil.convert(sysUserList, SysUserVo.class);
+        return sysUserVoList;
+    }
+
+    private Wrapper<SysUser> buildQueryWrapper(SysUserDto sysUserDto) {
+        QueryWrapper<SysUser> wrapper = Wrappers.query();
+        wrapper.eq(StringUtils.hasText(sysUserDto.getUserId()), "su.user_id", sysUserDto.getUserId())
+                .like(StringUtils.hasText(sysUserDto.getUsername()), "su.username", sysUserDto.getUsername())
+                .like(StringUtils.hasText(sysUserDto.getPhone()), "su.phone", sysUserDto.getPhone())
+                .like(StringUtils.hasText(sysUserDto.getEmail()), "su.email", sysUserDto.getEmail())
+                .eq(Objects.nonNull(sysUserDto.getStatus()), "su.status", sysUserDto.getStatus())
+                .and(StringUtils.hasText(sysUserDto.getDeptId()), c -> {
+                    // 查出 deptId 所对应的部门及其子部门 ID 信息
+                    List<SysDept> sysDeptList = sysDeptMapper.selectList(Wrappers.<SysDept>lambdaQuery()
+                            .select(SysDept::getDeptId)
+                            .apply("FIND_IN_SET({0}, ancestors) > 0", sysUserDto.getDeptId()));
+                    // 获取所有子部门 ID
+                    List<String> deptIds = sysDeptList.stream().map(SysDept::getDeptId).filter(Objects::nonNull).collect(Collectors.toList());
+                    // 加上当前部门
+                    deptIds.add(sysUserDto.getDeptId());
+                    c.in("su.dept_id", deptIds);
+                })
+                .orderByAsc("su.id");
+
+        return wrapper;
     }
 
     @Override
@@ -139,7 +161,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public boolean updateOneByUserId(SysUserDto sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         return baseMapper.update(sysUser, Wrappers.<SysUser>lambdaUpdate()
-                .eq(SysUser::getUserId, sysUserDto.getUserId())) > 0;
+                .eq(SysUser::getUsername, sysUserDto.getUsername())) > 0;
     }
 
     @Override

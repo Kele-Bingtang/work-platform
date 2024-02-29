@@ -71,9 +71,9 @@ public class PasswordAuthHandler implements AuthHandler {
         } catch (InternalAuthenticationServiceException exception) {
             // 走了自定义认证，则 Spring Security 不会调用自定义的失败处理器，这里需要手动调用
             log.error("An internal error occurred while trying to authenticate the user.", exception);
-            loginFailureHandler.onAuthenticationFailure(null, null, exception);
+            loginFailureHandler.onAuthenticationFailure(ServletUtil.getRequest(), ServletUtil.getResponse(), exception, loginUserBO);
         } catch (AuthenticationException exception) {
-            loginFailureHandler.onAuthenticationFailure(ServletUtil.getRequest(), ServletUtil.getResponse(), exception);
+            loginFailureHandler.onAuthenticationFailure(ServletUtil.getRequest(), ServletUtil.getResponse(), exception, loginUserBO);
         }
 
         Long timeout = sysClient.getTimeout();

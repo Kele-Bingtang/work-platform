@@ -43,6 +43,23 @@ export const options: FormOptionsProps = {
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 菜单名称" } },
     },
     {
+      formItem: { label: "菜单类型", prop: "menuType", br: true },
+      attrs: {
+        defaultValue: "C",
+        render: ({ scope }) => {
+          return (
+            <>
+              <el-radio-group v-model={scope.form.menuType}>
+                <el-radio label="M">目录</el-radio>
+                <el-radio label="C">菜单</el-radio>
+                <el-radio label="F">按钮</el-radio>
+              </el-radio-group>
+            </>
+          );
+        },
+      },
+    },
+    {
       formItem: { label: "菜单/路由地址", prop: "path", br: true },
       attrs: {
         render: ({ scope }) => {
@@ -54,7 +71,7 @@ export const options: FormOptionsProps = {
                 v-slots={{
                   prepend: () => {
                     return (
-                      <el-select vModel={scope.form.pathPrefix} style="width: 100px">
+                      <el-select vModel={scope.form.pathPrefix} style="width: 120px">
                         <el-option label="" value="" />
                         <el-option label={httpPrefix} value={httpPrefix} />
                         <el-option label={httpsPrefix} value={httpsPrefix} />
@@ -66,6 +83,7 @@ export const options: FormOptionsProps = {
             </>
           );
         },
+        isHidden: (form: any) => form.menuType !== "C",
       },
     },
     {
@@ -74,11 +92,19 @@ export const options: FormOptionsProps = {
     },
     {
       formItem: { label: "组件路径", prop: "component" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 组件路径" } },
+      attrs: {
+        el: "el-input",
+        props: { clearable: true, placeholder: "请输入 组件路径" },
+        isHidden: (form: any) => form.menuType !== "C",
+      },
     },
     {
       formItem: { label: "路由参数", prop: "param" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 路由参数" } },
+      attrs: {
+        el: "el-input",
+        props: { clearable: true, placeholder: "请输入 路由参数" },
+        isHidden: (form: any) => form.menuType !== "C",
+      },
     },
     {
       formItem: { label: "显示顺序", prop: "orderNum" },
@@ -114,6 +140,7 @@ export const options: FormOptionsProps = {
             </>
           );
         },
+        isHidden: (form: any) => form.menuType !== "C",
       },
     },
     {
@@ -130,6 +157,7 @@ export const options: FormOptionsProps = {
             </>
           );
         },
+        isHidden: (form: any) => form.menuType !== "C",
       },
     },
     {

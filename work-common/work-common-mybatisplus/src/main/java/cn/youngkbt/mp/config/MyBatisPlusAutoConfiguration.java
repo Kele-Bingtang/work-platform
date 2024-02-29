@@ -1,6 +1,7 @@
 package cn.youngkbt.mp.config;
 
 import cn.hutool.core.net.NetUtil;
+import cn.youngkbt.core.factory.YmlPropertySourceFactory;
 import cn.youngkbt.mp.handler.MybatisPlusMetaObjectHandler;
 import cn.youngkbt.mp.revolver.SqlFilterArgumentResolver;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 @EnableTransactionManagement(proxyTargetClass = true)
 @AutoConfiguration
-@PropertySource(value = "classpath:mybatis-plus.yml")
+@PropertySource(value = "classpath:mybatis-plus.yml", factory = YmlPropertySourceFactory.class)
 @MapperScan("${mybatis-plus.scanPackage}")
 public class MyBatisPlusAutoConfiguration implements WebMvcConfigurer {
 

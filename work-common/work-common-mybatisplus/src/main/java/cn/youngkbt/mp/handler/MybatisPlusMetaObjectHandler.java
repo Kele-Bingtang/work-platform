@@ -38,12 +38,17 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
 
         LocalDateTime now = LocalDateTime.now();
 
+        LoginUser user = getUser();
+
+        if (Objects.nonNull(user)) {
+            fillValIfNullByName("createBy", user.getUsername(), metaObject, false);
+            fillValIfNullByName("updateBy", user.getUsername(), metaObject, false);
+            fillValIfNullByName("createById", user.getUserId(), metaObject, false);
+            fillValIfNullByName("updateById", user.getUserId(), metaObject, false);
+        }
+
         fillValIfNullByName("createTime", now, metaObject, false);
         fillValIfNullByName("updateTime", now, metaObject, false);
-        fillValIfNullByName("createBy", getUser().getUsername(), metaObject, false);
-        fillValIfNullByName("updateBy", getUser().getUsername(), metaObject, false);
-        fillValIfNullByName("createById", getUser().getUserId(), metaObject, false);
-        fillValIfNullByName("updateById", getUser().getUserId(), metaObject, false);
         fillValIfNullByName("isDeleted", MyBatisDefaultConstants.DEFAULT_DELETED, metaObject, false);
         fillValIfNullByName("status", MyBatisDefaultConstants.DEFAULT_STATUS, metaObject, false);
 
@@ -53,9 +58,15 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         log.debug("mybatis plus start update fill ....");
+
+        LoginUser user = getUser();
+
+        if (Objects.nonNull(user)) {
+            fillValIfNullByName("updateBy", user.getUsername(), metaObject, true);
+            fillValIfNullByName("updateById", user.getUserId(), metaObject, true);
+        }
+        
         fillValIfNullByName("updateTime", LocalDateTime.now(), metaObject, true);
-        fillValIfNullByName("updateBy", getUser().getUsername(), metaObject, true);
-        fillValIfNullByName("updateById", getUser().getUserId(), metaObject, true);
     }
 
     public static void fillValFieldTypes(MetaObject metaObject) {
@@ -110,7 +121,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         if (Objects.isNull(userInfo) && principal instanceof SecurityUser) {
             return MapstructUtil.convert(principal, LoginUser.class);
         }
-        
+
         return userInfo;
     }
 }

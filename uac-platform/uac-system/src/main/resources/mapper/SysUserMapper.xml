@@ -5,30 +5,43 @@
 <mapper namespace="cn.youngkbt.uac.sys.mapper.SysUserMapper">
 
     <resultMap id="BaseResultMap" type="cn.youngkbt.uac.sys.model.po.SysUser">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-            <result property="username" column="user_name" jdbcType="VARCHAR"/>
-            <result property="nickname" column="nick_name" jdbcType="VARCHAR"/>
-            <result property="password" column="password" jdbcType="VARCHAR"/>
-            <result property="email" column="email" jdbcType="VARCHAR"/>
-            <result property="sex" column="sex" jdbcType="TINYINT"/>
-            <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
-            <result property="phone" column="phone" jdbcType="VARCHAR"/>
-            <result property="userStatus" column="user_status" jdbcType="TINYINT"/>
-            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-            <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
-            <result property="loginIp" column="login_ip" jdbcType="VARCHAR"/>
-            <result property="loginDate" column="login_date" jdbcType="TIMESTAMP"/>
-            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
-            <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
-            <result property="updateById" column="update_by_id" jdbcType="VARCHAR"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
-            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
-            <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="username" column="user_name" jdbcType="VARCHAR"/>
+        <result property="nickname" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="TINYINT"/>
+        <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="userStatus" column="user_status" jdbcType="TINYINT"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="loginIp" column="login_ip" jdbcType="VARCHAR"/>
+        <result property="loginDate" column="login_date" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateById" column="update_by_id" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMapVo" type="cn.youngkbt.uac.sys.model.vo.SysUserVo">
+        <id property="id" column="id"/>
+        <result property="deptId" column="dept_id"/>
+        <association property="dept" resultMap="deptResult" />
+    </resultMap>
+
+    <resultMap id="deptResult" type="cn.youngkbt.uac.sys.model.vo.SysDeptVo">
+        <id property="deptId" column="dept_id"/>
+        <result property="email" column="dept_email"/>
+        <result property="status" column="dept_status"/>
+        <result property="createTime" column="dept_create_time"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -42,9 +55,19 @@
         is_deleted,tenant_id,dept_id
     </sql>
     
-    
     <select id="selectTenantUserByUsername" resultType="cn.youngkbt.security.domain.SecurityUser"></select>
     
     
     <select id="selectUserByUsername" resultType="cn.youngkbt.security.domain.SecurityUser"></select>
+    
+    <select id="selectListWithPage" resultMap="BaseResultMapVo">
+        select su.id, su.user_id, su.username, su.nickname, su.email, su.sex, su.birthday, su.phone, su.avatar, su.register_time,
+            su.login_ip, su.login_date, su.user_status, su.status, su.dept_id,
+            sd.dept_name, sd.leader, su1.user_id as leader_name
+        from t_sys_user su
+        left join t_sys_dept sd on su.dept_id = sd.dept_id
+        left join t_sys_user su1 on su1.user_id = sd.leader
+        ${ew.getCustomSqlSegment}
+    </select>
+    
 </mapper>

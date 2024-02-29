@@ -74,8 +74,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public List<MenuTree> buildDeptTreeTable(SysMenuDto sysMenuDto) {
-        // 查询正常状态的部门
-        sysMenuDto.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
         List<MenuTree> menuTreeList = MapstructUtil.convert(sysMenuList, MenuTree.class);

@@ -13,14 +13,14 @@ export const options: FormOptionsProps = {
   form: {
     inline: true,
     labelPosition: "right",
-    labelWidth: "80px",
+    labelWidth: "120px",
     size: "default",
     fixWidth: true,
     rules: rules,
   },
   columns: [
     {
-      formItem: { label: "上级部门", prop: "parentId" },
+      formItem: { label: "上级部门", prop: "parentId", br: true },
       attrs: {
         el: "el-tree-select",
         props: {
@@ -48,7 +48,7 @@ export const options: FormOptionsProps = {
     },
     {
       formItem: { label: "邮箱", prop: "email" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 电话" } },
+      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 邮箱" } },
     },
     {
       formItem: { label: "显示顺序", prop: "orderNum" },

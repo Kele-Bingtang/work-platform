@@ -61,7 +61,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public List<Tree<String>> selectDeptTreeList(SysDeptDto sysDeptDto) {
+    public List<Tree<String>> queryDeptTreeList(SysDeptDto sysDeptDto) {
         // 查询正常状态的部门
         sysDeptDto.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
@@ -71,8 +71,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Override
     public List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto) {
-        // 查询正常状态的部门
-        sysDeptDto.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
         List<DeptTree> sysDeptVoList = MapstructUtil.convert(sysDeptList, DeptTree.class);

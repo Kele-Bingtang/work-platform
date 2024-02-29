@@ -3,14 +3,17 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysPostMapper;
+import cn.youngkbt.uac.sys.mapper.UserPostLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.SysPostDto;
 import cn.youngkbt.uac.sys.model.po.SysPost;
+import cn.youngkbt.uac.sys.model.po.UserPostLink;
 import cn.youngkbt.uac.sys.model.vo.SysPostVo;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -23,7 +26,10 @@ import java.util.Objects;
  * @note 针对表【t_sys_post(岗位表)】的数据库操作Service实现
  */
 @Service
+@RequiredArgsConstructor
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements SysPostService {
+
+    private final UserPostLinkMapper userPostLinkMapper;
 
     @Override
     public SysPostVo queryById(Long id) {
@@ -65,8 +71,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     @Override
     public boolean checkPostExitUser(SysPostDto sysPostDto) {
-        return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
-                .eq(SysPost::getPostId, sysPostDto.getPostId()));
+        return userPostLinkMapper.exists(new LambdaQueryWrapper<UserPostLink>()
+                .eq(UserPostLink::getPostId, sysPostDto.getPostId()));
     }
 
     @Override

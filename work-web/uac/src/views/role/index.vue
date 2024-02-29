@@ -16,12 +16,12 @@
 
     <div class="role-table">
       <ProTable
-        ref="proTable"
+        ref="proTableRef"
         :request-api="listRoleByApp"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90%"
+        style="height: 90.5%"
         :detailForm="detailForm"
       ></ProTable>
     </div>
@@ -29,13 +29,22 @@
 </template>
 
 <script setup lang="tsx" name="Role">
-import { TreeFilter, ProTable, message } from "work";
+import { TreeFilter, ProTable } from "work";
 import { getAppTreeList } from "@/api/app";
 import { listRoleByApp, addOne, editOne, deleteOne, type Role } from "@/api/role";
-import { findItemNested, type DialogForm, type TableColumnProps } from "@work/components";
+import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
-import { ElMessageBox } from "element-plus";
+import { useChange } from "@/hooks/useChange";
+
+const proTableRef = shallowRef<ProTableInstance>();
+
+const { statusChange } = useChange(
+  "roleName",
+  "角色",
+  (row, status) => editOne({ id: row.id, roleId: row.roleId, status }),
+  () => proTableRef.value?.getTableList()
+);
 
 const initRequestParam = reactive({
   appId: "",
@@ -89,33 +98,6 @@ const detailForm: DialogForm = {
 
 const handleTreeChange = (nodeId: number) => {
   initRequestParam.appId = nodeId + "";
-};
-
-const statusChange = async (value: number, row: Role.RoleInfo) => {
-  const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
-  const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
-
-  if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
-
-  ElMessageBox.confirm(
-    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.roleName}】角色吗`,
-    "系统提示",
-    {
-      dangerouslyUseHTMLString: true,
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }
-  )
-    .then(() => {
-      editOne({ id: row.id, roleId: row.roleId, status: value }).then(res => {
-        if (res.status === "success") message.success("修改成功");
-      });
-    })
-    .catch(() => {
-      if (value === 0) return (row.status = 1);
-      if (value === 1) return (row.status = 0);
-    });
 };
 </script>
 

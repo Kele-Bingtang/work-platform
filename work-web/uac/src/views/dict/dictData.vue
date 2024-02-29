@@ -1,6 +1,6 @@
 <template>
   <ProTable
-    ref="proTable"
+    ref="proTableRef"
     :request-api="listDictData"
     :columns="columns"
     :init-request-param="initRequestParam"

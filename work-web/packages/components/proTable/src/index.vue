@@ -279,8 +279,8 @@ const tablePageData = computed(() => {
 
 const pageTotal = computed(() => {
   if (props.data?.length) return props.data?.length;
-  if (isFrontPage(props.pagination)) return props.data?.length ?? tableData.value.length;
-  if (isBackPage(props.pagination)) return paging.value?.total ?? tableData.value?.length;
+  if (isFrontPage(props.pagination)) return props.data?.length || tableData.value.length;
+  if (isBackPage(props.pagination)) return paging.value?.total || tableData.value?.length;
   return 0;
 });
 

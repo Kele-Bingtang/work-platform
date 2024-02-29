@@ -1,7 +1,7 @@
 <template>
   <div class="dept-container">
     <ProTable
-      ref="proTable"
+      ref="proTableRef"
       :request-api="getDeptTreeTable"
       :columns="columns"
       :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -13,12 +13,21 @@
 </template>
 
 <script setup lang="tsx" name="Dept">
-import { ProTable, message } from "work";
+import { ProTable } from "work";
 import { getDeptTreeTable, addOne, editOne, deleteOne, type Dept } from "@/api/dept";
-import { findItemNested, type DialogForm, type TableColumnProps } from "@work/components";
+import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
-import { ElMessageBox } from "element-plus";
+import { useChange } from "@/hooks/useChange";
+
+const proTableRef = shallowRef<ProTableInstance>();
+
+const { statusChange } = useChange(
+  "deptName",
+  "部门",
+  (row, status) => editOne({ id: row.id, deptId: row.deptId, parentId: row.parentId, status }),
+  () => proTableRef.value?.getTableList()
+);
 
 const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
   { prop: "deptName", label: "部门名称", align: "left", search: { el: "el-input" } },
@@ -41,7 +50,7 @@ const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
               activeText="启用"
               inactiveText="停用"
               inlinePrompt
-              onChange={(value: number) => statusChange(value, row)}
+              onChange={(value: number | string) => statusChange(value, row)}
             />
           )}
         </>
@@ -67,40 +76,6 @@ const detailForm: DialogForm = {
     top: "5vh",
     closeOnClickModal: false,
   },
-};
-
-const statusChange = async (value: number, row: Dept.DeptTreeTable) => {
-  const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
-  const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
-
-  if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
-
-  ElMessageBox.confirm(
-    `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row.deptName}】部门吗`,
-    "系统提示",
-    {
-      dangerouslyUseHTMLString: true,
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    }
-  )
-    .then(() => {
-      editOne({ id: row.id, deptId: row.deptId, parentId: row.parentId, status: value })
-        .then(res => {
-          if (res.status === "success") message.success("修改成功");
-          else {
-            statusRecover(value, row);
-          }
-        })
-        .catch(() => statusRecover(value, row));
-    })
-    .catch(() => statusRecover(value, row));
-};
-
-const statusRecover = (value: number, row: Dept.DeptTreeTable) => {
-  if (value === 0) return (row.status = 1);
-  if (value === 1) return (row.status = 0);
 };
 </script>
 

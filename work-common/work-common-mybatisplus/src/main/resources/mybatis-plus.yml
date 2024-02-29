@@ -24,9 +24,9 @@ mybatis-plus:
       idType: ASSIGN_ID
       logic-delete-field: isDeleted
       # 逻辑已删除值（框架表均使用此值 禁止随意修改），看 @cn.youngkbt.mp.base.BaseDO#isDeleted
-      logicDeleteValue: 0
+      logicDeleteValue: 1
       # 逻辑未删除值
-      logicNotDeleteValue: 1
+      logicNotDeleteValue: 0
       insertStrategy: NOT_NULL
       updateStrategy: NOT_NULL
       whereStrategy: NOT_NULL

@@ -29,6 +29,6 @@ public interface SysPostService extends IService<SysPost> {
 
     boolean updateOne(SysPostDto sysPostDto);
 
-    boolean removeOne(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
 
 }

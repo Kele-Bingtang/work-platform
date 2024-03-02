@@ -28,5 +28,5 @@ public interface SysClientService extends IService<SysClient> {
 
     boolean updateStatus(Long id, Integer status);
 
-    boolean removeOne(Collection<Long> ids);
+    boolean removeBatch(Collection<Long> ids);
 }

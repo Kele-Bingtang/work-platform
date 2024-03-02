@@ -73,7 +73,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     }
 
     @Override
-    public boolean removeOne(List<Long> ids) {
+    public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

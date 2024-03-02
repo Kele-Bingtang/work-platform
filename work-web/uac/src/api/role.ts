@@ -31,3 +31,7 @@ export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
 export const deleteOne = (data: Role.RoleInfo) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
 };
+
+export const deleteBatch = (ids: string[]) => {
+  return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
+};

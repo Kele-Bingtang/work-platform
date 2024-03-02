@@ -24,7 +24,7 @@
 <script setup lang="tsx" name="User">
 import { TreeFilter, ProTable, type TableColumnProps } from "work";
 import { getDeptTreeList } from "@/api/dept";
-import { addOne, editOne, deleteOne, getUserListByDept, type User } from "@/api/user";
+import { addOne, editOne, deleteOne, deleteBatch, getUserListByDept, type User } from "@/api/user";
 import { options } from "./formOptions";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores/layout";
@@ -40,6 +40,7 @@ const { statusChange } = useChange(
 );
 
 const columns: TableColumnProps<User.UserInfo>[] = [
+  { type: "selection", fixed: "left", width: 80 },
   { type: "index", label: "#", width: 80 },
   { prop: "username", label: "用户名称", width: 170, search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称", width: 170, search: { el: "el-input" } },
@@ -79,6 +80,7 @@ const detailForm: DialogForm = {
   addApi: addOne,
   editApi: editOne,
   deleteApi: deleteOne,
+  deleteBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

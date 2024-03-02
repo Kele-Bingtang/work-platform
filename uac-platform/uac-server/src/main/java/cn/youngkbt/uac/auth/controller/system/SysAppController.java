@@ -82,8 +82,8 @@ public class SysAppController {
      * 应用删除
      */
     @DeleteMapping("/{ids}")
-    public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(sysAppService.removeOne(List.of(ids)));
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        return HttpResult.ok(sysAppService.removeBatch(List.of(ids)));
     }
 
 }

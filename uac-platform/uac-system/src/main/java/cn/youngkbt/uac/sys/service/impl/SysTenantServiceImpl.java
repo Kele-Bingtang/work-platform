@@ -67,7 +67,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public boolean removeOne(List<Long> ids) {
+    public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }

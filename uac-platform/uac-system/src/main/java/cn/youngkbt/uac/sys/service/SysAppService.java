@@ -26,7 +26,7 @@ public interface SysAppService extends IService<SysApp> {
 
     boolean updateOne(SysAppDto sysAppDto);
 
-    boolean removeOne(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
 
     List<SysAppTreeVo> appTreeList();
 }

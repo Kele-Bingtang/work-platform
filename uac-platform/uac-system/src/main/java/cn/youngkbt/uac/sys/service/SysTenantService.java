@@ -25,6 +25,6 @@ public interface SysTenantService extends IService<SysTenant> {
 
     boolean updateOne(SysTenantDto sysTenantDto);
 
-    boolean removeOne(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
 
 }

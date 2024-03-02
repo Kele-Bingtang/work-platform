@@ -74,7 +74,7 @@ public class SysClientController {
      * 客户端删除
      */
     @DeleteMapping("/{ids}")
-    public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(clientService.removeOne(List.of(ids)));
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        return HttpResult.ok(clientService.removeBatch(List.of(ids)));
     }
 }

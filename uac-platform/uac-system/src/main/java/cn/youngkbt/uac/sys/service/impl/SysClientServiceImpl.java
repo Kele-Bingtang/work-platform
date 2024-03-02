@@ -89,7 +89,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public boolean removeOne(Collection<Long> ids) {
+    public boolean removeBatch(Collection<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 

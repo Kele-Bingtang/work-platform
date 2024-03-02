@@ -14,7 +14,7 @@
 
 <script setup lang="tsx" name="Post">
 import { ProTable } from "work";
-import { list, addOne, editOne, deleteOne, type Post } from "@/api/post";
+import { list, addOne, editOne, deleteOne, deleteBatch, type Post } from "@/api/post";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
@@ -30,6 +30,7 @@ const { statusChange } = useChange(
 );
 
 const columns: TableColumnProps<Post.PostInfo[]>[] = [
+  { type: "selection", fixed: "left", width: 80 },
   { prop: "postCode", label: "部门编码", search: { el: "el-input" } },
   { prop: "postName", label: "部门名称", search: { el: "el-input" } },
   { prop: "orderNum", label: "排序" },
@@ -66,6 +67,7 @@ const detailForm: DialogForm = {
   addApi: addOne,
   editApi: editOne,
   deleteApi: deleteOne,
+  deleteBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

@@ -27,5 +27,5 @@ public interface SysRoleService extends IService<SysRole> {
 
     boolean updateOne(SysRoleDto sysRoleDto);
 
-    boolean removeOne(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
 }

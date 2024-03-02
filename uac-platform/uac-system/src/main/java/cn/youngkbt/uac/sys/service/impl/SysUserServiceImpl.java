@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.mp.base.PageQuery;
@@ -87,7 +88,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     private Wrapper<SysUser> buildQueryWrapper(SysUserDto sysUserDto) {
         QueryWrapper<SysUser> wrapper = Wrappers.query();
-        wrapper.eq(StringUtils.hasText(sysUserDto.getUserId()), "su.user_id", sysUserDto.getUserId())
+        wrapper.eq("su.is_deleted", ColumnConstant.NON_DELETED)
+                .eq(StringUtils.hasText(sysUserDto.getUserId()), "su.user_id", sysUserDto.getUserId())
                 .like(StringUtils.hasText(sysUserDto.getUsername()), "su.username", sysUserDto.getUsername())
                 .like(StringUtils.hasText(sysUserDto.getPhone()), "su.phone", sysUserDto.getPhone())
                 .like(StringUtils.hasText(sysUserDto.getEmail()), "su.email", sysUserDto.getEmail())
@@ -165,7 +167,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean removeOne(List<Long> ids) {
+    public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 

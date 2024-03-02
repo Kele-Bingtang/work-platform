@@ -23,5 +23,5 @@ public interface SysDictTypeService extends IService<SysDictType> {
 
     boolean updateOne(SysDictTypeDto sysDictTypeDto);
 
-    boolean removeOne(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
 }

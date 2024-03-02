@@ -6,9 +6,12 @@
 		"element-plus": "^2.5.1",
 		"mitt": "^3.0.1",
 		"nprogress": "^0.2.0",
-		"vue": "^3.4.13"
+		"vue": "^3.4.13",
+		"file-saver": "^2.0.5",
+		"xlsx": "^0.18.5"
 	},
 	"devDependencies": {
-		"@types/nprogress": "^0.2.3"
+		"@types/nprogress": "^0.2.3",
+		"@types/file-saver": "^2.0.7"
 	}
 }

@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts" name="DialogOperate">
-import { type DialogProps, ElMessage, type FormInstance } from "element-plus";
+import { type DialogProps, ElMessage, type FormInstance, ElMessageBox } from "element-plus";
 import { ProForm, type FormOptionsProps } from "@work/components";
 import { shallowRef, ref, computed } from "vue";
 
@@ -46,6 +46,7 @@ export interface DialogFormProps {
   deleteApi?: (params: any) => Promise<any>; // 删除接口
   deleteCarryParams?: any;
   deleteFilterParams?: string[];
+  deleteBatchApi?: (params: any) => Promise<any>; // 批量删除接口
   apiFilterParams?: string[];
   id?: string; // 数据主键
   cache?: boolean; // 是否缓存新增、编辑后遗留的数据
@@ -57,14 +58,18 @@ export interface DialogFormProps {
   afterEdit?: (form: any, res: any) => void; // 编辑后回调
   beforeDelete?: (form: any) => void | Promise<any> | any; // 删除前回调
   afterDelete?: (form: any, res: any) => void; // 删除后回调
+  beforeDeleteBatch?: (form: any) => void | Promise<any> | any; // 批量删除前回调
+  afterDeleteBatch?: (form: any, res: any) => void; // 批量删除后回调
   beforeConfirm?: (status: string) => void; // 确定按钮触发前回调
   afterConfirm?: (result: boolean) => void; // 确定按钮触发后回调
   disableAdd?: boolean;
   disableEdit?: boolean;
   disableDelete?: boolean;
+  disableDeleteBatch?: boolean;
   useAdd?: boolean;
   useEdit?: boolean;
   useDelete?: boolean;
+  useDeleteBatch?: boolean;
 }
 
 const props = defineProps<DialogFormProps>();
@@ -190,6 +195,35 @@ const handleDelete = async ({ row }: any) => {
   }
 };
 
+const handleDeleteBatch = async (selectedListIds: string[], fallback: () => {}) => {
+  ElMessageBox.confirm(`删除所选信息?`, "温馨提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+    draggable: true,
+  }).then(async () => {
+    if (props) {
+      let data = selectedListIds;
+
+      props.beforeConfirm && props.beforeConfirm("deleteBatch");
+      data = (props.beforeDeleteBatch && (await props.beforeDeleteBatch(data))) || data;
+
+      executeApi(
+        props.deleteBatchApi,
+        data,
+        "删除成功！",
+        "删除失败！",
+        async res => {
+          props.afterDeleteBatch && (await props.afterDeleteBatch(form, res));
+          props.afterConfirm && props.afterConfirm(true);
+          fallback();
+        },
+        () => props.afterConfirm && props.afterConfirm(false)
+      );
+    }
+  });
+};
+
 const executeApi = (
   api: undefined | ((params: any) => Promise<any>),
   params: any,
@@ -210,5 +244,5 @@ const executeApi = (
     });
 };
 
-defineExpose({ handleAdd, handleEdit, handleDelete });
+defineExpose({ handleAdd, handleEdit, handleDelete, handleDeleteBatch });
 </script>

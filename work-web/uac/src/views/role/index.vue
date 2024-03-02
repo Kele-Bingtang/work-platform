@@ -31,7 +31,7 @@
 <script setup lang="tsx" name="Role">
 import { TreeFilter, ProTable } from "work";
 import { getAppTreeList } from "@/api/app";
-import { listRoleByApp, addOne, editOne, deleteOne, type Role } from "@/api/role";
+import { listRoleByApp, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/role";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
@@ -51,6 +51,7 @@ const initRequestParam = reactive({
 });
 
 const columns: TableColumnProps<Role.RoleInfo[]>[] = [
+  { type: "selection", fixed: "left", width: 80 },
   { type: "index", label: "#", width: 80 },
   { prop: "roleCode", label: "角色编码", search: { el: "el-input" } },
   { prop: "roleName", label: "角色名称", search: { el: "el-input" } },
@@ -88,6 +89,7 @@ const detailForm: DialogForm = {
   addApi: addOne,
   editApi: editOne,
   deleteApi: deleteOne,
+  deleteBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

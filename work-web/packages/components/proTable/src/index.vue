@@ -20,13 +20,26 @@
             :is-selected="isSelected"
           >
             <el-button
+              v-if="visibleButton(detailForm?.addApi, detailForm?.useAdd)"
               type="primary"
               :icon="Plus"
               @click="dialogOperateRef?.handleAdd"
-              v-if="detailForm?.addApi || isTrue(detailForm?.useAdd)"
               :disabled="detailForm?.disableAdd"
             >
               新增
+            </el-button>
+            <el-button
+              v-if="
+                visibleButton(detailForm?.deleteBatchApi, detailForm?.useDeleteBatch) &&
+                columns[0]?.type === 'selection'
+              "
+              type="danger"
+              :icon="Delete"
+              plain
+              @click="handleDeleteBatch"
+              :disabled="detailForm?.disableDeleteBatch || !isSelected"
+            >
+              删除
             </el-button>
             <slot name="tableHeaderExtra"></slot>
           </slot>
@@ -53,6 +66,13 @@
             </el-tooltip>
             <el-tooltip v-if="columns.length" effect="light" content="列配置" placement="top">
               <el-button :icon="Operation" circle @click="openColSetting" />
+            </el-tooltip>
+            <el-tooltip v-if="columns.length" effect="light" content="导出" placement="top">
+              <el-button
+                :icon="Download"
+                circle
+                @click="() => downloadFile(columns, tableData, 'export', '确认导出数据?', false)"
+              />
             </el-tooltip>
             <el-tooltip v-if="searchColumns.length" effect="light" content="隐藏搜索" placement="top">
               <el-button :icon="Search" circle @click="isShowSearchProp = !isShowSearchProp" />
@@ -112,14 +132,14 @@
                   :icon="Edit"
                   @click="dialogOperateRef?.handleEdit(scope)"
                   :disabled="scope.row.disableEdit || detailForm?.disableEdit"
-                  v-if="detailForm?.editApi || isTrue(detailForm?.useEdit)"
+                  v-if="visibleButton(detailForm?.editApi, detailForm?.useEdit)"
                 >
                   编辑
                 </el-button>
                 <el-popconfirm
                   title="你确定删除吗?"
                   @confirm="dialogOperateRef?.handleDelete(scope)"
-                  v-if="detailForm?.deleteApi || isTrue(detailForm?.useDelete)"
+                  v-if="visibleButton(detailForm?.deleteApi, detailForm?.useDelete)"
                 >
                   <template #reference>
                     <el-button
@@ -188,17 +208,18 @@
 
 <script setup lang="ts" name="ProTable">
 import { ref, watch, provide, onMounted, computed, nextTick, type ComputedRef } from "vue";
-import { ElTable } from "element-plus";
+import { ElMessageBox, ElTable } from "element-plus";
 import { useTable, type Table } from "./hooks/useTable";
 import { useSelection } from "./hooks/useSelection";
 import { SearchForm, Pagination, type BreakPoint } from "@work/components";
 import type { TableColumnProps } from "./interface";
-import { Refresh, Plus, Operation, Search, Edit, Delete, Coin } from "@element-plus/icons-vue";
+import { Refresh, Plus, Operation, Search, Edit, Delete, Coin, Download } from "@element-plus/icons-vue";
 import { lastProp } from "./utils";
 import ColSetting from "./components/ColSetting.vue";
 import TableColumn from "./components/TableColumn.vue";
 import DialogOperate from "./components/DialogOperate.vue";
 import type { DialogFormProps } from "./components/DialogOperate.vue";
+import { exportJsonToExcel, formatJsonToArray } from "@work/utils";
 
 export type DialogForm = DialogFormProps;
 
@@ -220,6 +241,7 @@ export interface ProTableProps {
   searchCols?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
   detailForm?: DialogFormProps;
   isShowSearch?: boolean;
+  export?: boolean;
 }
 
 // 接受父组件参数，配置默认值
@@ -233,6 +255,7 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   rowKey: "id",
   size: "default",
   isShowSearch: true,
+  export: true,
   searchCols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
 });
 
@@ -410,8 +433,36 @@ const changeStyle = (style: Object) => {
   headerCellStyle.value = style;
 };
 
-const isTrue = (flag: boolean | undefined) => {
-  return flag === undefined || flag;
+const visibleButton = (api: any, flag: boolean | undefined) => {
+  // flag为 undefined 时，判断 api 是否存在
+  if (flag) return true;
+  if (flag === false) return false;
+  return api;
+};
+
+const handleDeleteBatch = () => {
+  dialogOperateRef.value?.handleDeleteBatch(selectedListIds.value, () => {
+    clearSelection();
+    getTableList();
+  });
+};
+
+// 导出
+const downloadFile = async (columns: any, data: any, fileName: string, msg: string, useProp = true) => {
+  ElMessageBox.confirm(msg, "温馨提示", { type: "warning" }).then(() => {
+    const tHeader = [] as string[];
+    const propName = [] as string[];
+    columns.forEach((item: any) => {
+      if (!item.type && item.prop !== "operation") {
+        propName.push(item.prop!);
+        if (useProp) tHeader.push(item.prop!);
+        else tHeader.push(item.label!);
+      }
+    });
+    const filterVal = propName;
+    const d = formatJsonToArray(data, filterVal);
+    exportJsonToExcel(tHeader, d, fileName, undefined, undefined, true, "xlsx");
+  });
 };
 
 // 暴露给父组件的参数和方法(外部需要什么，都可以从这里暴露出去)

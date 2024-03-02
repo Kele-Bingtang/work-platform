@@ -37,7 +37,7 @@ public interface SysUserService extends IService<SysUser> {
 
     boolean updateOneByUserId(SysUserDto sysUserDto);
 
-    boolean removeOne(List<Long> ids);
+    boolean removeBatch(List<Long> ids);
 
     RolePostVo rolePostList();
 }

@@ -1,6 +1,7 @@
 export * from "./component/install";
 export * from "./nprogress";
 export * from "./util";
+export * from "./excel";
 export * from "./layout/message";
 export * from "./layout/mittBus";
 export * from "./layout/scrollTo";

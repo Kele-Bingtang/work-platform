@@ -63,7 +63,7 @@ public class SysTenantController {
      * 客户端删除
      */
     @DeleteMapping("/{ids}")
-    public Response<Boolean> removeOne(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(sysTenantService.removeOne(List.of(ids)));
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        return HttpResult.ok(sysTenantService.removeBatch(List.of(ids)));
     }
 }

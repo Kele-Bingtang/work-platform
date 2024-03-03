@@ -100,4 +100,5 @@ public class SysTenantDto {
      * 状态（0 异用 1 正常）
      */
     private Integer status;
+    
 }

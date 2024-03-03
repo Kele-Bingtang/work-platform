@@ -48,6 +48,9 @@ public class SysTenantController {
      */
     @PostMapping
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDto sysTenantDto) {
+        if (sysTenantService.checkCompanyNameUnique(sysTenantDto)) {
+            return HttpResult.failMessage("新增租户'" + sysTenantDto.getTenantName() + "'失败，企业名称已存在");
+        }
         return HttpResult.ok(sysTenantService.insertOne(sysTenantDto));
     }
 

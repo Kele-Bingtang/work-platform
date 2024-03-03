@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -90,4 +91,14 @@ public class SysTenantVo implements Serializable {
      * 租户过期时间（-1 无限期）
      */
     private Date expireTime;
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 }

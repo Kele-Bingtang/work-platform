@@ -1,6 +1,5 @@
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { useLayoutStore } from "@/stores/layout";
 
 const rules = reactive<FormRules>({
   postCode: [{ required: true, message: "请输入部门编码", trigger: "blur" }],

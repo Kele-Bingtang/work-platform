@@ -55,6 +55,13 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
+    public boolean checkCompanyNameUnique(SysTenantDto sysTenantDto) {
+        return baseMapper.exists(new LambdaQueryWrapper<SysTenant>()
+                .eq(SysTenant::getTenantName, sysTenantDto.getTenantName())
+                .ne(Objects.nonNull(sysTenantDto.getTenantId()), SysTenant::getTenantId, sysTenantDto.getTenantId()));
+    }
+
+    @Override
     public boolean insertOne(SysTenantDto sysTenantDto) {
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDto, SysTenant.class);
         return baseMapper.insert(sysTenant) > 0;

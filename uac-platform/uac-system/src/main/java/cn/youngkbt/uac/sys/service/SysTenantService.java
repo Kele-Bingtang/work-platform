@@ -27,4 +27,5 @@ public interface SysTenantService extends IService<SysTenant> {
 
     boolean removeBatch(List<Long> ids);
 
+    boolean checkCompanyNameUnique(SysTenantDto sysTenantDto);
 }

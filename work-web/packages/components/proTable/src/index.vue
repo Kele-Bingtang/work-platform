@@ -71,7 +71,7 @@
               <el-button
                 :icon="Download"
                 circle
-                @click="() => downloadFile(columns, tableData, 'export', '确认导出数据?', false)"
+                @click="() => downloadFile(columns, tableData, 'export', '确认导出数据?', exportKey)"
               />
             </el-tooltip>
             <el-tooltip v-if="searchColumns.length" effect="light" content="隐藏搜索" placement="top">
@@ -227,7 +227,7 @@ export interface ProTableProps {
   columns: TableColumnProps[]; // 列配置项 ==> 必传
   data?: any[]; // 静态 table data 数据，若存在则不会使用 requestApi 返回的 data ==> 非必传
   requestApi?: (params: any) => Promise<any>; // 请求表格数据的 api ==> 非必传
-  requestAuto?: boolean; // 是否自动执行请求 api ==> 非必传（默认为true）
+  requestAuto?: boolean; // 是否自动执行请求 api ==> 非必传（默认为 true）
   requestError?: (params: any) => void; // 表格 api 请求错误监听 ==> 非必传
   beforeSearch?: (data: any) => any; // 查询数据前的回调函数，可以对查询参数进行处理或禁止查询 ==> 非必传
   dataCallback?: (data: any) => any; // 返回数据的回调函数，可以对数据进行处理 ==> 非必传
@@ -239,9 +239,10 @@ export interface ProTableProps {
   rowKey?: string; // 行数据的 Key，用来优化 Table 的渲染，当表格数据多选时，所指定的 id ==> 非必传（默认为 id）
   size?: CustomTableSize; // 表格密度
   searchCols?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
-  detailForm?: DialogFormProps;
-  isShowSearch?: boolean;
-  export?: boolean;
+  isShowSearch?: boolean; // 初始化时是否显示搜索模块
+  export?: boolean; // 是否显示导出按钮
+  exportKey?: "props" | "label" | "dataKey"; // 导出时的表头配置（prop 为使用  columns 的 props，label 为使用 columns 的 label，dataKey 为使用 data 的 key），默认为 dataKey
+  detailForm?: DialogFormProps; // 新增、编辑、删除表单配置
 }
 
 // 接受父组件参数，配置默认值
@@ -256,6 +257,7 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   size: "default",
   isShowSearch: true,
   export: true,
+  exportKey: "dataKey",
   searchCols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
 });
 
@@ -448,21 +450,47 @@ const handleDeleteBatch = () => {
 };
 
 // 导出
-const downloadFile = async (columns: any, data: any, fileName: string, msg: string, useProp = true) => {
+const downloadFile = async (
+  columns: any,
+  data: any[],
+  fileName: string,
+  msg: string,
+  exportKey: "props" | "label" | "dataKey"
+) => {
   ElMessageBox.confirm(msg, "温馨提示", { type: "warning" }).then(() => {
     const tHeader = [] as string[];
     const propName = [] as string[];
-    columns.forEach((item: any) => {
-      if (!item.type && item.prop !== "operation") {
-        propName.push(item.prop!);
-        if (useProp) tHeader.push(item.prop!);
-        else tHeader.push(item.label!);
-      }
-    });
+    if (exportKey === "dataKey") {
+      Object.keys(data[0]).forEach((item: any) => {
+        propName.push(item);
+        tHeader.push(item);
+      });
+    } else {
+      columns.forEach((item: any) => {
+        if (!item.type && item.prop !== "operation") {
+          propName.push(item.prop!);
+          if (exportKey === "props") tHeader.push(item.prop!);
+          else tHeader.push(item.label!);
+        }
+      });
+    }
+
     const filterVal = propName;
-    const d = formatJsonToArray(data, filterVal);
+    // filterFlatData：扁平化 data，data 可能有 children 属性
+    const d = formatJsonToArray(filterFlatData(data), filterVal);
     exportJsonToExcel(tHeader, d, fileName, undefined, undefined, true, "xlsx");
   });
+};
+
+/**
+ * @description 扁平化 data，data 可能有 children 属性
+ */
+const filterFlatData = (data: any[]) => {
+  return data.reduce((pre: any[], current: any) => {
+    let flatArr = [...pre, current];
+    if (current.children) flatArr = [...flatArr, ...filterFlatData(current.children)];
+    return flatArr;
+  }, []);
 };
 
 // 暴露给父组件的参数和方法(外部需要什么，都可以从这里暴露出去)

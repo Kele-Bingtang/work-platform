@@ -31,8 +31,8 @@ const { statusChange } = useChange(
 
 const columns: TableColumnProps<Post.PostInfo[]>[] = [
   { type: "selection", fixed: "left", width: 80 },
-  { prop: "postCode", label: "部门编码", search: { el: "el-input" } },
-  { prop: "postName", label: "部门名称", search: { el: "el-input" } },
+  { prop: "postCode", label: "岗位编码", search: { el: "el-input" } },
+  { prop: "postName", label: "岗位名称", search: { el: "el-input" } },
   { prop: "orderNum", label: "排序" },
   {
     prop: "status",

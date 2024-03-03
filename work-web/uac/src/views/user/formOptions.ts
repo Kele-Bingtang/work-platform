@@ -1,9 +1,11 @@
 import { useLayoutStore } from "@/stores/layout";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { validatePassword, validatePhone } from "./rules";
 import { getRolePostList } from "@/api/user";
 import { getDeptTreeList } from "@/api/dept";
+import { useFormRules } from "@/hooks/useFormRules";
+
+const { validatePassword, validatePhone } = useFormRules();
 
 const rules = reactive<FormRules>({
   username: [{ required: true, message: "请输入用户名称", trigger: "blur" }],

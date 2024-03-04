@@ -36,8 +36,8 @@
 
 <script setup lang="tsx" name="DictType">
 import { ProTable, TreeFilter, Drawer } from "work";
-import { getAppTreeList } from "@/api/app";
-import { addOneDictType, editOneDictType, removeOneDictType, listDictTypeByApp } from "@/api/dictType";
+import { getAppTreeList } from "@/api/system/app";
+import { addOneDictType, editOneDictType, removeOneDictType, listDictTypeByApp } from "@/api/system/dictType";
 import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
 import DictData from "./dictData.vue";
 

@@ -1,4 +1,4 @@
-import { getDeptTreeList } from "@/api/dept";
+import { getDeptTreeList } from "@/api/system/dept";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { useFormRules } from "@/hooks/useFormRules";

@@ -4,7 +4,7 @@ import { DeviceType, type LanguageType, type LayoutSizeType, type TabProp, type 
 import { useSettingsStore } from "./settings";
 import defaultSettings from "@/config/settings";
 import type { Frame } from "@/layout/components/FrameLayout/useFrame";
-import { listDictDataByDictCode } from "@/api/dictData";
+import { listDictDataByDictCode } from "@/api/system/dictData";
 import { uacAppSecret } from "work";
 
 export const useLayoutStore = defineStore(

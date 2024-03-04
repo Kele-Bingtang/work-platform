@@ -57,13 +57,21 @@ public class PasswordAuthHandler implements AuthHandler {
         // 检查用户是否被锁定登录
         loginEventListen.checkLogin(loginUserBO);
 
+        Long timeout = sysClient.getTimeout();
+
+        if (Objects.isNull(timeout)) {
+            timeout = JwtTokenUtils.EXPIRE_TIME;
+        } else {
+            timeout = timeout * 1000;
+        }
+
         JwtAuthenticationToken token = new JwtAuthenticationToken(null, null);
         try {
             token = SecurityUtils.login(ServletUtil.getRequest(),
                     TenantHelper.isEnable() ? loginUserBO.getTenantId() + ":" + loginUserBO.getUsername() : loginUserBO.getUsername(),
                     loginUserBO.getPassword(),
                     authenticationManager,
-                    sysClient.getTimeout());
+                    timeout);
 
             // 走了自定义认证，则 Spring Security 不会调用自定义的成功处理器，这里需要手动调用
             // 参考 org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter()
@@ -76,16 +84,9 @@ public class PasswordAuthHandler implements AuthHandler {
             loginFailureHandler.onAuthenticationFailure(ServletUtil.getRequest(), ServletUtil.getResponse(), exception, loginUserBO);
         }
 
-        Long timeout = sysClient.getTimeout();
-
-        if (Objects.isNull(timeout)) {
-            timeout = JwtTokenUtils.EXPIRE_TIME;
-        }
-
         LoginSuccessBO loginSuccessBO = new LoginSuccessBO();
         loginSuccessBO.setAccessToken(token.getAccessToken());
         loginSuccessBO.setExpireIn(timeout);
-
         // 用户基本信息存入 Redis
         LoginUser loginUser = MapstructUtil.convert(token.getAuthentication().getPrincipal(), LoginUser.class);
         UacHelper.cacheUserInfo(loginUser, timeout);

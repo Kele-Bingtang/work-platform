@@ -1,8 +1,8 @@
 import { useLayoutStore } from "@/stores/layout";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { getRolePostList } from "@/api/user";
-import { getDeptTreeList } from "@/api/dept";
+import { getRolePostList } from "@/api/system/user";
+import { getDeptTreeList } from "@/api/system/dept";
 import { useFormRules } from "@/hooks/useFormRules";
 
 const { validatePassword, validatePhone } = useFormRules();

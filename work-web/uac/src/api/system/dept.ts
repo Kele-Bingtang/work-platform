@@ -9,7 +9,7 @@ export namespace Dept {
     ancestors: string; // 祖级列表
     deptName: string; // 部门名
     icon: string; // 部门图标
-    orderNum: string; // 部门显示顺序
+    orderNum: number; // 部门显示顺序
     userCount: string; // 部门用户数量
     leader: string; // 部门负责人
     phone: string; // 负责电话

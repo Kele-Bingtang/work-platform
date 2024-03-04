@@ -12,7 +12,7 @@
 
 <script setup lang="ts" name="DictData">
 import { ProTable } from "work";
-import { addOneDictData, editOneDictData, removeOneDictData, listDictData } from "@/api/dictData";
+import { addOneDictData, editOneDictData, removeOneDictData, listDictData } from "@/api/system/dictData";
 import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
 
 export interface DictDataProps {

@@ -93,7 +93,7 @@ tenant:
     - t_sys_menu
     - t_sys_role
     - t_sys_role_group
-    - sys_tenant
+    - t_sys_tenant
 
 # 默认配置
 default:

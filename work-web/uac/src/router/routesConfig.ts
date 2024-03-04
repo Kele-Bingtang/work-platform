@@ -134,7 +134,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/tenant-manage",
         name: "TenantManage",
-        component: "/tenant/index",
+        component: "/system/tenant/index",
         meta: {
           title: "租户管理",
           icon: HomeFilled,
@@ -143,7 +143,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/user-manage",
         name: "UserManage",
-        component: "/user/index",
+        component: "/system/user/index",
         meta: {
           title: "用户管理",
           icon: HomeFilled,
@@ -152,7 +152,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/role-manage",
         name: "RoleManage",
-        component: "/role/index",
+        component: "/system/role/index",
         meta: {
           title: "角色管理",
           icon: HomeFilled,
@@ -161,7 +161,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/menu-manage",
         name: "MenuManage",
-        component: "/menu/index",
+        component: "/system/menu/index",
         meta: {
           title: "菜单管理",
           icon: HomeFilled,
@@ -170,7 +170,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/dept-manage",
         name: "DeptManage",
-        component: "/dept/index",
+        component: "/system/dept/index",
         meta: {
           title: "部门管理",
           icon: HomeFilled,
@@ -179,7 +179,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/post-manage",
         name: "PostManage",
-        component: "/post/index",
+        component: "/system/post/index",
         meta: {
           title: "岗位管理",
           icon: HomeFilled,
@@ -188,7 +188,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/dict-manage",
         name: "DictManage",
-        component: "/dict/index",
+        component: "/system/dict/index",
         meta: {
           title: "字典管理",
           icon: HomeFilled,
@@ -207,7 +207,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/client-manage",
         name: "ClientManage",
-        component: "/home/index",
+        component: "/application/client/index",
         meta: {
           title: "客户端管理",
           icon: HomeFilled,
@@ -216,7 +216,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "/app-manage",
         name: "AppManage",
-        component: "/home/index",
+        component: "/application/app/index",
         meta: {
           title: "App 管理",
           icon: HomeFilled,

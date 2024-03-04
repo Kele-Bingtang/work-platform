@@ -1,4 +1,4 @@
-import { listMenuTreeSelectByApp } from "@/api/menu";
+import { listMenuTreeSelectByApp } from "@/api/system/menu";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@work/constants";

@@ -87,11 +87,6 @@ public class SysTenantDto {
     private String domain;
 
     /**
-     * 父级租户 ID
-     */
-    private String parentTenantId;
-
-    /**
      * 租户过期时间（-1 无限期）
      */
     private Date expireTime;

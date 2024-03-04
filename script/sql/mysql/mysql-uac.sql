@@ -609,7 +609,6 @@ CREATE TABLE `t_sys_tenant` (
   `contact_user_name` varchar(20) DEFAULT NULL COMMENT '联系人',
   `contact_phone` varchar(20) DEFAULT NULL COMMENT '联系电话',
   `domain` varchar(200) DEFAULT NULL COMMENT '企业域名',
-  `parent_tenant_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '父级租户 ID',
   `expire_time` datetime DEFAULT NULL COMMENT '租户过期时间（-1 无限期）',
   `create_by` varchar(16) DEFAULT NULL COMMENT '创建人',
   `create_by_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '创建人 ID',
@@ -630,7 +629,7 @@ CREATE TABLE `t_sys_tenant` (
 
 LOCK TABLES `t_sys_tenant` WRITE;
 /*!40000 ALTER TABLE `t_sys_tenant` DISABLE KEYS */;
-INSERT INTO `t_sys_tenant` VALUES (1,'000000',NULL,'YoungKbt有限公司',NULL,'广东省深圳市龙岗区平湖街道',-1,10000,'刘世鹏',NULL,'管理组','15888888888',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0);
+INSERT INTO `t_sys_tenant` VALUES (1,'000000',NULL,'YoungKbt有限公司',NULL,'广东省深圳市龙岗区平湖街道',-1,10000,'刘世鹏',NULL,'管理组','15888888888',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,0);
 /*!40000 ALTER TABLE `t_sys_tenant` ENABLE KEYS */;
 UNLOCK TABLES;
 

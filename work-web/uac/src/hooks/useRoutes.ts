@@ -7,7 +7,7 @@ import type { RouteRecordRaw } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import settings from "@/config/settings";
 import { useLayoutNoSetup } from "./useLayout";
-import type { BackstageMenuList } from "@/api/menu";
+import type { BackstageMenuList } from "@/api/system/menu";
 
 const modules = import.meta.glob("@/views/**/*.vue");
 const FrameView = () => import("@/layout/components/FrameLayout/FrameView.vue");

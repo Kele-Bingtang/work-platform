@@ -7,7 +7,7 @@ export namespace Role {
     roleCode: string; // 角色码
     roleName: string; // 角色名
     status: number; // 状态
-    orderNum: string; // 显示顺序
+    orderNum: number; // 显示顺序
     intro: string; // 角色介绍
     appId: string; // 应用 ID
     createTime: string; // 创建时间

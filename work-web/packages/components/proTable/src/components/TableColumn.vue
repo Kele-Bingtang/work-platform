@@ -56,10 +56,13 @@ const RenderTableColumn = (item: TableColumnProps) => {
               if (item._children) return item._children.map(child => RenderTableColumn(child));
               if (item.render) return item.render(tryCreateEnumValue(item, scope));
               if (slots[lastProp(item.prop!)]) return slots[lastProp(item.prop!)]!(tryCreateEnumValue(item, scope));
-              if (item.tag && renderCellData(item, scope)) {
-                return <el-tag type={getTagType(item, scope)}>{renderCellData(item, scope)}</el-tag>;
+
+              const data = renderCellData(item, scope);
+              if (item.tag && data) {
+                if (Array.isArray(data)) return data.map(d => <el-tag type={getTagType(item, scope)}>{d}</el-tag>);
+                return <el-tag type={getTagType(item, scope)}>{data}</el-tag>;
               }
-              return renderCellData(item, scope);
+              return Array.isArray(data) ? data.join(",") : data;
             },
             header: (scope: HeaderRenderScope<any>) => {
               if (item.headerRender) return item.headerRender(scope);

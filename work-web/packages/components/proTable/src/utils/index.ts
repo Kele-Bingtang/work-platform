@@ -24,14 +24,22 @@ export function filterEnum(callValue: any, enumData?: any, fieldNames?: FieldNam
   const value = fieldNames?.value ?? "value";
   const label = fieldNames?.label ?? "label";
   const children = fieldNames?.children ?? "children";
+  const filterDataArray: any[] = [];
   let filterData: { [key: string]: any } = {};
   // 判断 enumData 是否为数组
-  if (Array.isArray(enumData)) filterData = findItemNested(enumData, callValue, value, children);
+  if (Array.isArray(enumData)) {
+    if (Array.isArray(callValue)) {
+      callValue.forEach(item => {
+        const data = findItemNested(enumData, item, value, children);
+        data && filterDataArray.push(data[label]);
+      });
+    } else filterData = findItemNested(enumData, callValue, value, children);
+  }
   // 判断是否输出的结果为 tag 类型
   if (type === "tag") {
     return filterData?.tagType ? filterData.tagType : "";
   } else {
-    return filterData ? filterData[label] : "--";
+    return filterDataArray.length ? filterDataArray : filterData ? filterData[label] : "--";
   }
 }
 

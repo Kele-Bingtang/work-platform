@@ -14,7 +14,7 @@
 
 <script setup lang="tsx" name="Dept">
 import { ProTable } from "work";
-import { getDeptTreeTable, addOne, editOne, deleteOne, type Dept } from "@/api/dept";
+import { getDeptTreeTable, addOne, editOne, deleteOne, type Dept } from "@/api/system/dept";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";

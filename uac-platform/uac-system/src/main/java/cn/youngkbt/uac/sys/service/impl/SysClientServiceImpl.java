@@ -45,10 +45,10 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     @Override
     public List<SysClientVo> queryListWithPage(SysClientDto sysClientDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysClient> wrapper = Wrappers.<SysClient>lambdaQuery()
-                .eq(StringUtils.hasText(sysClientDto.getClientId()), SysClient::getClientId, sysClientDto.getClientId())
+                .like(StringUtils.hasText(sysClientDto.getClientId()), SysClient::getClientId, sysClientDto.getClientId())
+                .eq(StringUtils.hasText(sysClientDto.getClientKey()), SysClient::getClientKey, sysClientDto.getClientKey())
                 .eq(StringUtils.hasText(sysClientDto.getClientName()), SysClient::getClientName, sysClientDto.getClientName())
-                .eq(StringUtils.hasText(sysClientDto.getClientSecret()), SysClient::getClientSecret, sysClientDto.getClientSecret())
-                .eq(StringUtils.hasText(sysClientDto.getGrantTypes()), SysClient::getGrantTypes, sysClientDto.getGrantTypes())
+                .like(StringUtils.hasText(sysClientDto.getClientSecret()), SysClient::getClientSecret, sysClientDto.getClientSecret())
                 .eq(Objects.nonNull(sysClientDto.getStatus()), SysClient::getStatus, sysClientDto.getStatus());
 
         List<SysClient> sysClientList;
@@ -72,12 +72,14 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
         String clientKey = sysClient.getClientKey();
         String appId = SecureUtil.md5(clientSecret + clientKey);
         sysClient.setClientId(appId);
+        sysClient.setGrantTypes(String.join(",", sysClientDto.getGrantTypeList()));
         return baseMapper.insert(sysClient) > 0;
     }
 
     @Override
     public boolean updateOne(SysClientDto sysClientDto) {
         SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
+        sysClient.setGrantTypes(String.join(",", sysClientDto.getGrantTypeList()));
         return baseMapper.updateById(sysClient) > 0;
     }
 

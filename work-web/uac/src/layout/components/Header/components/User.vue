@@ -2,12 +2,12 @@
   <el-dropdown trigger="click" class="user-dropdown">
     <div class="avatar-wrapper">
       <template v-if="prop.showAvatar">
-        <el-image :src="user.avatar" class="user-avatar" alt="头像">
+        <el-image :src="user?.avatar" class="user-avatar" alt="头像">
           <template #error>
             <el-image :src="defaultAvatar" alt="头像" />
           </template>
         </el-image>
-        <span class="username">{{ user.nickName }}</span>
+        <span class="username">{{ user?.nickName }}</span>
       </template>
 
       <el-icon><ArrowDownBold /></el-icon>

@@ -23,8 +23,8 @@
 
 <script setup lang="tsx" name="User">
 import { TreeFilter, ProTable, type TableColumnProps } from "work";
-import { getDeptTreeList } from "@/api/dept";
-import { addOne, editOne, deleteOne, deleteBatch, getUserListByDept, type User } from "@/api/user";
+import { getDeptTreeList } from "@/api/system/dept";
+import { addOne, editOne, deleteOne, deleteBatch, getUserListByDept, type User } from "@/api/system/user";
 import { options } from "./formOptions";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores/layout";

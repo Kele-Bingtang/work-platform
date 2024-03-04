@@ -6,7 +6,7 @@ export namespace Post {
     postId: string; // 岗位 ID
     postCode: string; // 岗位编码
     postName: string; // 岗位名称
-    orderNum: string; // 显示顺序
+    orderNum: number; // 显示顺序
     intro: string; // 岗位介绍
     status: number; // 状态
     createTime: string; // 创建时间

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -53,14 +54,22 @@ public class SysClientVo implements Serializable {
     private List<String> grantTypeList;
 
     /**
-     * token 最低活跃频率时间，超出则 token 失效（-1 不限制，单位秒），isolate_auth 为 1 生效
+     * token 最低活跃频率时间，超出则 token 失效（-1 不限制，单位秒）
      */
     private Long activeTimeout;
 
     /**
-     * token 有效期，超出则 token 失效，默认 30 天（单位秒），isolate_auth 为 1 生效
+     * token 有效期，超出则 token 失效，默认 30 天（单位秒）
      */
     private Long timeout;
 
-    private String status;
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 }

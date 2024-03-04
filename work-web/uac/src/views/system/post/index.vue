@@ -1,5 +1,5 @@
 <template>
-  <div class="tenant-container">
+  <div class="post-container">
     <ProTable
       ref="proTableRef"
       :request-api="list"
@@ -12,9 +12,9 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="Tenant">
+<script setup lang="tsx" name="Post">
 import { ProTable } from "work";
-import { list, addOne, editOne, deleteOne, deleteBatch, type Post } from "@/api/tenant";
+import { list, addOne, editOne, deleteOne, deleteBatch, type Post } from "@/api/system/post";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
@@ -23,21 +23,17 @@ import { useChange } from "@/hooks/useChange";
 const proTableRef = shallowRef<ProTableInstance>();
 
 const { statusChange } = useChange(
-  "tenantName",
-  "租户",
+  "postName",
+  "岗位",
   (row, status) => editOne({ id: row.id, postId: row.postId, status }),
   () => proTableRef.value?.getTableList()
 );
 
 const columns: TableColumnProps<Post.PostInfo[]>[] = [
   { type: "selection", fixed: "left", width: 80 },
-  { prop: "tenantId", label: "租户编号", search: { el: "el-input" } },
-  { prop: "tenantName", label: "企业名称", search: { el: "el-input" } },
-  { prop: "icon", label: "企业图标" },
-  { prop: "contactUserName", label: "联系人" },
-  { prop: "contactPhone", label: "联系电话" },
-  { prop: "founder", label: "企业创始人" },
-  { prop: "licenseNumber", label: "社会信用代码" },
+  { prop: "postCode", label: "岗位编码", search: { el: "el-input" } },
+  { prop: "postName", label: "岗位名称", search: { el: "el-input" } },
+  { prop: "orderNum", label: "排序" },
   {
     prop: "status",
     label: "状态",
@@ -82,7 +78,7 @@ const detailForm: DialogForm = {
 </script>
 
 <style lang="scss" scoped>
-.tenant-container {
+.post-container {
   width: 100%;
   height: 100%;
   padding: 10px;

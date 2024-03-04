@@ -30,8 +30,8 @@
 
 <script setup lang="tsx" name="Role">
 import { TreeFilter, ProTable } from "work";
-import { getAppTreeList } from "@/api/app";
-import { listRoleByApp, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/role";
+import { getAppTreeList } from "@/api/system/app";
+import { listRoleByApp, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/system/role";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";

@@ -43,12 +43,12 @@ public class SysClient extends BaseDO {
     private String grantTypes;
 
     /**
-     * token 最低活跃频率时间，超出则 token 失效（-1 不限制，单位秒），isolate_auth 为 1 生效
+     * token 最低活跃频率时间，超出则 token 失效（-1 不限制，单位秒）
      */
     private Long activeTimeout;
 
     /**
-     * token 有效期，超出则 token 失效，默认 30 天（单位秒），isolate_auth 为 1 生效
+     * token 有效期，超出则 token 失效，默认 30 天（单位秒）
      */
     private Long timeout;
 }

@@ -4,6 +4,7 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.tenant.helper.TenantHelper;
@@ -129,6 +130,11 @@ public class AuthController {
         }
         // 获取登录的用户信息
         LoginUser loginUser = UacHelper.getUserInfo();
+
+        if (Objects.isNull(loginUser)) {
+            return HttpResult.fail(AuthErrorCodeEnum.UN_AUTHORIZED);
+        }
+
         UserInfoVo userInfoVo = new UserInfoVo();
 
         userInfoVo.setUser(loginUser)

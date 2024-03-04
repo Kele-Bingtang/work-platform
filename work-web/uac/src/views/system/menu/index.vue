@@ -47,8 +47,8 @@
 <script setup lang="tsx" name="Menu">
 import { TreeFilter, ProTable } from "work";
 import { httpPrefix, httpsPrefix } from "@work/constants";
-import { getAppTreeList } from "@/api/app";
-import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/menu";
+import { getAppTreeList } from "@/api/system/app";
+import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/system/menu";
 import { type DialogForm, type TableColumnProps, type ProTableInstance } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";

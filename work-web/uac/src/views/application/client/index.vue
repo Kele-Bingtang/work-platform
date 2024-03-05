@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="Post">
+<script setup lang="tsx" name="Client">
 import { ProTable } from "work";
 import { list, addOne, editOne, deleteOne, deleteBatch, type Client } from "@/api/application/client";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
@@ -30,25 +30,30 @@ const { statusChange } = useChange(
 );
 
 const columns: TableColumnProps<Client.ClientInfo[]>[] = [
-  { type: "selection", fixed: "left", width: 80 },
-  { prop: "clientId", label: "客户端 ID", search: { el: "el-input" } },
-  { prop: "clientKey", label: "客户端 Key", search: { el: "el-input" } },
-  { prop: "clientSecret", label: "客户端秘钥", search: { el: "el-input" } },
-  { prop: "clientName", label: "客户端名称", search: { el: "el-input" } },
+  { type: "selection", fixed: "left", width: 40 },
+  { prop: "clientId", label: "客户端 ID", width: 270, search: { el: "el-input" } },
+  { prop: "clientKey", label: "客户端 Key", width: 160, search: { el: "el-input" } },
+  { prop: "clientSecret", label: "客户端秘钥", width: 270, search: { el: "el-input" } },
+  { prop: "clientName", label: "客户端名称", width: 160, search: { el: "el-input" } },
   {
     prop: "grantTypeList",
     label: "授权类型",
-    width: 190,
+    align: "left",
+    minWidth: 190,
     enum: () => useLayoutStore().getDictData("sys_grant_type"),
     tag: true,
     fieldNames: { value: "dictValue", label: "dictLabel" },
-    search: { el: "el-select" },
+    search: {
+      el: "el-select",
+      props: { multiple: true, collapseTags: true, collapseTagsTooltip: true, maxCollapseTags: 2 },
+    },
   },
-  { prop: "activeTimeout", label: "Token 活跃超时时间" },
-  { prop: "timeout", label: "Token 固定超时时间" },
+  { prop: "activeTimeout", label: "Token 活跃超时时间", width: 170 },
+  { prop: "timeout", label: "Token 固定超时时间", width: 170 },
   {
     prop: "status",
     label: "状态",
+    width: 80,
     fieldNames: { value: "dictValue", label: "dictLabel" },
     enum: () => useLayoutStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
@@ -70,7 +75,7 @@ const columns: TableColumnProps<Client.ClientInfo[]>[] = [
       );
     },
   },
-  { prop: "createTime", label: "创建时间" },
+  { prop: "createTime", label: "创建时间", width: 160 },
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 

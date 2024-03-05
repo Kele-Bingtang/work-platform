@@ -38,7 +38,11 @@ export namespace Theme {
  * @param {Function} api 获取表格数据 api 方法 (必传)
  * @param {Object} initRequestParam 获取数据初始化参数 (非必传，默认为{})
  * @param {Boolean} openPage 是否有分页 (非必传，默认为true)
+ * @param {Function} beforeSearch 查询前的回调函数
  * @param {Function} dataCallBack 对后台返回的数据进行处理的方法 (非必传)
+ * @param {Function} requestError 请求出错后的回调函数
+ * @param {Object[]} columns 表格的列配置项
+ * @param {Function} enumCallBack 字典设置的回调函数，ProTable 内置函数
  * */
 export const useTable = (
   api?: (params: any) => Promise<any>,
@@ -47,7 +51,8 @@ export const useTable = (
   beforeSearch?: (searchParam: any) => any,
   dataCallBack?: (data: any) => any,
   requestError?: (error: any) => void,
-  columns?: TableColumnProps[]
+  columns?: TableColumnProps[],
+  enumCallBack?: (data: any) => any
 ) => {
   const state = reactive<Table.StateProps>({
     // 表格数据
@@ -110,6 +115,9 @@ export const useTable = (
       }
 
       let { data } = await api(searchParam);
+      // 配置 _enum 字典信息
+      enumCallBack && (data = enumCallBack(data) || data);
+
       dataCallBack && (data = dataCallBack(data) || data);
 
       if (isArray(data)) state.tableData = data;

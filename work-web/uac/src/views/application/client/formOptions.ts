@@ -22,12 +22,17 @@ export const options: FormOptionsProps = {
       formItem: { label: "客户端 Key", prop: "clientKey" },
       attrs: {
         el: "el-input",
+        disabled: ["edit"],
         props: { clearable: true, placeholder: "请输入 客户端 Key" },
       },
     },
     {
       formItem: { label: "客户端秘钥", prop: "clientSecret" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 客户端秘钥" } },
+      attrs: {
+        el: "el-input",
+        disabled: ["edit"],
+        props: { clearable: true, placeholder: "请输入 客户端秘钥" },
+      },
     },
     {
       formItem: { label: "客户端名称", prop: "clientName" },

@@ -87,10 +87,15 @@ const dialogTitle = computed(() =>
 const formOptions = computed(() => {
   // 目前 status 一变化，都走一遍循环，优化：可以利用 Map 存储有 show 的 column（存下标），然后监听 status，当 status 变化，则通过下标获取 column，将 isHidden 设置为 true
   props.options.columns.forEach(column => {
-    if (Array.isArray(column.attrs.show)) {
-      column.attrs.isHidden = true;
-      if (column.attrs.show.includes("add")) column.attrs.isHidden = status.value === "edit";
-      else if (column.attrs.show.includes("edit")) column.attrs.isHidden = status.value === "add";
+    const { hidden, disabled } = column.attrs;
+    if (Array.isArray(hidden)) {
+      if (hidden.includes("add")) column.attrs.isHidden = status.value === "add";
+      else if (hidden.includes("edit")) column.attrs.isHidden = status.value === "edit";
+    }
+
+    if (Array.isArray(disabled)) {
+      if (disabled.includes("add")) column.attrs.isDisabled = status.value === "add";
+      else if (disabled.includes("edit")) column.attrs.isDisabled = status.value === "edit";
     }
   });
 
@@ -117,6 +122,9 @@ const handleFormConfirm = (f: any, status: string) => {
   props.beforeConfirm && props.beforeConfirm(status);
 
   let data = { ...f };
+  // _enum 是 ProTable 内置的属性，专门存储字典数据，不需要发送给后台
+  delete data._enum;
+
   if (status === "add") {
     // 删除 Insert 不允许传输的数据
     const filterParams = [...(props?.apiFilterParams || []), ...(props?.addFilterParams || [])];
@@ -173,6 +181,8 @@ const handleFormConfirm = (f: any, status: string) => {
 const handleDelete = async ({ row }: any) => {
   if (props) {
     let data = { ...row };
+    // _enum 是 ProTable 内置的属性，专门存储字典数据，不需要发送给后台
+    delete data._enum;
 
     // 删除 Delete 不允许传输的数据
     const filterParams = [...(props?.apiFilterParams || []), ...(props?.deleteFilterParams || [])];

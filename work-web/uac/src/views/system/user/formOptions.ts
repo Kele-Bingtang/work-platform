@@ -18,7 +18,7 @@ export const options: FormOptionsProps = {
   form: {
     inline: true,
     labelPosition: "top",
-    labelWidth: "50px",
+    labelWidth: "120px",
     size: "default",
     fixWidth: true,
     rules: rules,
@@ -36,7 +36,7 @@ export const options: FormOptionsProps = {
       formItem: { label: "密码", prop: "password" },
       attrs: {
         el: "el-input",
-        show: ["add"],
+        hidden: ["edit"],
         defaultValue: "123456",
         props: { clearable: true, placeholder: "请输入 邮箱", type: "password", showPassword: true },
       },

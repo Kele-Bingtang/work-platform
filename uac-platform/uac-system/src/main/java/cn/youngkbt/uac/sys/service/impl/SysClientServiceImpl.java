@@ -49,6 +49,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
                 .eq(StringUtils.hasText(sysClientDto.getClientKey()), SysClient::getClientKey, sysClientDto.getClientKey())
                 .eq(StringUtils.hasText(sysClientDto.getClientName()), SysClient::getClientName, sysClientDto.getClientName())
                 .like(StringUtils.hasText(sysClientDto.getClientSecret()), SysClient::getClientSecret, sysClientDto.getClientSecret())
+                .in(Objects.nonNull(sysClientDto.getGrantTypeList()), SysClient::getGrantTypes, sysClientDto.getGrantTypeList())
                 .eq(Objects.nonNull(sysClientDto.getStatus()), SysClient::getStatus, sysClientDto.getStatus());
 
         List<SysClient> sysClientList;

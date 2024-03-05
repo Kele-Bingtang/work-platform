@@ -88,9 +88,7 @@ const cascadeEnum = (column: FormColumnProps) => {
  * 是否隐藏表单项
  */
 const isHidden = (column: FormColumnProps) => {
-  if (typeof column.attrs.isHidden === "function") {
-    return column.attrs.isHidden(form.value);
-  }
+  if (typeof column.attrs.isHidden === "function") return column.attrs.isHidden(form.value);
   return column.attrs.isHidden;
 };
 

@@ -18,8 +18,8 @@ export namespace Client {
 
 const baseUri = "/system/client";
 
-export const list = () => {
-  return http.get<http.Response<Client.ClientInfo[]>>(`${baseUri}/list`);
+export const list = (params?: Partial<Client.ClientInfo>) => {
+  return http.get<http.Response<Client.ClientInfo[]>>(`${baseUri}/list`, params);
 };
 
 export const addOne = (data: Client.ClientInfo) => {

@@ -14,6 +14,7 @@
       scope: { form: _form, data: _form[column.formItem.prop] },
       clearable,
     }"
+    :disabled="isDisabled()"
     v-model="_form[column.formItem.prop]"
     :data="column.attrs?.el === 'el-tree-select' ? columnEnum : []"
     :options="['el-cascader', 'el-select-v 2'].includes(column.attrs?.el!) ? columnEnum : []"
@@ -140,4 +141,9 @@ const clearable = computed(() => {
   const attrs = props.column.attrs;
   return attrs?.props?.clearable ?? (attrs?.defaultValue === null || attrs?.defaultValue === undefined);
 });
+
+const isDisabled = () => {
+  if (typeof props.column.attrs.isDisabled === "function") return props.column.attrs.isDisabled(props.form.value);
+  return props.column.attrs.isDisabled;
+};
 </script>

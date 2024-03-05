@@ -30,18 +30,6 @@ const getTagType = (item: TableColumnProps, scope: RenderScope<any>) => {
   );
 };
 
-// 获取枚举信息，存放到 [item.prop]EnumValue 里
-const tryCreateEnumValue = (item: TableColumnProps, scope: RenderScope<any>) => {
-  if (enumMap.value.get(item.prop) && item.isFilterEnum) {
-    scope.row[`${item.prop}EnumValue`] = filterEnum(
-      handleRowAccordingToProp(scope.row, item.prop!),
-      enumMap.value.get(item.prop)!,
-      item.fieldNames
-    );
-  }
-  return scope;
-};
-
 const RenderTableColumn = (item: TableColumnProps) => {
   return (
     <>
@@ -54,12 +42,17 @@ const RenderTableColumn = (item: TableColumnProps) => {
           {{
             default: (scope: RenderScope<any>) => {
               if (item._children) return item._children.map(child => RenderTableColumn(child));
-              if (item.render) return item.render(tryCreateEnumValue(item, scope));
-              if (slots[lastProp(item.prop!)]) return slots[lastProp(item.prop!)]!(tryCreateEnumValue(item, scope));
-
+              if (item.render) return item.render(scope);
+              if (slots[lastProp(item.prop!)]) return slots[lastProp(item.prop!)]!(scope);
               const data = renderCellData(item, scope);
               if (item.tag && data) {
-                if (Array.isArray(data)) return data.map(d => <el-tag type={getTagType(item, scope)}>{d}</el-tag>);
+                if (Array.isArray(data)) {
+                  return data.map((d, index) => (
+                    <el-tag key={index} type={getTagType(item, scope)}>
+                      {d}
+                    </el-tag>
+                  ));
+                }
                 return <el-tag type={getTagType(item, scope)}>{data}</el-tag>;
               }
               return Array.isArray(data) ? data.join(",") : data;

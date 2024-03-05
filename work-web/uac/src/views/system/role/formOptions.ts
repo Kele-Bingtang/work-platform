@@ -10,7 +10,7 @@ export const options: FormOptionsProps = {
   form: {
     inline: true,
     labelPosition: "right",
-    labelWidth: "80px",
+    labelWidth: "120px",
     size: "default",
     fixWidth: true,
     rules: rules,

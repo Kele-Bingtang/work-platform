@@ -40,6 +40,7 @@ import { getAppTreeList } from "@/api/system/app";
 import { addOneDictType, editOneDictType, removeOneDictType, listDictTypeByApp } from "@/api/system/dictType";
 import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
 import DictData from "./dictData.vue";
+import type { FormRules } from "element-plus";
 
 const initRequestParam = reactive({
   appId: "",
@@ -81,6 +82,11 @@ const columns: TableColumnProps[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const rules = reactive<FormRules>({
+  dictCode: [{ required: true, message: "请输入字典编码", trigger: "blur" }],
+  dictName: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
+});
+
 const options: FormOptionsProps = {
   form: {
     inline: true,
@@ -88,10 +94,11 @@ const options: FormOptionsProps = {
     labelWidth: "50px",
     size: "default",
     fixWidth: true,
+    rules: rules,
   },
   columns: [
     {
-      formItem: { label: "字典编码", prop: "dictCode", required: true },
+      formItem: { label: "字典编码", prop: "dictCode" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 字典编码" } },
     },
     {

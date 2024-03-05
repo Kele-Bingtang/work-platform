@@ -207,14 +207,14 @@
 </template>
 
 <script setup lang="ts" name="ProTable">
-import { ref, watch, provide, onMounted, computed, nextTick, type ComputedRef } from "vue";
+import { ref, watch, provide, onMounted, computed, nextTick, isRef, unref, type ComputedRef } from "vue";
 import { ElMessageBox, ElTable } from "element-plus";
 import { useTable, type Table } from "./hooks/useTable";
 import { useSelection } from "./hooks/useSelection";
 import { SearchForm, Pagination, type BreakPoint } from "@work/components";
 import type { TableColumnProps } from "./interface";
 import { Refresh, Plus, Operation, Search, Edit, Delete, Coin, Download } from "@element-plus/icons-vue";
-import { lastProp } from "./utils";
+import { lastProp, filterEnum, handleRowAccordingToProp } from "./utils";
 import ColSetting from "./components/ColSetting.vue";
 import TableColumn from "./components/TableColumn.vue";
 import DialogOperate from "./components/DialogOperate.vue";
@@ -261,6 +261,23 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   searchCols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
 });
 
+// 配置 _enum 字典信息
+const enumCallback = (data: any) => {
+  tableColumns.value.forEach(async col => {
+    const enumObj = enumMap.value.get(col.prop!);
+    // 如果字段有配置枚举信息，则存放到 _enum[col.prop] 里
+    if (enumObj && col.isFilterEnum) {
+      data = data.map((row: any) => {
+        const d = filterEnum(handleRowAccordingToProp(row, col.prop!), enumObj, col.fieldNames);
+        if (!row._enum) row._enum = {};
+        row._enum[col.prop!] = d;
+        return row;
+      });
+    }
+  });
+  return data;
+};
+
 // 是否显示搜索模块
 const isShowSearchProp = ref(props.isShowSearch);
 // 表格 DOM 元素
@@ -288,7 +305,8 @@ const {
   props.beforeSearch,
   props.dataCallback,
   props.requestError,
-  props.columns
+  props.columns,
+  enumCallback
 );
 
 // 清空选中数据列表
@@ -460,8 +478,10 @@ const downloadFile = async (
   ElMessageBox.confirm(msg, "温馨提示", { type: "warning" }).then(() => {
     const tHeader = [] as string[];
     const propName = [] as string[];
+
+    const flatData = filterFlatData(data);
     if (exportKey === "dataKey") {
-      Object.keys(data[0]).forEach((item: any) => {
+      Object.keys(flatData[0]).forEach((item: any) => {
         propName.push(item);
         tHeader.push(item);
       });
@@ -476,23 +496,27 @@ const downloadFile = async (
     }
 
     const filterVal = propName;
-    // filterFlatData：扁平化 data，data 可能有 children 属性
-    const d = formatJsonToArray(filterFlatData(data), filterVal);
+    // filterFlatData：扁平化 data，data 可能有 children 属性和 _enum 属性
+    const d = formatJsonToArray(flatData, filterVal);
     exportJsonToExcel(tHeader, d, fileName, undefined, undefined, true, "xlsx");
   });
 };
 
 /**
- * @description 扁平化 data，data 可能有 children 属性
+ * @description 扁平化 data，data 可能有 children 属性和 _enum 属性
  */
 const filterFlatData = (data: any[]) => {
   return data.reduce((pre: any[], current: any) => {
+    // 针对枚举类的导出
+    if (current._enum) {
+      Object.keys(current._enum).forEach(key => (current[key] = unref(current._enum[key])));
+      delete current._enum;
+    }
     let flatArr = [...pre, current];
     if (current.children) flatArr = [...flatArr, ...filterFlatData(current.children)];
     return flatArr;
   }, []);
 };
-
 // 暴露给父组件的参数和方法(外部需要什么，都可以从这里暴露出去)
 defineExpose({
   element: tableRef,

@@ -14,6 +14,7 @@
 import { ProTable } from "work";
 import { addOneDictData, editOneDictData, removeOneDictData, listDictData } from "@/api/system/dictData";
 import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
+import type { FormRules } from "element-plus";
 
 export interface DictDataProps {
   dictCode: string;
@@ -36,12 +37,18 @@ const columns: TableColumnProps[] = [
   { prop: "operation", label: "操作" },
 ];
 
+const rules = reactive<FormRules>({
+  dictValue: [{ required: true, message: "请输入字典键值", trigger: "blur" }],
+  dictLabel: [{ required: true, message: "请输入字典标签", trigger: "blur" }],
+});
+
 const options: FormOptionsProps = {
   form: {
     inline: false,
     labelPosition: "right",
     labelWidth: "110px",
     size: "default",
+    rules: rules,
   },
   columns: [
     {
@@ -49,11 +56,11 @@ const options: FormOptionsProps = {
       attrs: { el: "el-input", defaultValue: props.dictCode, props: { disabled: true } },
     },
     {
-      formItem: { prop: "dictValue", label: "字典键值", required: true },
+      formItem: { prop: "dictValue", label: "字典键值" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 字典键值" } },
     },
     {
-      formItem: { prop: "dictLabel", label: "字典标签", required: true },
+      formItem: { prop: "dictLabel", label: "字典标签" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 字典标签" } },
     },
     {

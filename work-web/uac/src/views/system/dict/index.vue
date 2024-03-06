@@ -37,7 +37,13 @@
 <script setup lang="tsx" name="DictType">
 import { ProTable, TreeFilter, Drawer } from "work";
 import { getAppTreeList } from "@/api/system/app";
-import { addOneDictType, editOneDictType, removeOneDictType, listDictTypeByApp } from "@/api/system/dictType";
+import {
+  addOneDictType,
+  editOneDictType,
+  removeOneDictType,
+  listDictTypeByApp,
+  type DictType,
+} from "@/api/system/dictType";
 import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
 import DictData from "./dictData.vue";
 import type { FormRules } from "element-plus";
@@ -61,7 +67,7 @@ const handleTreeChange = (nodeId: number) => {
   initRequestParam.appId = nodeId + "";
 };
 
-const columns: TableColumnProps[] = [
+const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
   { type: "index", label: "#", width: 80 },
   {
     prop: "dictCode",
@@ -87,7 +93,7 @@ const rules = reactive<FormRules>({
   dictName: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
 });
 
-const options: FormOptionsProps = {
+const options: FormOptionsProps<DictType.DictTypeInfo> = {
   form: {
     inline: true,
     labelPosition: "top",

@@ -33,14 +33,24 @@ public class SysDictData extends BaseDO {
     private Integer dictSort;
 
     /**
-     * 样式属性（其他样式扩展）
+     * tag 标签：el-tag | el-check-tag
      */
-    private String cssClass;
+    private String tagEl;
 
     /**
-     * 表格回显样式
+     * tag 类型：primary | success | info | warning | danger
      */
-    private String listClass;
+    private String tagType;
+
+    /**
+     * tag 主题：dark | light | plain
+     */
+    private String tagEffect;
+
+    /**
+     * tag 其他属性
+     */
+    private String tagAttributes;
 
     /**
      * 是否默认（Y是 N否）

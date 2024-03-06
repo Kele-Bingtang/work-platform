@@ -1,7 +1,7 @@
 import { useLayoutStore } from "@/stores/layout";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { getRolePostList } from "@/api/system/user";
+import { getRolePostList, type User } from "@/api/system/user";
 import { getDeptTreeList } from "@/api/system/dept";
 import { useFormRules } from "@/hooks/useFormRules";
 
@@ -14,7 +14,7 @@ const rules = reactive<FormRules>({
   email: [{ type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
 });
 
-export const options: FormOptionsProps = {
+export const options: FormOptionsProps<User.UserInfo> = {
   form: {
     inline: true,
     labelPosition: "top",

@@ -41,15 +41,24 @@ public class SysDictDataDto {
     private Integer dictSort;
 
     /**
-     * 样式属性（其他样式扩展）
+     * tag 标签：el-tag | el-check-tag
      */
-    @Size(min = 0, max = 100, message = "样式属性长度不能超过 {max} 个字符")
-    private String cssClass;
+    private String tagEl;
 
     /**
-     * 表格回显样式
+     * tag 类型：primary | success | info | warning | danger
      */
-    private String listClass;
+    private String tagType;
+
+    /**
+     * tag 主题：dark | light | plain
+     */
+    private String tagEffect;
+
+    /**
+     * tag 其他属性
+     */
+    private String tagAttributes;
 
     /**
      * 是否默认（Y是 N否）

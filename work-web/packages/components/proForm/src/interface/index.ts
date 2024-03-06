@@ -4,9 +4,9 @@ import type { VNode, ComputedRef } from "vue";
 
 type ValueType = string | number | boolean | any[];
 
-export interface FormOptionsProps {
+export interface FormOptionsProps<T = any> {
   form?: Partial<FormProps> & { fixWidth?: boolean; width?: number | string };
-  columns: FormColumnProps[];
+  columns: FormColumnProps<T>[];
 }
 
 export interface FormEnumProps {
@@ -45,7 +45,7 @@ export type FormRenderScope = {
   data: FormEnumProps[];
 };
 
-export interface FormColumnProps {
+export interface FormColumnProps<T = any> {
   formItem: FormItem;
   attrs: {
     el?: FormType;
@@ -61,8 +61,10 @@ export interface FormColumnProps {
     subProp?: string; // 级联表单的 prop
     subEnum?: FormEnumProps[] | ((params?: any) => Promise<any>); // 级联表单的 prop
     render?: (scope: FormRenderScope) => VNode; // 自定义搜索内容渲染（tsx 语法）
-    isHidden?: boolean | ((form: any) => boolean) | any; // 是否渲染，true 不渲染，false 渲染
-    isDisabled?: boolean | ((form: any) => boolean) | any; // 是否禁用，true 禁用，false 不禁用
+    isDestroy?: boolean | ((form: T) => boolean); // 是否销毁表单，true 销毁，false 不销毁
+    isHidden?: boolean | ((form: T) => boolean); // 是否隐藏表单，true 隐藏，false 不隐藏（isDestroy 是销毁元素，而 isHidden 是隐藏，也就是有 defaultValue 时，isDestroy 不会传给后台，isHidden 会）
+    isDisabled?: boolean | ((form: T) => boolean); // 是否禁用表单，true 禁用，false 不禁用
+    destroy?: Array<"add" | "edit">; // 是否销毁表单，给 ProTable 的 DialogOperate.vue 使用
     hidden?: Array<"add" | "edit">; // 是否隐藏表单，给 ProTable 的 DialogOperate.vue 使用
     disabled?: Array<"add" | "edit">; // 是否禁用表单，给 ProTable 的 DialogOperate.vue 使用
     [key: string]: any;

@@ -1,6 +1,7 @@
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { useFormRules } from "@/hooks/useFormRules";
+import type { Tenant } from "@/api/system/tenant";
 
 const { validatePhone } = useFormRules();
 
@@ -10,7 +11,7 @@ const rules = reactive<FormRules>({
   contactPhone: [{ required: true, validator: validatePhone, trigger: "blur" }],
 });
 
-export const options: FormOptionsProps = {
+export const options: FormOptionsProps<Tenant.TenantInfo> = {
   form: {
     inline: true,
     labelPosition: "right",

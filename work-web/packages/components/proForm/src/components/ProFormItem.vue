@@ -8,13 +8,13 @@
   <component
     v-else
     :is="column.attrs?.render ?? column.attrs?.el ?? ''"
+    :disabled="isDisabled()"
     v-bind="{
       ...handleFormProps,
       ...placeholder,
       scope: { form: _form, data: _form[column.formItem.prop] },
       clearable,
     }"
-    :disabled="isDisabled()"
     v-model="_form[column.formItem.prop]"
     :data="column.attrs?.el === 'el-tree-select' ? columnEnum : []"
     :options="['el-cascader', 'el-select-v 2'].includes(column.attrs?.el!) ? columnEnum : []"
@@ -107,6 +107,7 @@ const handleFormProps = computed(() => {
   const children = fieldNames.value.children;
   const formEl = props.column.attrs?.el;
   let formProps = props.column.attrs.props ?? {};
+
   if (formEl === "el-tree-select") {
     formProps = { ...formProps, props: { ...formProps.props, label, children }, nodeKey: value };
   }

@@ -29,7 +29,7 @@ const { statusChange } = useChange(
   () => proTableRef.value?.getTableList()
 );
 
-const columns: TableColumnProps<Dept.DeptTreeTable[]>[] = [
+const columns: TableColumnProps<Dept.DeptTreeTable>[] = [
   { prop: "deptName", label: "部门名称", align: "left", search: { el: "el-input" } },
   { prop: "orderNum", label: "排序", width: 80 },
   {

@@ -14,7 +14,7 @@
 
 <script setup lang="tsx" name="Tenant">
 import { ProTable } from "work";
-import { list, addOne, editOne, deleteOne, deleteBatch, type Post } from "@/api/system/tenant";
+import { list, addOne, editOne, deleteOne, deleteBatch, type Tenant } from "@/api/system/tenant";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
@@ -25,11 +25,11 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "tenantName",
   "租户",
-  (row, status) => editOne({ id: row.id, postId: row.postId, status }),
+  (row, status) => editOne({ id: row.id, tenantId: row.tenantId, status }),
   () => proTableRef.value?.getTableList()
 );
 
-const columns: TableColumnProps<Post.PostInfo[]>[] = [
+const columns: TableColumnProps<Tenant.TenantInfo>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "tenantId", label: "租户编号", search: { el: "el-input" } },
   { prop: "tenantName", label: "企业名称", search: { el: "el-input" } },

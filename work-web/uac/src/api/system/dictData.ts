@@ -7,8 +7,10 @@ export namespace DictData {
     dictLabel: string; // 字典标签
     dictValue: string; // 字典键值
     dictSort: number; // 字典排序
-    cssClass: string; // 样式属性（其他样式扩展）
-    listClass: string; // 表格回显样式
+    tagEl: string; // tag 标签：el-tag | el-check-tag
+    tagType: string; // tag 类型：primary | success | info | warning | danger
+    tagEffect: string; // tag 主题：dark | light | plain
+    tagAttributes: string; // tag 其他属性
     isDefault: string; // 是否默认（Y是 N否）
     appId: string; // 应用 ID
     dictCode: string; // 字典类型

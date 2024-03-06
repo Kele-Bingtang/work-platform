@@ -5,7 +5,7 @@
 <script setup lang="tsx" name="TableColumn">
 import { inject, ref, useSlots } from "vue";
 import type { TableColumnProps, RenderScope, HeaderRenderScope } from "../interface";
-import { filterEnum, formatValue, lastProp, handleRowAccordingToProp } from "../utils";
+import { filterEnum, filterEnumLabel, formatValue, lastProp, handleRowAccordingToProp } from "../utils";
 
 defineProps<{ column: TableColumnProps }>();
 
@@ -13,20 +13,48 @@ const slots = useSlots();
 
 const enumMap = inject("enumMap", ref(new Map()));
 
-// 渲染表格数据
-const renderCellData = (item: TableColumnProps, scope: RenderScope<any>) => {
+const getEnumData = (item: TableColumnProps, scope: RenderScope<any>) => {
   return enumMap.value.get(item.prop) && item.isFilterEnum
     ? filterEnum(handleRowAccordingToProp(scope.row, item.prop!), enumMap.value.get(item.prop)!, item.fieldNames)
+    : "";
+};
+
+const renderCellData = (item: TableColumnProps, scope: RenderScope<any>, enumData: any) => {
+  return enumMap.value.get(item.prop) && item.isFilterEnum
+    ? filterEnumLabel(enumData, item.fieldNames)
     : formatValue(handleRowAccordingToProp(scope.row, item.prop!));
 };
 
-// 获取 tag 类型
-const getTagType = (item: TableColumnProps, scope: RenderScope<any>) => {
-  return filterEnum(
-    handleRowAccordingToProp(scope.row, item.prop!),
-    enumMap.value.get(item.prop),
-    item.fieldNames,
-    "tag"
+// 获取 tag 标签
+const renderTag = (item: any, data: any, last: boolean, index?: number) => {
+  const { tagType, tagEffect } = item;
+
+  if (item.tagEl === "el-check-tag") {
+    // 直接 index ? : 是不行的，因为这样 index = 0 是 false
+    return index !== undefined ? (
+      <>
+        <el-check-tag key={index} checked type={tagType || "primary"}>
+          {data}
+        </el-check-tag>
+        {last ? "" : " "}
+      </>
+    ) : (
+      <el-check-tag checked type={tagType || "primary"}>
+        {data}
+      </el-check-tag>
+    );
+  }
+  return index !== undefined ? (
+    <>
+      <el-tag key={index} type={tagType || "primary"} effect={tagEffect || "light"}>
+        {data}
+      </el-tag>
+      {last ? "" : " "}
+    </>
+  ) : (
+    <el-tag type={tagType || "primary"} effect={tagEffect || "light"}>
+      {data}
+    </el-tag>
   );
 };
 
@@ -44,16 +72,16 @@ const RenderTableColumn = (item: TableColumnProps) => {
               if (item._children) return item._children.map(child => RenderTableColumn(child));
               if (item.render) return item.render(scope);
               if (slots[lastProp(item.prop!)]) return slots[lastProp(item.prop!)]!(scope);
-              const data = renderCellData(item, scope);
-              if (item.tag && data) {
-                if (Array.isArray(data)) {
-                  return data.map((d, index) => (
-                    <el-tag key={index} type={getTagType(item, scope)}>
-                      {d}
-                    </el-tag>
-                  ));
+              const enumData = getEnumData(item, scope);
+
+              const data = renderCellData(item, scope, enumData);
+
+              if (item.tag && enumData) {
+                // data 是从 enumData 取出来的，如果 enumData 是数组，那么 data 必然是数组
+                if (Array.isArray(enumData)) {
+                  return enumData.map((e, index) => renderTag(e, data[index], enumData.length - 1 === index, index));
                 }
-                return <el-tag type={getTagType(item, scope)}>{data}</el-tag>;
+                return renderTag(getEnumData, data);
               }
               return Array.isArray(data) ? data.join(",") : data;
             },

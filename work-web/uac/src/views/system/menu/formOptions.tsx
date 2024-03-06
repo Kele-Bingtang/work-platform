@@ -1,4 +1,4 @@
-import { listMenuTreeSelectByApp } from "@/api/system/menu";
+import { listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@work/constants";
@@ -9,7 +9,7 @@ const rules = reactive<FormRules>({
   path: [{ required: true, message: "请输入菜单/路由地址", trigger: "blur" }],
 });
 
-export const options: FormOptionsProps = {
+export const options: FormOptionsProps<Menu.MenuInfo> = {
   form: {
     inline: true,
     labelPosition: "right",
@@ -62,6 +62,7 @@ export const options: FormOptionsProps = {
     {
       formItem: { label: "菜单/路由地址", prop: "path", br: true },
       attrs: {
+        isHidden: (form: any) => form.menuType !== "C",
         render: ({ scope }) => {
           return (
             <>
@@ -83,7 +84,6 @@ export const options: FormOptionsProps = {
             </>
           );
         },
-        isHidden: (form: any) => form.menuType !== "C",
       },
     },
     {
@@ -130,6 +130,7 @@ export const options: FormOptionsProps = {
       formItem: { label: "是否缓存", prop: "isCache" },
       attrs: {
         defaultValue: 0,
+        isDestroy: (form: any) => form.menuType !== "C",
         render: ({ scope }) => {
           return (
             <>
@@ -140,13 +141,13 @@ export const options: FormOptionsProps = {
             </>
           );
         },
-        isHidden: (form: any) => form.menuType !== "C",
       },
     },
     {
       formItem: { label: "是否为嵌入", prop: "isFrame" },
       attrs: {
         defaultValue: 0,
+        isDestroy: (form: any) => form.menuType !== "C",
         render: ({ scope }) => {
           return (
             <>
@@ -157,7 +158,6 @@ export const options: FormOptionsProps = {
             </>
           );
         },
-        isHidden: (form: any) => form.menuType !== "C",
       },
     },
     {

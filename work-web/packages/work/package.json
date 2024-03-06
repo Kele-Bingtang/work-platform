@@ -4,6 +4,6 @@
   "description": "all utils are settled here",
   "dependencies": {
     "vue": "^3.4.13",
-    "element-plus": "^2.3.10"
+    "element-plus": "^2.6.0"
   }
 }

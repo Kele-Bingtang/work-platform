@@ -1,4 +1,4 @@
-import { getDeptTreeList } from "@/api/system/dept";
+import { getDeptTreeList, type Dept } from "@/api/system/dept";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { useFormRules } from "@/hooks/useFormRules";
@@ -11,7 +11,7 @@ const rules = reactive<FormRules>({
   email: [{ type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
 });
 
-export const options: FormOptionsProps = {
+export const options: FormOptionsProps<Dept.DeptTreeTable> = {
   form: {
     inline: true,
     labelPosition: "right",
@@ -33,7 +33,7 @@ export const options: FormOptionsProps = {
         },
         fieldNames: { value: "id", label: "label" },
         enum: getDeptTreeList,
-        isHidden: (form: any) => form.parentId === "0",
+        isHidden: form => form.parentId === "0",
       },
     },
     {

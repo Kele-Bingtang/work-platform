@@ -29,7 +29,7 @@ const { statusChange } = useChange(
   () => proTableRef.value?.getTableList()
 );
 
-const columns: TableColumnProps<Post.PostInfo[]>[] = [
+const columns: TableColumnProps<Post.PostInfo>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "postCode", label: "岗位编码", search: { el: "el-input" } },
   { prop: "postName", label: "岗位名称", search: { el: "el-input" } },

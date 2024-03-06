@@ -1,3 +1,4 @@
+import type { Role } from "@/api/system/role";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 
@@ -6,7 +7,7 @@ const rules = reactive<FormRules>({
   roleName: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
 });
 
-export const options: FormOptionsProps = {
+export const options: FormOptionsProps<Role.RoleInfo> = {
   form: {
     inline: true,
     labelPosition: "right",

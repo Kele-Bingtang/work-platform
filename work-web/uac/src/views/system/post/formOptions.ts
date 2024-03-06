@@ -1,3 +1,4 @@
+import type { Post } from "@/api/system/post";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 
@@ -6,7 +7,7 @@ const rules = reactive<FormRules>({
   postName: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
 });
 
-export const options: FormOptionsProps = {
+export const options: FormOptionsProps<Post.PostInfo> = {
   form: {
     inline: true,
     labelPosition: "right",

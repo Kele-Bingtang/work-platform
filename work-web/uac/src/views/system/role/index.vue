@@ -50,7 +50,7 @@ const initRequestParam = reactive({
   appId: "",
 });
 
-const columns: TableColumnProps<Role.RoleInfo[]>[] = [
+const columns: TableColumnProps<Role.RoleInfo>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { type: "index", label: "#", width: 80 },
   { prop: "roleCode", label: "角色编码", search: { el: "el-input" } },

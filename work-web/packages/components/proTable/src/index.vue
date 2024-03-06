@@ -214,7 +214,7 @@ import { useSelection } from "./hooks/useSelection";
 import { SearchForm, Pagination, type BreakPoint } from "@work/components";
 import type { TableColumnProps } from "./interface";
 import { Refresh, Plus, Operation, Search, Edit, Delete, Coin, Download } from "@element-plus/icons-vue";
-import { lastProp, filterEnum, handleRowAccordingToProp } from "./utils";
+import { lastProp, filterEnumLabel, handleRowAccordingToProp } from "./utils";
 import ColSetting from "./components/ColSetting.vue";
 import TableColumn from "./components/TableColumn.vue";
 import DialogOperate from "./components/DialogOperate.vue";
@@ -268,7 +268,7 @@ const enumCallback = (data: any) => {
     // 如果字段有配置枚举信息，则存放到 _enum[col.prop] 里
     if (enumObj && col.isFilterEnum) {
       data = data.map((row: any) => {
-        const d = filterEnum(handleRowAccordingToProp(row, col.prop!), enumObj, col.fieldNames);
+        const d = filterEnumLabel(handleRowAccordingToProp(row, col.prop!), enumObj, col.fieldNames);
         if (!row._enum) row._enum = {};
         row._enum[col.prop!] = d;
         return row;

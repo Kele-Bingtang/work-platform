@@ -68,7 +68,7 @@ const initRequestParam = reactive({
   appId: "",
 });
 
-const columns: TableColumnProps<Menu.MenuInfo[]>[] = [
+const columns: TableColumnProps<Menu.MenuInfo>[] = [
   { prop: "menuName", label: "菜单名称", align: "left", search: { el: "el-input" } },
   { prop: "icon", label: "图标", width: 100 },
   { prop: "orderNum", label: "排序", width: 80 },

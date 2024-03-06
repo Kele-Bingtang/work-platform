@@ -3,7 +3,8 @@
     <template v-for="item in options.columns">
       <component
         :key="item.formItem.prop"
-        v-if="!isHidden(item)"
+        v-if="!isDestroy(item)"
+        v-show="!isHidden(item)"
         :is="'el-form-item'"
         v-bind="item.formItem"
         :style="{ display: item.formItem.br ? 'flex' : false }"
@@ -17,7 +18,7 @@
 </template>
 
 <script setup lang="ts" name="ProForm">
-import { computed, shallowRef, ref, provide, watch, isRef, type ComputedRef } from "vue";
+import { computed, shallowRef, ref, provide, watch, isProxy, isRef, type ComputedRef } from "vue";
 import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
@@ -47,16 +48,24 @@ const setEnumMap = async (column: FormColumnProps) => {
 };
 
 // 初始化默认值
-const initDefaultValue = (column: FormColumnProps, index: number) => {
+const initDefaultValue = (column: FormColumnProps) => {
   const { attrs, formItem } = column;
-  // 设置表单排序默认值 && 设置表单项的默认值
-  attrs!.order = attrs!.order ?? index + 2;
+
+  // 设置表单项的默认值
   if (attrs?.defaultValue !== undefined && attrs?.defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
     if (form.value[formItem.prop]) return;
     if (isProxy(attrs.enum)) return (form.value[formItem.prop] = (attrs?.defaultValue as ComputedRef).value);
     if (typeof attrs?.defaultValue === "function") return (form.value[formItem.prop] = attrs?.defaultValue());
-    else return (form.value[formItem.prop] = attrs?.defaultValue);
+    if (attrs?.defaultValue) return (form.value[formItem.prop] = attrs?.defaultValue);
+  }
+
+  // 如果没有设置默认值，则判断后台是否返回 isDefault 为 Y 的枚举
+  const enumData = enumMap.value.get(column.formItem.prop);
+  if (enumData && enumData.length) {
+    // 找出 isDefault 为 Y 的 value
+    const data = enumData.filter(item => item.isDefault === "Y");
+    return data.length && (form.value[formItem.prop] = data[0][column.attrs.fieldNames?.value ?? "value"]);
   }
 };
 
@@ -91,14 +100,29 @@ const isHidden = (column: FormColumnProps) => {
   if (typeof column.attrs.isHidden === "function") return column.attrs.isHidden(form.value);
   return column.attrs.isHidden;
 };
+/**
+ * 是否销毁表单项 & 是否初始化表单项默认值
+ */
+const isDestroy = (column: FormColumnProps) => {
+  let destroy;
+  if (typeof column.attrs.isDestroy === "function") destroy = column.attrs.isDestroy(form.value);
+  else destroy = column.attrs.isDestroy;
+
+  // 如果不销毁，则初始化表单默认值，反之则重置为空
+  if (!destroy) initDefaultValue(column);
+  else form.value[column.formItem.prop] = "";
+
+  return destroy;
+};
 
 props.options.columns.forEach((item, index) => {
   // 设置枚举
   setEnumMap(item);
   // 级联下拉监听
   cascadeEnum(item);
-  // 设置默认值
-  initDefaultValue(item, index);
+
+  // 设置表单排序默认值
+  item.attrs!.order = item.attrs!.order ?? index + 2;
 });
 
 // 排序表单项

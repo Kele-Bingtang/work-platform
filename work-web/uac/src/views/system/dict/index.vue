@@ -17,7 +17,7 @@
     <div class="dict-table">
       <ProTable
         ref="proTableRef"
-        :request-api="listDictTypeByApp"
+        :request-api="list"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -36,17 +36,11 @@
 
 <script setup lang="tsx" name="DictType">
 import { ProTable, TreeFilter, Drawer } from "work";
-import { getAppTreeList } from "@/api/system/app";
-import {
-  addOneDictType,
-  editOneDictType,
-  removeOneDictType,
-  listDictTypeByApp,
-  type DictType,
-} from "@/api/system/dictType";
+import { getAppTreeList } from "@/api/application/app";
+import { list, addOne, editOne, removeOne, type DictType } from "@/api/system/dictType";
 import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
 import DictData from "./dictData.vue";
-import type { FormRules } from "element-plus";
+import { ElLink, type FormRules } from "element-plus";
 
 const initRequestParam = reactive({
   appId: "",
@@ -76,9 +70,9 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
     render: ({ row }) => {
       return (
         <>
-          <el-link type="primary" underline={false} onClick={() => clickDictCode(row.dictCode, row.appId)}>
+          <ElLink type="primary" underline={false} onClick={() => clickDictCode(row.dictCode, row.appId)}>
             {row.dictCode}
-          </el-link>
+          </ElLink>
         </>
       );
     },
@@ -126,9 +120,9 @@ const options: FormOptionsProps<DictType.DictTypeInfo> = {
 
 const detailForm: DialogForm = {
   options: options,
-  addApi: addOneDictType,
-  editApi: editOneDictType,
-  deleteApi: removeOneDictType,
+  addApi: addOne,
+  editApi: editOne,
+  deleteApi: removeOne,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "30%",

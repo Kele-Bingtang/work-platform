@@ -6,6 +6,7 @@
 import { inject, ref, useSlots } from "vue";
 import type { TableColumnProps, RenderScope, HeaderRenderScope } from "../interface";
 import { filterEnum, filterEnumLabel, formatValue, lastProp, handleRowAccordingToProp } from "../utils";
+import { ElCheckTag, ElTag, ElTableColumn } from "element-plus";
 
 defineProps<{ column: TableColumnProps }>();
 
@@ -26,35 +27,35 @@ const renderCellData = (item: TableColumnProps, scope: RenderScope<any>, enumDat
 };
 
 // 获取 tag 标签
-const renderTag = (item: any, data: any, last: boolean, index?: number) => {
-  const { tagType, tagEffect } = item;
+const renderTag = (item: any, data: any, last?: boolean, index?: number) => {
+  const { tagType = "primary", tagEffect = "light" } = item;
 
   if (item.tagEl === "el-check-tag") {
     // 直接 index ? : 是不行的，因为这样 index = 0 是 false
     return index !== undefined ? (
       <>
-        <el-check-tag key={index} checked type={tagType || "primary"}>
+        <ElCheckTag key={index} checked type={tagType}>
           {data}
-        </el-check-tag>
+        </ElCheckTag>
         {last ? "" : " "}
       </>
     ) : (
-      <el-check-tag checked type={tagType || "primary"}>
+      <ElCheckTag checked type={tagType}>
         {data}
-      </el-check-tag>
+      </ElCheckTag>
     );
   }
   return index !== undefined ? (
     <>
-      <el-tag key={index} type={tagType || "primary"} effect={tagEffect || "light"}>
+      <ElTag key={index} type={tagType} effect={tagEffect}>
         {data}
-      </el-tag>
+      </ElTag>
       {last ? "" : " "}
     </>
   ) : (
-    <el-tag type={tagType || "primary"} effect={tagEffect || "light"}>
+    <ElTag type={tagType} effect={tagEffect}>
       {data}
-    </el-tag>
+    </ElTag>
   );
 };
 
@@ -62,7 +63,7 @@ const RenderTableColumn = (item: TableColumnProps) => {
   return (
     <>
       {item.isShow && (
-        <el-table-column
+        <ElTableColumn
           {...item}
           align={item.align ?? "center"}
           showOverflowTooltip={item.showOverflowTooltip ?? item.prop !== "operation"}
@@ -91,7 +92,7 @@ const RenderTableColumn = (item: TableColumnProps) => {
               return item.label;
             },
           }}
-        </el-table-column>
+        </ElTableColumn>
       )}
     </>
   );

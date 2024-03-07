@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -55,4 +56,18 @@ public class SysAppVo implements Serializable {
      */
     private List<String> grantTypeList;
 
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
+     * 客户端 ID
+     */
+    private String clientId;
 }

@@ -30,8 +30,8 @@ public class SysUserController {
     private final SysUserService sysUserService;
 
     @GetMapping("/{id}")
-    public Response<SysUserVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysUserVo sysUserVo = sysUserService.queryById(id);
+    public Response<SysUserVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysUserVo sysUserVo = sysUserService.listById(id);
         return HttpResult.ok(sysUserVo);
     }
 

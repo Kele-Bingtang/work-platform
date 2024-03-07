@@ -32,7 +32,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     private final SysDictDataService sysDictDataService;
 
     @Override
-    public SysDictTypeVo queryById(Long id) {
+    public SysDictTypeVo listById(Long id) {
         SysDictType sysDictType = baseMapper.selectById(id);
         Assert.nonNull(sysDictType, "字典不存在");
         return MapstructUtil.convert(sysDictType, SysDictTypeVo.class);

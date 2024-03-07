@@ -27,7 +27,7 @@ import java.util.Objects;
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements SysDictDataService {
 
     @Override
-    public SysDictDataVo queryById(Long id) {
+    public SysDictDataVo listById(Long id) {
         SysDictData sysDictData = baseMapper.selectById(id);
         Assert.nonNull(sysDictData, "数据不存在");
         return MapstructUtil.convert(sysDictData, SysDictDataVo.class);

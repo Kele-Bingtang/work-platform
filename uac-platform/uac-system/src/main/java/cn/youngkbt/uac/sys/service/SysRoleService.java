@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface SysRoleService extends IService<SysRole> {
 
-    SysRoleVo queryById(Long id);
+    SysRoleVo listById(Long id);
 
     List<SysRoleVo> queryListWithPage(SysRoleDto sysRoleDto, PageQuery pageQuery);
 

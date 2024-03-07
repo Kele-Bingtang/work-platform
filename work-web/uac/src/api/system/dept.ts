@@ -37,12 +37,12 @@ export namespace Dept {
 
 const baseUri = "/system/dept";
 
-export const getDeptTreeList = () => {
-  return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/deptTreeList`);
+export const listDeptTreeList = () => {
+  return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/treeList`);
 };
 
-export const getDeptTreeTable = () => {
-  return http.get<http.Response<Dept.DeptTreeTable[]>>(`${baseUri}/deptTreeTable`);
+export const listDeptTreeTable = () => {
+  return http.get<http.Response<Dept.DeptTreeTable[]>>(`${baseUri}/treeTable`);
 };
 
 export const addOne = (data: Dept.DeptInfo) => {

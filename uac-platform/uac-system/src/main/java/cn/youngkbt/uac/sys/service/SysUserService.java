@@ -21,7 +21,7 @@ public interface SysUserService extends IService<SysUser> {
 
     SecurityUser selectUserByUsername(String username);
 
-    SysUserVo queryById(Long id);
+    SysUserVo listById(Long id);
 
     List<SysUserVo> queryListWithPage(SysUserDto sysUserDto, PageQuery pageQuery);
 

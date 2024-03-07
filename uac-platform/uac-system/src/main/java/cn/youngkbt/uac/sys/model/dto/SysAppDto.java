@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2023-20-12 00:20:10
@@ -34,13 +36,13 @@ public class SysAppDto {
     /**
      * 应用码
      */
-    @NotBlank(message = "应用码不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用编码不能为空", groups = {RestGroup.AddGroup.class})
     private String appCode;
 
     /**
      * 应用名
      */
-    @NotBlank(message = "应用名不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用名称不能为空", groups = {RestGroup.AddGroup.class})
     private String appName;
 
     /**
@@ -56,7 +58,8 @@ public class SysAppDto {
     /**
      * 授权类型
      */
-    private String grantTypes;
+    @NotNull(message = "授权类型不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    private List<String> grantTypeList;
 
     /**
      * 部门 ID

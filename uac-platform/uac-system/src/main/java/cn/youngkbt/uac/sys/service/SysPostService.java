@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface SysPostService extends IService<SysPost> {
 
-    SysPostVo queryById(Long id);
+    SysPostVo listById(Long id);
 
     List<SysPostVo> queryListWithPage(SysPostDto sysPostDto, PageQuery pageQuery);
     

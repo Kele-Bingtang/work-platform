@@ -28,8 +28,8 @@ public class SysMenuController {
     private final SysMenuService sysMenuService;
 
     @GetMapping("/{id}")
-    public Response<SysMenuVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysMenuVo sysMenuVo = sysMenuService.queryById(id);
+    public Response<SysMenuVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysMenuVo sysMenuVo = sysMenuService.listById(id);
         return HttpResult.ok(sysMenuVo);
     }
 
@@ -46,14 +46,14 @@ public class SysMenuController {
      * 菜单下拉值查询
      */
     @GetMapping("/treeSelect")
-    public Response<List<Tree<String>>> treeSelect(SysMenuDto sysMenuDto) {
-        List<Tree<String>> menuTreeList = sysMenuService.selectMenuTreeList(sysMenuDto);
+    public Response<List<Tree<String>>> listMenuTreeSelect(SysMenuDto sysMenuDto) {
+        List<Tree<String>> menuTreeList = sysMenuService.listMenuTreeSelect(sysMenuDto);
         return HttpResult.ok(menuTreeList);
     }
 
-    @GetMapping("/menuTreeTable")
-    public Response<List<MenuTree>> deptTreeTable(SysMenuDto sysMenuDto) {
-        List<MenuTree> treeTable = sysMenuService.buildDeptTreeTable(sysMenuDto);
+    @GetMapping("/treeTable")
+    public Response<List<MenuTree>> listMenuTreeTable(SysMenuDto sysMenuDto) {
+        List<MenuTree> treeTable = sysMenuService.listMenuTreeTable(sysMenuDto);
         return HttpResult.ok(treeTable);
     }
 

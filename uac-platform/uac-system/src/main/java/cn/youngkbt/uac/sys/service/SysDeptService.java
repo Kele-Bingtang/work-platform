@@ -17,17 +17,17 @@ import java.util.List;
  */
 public interface SysDeptService extends IService<SysDept> {
 
-    SysDeptVo queryById(Long id);
+    SysDeptVo listById(Long id);
 
     List<SysDeptVo> queryListWithPage(SysDeptDto sysDeptDto, PageQuery pageQuery);
 
-    List<Tree<String>> queryDeptTreeList(SysDeptDto sysDeptDto);
+    List<Tree<String>> listDeptTreeList(SysDeptDto sysDeptDto);
 
-    List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto);
+    List<DeptTree> listDeptTreeTable(SysDeptDto sysDeptDto);
     
-    SysDeptVo queryParentDeptByDeptId(String deptId);
+    SysDeptVo listParentDeptByDeptId(String deptId);
     
-    List<String> queryDeptNamesByIds(List<String> ids);
+    List<String> listDeptNamesByIds(List<String> ids);
     
     Long queryChildrenDeptCountById(String deptId);
     

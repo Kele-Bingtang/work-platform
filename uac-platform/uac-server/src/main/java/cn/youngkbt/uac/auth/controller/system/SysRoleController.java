@@ -27,8 +27,8 @@ public class SysRoleController {
     private final SysRoleService sysRoleService;
 
     @GetMapping("/{id}")
-    public Response<SysRoleVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysRoleVo sysRoleVo = sysRoleService.queryById(id);
+    public Response<SysRoleVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysRoleVo sysRoleVo = sysRoleService.listById(id);
         return HttpResult.ok(sysRoleVo);
     }
 

@@ -19,6 +19,7 @@ import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { useChange } from "@/hooks/useChange";
+import { ElSwitch } from "element-plus";
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -44,7 +45,7 @@ const columns: TableColumnProps<Post.PostInfo>[] = [
       return (
         <>
           {row.status !== undefined && (
-            <el-switch
+            <ElSwitch
               vModel={row.status}
               activeValue={1}
               inactiveValue={0}

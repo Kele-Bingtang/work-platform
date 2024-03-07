@@ -28,8 +28,8 @@ public class SysPostController {
     private final SysPostService sysPostService;
 
     @GetMapping("/{id}")
-    public Response<SysPostVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysPostVo sysPostVo = sysPostService.queryById(id);
+    public Response<SysPostVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysPostVo sysPostVo = sysPostService.listById(id);
         return HttpResult.ok(sysPostVo);
     }
 

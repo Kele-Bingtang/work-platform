@@ -67,7 +67,7 @@
             <el-tooltip v-if="columns.length" effect="light" content="列配置" placement="top">
               <el-button :icon="Operation" circle @click="openColSetting" />
             </el-tooltip>
-            <el-tooltip v-if="columns.length" effect="light" content="导出" placement="top">
+            <el-tooltip v-if="useExport" effect="light" content="导出" placement="top">
               <el-button
                 :icon="Download"
                 circle
@@ -214,7 +214,7 @@ import { useSelection } from "./hooks/useSelection";
 import { SearchForm, Pagination, type BreakPoint } from "@work/components";
 import type { TableColumnProps } from "./interface";
 import { Refresh, Plus, Operation, Search, Edit, Delete, Coin, Download } from "@element-plus/icons-vue";
-import { lastProp, filterEnumLabel, handleRowAccordingToProp } from "./utils";
+import { lastProp, filterEnum, filterEnumLabel, handleRowAccordingToProp } from "./utils";
 import ColSetting from "./components/ColSetting.vue";
 import TableColumn from "./components/TableColumn.vue";
 import DialogOperate from "./components/DialogOperate.vue";
@@ -240,7 +240,7 @@ export interface ProTableProps {
   size?: CustomTableSize; // 表格密度
   searchCols?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
   isShowSearch?: boolean; // 初始化时是否显示搜索模块
-  export?: boolean; // 是否显示导出按钮
+  useExport?: boolean; // 是否显示导出按钮
   exportKey?: "props" | "label" | "dataKey"; // 导出时的表头配置（prop 为使用  columns 的 props，label 为使用 columns 的 label，dataKey 为使用 data 的 key），默认为 dataKey
   detailForm?: DialogFormProps; // 新增、编辑、删除表单配置
 }
@@ -256,7 +256,7 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   rowKey: "id",
   size: "default",
   isShowSearch: true,
-  export: true,
+  useExport: true,
   exportKey: "dataKey",
   searchCols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
 });
@@ -268,7 +268,10 @@ const enumCallback = (data: any) => {
     // 如果字段有配置枚举信息，则存放到 _enum[col.prop] 里
     if (enumObj && col.isFilterEnum) {
       data = data.map((row: any) => {
-        const d = filterEnumLabel(handleRowAccordingToProp(row, col.prop!), enumObj, col.fieldNames);
+        const d = filterEnumLabel(
+          filterEnum(handleRowAccordingToProp(row, col.prop!), enumObj, col.fieldNames),
+          col.fieldNames
+        );
         if (!row._enum) row._enum = {};
         row._enum[col.prop!] = d;
         return row;

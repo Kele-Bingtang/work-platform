@@ -32,7 +32,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private final UserPostLinkMapper userPostLinkMapper;
 
     @Override
-    public SysPostVo queryById(Long id) {
+    public SysPostVo listById(Long id) {
         SysPost sysPost = baseMapper.selectById(id);
         Assert.nonNull(sysPost, "岗位不存在");
         return MapstructUtil.convert(sysPost, SysPostVo.class);

@@ -2,7 +2,7 @@ import { useLayoutStore } from "@/stores/layout";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { getRolePostList, type User } from "@/api/system/user";
-import { getDeptTreeList } from "@/api/system/dept";
+import { listDeptTreeList } from "@/api/system/dept";
 import { useFormRules } from "@/hooks/useFormRules";
 
 const { validatePassword, validatePhone } = useFormRules();
@@ -68,7 +68,7 @@ export const options: FormOptionsProps<User.UserInfo> = {
         el: "el-tree-select",
         props: { clearable: true, placeholder: "请选择 部门" },
         fieldNames: { value: "id", label: "label" },
-        enum: getDeptTreeList,
+        enum: listDeptTreeList,
       },
     },
     {

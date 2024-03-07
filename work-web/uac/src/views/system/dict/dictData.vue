@@ -1,7 +1,7 @@
 <template>
   <ProTable
     ref="proTableRef"
-    :request-api="listDictData"
+    :request-api="list"
     :columns="columns"
     :init-request-param="initRequestParam"
     :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -12,7 +12,7 @@
 
 <script setup lang="ts" name="DictData">
 import { ProTable } from "work";
-import { addOneDictData, editOneDictData, removeOneDictData, listDictData, type DictData } from "@/api/system/dictData";
+import { list, addOne, editOne, removeOne, type DictData } from "@/api/system/dictData";
 import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { useLayoutStore } from "@/stores/layout";
@@ -124,9 +124,9 @@ const options: FormOptionsProps<DictData.DictDataInfo> = {
 
 const detailForm = reactive<DialogForm>({
   options: options,
-  addApi: params => addOneDictData({ ...params, appId: props.appId }),
-  editApi: editOneDictData,
-  deleteApi: removeOneDictData,
+  addApi: params => addOne({ ...params, appId: props.appId }),
+  editApi: editOne,
+  deleteApi: removeOne,
   beforeEdit: form => {
     if (form.tagEl === undefined) form.tagEl = "";
   },

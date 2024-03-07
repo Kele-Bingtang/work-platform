@@ -2,7 +2,7 @@
   <div class="dept-container">
     <ProTable
       ref="proTableRef"
-      :request-api="getDeptTreeTable"
+      :request-api="listDeptTreeTable"
       :columns="columns"
       :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
       style="height: 90%"
@@ -14,11 +14,12 @@
 
 <script setup lang="tsx" name="Dept">
 import { ProTable } from "work";
-import { getDeptTreeTable, addOne, editOne, deleteOne, type Dept } from "@/api/system/dept";
+import { listDeptTreeTable, addOne, editOne, deleteOne, type Dept } from "@/api/system/dept";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { useChange } from "@/hooks/useChange";
+import { ElSwitch } from "element-plus";
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -43,14 +44,14 @@ const columns: TableColumnProps<Dept.DeptTreeTable>[] = [
       return (
         <>
           {row.status !== undefined && (
-            <el-switch
+            <ElSwitch
               vModel={row.status}
               activeValue={1}
               inactiveValue={0}
               activeText="启用"
               inactiveText="停用"
               inlinePrompt
-              onChange={(value: number | string) => statusChange(value, row)}
+              onChange={(value: number) => statusChange(value, row)}
             />
           )}
         </>

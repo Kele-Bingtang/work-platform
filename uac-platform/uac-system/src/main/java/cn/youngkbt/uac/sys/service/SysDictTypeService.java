@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface SysDictTypeService extends IService<SysDictType> {
 
-    SysDictTypeVo queryById(Long id);
+    SysDictTypeVo listById(Long id);
 
     List<SysDictTypeVo> queryListWithPage(SysDictTypeDto sysDictTypeDto, PageQuery pageQuery);
 

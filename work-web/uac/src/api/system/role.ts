@@ -16,7 +16,7 @@ export namespace Role {
 
 const baseUri = "/system/role";
 
-export const listRoleByApp = (params: http.Page<{ appId: number }>) => {
+export const list = (params: Partial<Role.RoleInfo>) => {
   return http.get<http.Response<Role.RoleInfo[]>>(`${baseUri}/list`, params);
 };
 

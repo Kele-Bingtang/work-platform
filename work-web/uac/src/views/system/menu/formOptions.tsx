@@ -1,6 +1,6 @@
 import { listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
 import type { FormOptionsProps } from "@work/components";
-import type { FormRules } from "element-plus";
+import { ElInput, ElOption, ElRadio, ElRadioGroup, ElSelect, type FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 
 const rules = reactive<FormRules>({
@@ -49,11 +49,11 @@ export const options: FormOptionsProps<Menu.MenuInfo> = {
         render: ({ scope }) => {
           return (
             <>
-              <el-radio-group v-model={scope.form.menuType}>
-                <el-radio label="M">目录</el-radio>
-                <el-radio label="C">菜单</el-radio>
-                <el-radio label="F">按钮</el-radio>
-              </el-radio-group>
+              <ElRadioGroup v-model={scope.form.menuType}>
+                <ElRadio value="M">目录</ElRadio>
+                <ElRadio value="C">菜单</ElRadio>
+                <ElRadio value="F">按钮</ElRadio>
+              </ElRadioGroup>
             </>
           );
         },
@@ -66,21 +66,21 @@ export const options: FormOptionsProps<Menu.MenuInfo> = {
         render: ({ scope }) => {
           return (
             <>
-              <el-input
+              <ElInput
                 vModel={scope.form.path}
                 placeholder="请输入 菜单地址"
                 v-slots={{
                   prepend: () => {
                     return (
-                      <el-select vModel={scope.form.pathPrefix} style="width: 120px">
-                        <el-option label="" value="" />
-                        <el-option label={httpPrefix} value={httpPrefix} />
-                        <el-option label={httpsPrefix} value={httpsPrefix} />
-                      </el-select>
+                      <ElSelect vModel={scope.form.pathPrefix} style="width: 120px">
+                        <ElOption value="" />
+                        <ElOption value={httpPrefix} />
+                        <ElOption value={httpsPrefix} />
+                      </ElSelect>
                     );
                   },
                 }}
-              ></el-input>
+              ></ElInput>
             </>
           );
         },
@@ -117,10 +117,10 @@ export const options: FormOptionsProps<Menu.MenuInfo> = {
         render: ({ scope }) => {
           return (
             <>
-              <el-radio-group v-model={scope.form.visible}>
-                <el-radio label={1}>显示</el-radio>
-                <el-radio label={0}>隐藏</el-radio>
-              </el-radio-group>
+              <ElRadioGroup v-model={scope.form.visible}>
+                <ElRadio value={1}>显示</ElRadio>
+                <ElRadio value={0}>隐藏</ElRadio>
+              </ElRadioGroup>
             </>
           );
         },
@@ -134,10 +134,10 @@ export const options: FormOptionsProps<Menu.MenuInfo> = {
         render: ({ scope }) => {
           return (
             <>
-              <el-radio-group v-model={scope.form.isCache}>
-                <el-radio label={1}>是</el-radio>
-                <el-radio label={0}>否</el-radio>
-              </el-radio-group>
+              <ElRadioGroup v-model={scope.form.isCache}>
+                <ElRadio value={1}>是</ElRadio>
+                <ElRadio value={0}>否</ElRadio>
+              </ElRadioGroup>
             </>
           );
         },
@@ -151,10 +151,10 @@ export const options: FormOptionsProps<Menu.MenuInfo> = {
         render: ({ scope }) => {
           return (
             <>
-              <el-radio-group v-model={scope.form.isFrame}>
-                <el-radio label={1}>是</el-radio>
-                <el-radio label={0}>否</el-radio>
-              </el-radio-group>
+              <ElRadioGroup v-model={scope.form.isFrame}>
+                <ElRadio value={1}>是</ElRadio>
+                <ElRadio value={0}>否</ElRadio>
+              </ElRadioGroup>
             </>
           );
         },

@@ -32,7 +32,7 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public SysAppVo queryById(Long id) {
+    public SysAppVo listById(Long id) {
         SysApp sysApp = baseMapper.selectById(id);
         Assert.nonNull(sysApp, "应用不存在");
         SysAppVo result = MapstructUtil.convert(sysApp, SysAppVo.class);
@@ -46,10 +46,10 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
                 .eq(StringUtils.hasText(sysAppDto.getAppId()), SysApp::getAppId, sysAppDto.getAppId())
                 .eq(StringUtils.hasText(sysAppDto.getAppCode()), SysApp::getAppCode, sysAppDto.getAppCode())
                 .eq(StringUtils.hasText(sysAppDto.getAppName()), SysApp::getAppName, sysAppDto.getAppName())
-                .eq(StringUtils.hasText(sysAppDto.getGrantTypes()), SysApp::getGrantTypes, sysAppDto.getGrantTypes())
                 .eq(Objects.nonNull(sysAppDto.getStatus()), SysApp::getStatus, sysAppDto.getStatus())
-                .eq(Objects.nonNull(sysAppDto.getDeptId()), SysApp::getDeptId, sysAppDto.getDeptId())
-                .eq(Objects.nonNull(sysAppDto.getClientId()), SysApp::getClientId, sysAppDto.getClientId())
+                .eq(StringUtils.hasText(sysAppDto.getDeptId()), SysApp::getDeptId, sysAppDto.getDeptId())
+                .eq(StringUtils.hasText(sysAppDto.getClientId()), SysApp::getClientId, sysAppDto.getClientId())
+                .in(Objects.nonNull(sysAppDto.getGrantTypeList()), SysApp::getGrantTypes, sysAppDto.getGrantTypeList())
                 .orderByAsc(SysApp::getOrderNum);
 
         List<SysApp> sysClientList;
@@ -64,21 +64,25 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public List<SysAppTreeVo> appTreeList() {
+    public List<SysAppTreeVo> listTreeList() {
         // TODO 是否分页
-        List<SysApp> sysAppList = baseMapper.selectList(null);
+        List<SysApp> sysAppList = baseMapper.selectList(Wrappers.<SysApp>lambdaQuery()
+                .select(SysApp::getAppId, SysApp::getAppName));
+        
         return MapstructUtil.convert(sysAppList, SysAppTreeVo.class);
     }
 
     @Override
     public boolean insertOne(SysAppDto sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
+        sysApp.setGrantTypes(String.join(",", sysAppDto.getGrantTypeList()));
         return baseMapper.insert(sysApp) > 0;
     }
 
     @Override
     public boolean updateOne(SysAppDto sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
+        sysApp.setGrantTypes(String.join(",", sysAppDto.getGrantTypeList()));
         return baseMapper.updateById(sysApp) > 0;
     }
 

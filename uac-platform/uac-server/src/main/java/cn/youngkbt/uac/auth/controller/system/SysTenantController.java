@@ -28,8 +28,8 @@ public class SysTenantController {
     private final SysTenantService sysTenantService;
 
     @GetMapping("/{id}")
-    public Response<SysTenantVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysTenantVo sysTenantVo = sysTenantService.queryById(id);
+    public Response<SysTenantVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysTenantVo sysTenantVo = sysTenantService.listById(id);
         return HttpResult.ok(sysTenantVo);
     }
 

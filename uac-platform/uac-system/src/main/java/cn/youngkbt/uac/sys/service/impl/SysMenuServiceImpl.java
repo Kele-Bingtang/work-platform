@@ -41,7 +41,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private final RoleMenuLinkMapper roleMenuLinkMapper;
 
     @Override
-    public SysMenuVo queryById(Long id) {
+    public SysMenuVo listById(Long id) {
         SysMenu sysMenu = baseMapper.selectById(id);
         Assert.nonNull(sysMenu, "菜单不存在");
         return MapstructUtil.convert(sysMenu, SysMenuVo.class);
@@ -64,7 +64,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * 构建前端需要的路由菜单
      */
     @Override
-    public List<Tree<String>> selectMenuTreeList(SysMenuDto sysMenuDto) {
+    public List<Tree<String>> listMenuTreeSelect(SysMenuDto sysMenuDto) {
         // 查询正常状态的部门
         sysMenuDto.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
@@ -73,7 +73,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<MenuTree> buildDeptTreeTable(SysMenuDto sysMenuDto) {
+    public List<MenuTree> listMenuTreeTable(SysMenuDto sysMenuDto) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
         List<MenuTree> menuTreeList = MapstructUtil.convert(sysMenuList, MenuTree.class);

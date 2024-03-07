@@ -30,12 +30,12 @@ export namespace User {
 
 const baseUri = "/system/user";
 
-export const getUserListByDept = (params: http.Page<{ deptId: number }>) => {
-  return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
-};
-
 export const getRolePostList = () => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/rolePostList`);
+};
+
+export const list = (params: http.Page<{ deptId: number }>) => {
+  return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
 };
 
 export const addOne = (data: User.UserInfo) => {

@@ -32,8 +32,8 @@ public class SysAppController {
     private final SysClientService sysClientService;
 
     @GetMapping("/{id}")
-    public Response<SysAppVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysAppVo sysClientVo = sysAppService.queryById(id);
+    public Response<SysAppVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysAppVo sysClientVo = sysAppService.listById(id);
         return HttpResult.ok(sysClientVo);
     }
 
@@ -56,9 +56,9 @@ public class SysAppController {
         return HttpResult.ok(sysAppVoList);
     }
     
-    @GetMapping("/appTreeList")
-    public Response<List<SysAppTreeVo>> appTreeList() {
-        List<SysAppTreeVo> sysAppTreeVoList = sysAppService.appTreeList();
+    @GetMapping("/treeList")
+    public Response<List<SysAppTreeVo>> listTreeList() {
+        List<SysAppTreeVo> sysAppTreeVoList = sysAppService.listTreeList();
         return HttpResult.ok(sysAppTreeVoList);
     }
 

@@ -18,9 +18,11 @@ public interface SysClientService extends IService<SysClient> {
 
     SysClient checkClientIdThenGet(String clientId);
 
-    SysClientVo queryById(Long id);
+    SysClientVo listById(Long id);
 
     List<SysClientVo> queryListWithPage(SysClientDto sysClientDto, PageQuery pageQuery);
+
+    List<SysClientVo> listTreeList();
 
     boolean insertOne(SysClientDto sysClientDto);
 
@@ -29,4 +31,5 @@ public interface SysClientService extends IService<SysClient> {
     boolean updateStatus(Long id, Integer status);
 
     boolean removeBatch(Collection<Long> ids);
+
 }

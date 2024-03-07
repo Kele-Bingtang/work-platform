@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts" name="ProForm">
-import { computed, shallowRef, ref, provide, watch, isProxy, isRef, type ComputedRef } from "vue";
+import { computed, shallowRef, ref, provide, watch, isRef, type ComputedRef } from "vue";
 import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
@@ -32,8 +32,9 @@ export interface ProFormProps {
 const props = withDefaults(defineProps<ProFormProps>(), { disabled: false, modelValue: () => ({}) });
 
 const formRef = shallowRef();
-const form = computed(() => props.modelValue); // 定义 enumMap 存储 enum 值（避免异步请求无法格式化单元格内容 || 无法填充下拉选择）
+const form = computed(() => props.modelValue);
 
+// 定义 enumMap 存储 enum 值（避免异步请求无法格式化单元格内容 || 无法填充下拉选择）
 const enumMap = ref(new Map<string, { [key: string]: any }[]>());
 provide("enumMap", enumMap);
 const setEnumMap = async (column: FormColumnProps) => {
@@ -57,7 +58,7 @@ const initDefaultValue = (column: FormColumnProps) => {
     if (form.value[formItem.prop]) return;
     if (isProxy(attrs.enum)) return (form.value[formItem.prop] = (attrs?.defaultValue as ComputedRef).value);
     if (typeof attrs?.defaultValue === "function") return (form.value[formItem.prop] = attrs?.defaultValue());
-    if (attrs?.defaultValue) return (form.value[formItem.prop] = attrs?.defaultValue);
+    return (form.value[formItem.prop] = attrs?.defaultValue);
   }
 
   // 如果没有设置默认值，则判断后台是否返回 isDefault 为 Y 的枚举

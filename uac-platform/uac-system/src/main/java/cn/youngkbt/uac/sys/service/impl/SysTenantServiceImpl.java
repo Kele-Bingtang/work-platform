@@ -37,7 +37,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public SysTenantVo queryById(Long id) {
+    public SysTenantVo listById(Long id) {
         SysTenant sysTenant = baseMapper.selectById(id);
         Assert.nonNull(sysTenant, "租户不存在");
         return MapstructUtil.convert(sysTenant, SysTenantVo.class);

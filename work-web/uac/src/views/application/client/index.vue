@@ -18,6 +18,7 @@ import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { useChange } from "@/hooks/useChange";
+import { ElSwitch } from "element-plus";
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -28,7 +29,7 @@ const { statusChange } = useChange(
   () => proTableRef.value?.getTableList()
 );
 
-const columns: TableColumnProps<Client.ClientInfo[]>[] = [
+const columns: TableColumnProps<Client.ClientInfo>[] = [
   { type: "selection", fixed: "left", width: 40 },
   { prop: "clientId", label: "客户端 ID", width: 270, search: { el: "el-input" } },
   { prop: "clientKey", label: "客户端 Key", width: 160, search: { el: "el-input" } },
@@ -38,7 +39,7 @@ const columns: TableColumnProps<Client.ClientInfo[]>[] = [
     prop: "grantTypeList",
     label: "授权类型",
     align: "left",
-    minWidth: 190,
+    minWidth: 120,
     enum: () => useLayoutStore().getDictData("sys_grant_type"),
     tag: true,
     fieldNames: { value: "dictValue", label: "dictLabel" },
@@ -60,7 +61,7 @@ const columns: TableColumnProps<Client.ClientInfo[]>[] = [
       return (
         <>
           {row.status !== undefined && (
-            <el-switch
+            <ElSwitch
               vModel={row.status}
               activeValue={1}
               inactiveValue={0}

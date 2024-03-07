@@ -28,8 +28,8 @@ public class SysDictTypeController {
     private final SysDictTypeService sysDictTypeService;
 
     @GetMapping("/{id}")
-    public Response<SysDictTypeVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysDictTypeVo sysDictTypeVo = sysDictTypeService.queryById(id);
+    public Response<SysDictTypeVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysDictTypeVo sysDictTypeVo = sysDictTypeService.listById(id);
         return HttpResult.ok(sysDictTypeVo);
     }
 

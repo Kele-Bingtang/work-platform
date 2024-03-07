@@ -12,18 +12,18 @@ export namespace DictType {
 
 const baseUri = "/system/dictType";
 
-export const listDictTypeByApp = (params: http.Page<{ appId: string }>) => {
+export const list = (params: Partial<DictType.DictTypeInfo>) => {
   return http.get<http.Response<DictType.DictTypeInfo[]>>(`${baseUri}/list`, params);
 };
 
-export const addOneDictType = (data: DictType.DictTypeInfo) => {
+export const addOne = (data: DictType.DictTypeInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
-export const editOneDictType = (data: DictType.DictTypeInfo) => {
+export const editOne = (data: DictType.DictTypeInfo) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 
-export const removeOneDictType = (data: DictType.DictTypeInfo) => {
+export const removeOne = (data: DictType.DictTypeInfo) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
 };

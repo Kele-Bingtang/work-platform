@@ -32,8 +32,8 @@ public class SysClientController {
      * 查询某个客户端
      */
     @GetMapping("/{id}")
-    public Response<SysClientVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysClientVo sysClientVo = clientService.queryById(id);
+    public Response<SysClientVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysClientVo sysClientVo = clientService.listById(id);
         return HttpResult.ok(sysClientVo);
     }
 
@@ -43,6 +43,12 @@ public class SysClientController {
     @GetMapping("/list")
     public Response<List<SysClientVo>> list(SysClientDto sysClientDto, PageQuery pageQuery) {
         List<SysClientVo> sysClientVoList = clientService.queryListWithPage(sysClientDto, pageQuery);
+        return HttpResult.ok(sysClientVoList);
+    }
+
+    @GetMapping("/treeList")
+    public Response<List<SysClientVo>> listTreeList() {
+        List<SysClientVo> sysClientVoList = clientService.listTreeList();
         return HttpResult.ok(sysClientVoList);
     }
 

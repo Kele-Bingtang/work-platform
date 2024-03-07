@@ -17,13 +17,13 @@ import java.util.List;
  */
 public interface SysMenuService extends IService<SysMenu> {
 
-    SysMenuVo queryById(Long id);
+    SysMenuVo listById(Long id);
 
     List<SysMenuVo> queryListWithPage(SysMenuDto sysMenuDto, PageQuery pageQuery);
     
-    List<Tree<String>> selectMenuTreeList(SysMenuDto sysMenuDto);
+    List<Tree<String>> listMenuTreeSelect(SysMenuDto sysMenuDto);
 
-    List<MenuTree> buildDeptTreeTable(SysMenuDto sysMenuDto);
+    List<MenuTree> listMenuTreeTable(SysMenuDto sysMenuDto);
 
     boolean checkMenuNameUnique(SysMenuDto sysMenuDto);
 

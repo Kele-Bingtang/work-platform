@@ -17,7 +17,7 @@
     <div class="role-table">
       <ProTable
         ref="proTableRef"
-        :request-api="listRoleByApp"
+        :request-api="list"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -30,12 +30,13 @@
 
 <script setup lang="tsx" name="Role">
 import { TreeFilter, ProTable } from "work";
-import { getAppTreeList } from "@/api/system/app";
-import { listRoleByApp, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/system/role";
+import { getAppTreeList } from "@/api/application/app";
+import { list, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/system/role";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { useChange } from "@/hooks/useChange";
+import { ElSwitch } from "element-plus";
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -65,7 +66,7 @@ const columns: TableColumnProps<Role.RoleInfo>[] = [
       return (
         <>
           {row.status !== undefined && (
-            <el-switch
+            <ElSwitch
               vModel={row.status}
               activeValue={1}
               inactiveValue={0}

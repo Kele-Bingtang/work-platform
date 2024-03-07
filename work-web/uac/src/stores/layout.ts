@@ -4,7 +4,7 @@ import { DeviceType, type LanguageType, type LayoutSizeType, type TabProp, type 
 import { useSettingsStore } from "./settings";
 import defaultSettings from "@/config/settings";
 import type { Frame } from "@/layout/components/FrameLayout/useFrame";
-import { listDictDataByDictCode } from "@/api/system/dictData";
+import { list } from "@/api/system/dictData";
 import { uacAppSecret } from "work";
 
 export const useLayoutStore = defineStore(
@@ -129,7 +129,7 @@ export const useLayoutStore = defineStore(
 
     const getDictData = async (dictCode: string) => {
       if (dictList.value[dictCode]) return { data: dictList.value[dictCode] };
-      const res = await listDictDataByDictCode({ dictCode, appId: uacAppSecret });
+      const res = await list({ dictCode, appId: uacAppSecret });
       dictList.value[dictCode] = res.data;
       return res;
     };

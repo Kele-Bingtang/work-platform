@@ -17,7 +17,7 @@ public interface SysTenantService extends IService<SysTenant> {
 
     SysTenant queryByTenantId(String tenantId);
 
-    SysTenantVo queryById(Long id);
+    SysTenantVo listById(Long id);
 
     List<SysTenantVo> queryListWithPage(SysTenantDto sysTenantDto, PageQuery pageQuery);
 

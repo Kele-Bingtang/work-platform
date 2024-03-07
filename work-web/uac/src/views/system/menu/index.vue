@@ -47,13 +47,14 @@
 <script setup lang="tsx" name="Menu">
 import { TreeFilter, ProTable } from "work";
 import { httpPrefix, httpsPrefix } from "@work/constants";
-import { getAppTreeList } from "@/api/system/app";
+import { getAppTreeList } from "@/api/application/app";
 import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/system/menu";
 import { type DialogForm, type TableColumnProps, type ProTableInstance } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { Plus } from "@element-plus/icons-vue";
 import { useChange } from "@/hooks/useChange";
+import { ElSwitch } from "element-plus";
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -83,7 +84,7 @@ const columns: TableColumnProps<Menu.MenuInfo>[] = [
       return (
         <>
           {row.status !== undefined && (
-            <el-switch
+            <ElSwitch
               vModel={row.status}
               activeValue={1}
               inactiveValue={0}

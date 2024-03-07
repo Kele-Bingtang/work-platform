@@ -14,9 +14,18 @@ export namespace Client {
     status: number; // 状态
     createTime: string; // 创建时间
   }
+
+  export interface ClientTree {
+    clientId: string; // 客户端 ID
+    clientName: string; // 客户端名称
+  }
 }
 
 const baseUri = "/system/client";
+
+export const getClientTreeList = () => {
+  return http.get<Client.ClientTree>(`${baseUri}/treeList`);
+};
 
 export const list = (params?: Partial<Client.ClientInfo>) => {
   return http.get<http.Response<Client.ClientInfo[]>>(`${baseUri}/list`, params);

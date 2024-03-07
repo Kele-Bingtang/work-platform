@@ -18,7 +18,7 @@ public interface SysAppService extends IService<SysApp> {
 
     SysApp checkAppIdThenGet(String appId);
 
-    SysAppVo queryById(Long id);
+    SysAppVo listById(Long id);
 
     List<SysAppVo> queryListWithPage(SysAppDto sysAppDto, PageQuery pageQuery);
 
@@ -28,5 +28,5 @@ public interface SysAppService extends IService<SysApp> {
 
     boolean removeBatch(List<Long> ids);
 
-    List<SysAppTreeVo> appTreeList();
+    List<SysAppTreeVo> listTreeList();
 }

@@ -1,13 +1,20 @@
 <template>
-  <div class="user-container">
-    <TreeFilter :requestApi="listDeptTreeList" @change="handleTreeChange">
+  <div class="role-container">
+    <TreeFilter
+      ref="treeFilterRef"
+      title="应用清单"
+      :requestApi="getClientTreeList"
+      @change="handleTreeChange"
+      id="clientId"
+      label="clientName"
+    >
       <template #default="{ node }">
         <Icon v-if="node.data.icon" :icon="node.data.icon"></Icon>
         <span>{{ node.label }}</span>
       </template>
     </TreeFilter>
 
-    <div class="user-table">
+    <div class="role-table">
       <ProTable
         ref="proTableRef"
         :request-api="list"
@@ -21,12 +28,12 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="User">
-import { TreeFilter, ProTable, type TableColumnProps } from "work";
-import { listDeptTreeList } from "@/api/system/dept";
-import { addOne, editOne, deleteOne, deleteBatch, list, type User } from "@/api/system/user";
+<script setup lang="tsx" name="App">
+import { TreeFilter, ProTable } from "work";
+import { getClientTreeList } from "@/api/application/client";
+import { list, addOne, editOne, deleteOne, deleteBatch, type App } from "@/api/application/app";
+import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
-import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores/layout";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
@@ -34,20 +41,32 @@ import { ElSwitch } from "element-plus";
 const proTableRef = shallowRef<ProTableInstance>();
 
 const { statusChange } = useChange(
-  "username",
-  "用户",
-  (row, status) => editOne({ id: row.id, userId: row.userId, status }),
+  "appName",
+  "应用",
+  (row, status) => editOne({ id: row.id, clientId: row.clientId, status }),
   () => proTableRef.value?.getTableList()
 );
 
-const columns: TableColumnProps<User.UserInfo>[] = [
+const initRequestParam = reactive({
+  clientId: "",
+});
+
+const columns: TableColumnProps<App.AppInfo>[] = [
   { type: "selection", fixed: "left", width: 80 },
-  { type: "index", label: "#", width: 80 },
-  { prop: "username", label: "用户名称", width: 170, search: { el: "el-input" } },
-  { prop: "nickname", label: "用户昵称", width: 170, search: { el: "el-input" } },
-  { prop: "dept.deptName", label: "部门", width: 170, search: { el: "el-input" } },
-  { prop: "phone", label: "手机号码", width: 130, search: { el: "el-input" } },
-  { prop: "email", label: "邮箱", width: 170, search: { el: "el-input" } },
+  { prop: "appCode", label: "应用编码", search: { el: "el-input" } },
+  { prop: "appName", label: "应用名称", search: { el: "el-input" } },
+  {
+    prop: "grantTypeList",
+    label: "授权类型",
+    align: "left",
+    enum: () => useLayoutStore().getDictData("sys_grant_type"),
+    tag: true,
+    fieldNames: { value: "dictValue", label: "dictLabel" },
+    search: {
+      el: "el-select",
+      props: { multiple: true, collapseTags: true, collapseTagsTooltip: true, maxCollapseTags: 2 },
+    },
+  },
   {
     prop: "status",
     label: "状态",
@@ -72,14 +91,15 @@ const columns: TableColumnProps<User.UserInfo>[] = [
       );
     },
   },
-  { prop: "registerTime", width: 160, label: "注册时间" },
+  { prop: "orderNum", label: "显示顺序" },
+  { prop: "createTime", label: "创建时间" },
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
 const detailForm: DialogForm = {
   options: options,
-  addApi: addOne,
-  editApi: editOne,
+  addApi: data => addOne({ ...data, clientId: initRequestParam.clientId }),
+  editApi: data => editOne({ ...data, clientId: initRequestParam.clientId }),
   deleteApi: deleteOne,
   deleteBatchApi: deleteBatch,
   dialog: {
@@ -90,38 +110,21 @@ const detailForm: DialogForm = {
   },
 };
 
-const initRequestParam = reactive({
-  deptId: "",
-});
-
 const handleTreeChange = (nodeId: number) => {
-  initRequestParam.deptId = nodeId + "";
+  initRequestParam.clientId = nodeId + "";
 };
 </script>
 
 <style lang="scss" scoped>
-.user-container {
+.role-container {
   display: flex;
   width: 100%;
   height: 100%;
   padding: 10px;
 
-  .iconify {
-    margin-right: 5px;
-    vertical-align: -2px;
-  }
-
-  .user-table {
+  .role-table {
     width: calc(100% - 230px);
     height: 100%;
-  }
-}
-</style>
-
-<style lang="scss">
-.user-container {
-  .user-table .el-dialog__body {
-    margin-left: 20px;
   }
 }
 </style>

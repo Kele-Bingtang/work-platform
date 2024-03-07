@@ -41,7 +41,7 @@ import java.util.Objects;
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
     @Override
-    public SysDeptVo queryById(Long id) {
+    public SysDeptVo listById(Long id) {
         SysDept sysDept = baseMapper.selectById(id);
         Assert.nonNull(sysDept, "部门不存在");
         return MapstructUtil.convert(sysDept, SysDeptVo.class);
@@ -61,7 +61,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public List<Tree<String>> queryDeptTreeList(SysDeptDto sysDeptDto) {
+    public List<Tree<String>> listDeptTreeList(SysDeptDto sysDeptDto) {
         // 查询正常状态的部门
         sysDeptDto.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
@@ -70,7 +70,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public List<DeptTree> buildDeptTreeTable(SysDeptDto sysDeptDto) {
+    public List<DeptTree> listDeptTreeTable(SysDeptDto sysDeptDto) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
         List<DeptTree> sysDeptVoList = MapstructUtil.convert(sysDeptList, DeptTree.class);
@@ -105,7 +105,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 通过一个部门 ID 查询其父部门名字
      */
     @Override
-    public SysDeptVo queryParentDeptByDeptId(String deptId) {
+    public SysDeptVo listParentDeptByDeptId(String deptId) {
         SysDept sysDept = baseMapper.selectOne(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptId, deptId));
         if (Objects.isNull(sysDept)) {
@@ -124,7 +124,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 通过部门 id 查询其部门名字
      */
     @Override
-    public List<String> queryDeptNamesByIds(List<String> ids) {
+    public List<String> listDeptNamesByIds(List<String> ids) {
         List<SysDept> sysDeptList = baseMapper.selectList(Wrappers.<SysDept>lambdaQuery()
                 .in(SysDept::getDeptId, ids));
 

@@ -30,8 +30,8 @@ public class SysDeptController {
     private final SysDeptService sysDeptService;
 
     @GetMapping("/{id}")
-    public Response<SysDeptVo> queryById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysDeptVo sysDeptVo = sysDeptService.queryById(id);
+    public Response<SysDeptVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysDeptVo sysDeptVo = sysDeptService.listById(id);
         return HttpResult.ok(sysDeptVo);
     }
 
@@ -44,27 +44,27 @@ public class SysDeptController {
         return HttpResult.ok(sysDeptVoList);
     }
 
-    @GetMapping("/deptTreeList")
-    public Response<List<Tree<String>>> selectDeptTreeList(SysDeptDto sysDeptDto) {
-        List<Tree<String>> deptTreeList = sysDeptService.queryDeptTreeList(sysDeptDto);
+    @GetMapping("/treeList")
+    public Response<List<Tree<String>>> listDeptTreeList(SysDeptDto sysDeptDto) {
+        List<Tree<String>> deptTreeList = sysDeptService.listDeptTreeList(sysDeptDto);
         return HttpResult.ok(deptTreeList);
     }
 
-    @GetMapping("/deptTreeTable")
-    public Response<List<DeptTree>> deptTreeTable(SysDeptDto sysDeptDto) {
-        List<DeptTree> treeTable = sysDeptService.buildDeptTreeTable(sysDeptDto);
+    @GetMapping("/treeTable")
+    public Response<List<DeptTree>> listDeptTreeTable(SysDeptDto sysDeptDto) {
+        List<DeptTree> treeTable = sysDeptService.listDeptTreeTable(sysDeptDto);
         return HttpResult.ok(treeTable);
     }
 
     @GetMapping("/parentDept")
-    public Response<SysDeptVo> queryParentDeptByDeptId(String deptId) {
-        SysDeptVo sysDeptVo = sysDeptService.queryParentDeptByDeptId(deptId);
+    public Response<SysDeptVo> listParentDeptByDeptId(String deptId) {
+        SysDeptVo sysDeptVo = sysDeptService.listParentDeptByDeptId(deptId);
         return HttpResult.ok(sysDeptVo);
     }
 
     @GetMapping("/deptNames")
-    public Response<List<String>> queryDeptNamesByIds(List<String> ids) {
-        List<String> deptNameList = sysDeptService.queryDeptNamesByIds(ids);
+    public Response<List<String>> listDeptNamesByIds(List<String> ids) {
+        List<String> deptNameList = sysDeptService.listDeptNamesByIds(ids);
         return HttpResult.ok(deptNameList);
     }
 

@@ -19,22 +19,18 @@ export namespace DictData {
 
 const baseUri = "/system/dictData";
 
-export const listDictData = (params: http.Page<{ dictCode?: string; appId: string }>) => {
+export const list = (params: Partial<DictData.DictDataInfo>) => {
   return http.get<http.Response<DictData.DictDataInfo[]>>(`${baseUri}/list`, params);
 };
 
-export const listDictDataByDictCode = (params: { dictCode: string; appId: string }) => {
-  return http.get<http.Response<DictData.DictDataInfo[]>>(`${baseUri}/list`, params);
-};
-
-export const addOneDictData = (data: DictData.DictDataInfo) => {
+export const addOne = (data: DictData.DictDataInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
-export const editOneDictData = (data: DictData.DictDataInfo) => {
+export const editOne = (data: DictData.DictDataInfo) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 
-export const removeOneDictData = (data: DictData.DictDataInfo) => {
+export const removeOne = (data: DictData.DictDataInfo) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
 };

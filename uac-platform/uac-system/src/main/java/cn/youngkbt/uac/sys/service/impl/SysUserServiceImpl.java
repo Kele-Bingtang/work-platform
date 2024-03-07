@@ -68,7 +68,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUserVo queryById(Long id) {
+    public SysUserVo listById(Long id) {
         SysUser sysUser = baseMapper.selectById(id);
         Assert.nonNull(sysUser, "用户不存在");
         return MapstructUtil.convert(sysUser, SysUserVo.class);

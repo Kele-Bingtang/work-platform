@@ -1,4 +1,4 @@
-import { getDeptTreeList, type Dept } from "@/api/system/dept";
+import { listDeptTreeList, type Dept } from "@/api/system/dept";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { useFormRules } from "@/hooks/useFormRules";
@@ -32,7 +32,7 @@ export const options: FormOptionsProps<Dept.DeptTreeTable> = {
           valueKey: "id",
         },
         fieldNames: { value: "id", label: "label" },
-        enum: getDeptTreeList,
+        enum: listDeptTreeList,
         isHidden: form => form.parentId === "0",
       },
     },

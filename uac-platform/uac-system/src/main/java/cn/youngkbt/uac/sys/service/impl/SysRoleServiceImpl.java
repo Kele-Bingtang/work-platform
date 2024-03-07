@@ -26,7 +26,7 @@ import java.util.Objects;
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
 
     @Override
-    public SysRoleVo queryById(Long id) {
+    public SysRoleVo listById(Long id) {
         SysRole sysRole = baseMapper.selectById(id);
         Assert.nonNull(sysRole, "角色不存在");
         return MapstructUtil.convert(sysRole, SysRoleVo.class);

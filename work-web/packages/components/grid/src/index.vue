@@ -19,7 +19,7 @@ import {
   type VNodeArrayChildren,
   type VNode,
 } from "vue";
-import { Responsive as responsive } from "./components/GridItem";
+import type { Responsive as responsive } from "./components/GridItem.vue";
 
 export type Responsive = responsive;
 

@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.service;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysAppDto;
 import cn.youngkbt.uac.sys.model.po.SysApp;
-import cn.youngkbt.uac.sys.model.vo.SysAppTreeVo;
+import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVo;
 import cn.youngkbt.uac.sys.model.vo.SysAppVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -28,5 +28,5 @@ public interface SysAppService extends IService<SysApp> {
 
     boolean removeBatch(List<Long> ids);
 
-    List<SysAppTreeVo> listTreeList();
+    List<AppTreeVo> listTreeList();
 }

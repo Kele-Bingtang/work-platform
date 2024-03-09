@@ -7,6 +7,7 @@ import cn.youngkbt.uac.sys.mapper.SysClientMapper;
 import cn.youngkbt.uac.sys.model.dto.SysClientDto;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.model.vo.SysClientVo;
+import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVo;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.MapstructUtil;
@@ -64,12 +65,13 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public List<SysClientVo> listTreeList() {
+    public List<ClientTreeVo> listTreeList() {
         // TODO 是否分页
         List<SysClient> sysClientList = baseMapper.selectList(Wrappers.<SysClient>lambdaQuery()
-                .select(SysClient::getClientId, SysClient::getClientName));
-        
-        return MapstructUtil.convert(sysClientList, SysClientVo.class);
+                .select(SysClient::getClientId, SysClient::getClientName)
+                .orderByAsc(SysClient::getCreateTime));
+
+        return MapstructUtil.convert(sysClientList, ClientTreeVo.class);
     }
 
     @Override

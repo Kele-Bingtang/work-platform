@@ -11,7 +11,7 @@ export const options: FormOptionsProps<Post.PostInfo> = {
   form: {
     inline: true,
     labelPosition: "right",
-    labelWidth: "80px",
+    labelWidth: 80,
     size: "default",
     fixWidth: true,
     rules: rules,

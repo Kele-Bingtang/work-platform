@@ -2,7 +2,7 @@
   <div class="menu-container">
     <TreeFilter
       ref="treeFilterRef"
-      title="应用清单"
+      title="App 清单"
       :requestApi="getAppTreeList"
       @change="handleTreeChange"
       id="appId"
@@ -49,13 +49,19 @@ import { TreeFilter, ProTable } from "work";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 import { getAppTreeList } from "@/api/application/app";
 import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/system/menu";
-import { type DialogForm, type TableColumnProps, type ProTableInstance } from "@work/components";
-import { options } from "./formOptions";
+import {
+  type DialogForm,
+  type TableColumnProps,
+  type ProTableInstance,
+  type TreeFilterInstance,
+} from "@work/components";
+import { useFormOptions } from "./useFormOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { Plus } from "@element-plus/icons-vue";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
 
+const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
 
 const { statusChange } = useChange(
@@ -104,7 +110,10 @@ const columns: TableColumnProps<Menu.MenuInfo>[] = [
 ];
 
 const detailForm: DialogForm = {
-  options: options,
+  options: useFormOptions(
+    computed(() => treeFilterRef.value?.treeData),
+    computed(() => initRequestParam.appId)
+  ).options,
   addApi: data => addOne({ ...data, path: (data.pathPrefix || "") + (data.path || ""), appId: initRequestParam.appId }),
   editApi: data =>
     editOne({ ...data, path: (data.pathPrefix || "") + (data.path || ""), appId: initRequestParam.appId }),
@@ -150,3 +159,4 @@ const handleTreeChange = (nodeId: number) => {
   }
 }
 </style>
+./useFormOptions

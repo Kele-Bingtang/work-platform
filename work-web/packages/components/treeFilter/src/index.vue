@@ -37,6 +37,12 @@
 <script setup lang="ts" name="TreeFilter">
 import { ref, watch, onBeforeMount } from "vue";
 import { ElTree } from "element-plus";
+import TreeFilter from "./index.vue";
+
+export type TreeFilterInstance = Omit<
+  InstanceType<typeof TreeFilter>,
+  keyof ComponentPublicInstance | keyof TreeFilterProps
+>;
 
 // 接收父组件参数并设置默认值
 interface TreeFilterProps {

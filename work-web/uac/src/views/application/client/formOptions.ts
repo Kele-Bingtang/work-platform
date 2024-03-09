@@ -12,7 +12,7 @@ export const options: FormOptionsProps = {
   form: {
     inline: true,
     labelPosition: "right",
-    labelWidth: "140px",
+    labelWidth: 140,
     size: "default",
     fixWidth: true,
     rules: rules,
@@ -47,7 +47,7 @@ export const options: FormOptionsProps = {
         props: {
           clearable: true,
           multiple: true,
-          placeholder: "请输入 授权类型",
+          placeholder: "请选择 授权类型",
           collapseTags: true,
           collapseTagsTooltip: true,
           maxCollapseTags: 1,

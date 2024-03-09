@@ -15,7 +15,7 @@ export const options: FormOptionsProps<Tenant.TenantInfo> = {
   form: {
     inline: true,
     labelPosition: "right",
-    labelWidth: "120px",
+    labelWidth: 100,
     size: "default",
     fixWidth: true,
     rules: rules,

@@ -90,8 +90,6 @@ tenant:
     - t_user_role_group_link
     - t_user_role_link
     - t_sys_client
-    - t_sys_menu
-    - t_sys_role
     - t_sys_role_group
     - t_sys_tenant
 

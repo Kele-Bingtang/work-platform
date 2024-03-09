@@ -144,7 +144,7 @@ const clearable = computed(() => {
 });
 
 const isDisabled = () => {
-  if (typeof props.column.attrs.isDisabled === "function") return props.column.attrs.isDisabled(props.form.value);
+  if (typeof props.column.attrs.isDisabled === "function") return props.column.attrs.isDisabled(_form.value);
   return props.column.attrs.isDisabled;
 };
 </script>

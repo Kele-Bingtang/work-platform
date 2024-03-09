@@ -2,7 +2,7 @@
   <div class="dict-container">
     <TreeFilter
       ref="treeFilterRef"
-      title="应用清单"
+      title="App 清单"
       :requestApi="getAppTreeList"
       @change="handleTreeChange"
       id="appId"
@@ -38,9 +38,10 @@
 import { ProTable, TreeFilter, Drawer } from "work";
 import { getAppTreeList } from "@/api/application/app";
 import { list, addOne, editOne, removeOne, type DictType } from "@/api/system/dictType";
-import { type DialogForm, type FormOptionsProps, type TableColumnProps } from "@work/components";
+import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
 import DictData from "./dictData.vue";
-import { ElLink, type FormRules } from "element-plus";
+import { ElLink } from "element-plus";
+import { useFormOptions } from "./useFormOptions";
 
 const initRequestParam = reactive({
   appId: "",
@@ -49,7 +50,7 @@ const initRequestParam = reactive({
 const dictCode = ref("");
 const dictDataAppId = ref("");
 const drawer = ref(false);
-const treeFilterRef = shallowRef();
+const treeFilterRef = shallowRef<TreeFilterInstance>();
 
 const clickDictCode = (code: string, appId: string) => {
   dictCode.value = code;
@@ -82,44 +83,11 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const rules = reactive<FormRules>({
-  dictCode: [{ required: true, message: "请输入字典编码", trigger: "blur" }],
-  dictName: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
-});
-
-const options: FormOptionsProps<DictType.DictTypeInfo> = {
-  form: {
-    inline: true,
-    labelPosition: "top",
-    labelWidth: "50px",
-    size: "default",
-    fixWidth: true,
-    rules: rules,
-  },
-  columns: [
-    {
-      formItem: { label: "字典编码", prop: "dictCode" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 字典编码" } },
-    },
-    {
-      formItem: { label: "字典名称", prop: "dictName" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 字典名称" } },
-    },
-    {
-      formItem: { label: "所属应用", prop: "appId" },
-      attrs: {
-        el: "el-select",
-        fieldNames: { value: "appId", label: "appName" },
-        enum: computed(() => treeFilterRef.value?.treeData),
-        defaultValue: computed(() => initRequestParam.appId),
-        props: { clearable: true, placeholder: "请选择 所属应用" },
-      },
-    },
-  ],
-};
-
 const detailForm: DialogForm = {
-  options: options,
+  options: useFormOptions(
+    computed(() => treeFilterRef.value?.treeData),
+    computed(() => initRequestParam.appId)
+  ).dictTypeOptions,
   addApi: addOne,
   editApi: editOne,
   deleteApi: removeOne,

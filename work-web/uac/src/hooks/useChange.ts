@@ -7,7 +7,7 @@ export const useChange = (
   name: string,
   desc: string,
   editApi: (params: any, status: number) => Promise<http.Response<string>>,
-  listApi?: () => Promise<any>
+  listApi: () => Promise<any> | undefined
 ) => {
   const statusChange = async (value: number, row: any) => {
     const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
@@ -28,7 +28,7 @@ export const useChange = (
       .then(() => {
         editApi(row, value)
           .then(res => {
-            if (res.status === "success") message.success("修改成功") && nextTick(() => listApi());
+            if (res.status === "success") message.success("修改成功") && nextTick(() => listApi && listApi());
             else {
               statusRecover(value, row);
             }

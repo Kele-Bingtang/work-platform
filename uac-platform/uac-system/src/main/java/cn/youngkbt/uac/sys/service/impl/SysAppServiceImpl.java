@@ -5,7 +5,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysAppMapper;
 import cn.youngkbt.uac.sys.model.dto.SysAppDto;
 import cn.youngkbt.uac.sys.model.po.SysApp;
-import cn.youngkbt.uac.sys.model.vo.SysAppTreeVo;
+import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVo;
 import cn.youngkbt.uac.sys.model.vo.SysAppVo;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.utils.MapstructUtil;
@@ -36,7 +36,6 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
         SysApp sysApp = baseMapper.selectById(id);
         Assert.nonNull(sysApp, "应用不存在");
         SysAppVo result = MapstructUtil.convert(sysApp, SysAppVo.class);
-        result.setGrantTypeList(List.of(result.getGrantTypes().split(",")));
         return result;
     }
 
@@ -49,7 +48,6 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
                 .eq(Objects.nonNull(sysAppDto.getStatus()), SysApp::getStatus, sysAppDto.getStatus())
                 .eq(StringUtils.hasText(sysAppDto.getDeptId()), SysApp::getDeptId, sysAppDto.getDeptId())
                 .eq(StringUtils.hasText(sysAppDto.getClientId()), SysApp::getClientId, sysAppDto.getClientId())
-                .in(Objects.nonNull(sysAppDto.getGrantTypeList()), SysApp::getGrantTypes, sysAppDto.getGrantTypeList())
                 .orderByAsc(SysApp::getOrderNum);
 
         List<SysApp> sysClientList;
@@ -58,31 +56,28 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
         } else {
             sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        List<SysAppVo> result = MapstructUtil.convert(sysClientList, SysAppVo.class);
-        result.forEach(r -> r.setGrantTypeList(List.of(r.getGrantTypes().split(","))));
-        return result;
+        return MapstructUtil.convert(sysClientList, SysAppVo.class);
     }
 
     @Override
-    public List<SysAppTreeVo> listTreeList() {
+    public List<AppTreeVo> listTreeList() {
         // TODO 是否分页
         List<SysApp> sysAppList = baseMapper.selectList(Wrappers.<SysApp>lambdaQuery()
-                .select(SysApp::getAppId, SysApp::getAppName));
-        
-        return MapstructUtil.convert(sysAppList, SysAppTreeVo.class);
+                .select(SysApp::getAppId, SysApp::getAppName)
+                .orderByAsc(SysApp::getOrderNum));
+
+        return MapstructUtil.convert(sysAppList, AppTreeVo.class);
     }
 
     @Override
     public boolean insertOne(SysAppDto sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
-        sysApp.setGrantTypes(String.join(",", sysAppDto.getGrantTypeList()));
         return baseMapper.insert(sysApp) > 0;
     }
 
     @Override
     public boolean updateOne(SysAppDto sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
-        sysApp.setGrantTypes(String.join(",", sysAppDto.getGrantTypeList()));
         return baseMapper.updateById(sysApp) > 0;
     }
 

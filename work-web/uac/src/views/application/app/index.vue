@@ -2,7 +2,7 @@
   <div class="role-container">
     <TreeFilter
       ref="treeFilterRef"
-      title="应用清单"
+      title="App 清单"
       :requestApi="getClientTreeList"
       @change="handleTreeChange"
       id="clientId"
@@ -32,12 +32,18 @@
 import { TreeFilter, ProTable } from "work";
 import { getClientTreeList } from "@/api/application/client";
 import { list, addOne, editOne, deleteOne, deleteBatch, type App } from "@/api/application/app";
-import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { options } from "./formOptions";
+import {
+  type DialogForm,
+  type ProTableInstance,
+  type TableColumnProps,
+  type TreeFilterInstance,
+} from "@work/components";
+import { useFormOptions } from "./useFormOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
 
+const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
 
 const { statusChange } = useChange(
@@ -55,18 +61,6 @@ const columns: TableColumnProps<App.AppInfo>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "appCode", label: "应用编码", search: { el: "el-input" } },
   { prop: "appName", label: "应用名称", search: { el: "el-input" } },
-  {
-    prop: "grantTypeList",
-    label: "授权类型",
-    align: "left",
-    enum: () => useLayoutStore().getDictData("sys_grant_type"),
-    tag: true,
-    fieldNames: { value: "dictValue", label: "dictLabel" },
-    search: {
-      el: "el-select",
-      props: { multiple: true, collapseTags: true, collapseTagsTooltip: true, maxCollapseTags: 2 },
-    },
-  },
   {
     prop: "status",
     label: "状态",
@@ -97,9 +91,12 @@ const columns: TableColumnProps<App.AppInfo>[] = [
 ];
 
 const detailForm: DialogForm = {
-  options: options,
-  addApi: data => addOne({ ...data, clientId: initRequestParam.clientId }),
-  editApi: data => editOne({ ...data, clientId: initRequestParam.clientId }),
+  options: useFormOptions(
+    computed(() => treeFilterRef.value?.treeData),
+    computed(() => initRequestParam.clientId)
+  ).options,
+  addApi: addOne,
+  editApi: data => editOne({ ...data, clientId: initRequestParam.clientId || data.clientId }),
   deleteApi: deleteOne,
   deleteBatchApi: deleteBatch,
   dialog: {
@@ -128,3 +125,4 @@ const handleTreeChange = (nodeId: number) => {
   }
 }
 </style>
+./useFormOptions

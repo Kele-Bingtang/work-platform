@@ -6,6 +6,7 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysClientDto;
 import cn.youngkbt.uac.sys.model.vo.SysClientVo;
+import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVo;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -47,11 +48,11 @@ public class SysClientController {
     }
 
     @GetMapping("/treeList")
-    public Response<List<SysClientVo>> listTreeList() {
-        List<SysClientVo> sysClientVoList = clientService.listTreeList();
+    public Response<List<ClientTreeVo>> listTreeList() {
+        List<ClientTreeVo> sysClientVoList = clientService.listTreeList();
         return HttpResult.ok(sysClientVoList);
     }
-
+    
     /**
      * 客户端新增
      */
@@ -81,6 +82,7 @@ public class SysClientController {
      */
     @DeleteMapping("/{ids}")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        // TODO：如果有 APP 绑定，则无法删除
         return HttpResult.ok(clientService.removeBatch(List.of(ids)));
     }
 }

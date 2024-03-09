@@ -27,7 +27,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +62,6 @@ public class AuthController {
         // }
 
         String appId = loginUserDto.getAppId();
-        String grantType = loginUserDto.getGrantType();
         // 校验 App ID
         SysApp sysApp = appService.checkAppIdThenGet(appId);
         if (Objects.isNull(sysApp)) {
@@ -74,10 +72,6 @@ public class AuthController {
         if (!ColumnConstant.STATUS_NORMAL.equals(sysApp.getStatus())) {
             log.info("[{}]已被禁用", appName);
             return HttpResult.failMessage("[" + appName + "]已被禁用");
-        }
-        if (!StringUtils.contains(sysApp.getGrantTypes(), grantType)) {
-            log.info("{} 认证类型： {} 异常", appName, grantType);
-            return HttpResult.failMessage("[" + appName + "]认证类型不支持");
         }
         // 校验客户端
         SysClient sysClient = clientService.checkClientIdThenGet(sysApp.getClientId());

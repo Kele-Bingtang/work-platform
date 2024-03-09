@@ -49,11 +49,6 @@ public class SysApp extends BaseDO {
     private Integer orderNum;
 
     /**
-     * 授权类型
-     */
-    private String grantTypes;
-
-    /**
      * 租户编号
      */
     private String tenantId;

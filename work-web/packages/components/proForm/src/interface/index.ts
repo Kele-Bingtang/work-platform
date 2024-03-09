@@ -16,7 +16,14 @@ export interface FormEnumProps {
   children?: FormEnumProps[]; // 为树形选择时，可以通过 children 属性指定子选项
   [key: string]: any;
 }
-type FormItem = Partial<Omit<FormItemProps, "prop">> & { prop: string; class?: string } & { br?: boolean };
+
+export type FormItem<T = any> = Partial<Omit<FormItemProps, "prop" | "label">> & {
+  label: ValueType | ((form: T) => any);
+  prop: string;
+  class?: string;
+} & {
+  br?: boolean;
+};
 
 export type FormType =
   | "el-input"
@@ -46,7 +53,7 @@ export type FormRenderScope = {
 };
 
 export interface FormColumnProps<T = any> {
-  formItem: FormItem;
+  formItem: FormItem<T>;
   attrs: {
     el?: FormType;
     enum?: FormEnumProps[] | ((enumMap?: any) => Promise<any>) | ComputedRef<FormEnumProps[]>;

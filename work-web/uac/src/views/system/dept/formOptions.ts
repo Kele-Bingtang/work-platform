@@ -15,7 +15,7 @@ export const options: FormOptionsProps<Dept.DeptTreeTable> = {
   form: {
     inline: true,
     labelPosition: "right",
-    labelWidth: "120px",
+    labelWidth: 80,
     size: "default",
     fixWidth: true,
     rules: rules,
@@ -26,7 +26,7 @@ export const options: FormOptionsProps<Dept.DeptTreeTable> = {
       attrs: {
         el: "el-tree-select",
         props: {
-          placeholder: "请输入 角色编码",
+          placeholder: "请选择 上级部门",
           filterable: true,
           checkStrictly: true,
           valueKey: "id",

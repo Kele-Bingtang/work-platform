@@ -7,7 +7,11 @@
         v-show="!isHidden(item)"
         :is="'el-form-item'"
         v-bind="item.formItem"
-        :style="{ display: item.formItem.br ? 'flex' : false }"
+        :label="parseLabel(item.formItem.label)"
+        :style="{
+          display: item.formItem.br && options.form!.labelPosition !== 'top' ? 'flex' : '',
+          width: item.formItem.br && options.form!.labelPosition === 'top' ? '100%' : '',
+        }"
       >
         <ProFormItem :column="item" :form="form" :style="formWidth(item)" />
       </component>
@@ -55,7 +59,7 @@ const initDefaultValue = (column: FormColumnProps) => {
   // 设置表单项的默认值
   if (attrs?.defaultValue !== undefined && attrs?.defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
-    if (form.value[formItem.prop]) return;
+    if (form.value[formItem.prop] || form.value[formItem.prop] === false || form.value[formItem.prop] === 0) return;
     if (isProxy(attrs.enum)) return (form.value[formItem.prop] = (attrs?.defaultValue as ComputedRef).value);
     if (typeof attrs?.defaultValue === "function") return (form.value[formItem.prop] = attrs?.defaultValue());
     return (form.value[formItem.prop] = attrs?.defaultValue);
@@ -116,6 +120,11 @@ const isDestroy = (column: FormColumnProps) => {
   return destroy;
 };
 
+const parseLabel = (label: any) => {
+  if (typeof label === "function") return label(form.value);
+  return label;
+};
+
 props.options.columns.forEach((item, index) => {
   // 设置枚举
   setEnumMap(item);
@@ -128,12 +137,15 @@ props.options.columns.forEach((item, index) => {
 
 // 排序表单项
 props.options.columns.sort((a, b) => a.attrs!.order! - b.attrs!.order!);
+
+// 获取每个表单的宽度
 const formWidth = (column: FormColumnProps) => {
   const { form } = props.options;
   const { attrs } = column;
   const style = attrs.style || {};
+  if (column.formItem.br) return { ...style, width: "100%" };
   if (attrs.width) return { ...style, width: getPx(attrs.width) };
-  if (form?.fixWidth && !column.formItem.br) return { ...style, width: getPx(attrs.width || "220px") };
+  if (form?.fixWidth) return { ...style, width: getPx(attrs.width || "220px") };
   return style;
 };
 

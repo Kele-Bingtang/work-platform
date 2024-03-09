@@ -4,6 +4,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysClientDto;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.model.vo.SysClientVo;
+import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Collection;
@@ -22,7 +23,7 @@ public interface SysClientService extends IService<SysClient> {
 
     List<SysClientVo> queryListWithPage(SysClientDto sysClientDto, PageQuery pageQuery);
 
-    List<SysClientVo> listTreeList();
+    List<ClientTreeVo> listTreeList();
 
     boolean insertOne(SysClientDto sysClientDto);
 

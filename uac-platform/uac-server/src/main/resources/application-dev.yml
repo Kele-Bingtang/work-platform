@@ -8,6 +8,11 @@ spring:
     username: root
     password: YoungKbt1234
     type: com.alibaba.druid.pool.DruidDataSource
+    hikari: 
+      minimum-idle: 5 # 最小空闲连接数量 
+      maximum-pool-size: 10 # 连接池最大连接数，默认是 10 
+      max-lifetime: 300000 # 此属性控制池中连接的最长生命周期，值 0 表示无限生命周期，默认 1800000 即 30分钟 
+      connection-test-query: SELECT 1
   data:
     redis:
 #      host: 192.168.199.27

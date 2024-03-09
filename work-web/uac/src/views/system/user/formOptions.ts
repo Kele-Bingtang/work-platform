@@ -10,6 +10,7 @@ const { validatePassword, validatePhone } = useFormRules();
 const rules = reactive<FormRules>({
   username: [{ required: true, message: "请输入用户名称", trigger: "blur" }],
   password: [{ required: true, validator: validatePassword, trigger: "blur" }],
+  deptId: [{ required: true, message: "请选择部门", trigger: "blur" }],
   phone: [{ validator: validatePhone, trigger: "blur" }],
   email: [{ type: "email", message: "请输入正确的邮箱", trigger: ["blur", "change"] }],
 });
@@ -18,7 +19,7 @@ export const options: FormOptionsProps<User.UserInfo> = {
   form: {
     inline: true,
     labelPosition: "top",
-    labelWidth: "120px",
+    labelWidth: 80,
     size: "default",
     fixWidth: true,
     rules: rules,

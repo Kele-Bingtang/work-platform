@@ -8,8 +8,6 @@ export namespace App {
     appName: string; // 应用名
     intro: string; // 应用介绍
     orderNum: number; // 显示顺序
-    grantTypes: string; // 授权类型
-    grantTypeList: string[]; // 授权类型
     status: number; // 状态
     createTime: string; // 创建时间
     clientId: string; // 客户端 ID

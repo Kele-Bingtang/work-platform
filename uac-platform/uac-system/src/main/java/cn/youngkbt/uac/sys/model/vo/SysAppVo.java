@@ -5,7 +5,6 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -45,16 +44,6 @@ public class SysAppVo implements Serializable {
      * 显示顺序
      */
     private Integer orderNum;
-
-    /**
-     * 授权类型
-     */
-    private String grantTypes;
-
-    /**
-     * 授权类型
-     */
-    private List<String> grantTypeList;
 
     /**
      * 状态

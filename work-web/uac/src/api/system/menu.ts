@@ -12,6 +12,7 @@ export namespace Menu {
     param: string; // 路由参数
     icon: string; // 图标
     orderNum: number; // 显示顺序
+    menuType: string; // 菜单类型（M目录 C菜单 F按钮）
     component: string; // 组件路径
     visible: number; // 显示状态（0 隐藏 1 显示）
     isCache: number; // 是否缓存（0 不缓存 1 缓存）

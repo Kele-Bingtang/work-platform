@@ -2,7 +2,7 @@
   <div class="role-container">
     <TreeFilter
       ref="treeFilterRef"
-      title="应用清单"
+      title="App 清单"
       :requestApi="getAppTreeList"
       @change="handleTreeChange"
       id="appId"
@@ -32,12 +32,18 @@
 import { TreeFilter, ProTable } from "work";
 import { getAppTreeList } from "@/api/application/app";
 import { list, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/system/role";
-import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { options } from "./formOptions";
+import {
+  type DialogForm,
+  type ProTableInstance,
+  type TableColumnProps,
+  type TreeFilterInstance,
+} from "@work/components";
+import { useFormOptions } from "./useFormOptions";
 import { useLayoutStore } from "@/stores/layout";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
 
+const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
 
 const { statusChange } = useChange(
@@ -86,9 +92,12 @@ const columns: TableColumnProps<Role.RoleInfo>[] = [
 ];
 
 const detailForm: DialogForm = {
-  options: options,
+  options: useFormOptions(
+    computed(() => treeFilterRef.value?.treeData),
+    computed(() => initRequestParam.appId)
+  ).options,
   addApi: addOne,
-  editApi: editOne,
+  editApi: data => editOne({ ...data, clientId: initRequestParam.appId || data.appId }),
   deleteApi: deleteOne,
   deleteBatchApi: deleteBatch,
   dialog: {
@@ -117,3 +126,4 @@ const handleTreeChange = (nodeId: number) => {
   }
 }
 </style>
+./useFormOptions

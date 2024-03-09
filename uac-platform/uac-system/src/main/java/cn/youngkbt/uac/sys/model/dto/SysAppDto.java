@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @author Kele-Bingtang
  * @date 2023-20-12 00:20:10
@@ -54,12 +52,6 @@ public class SysAppDto {
      * 显示顺序
      */
     private Integer orderNum;
-
-    /**
-     * 授权类型
-     */
-    @NotNull(message = "授权类型不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
-    private List<String> grantTypeList;
 
     /**
      * 部门 ID

@@ -14,17 +14,17 @@
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90.5%"
+        style="display: flex; flex-direction: column"
         :detailForm="detailForm"
       ></ProTable>
     </div>
   </div>
 </template>
 
-<script setup lang="tsx" name="User">
+<script setup lang="tsx" name="UserInfo">
 import { TreeFilter, ProTable, type TableColumnProps } from "work";
 import { listDeptTreeList } from "@/api/system/dept";
-import { addOne, editOne, deleteOne, deleteBatch, list, type User } from "@/api/system/user";
+import { addOne, editOne, deleteOne, deleteBatch, list, type User } from "@/api/user/base";
 import { options } from "./formOptions";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores/layout";
@@ -103,8 +103,6 @@ const handleTreeChange = (nodeId: number) => {
 .user-container {
   display: flex;
   width: 100%;
-  height: 100%;
-  padding: 10px;
 
   .iconify {
     margin-right: 5px;
@@ -112,6 +110,7 @@ const handleTreeChange = (nodeId: number) => {
   }
 
   .user-table {
+    display: flex;
     width: calc(100% - 230px);
     height: 100%;
   }
@@ -125,3 +124,4 @@ const handleTreeChange = (nodeId: number) => {
   }
 }
 </style>
+@/api/user/user

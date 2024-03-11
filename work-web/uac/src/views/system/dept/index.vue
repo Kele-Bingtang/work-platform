@@ -5,7 +5,6 @@
       :request-api="listDeptTreeTable"
       :columns="columns"
       :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-      style="height: 90%"
       :detailForm="detailForm"
       :border="false"
     ></ProTable>
@@ -83,7 +82,5 @@ const detailForm: DialogForm = {
 <style lang="scss" scoped>
 .dept-container {
   width: 100%;
-  height: 100%;
-  padding: 10px;
 }
 </style>

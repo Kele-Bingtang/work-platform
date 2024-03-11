@@ -18,14 +18,13 @@
     <div class="menu-table">
       <div class="empty-box" v-if="!initRequestParam.appId"><el-empty description="请先选择一个应用" /></div>
       <ProTable
-        v-show="initRequestParam.appId"
         ref="proTableRef"
+        v-show="initRequestParam.appId"
         :request-api="listMenuTreeTableByApp"
         :columns="columns"
         :init-request-param="initRequestParam"
         :request-auto="false"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90.5%"
         :detailForm="detailForm"
         :border="false"
       >
@@ -142,8 +141,6 @@ const handleTreeChange = (nodeId: number) => {
 .menu-container {
   display: flex;
   width: 100%;
-  height: 100%;
-  padding: 10px;
 
   .empty-box {
     display: flex;

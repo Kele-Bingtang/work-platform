@@ -43,7 +43,7 @@ public class SysUserController {
         List<SysUserVo> sysUserVoList = sysUserService.queryListWithPage(sysUserDto, pageQuery);
         return HttpResult.ok(sysUserVoList);
     }
-
+    
     @GetMapping("/rolePostList")
     public Response<RolePostVo> rolePostList() {
         RolePostVo rolePostVo = sysUserService.rolePostList();

@@ -124,6 +124,43 @@ export const rolesRoutes: RouterConfigRaw[] = [
     },
   },
   {
+    path: "/user-manage",
+    name: "UserManage",
+    meta: {
+      title: "用户管理",
+      icon: HomeFilled,
+    },
+    children: [
+      {
+        path: "user-info",
+        name: "UserInfo",
+        component: "/userManage/userInfo/index",
+        meta: {
+          title: "用户信息",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "user-link",
+        name: "UserLink",
+        component: "/userManage/userLink/index",
+        meta: {
+          title: "用户绑定",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "user-group",
+        name: "UserGroup",
+        component: "/userManage/userGroup/index",
+        meta: {
+          title: "用户组管理",
+          icon: HomeFilled,
+        },
+      },
+    ],
+  },
+  {
     path: "/system-manage",
     name: "SystemManage",
     meta: {
@@ -132,7 +169,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
     },
     children: [
       {
-        path: "/tenant-manage",
+        path: "tenant-manage",
         name: "TenantManage",
         component: "/system/tenant/index",
         meta: {
@@ -141,16 +178,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "/user-manage",
-        name: "UserManage",
-        component: "/system/user/index",
-        meta: {
-          title: "用户管理",
-          icon: HomeFilled,
-        },
-      },
-      {
-        path: "/role-manage",
+        path: "role-manage",
         name: "RoleManage",
         component: "/system/role/index",
         meta: {
@@ -159,7 +187,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "/menu-manage",
+        path: "menu-manage",
         name: "MenuManage",
         component: "/system/menu/index",
         meta: {
@@ -168,7 +196,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "/dept-manage",
+        path: "dept-manage",
         name: "DeptManage",
         component: "/system/dept/index",
         meta: {
@@ -177,7 +205,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "/post-manage",
+        path: "post-manage",
         name: "PostManage",
         component: "/system/post/index",
         meta: {
@@ -186,7 +214,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "/dict-manage",
+        path: "dict-manage",
         name: "DictManage",
         component: "/system/dict/index",
         meta: {
@@ -205,7 +233,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
     },
     children: [
       {
-        path: "/client-manage",
+        path: "client-manage",
         name: "ClientManage",
         component: "/application/client/index",
         meta: {
@@ -214,7 +242,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "/app-manage",
+        path: "app-manage",
         name: "AppManage",
         component: "/application/app/index",
         meta: {

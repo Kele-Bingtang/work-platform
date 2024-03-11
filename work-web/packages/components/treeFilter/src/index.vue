@@ -35,10 +35,10 @@
 </template>
 
 <script setup lang="ts" name="TreeFilter">
-import { ref, watch, onBeforeMount } from "vue";
+import { ref, watch, onBeforeMount, type Component } from "vue";
 import { ElTree } from "element-plus";
 import TreeFilter from "./index.vue";
-
+import { User } from "@element-plus/icons-vue";
 export type TreeFilterInstance = Omit<
   InstanceType<typeof TreeFilter>,
   keyof ComponentPublicInstance | keyof TreeFilterProps

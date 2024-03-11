@@ -1,6 +1,6 @@
 import http from "@/config/request";
-import type { Post } from "./post";
-import type { Role } from "./role";
+import type { Post } from "../system/post";
+import type { Role } from "../system/role";
 
 export namespace User {
   export interface UserInfo {

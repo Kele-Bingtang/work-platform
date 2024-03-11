@@ -1,7 +1,7 @@
 import { useLayoutStore } from "@/stores/layout";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { getRolePostList, type User } from "@/api/system/user";
+import { getRolePostList, type User } from "@/api/user/base";
 import { listDeptTreeList } from "@/api/system/dept";
 import { useFormRules } from "@/hooks/useFormRules";
 

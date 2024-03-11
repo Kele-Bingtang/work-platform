@@ -21,7 +21,6 @@
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90.5%"
         :detailForm="detailForm"
       ></ProTable>
     </div>
@@ -117,8 +116,6 @@ const handleTreeChange = (nodeId: number) => {
 .role-container {
   display: flex;
   width: 100%;
-  height: 100%;
-  padding: 10px;
 
   .role-table {
     width: calc(100% - 230px);
@@ -126,4 +123,3 @@ const handleTreeChange = (nodeId: number) => {
   }
 }
 </style>
-./useFormOptions

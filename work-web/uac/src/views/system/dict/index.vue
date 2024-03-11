@@ -21,7 +21,6 @@
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        style="height: 90%"
         :detailForm="detailForm"
       ></ProTable>
     </div>
@@ -104,12 +103,10 @@ const detailForm: DialogForm = {
 .dict-container {
   display: flex;
   width: 100%;
-  height: 100%;
-  padding: 10px;
 
   .dict-table {
     width: calc(100% - 230px);
-    height: 97%;
+    height: 100%;
   }
 
   .drawer-content {

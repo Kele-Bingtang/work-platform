@@ -1,9 +1,9 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysRoleDto;
+import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
-import cn.youngkbt.uac.sys.model.vo.SysRoleVo;
+import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -15,17 +15,17 @@ import java.util.List;
  */
 public interface SysRoleService extends IService<SysRole> {
 
-    SysRoleVo listById(Long id);
+    SysRoleVO listById(Long id);
 
-    List<SysRoleVo> queryListWithPage(SysRoleDto sysRoleDto, PageQuery pageQuery);
+    List<SysRoleVO> queryListWithPage(SysRoleDTO sysRoleDto, PageQuery pageQuery);
 
-    boolean checkRoleCodeUnique(SysRoleDto sysRoleDto);
+    boolean checkRoleCodeUnique(SysRoleDTO sysRoleDto);
     
-    boolean checkRoleNameUnique(SysRoleDto sysRoleDto);
+    boolean checkRoleNameUnique(SysRoleDTO sysRoleDto);
 
-    boolean insertOne(SysRoleDto sysRoleDto);
+    boolean insertOne(SysRoleDTO sysRoleDto);
 
-    boolean updateOne(SysRoleDto sysRoleDto);
+    boolean updateOne(SysRoleDTO sysRoleDto);
 
     boolean removeBatch(List<Long> ids);
 }

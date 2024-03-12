@@ -4,8 +4,8 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysTenantDto;
-import cn.youngkbt.uac.sys.model.vo.SysTenantVo;
+import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
+import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysTenantService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -28,8 +28,8 @@ public class SysTenantController {
     private final SysTenantService sysTenantService;
 
     @GetMapping("/{id}")
-    public Response<SysTenantVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysTenantVo sysTenantVo = sysTenantService.listById(id);
+    public Response<SysTenantVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysTenantVO sysTenantVo = sysTenantService.listById(id);
         return HttpResult.ok(sysTenantVo);
     }
 
@@ -37,9 +37,9 @@ public class SysTenantController {
      * 多租户列表查询
      */
     @GetMapping("/list")
-    public Response<List<SysTenantVo>> list(SysTenantDto sysTenantDto, PageQuery pageQuery) {
-        List<SysTenantVo> sysTenantVoList = sysTenantService.queryListWithPage(sysTenantDto, pageQuery);
-        return HttpResult.ok(sysTenantVoList);
+    public Response<List<SysTenantVO>> list(SysTenantDTO sysTenantDto, PageQuery pageQuery) {
+        List<SysTenantVO> sysTenantVOList = sysTenantService.queryListWithPage(sysTenantDto, pageQuery);
+        return HttpResult.ok(sysTenantVOList);
     }
 
 
@@ -47,7 +47,7 @@ public class SysTenantController {
      * 客户端新增
      */
     @PostMapping
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDto sysTenantDto) {
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDTO sysTenantDto) {
         if (sysTenantService.checkCompanyNameUnique(sysTenantDto)) {
             return HttpResult.failMessage("新增租户'" + sysTenantDto.getTenantName() + "'失败，企业名称已存在");
         }
@@ -58,7 +58,7 @@ public class SysTenantController {
      * 客户端修改
      */
     @PutMapping
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysTenantDto sysTenantDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysTenantDTO sysTenantDto) {
         return HttpResult.ok(sysTenantService.updateOne(sysTenantDto));
     }
 

@@ -3,10 +3,10 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysAppMapper;
-import cn.youngkbt.uac.sys.model.dto.SysAppDto;
+import cn.youngkbt.uac.sys.model.dto.SysAppDTO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
-import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVo;
-import cn.youngkbt.uac.sys.model.vo.SysAppVo;
+import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
+import cn.youngkbt.uac.sys.model.vo.SysAppVO;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -32,15 +32,15 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public SysAppVo listById(Long id) {
+    public SysAppVO listById(Long id) {
         SysApp sysApp = baseMapper.selectById(id);
         Assert.nonNull(sysApp, "应用不存在");
-        SysAppVo result = MapstructUtil.convert(sysApp, SysAppVo.class);
+        SysAppVO result = MapstructUtil.convert(sysApp, SysAppVO.class);
         return result;
     }
 
     @Override
-    public List<SysAppVo> queryListWithPage(SysAppDto sysAppDto, PageQuery pageQuery) {
+    public List<SysAppVO> queryListWithPage(SysAppDTO sysAppDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysApp> wrapper = Wrappers.<SysApp>lambdaQuery()
                 .eq(StringUtils.hasText(sysAppDto.getAppId()), SysApp::getAppId, sysAppDto.getAppId())
                 .eq(StringUtils.hasText(sysAppDto.getAppCode()), SysApp::getAppCode, sysAppDto.getAppCode())
@@ -56,27 +56,27 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
         } else {
             sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(sysClientList, SysAppVo.class);
+        return MapstructUtil.convert(sysClientList, SysAppVO.class);
     }
 
     @Override
-    public List<AppTreeVo> listTreeList() {
+    public List<AppTreeVO> listTreeList() {
         // TODO 是否分页
         List<SysApp> sysAppList = baseMapper.selectList(Wrappers.<SysApp>lambdaQuery()
                 .select(SysApp::getAppId, SysApp::getAppName)
                 .orderByAsc(SysApp::getOrderNum));
 
-        return MapstructUtil.convert(sysAppList, AppTreeVo.class);
+        return MapstructUtil.convert(sysAppList, AppTreeVO.class);
     }
 
     @Override
-    public boolean insertOne(SysAppDto sysAppDto) {
+    public boolean insertOne(SysAppDTO sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
         return baseMapper.insert(sysApp) > 0;
     }
 
     @Override
-    public boolean updateOne(SysAppDto sysAppDto) {
+    public boolean updateOne(SysAppDTO sysAppDto) {
         SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
         return baseMapper.updateById(sysApp) > 0;
     }

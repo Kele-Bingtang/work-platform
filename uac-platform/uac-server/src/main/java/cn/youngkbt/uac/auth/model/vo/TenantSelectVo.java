@@ -1,6 +1,6 @@
 package cn.youngkbt.uac.auth.model.vo;
 
-import cn.youngkbt.uac.sys.model.vo.SysTenantVo;
+import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import lombok.Data;
  * @note
  */
 @Data
-@AutoMapper(target = SysTenantVo.class)
+@AutoMapper(target = SysTenantVO.class)
 public class TenantSelectVo {
     private String tenantId;
     private String tenantName;

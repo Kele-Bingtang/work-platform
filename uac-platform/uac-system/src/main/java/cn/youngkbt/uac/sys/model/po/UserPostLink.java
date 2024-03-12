@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.UserPostLinkVo;
+import cn.youngkbt.uac.sys.model.vo.UserPostLinkVO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_user_post_link")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = UserPostLinkVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = UserPostLinkVO.class, reverseConvertGenerate = false)
 public class UserPostLink extends BaseDO {
     /**
      * 用户 ID

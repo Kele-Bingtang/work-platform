@@ -1,9 +1,9 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysDictTypeDto;
+import cn.youngkbt.uac.sys.model.dto.SysDictTypeDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictType;
-import cn.youngkbt.uac.sys.model.vo.SysDictTypeVo;
+import cn.youngkbt.uac.sys.model.vo.SysDictTypeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -15,13 +15,13 @@ import java.util.List;
  */
 public interface SysDictTypeService extends IService<SysDictType> {
 
-    SysDictTypeVo listById(Long id);
+    SysDictTypeVO listById(Long id);
 
-    List<SysDictTypeVo> queryListWithPage(SysDictTypeDto sysDictTypeDto, PageQuery pageQuery);
+    List<SysDictTypeVO> queryListWithPage(SysDictTypeDTO sysDictTypeDto, PageQuery pageQuery);
 
-    boolean insertOne(SysDictTypeDto sysDictTypeDto);
+    boolean insertOne(SysDictTypeDTO sysDictTypeDto);
 
-    boolean updateOne(SysDictTypeDto sysDictTypeDto);
+    boolean updateOne(SysDictTypeDTO sysDictTypeDto);
 
     boolean removeBatch(List<Long> ids);
 }

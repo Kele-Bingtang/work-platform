@@ -1,10 +1,10 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysAppDto;
+import cn.youngkbt.uac.sys.model.dto.SysAppDTO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
-import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVo;
-import cn.youngkbt.uac.sys.model.vo.SysAppVo;
+import cn.youngkbt.uac.sys.model.vo.SysAppVO;
+import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -18,15 +18,15 @@ public interface SysAppService extends IService<SysApp> {
 
     SysApp checkAppIdThenGet(String appId);
 
-    SysAppVo listById(Long id);
+    SysAppVO listById(Long id);
 
-    List<SysAppVo> queryListWithPage(SysAppDto sysAppDto, PageQuery pageQuery);
+    List<SysAppVO> queryListWithPage(SysAppDTO sysAppDto, PageQuery pageQuery);
 
-    boolean insertOne(SysAppDto sysAppDto);
+    boolean insertOne(SysAppDTO sysAppDto);
 
-    boolean updateOne(SysAppDto sysAppDto);
+    boolean updateOne(SysAppDTO sysAppDto);
 
     boolean removeBatch(List<Long> ids);
 
-    List<AppTreeVo> listTreeList();
+    List<AppTreeVO> listTreeList();
 }

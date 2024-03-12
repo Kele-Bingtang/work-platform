@@ -3,9 +3,9 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysDictTypeMapper;
-import cn.youngkbt.uac.sys.model.dto.SysDictTypeDto;
+import cn.youngkbt.uac.sys.model.dto.SysDictTypeDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictType;
-import cn.youngkbt.uac.sys.model.vo.SysDictTypeVo;
+import cn.youngkbt.uac.sys.model.vo.SysDictTypeVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
 import cn.youngkbt.uac.sys.service.SysDictTypeService;
 import cn.youngkbt.utils.MapstructUtil;
@@ -32,14 +32,14 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     private final SysDictDataService sysDictDataService;
 
     @Override
-    public SysDictTypeVo listById(Long id) {
+    public SysDictTypeVO listById(Long id) {
         SysDictType sysDictType = baseMapper.selectById(id);
         Assert.nonNull(sysDictType, "字典不存在");
-        return MapstructUtil.convert(sysDictType, SysDictTypeVo.class);
+        return MapstructUtil.convert(sysDictType, SysDictTypeVO.class);
     }
 
     @Override
-    public List<SysDictTypeVo> queryListWithPage(SysDictTypeDto sysDictTypeDto, PageQuery pageQuery) {
+    public List<SysDictTypeVO> queryListWithPage(SysDictTypeDTO sysDictTypeDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictType> wrapper = Wrappers.<SysDictType>lambdaQuery()
                 .eq(StringUtils.hasText(sysDictTypeDto.getDictName()), SysDictType::getDictName, sysDictTypeDto.getDictName())
                 .eq(StringUtils.hasText(sysDictTypeDto.getDictCode()), SysDictType::getDictCode, sysDictTypeDto.getDictCode())
@@ -52,18 +52,18 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
         } else {
             sysDictTypeList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(sysDictTypeList, SysDictTypeVo.class);
+        return MapstructUtil.convert(sysDictTypeList, SysDictTypeVO.class);
     }
 
     @Override
-    public boolean insertOne(SysDictTypeDto sysDictTypeDto) {
+    public boolean insertOne(SysDictTypeDTO sysDictTypeDto) {
         SysDictType sysDictType = MapstructUtil.convert(sysDictTypeDto, SysDictType.class);
         return baseMapper.insert(sysDictType) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateOne(SysDictTypeDto sysDictTypeDto) {
+    public boolean updateOne(SysDictTypeDTO sysDictTypeDto) {
         SysDictType newSysDictType = MapstructUtil.convert(sysDictTypeDto, SysDictType.class);
         // 同步更新 dictData d的 dictCode
         SysDictType oldDictType = baseMapper.selectById(sysDictTypeDto.getId());

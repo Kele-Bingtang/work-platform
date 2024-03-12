@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
+import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import com.baomidou.mybatisplus.annotation.*;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_menu")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysMenuVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = SysMenuVO.class, reverseConvertGenerate = false)
 public class SysMenu extends BaseDO {
     /**
      * 菜单 ID

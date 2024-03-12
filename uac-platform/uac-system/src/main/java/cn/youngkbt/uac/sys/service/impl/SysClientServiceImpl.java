@@ -4,10 +4,10 @@ import cn.hutool.crypto.SecureUtil;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysClientMapper;
-import cn.youngkbt.uac.sys.model.dto.SysClientDto;
+import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.po.SysClient;
-import cn.youngkbt.uac.sys.model.vo.SysClientVo;
-import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVo;
+import cn.youngkbt.uac.sys.model.vo.SysClientVO;
+import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.MapstructUtil;
@@ -35,16 +35,16 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public SysClientVo listById(Long id) {
+    public SysClientVO listById(Long id) {
         SysClient sysClient = baseMapper.selectById(id);
         Assert.nonNull(sysClient, "客户端不存在");
-        SysClientVo result = MapstructUtil.convert(sysClient, SysClientVo.class);
+        SysClientVO result = MapstructUtil.convert(sysClient, SysClientVO.class);
         result.setGrantTypeList(List.of(result.getGrantTypes().split(",")));
         return result;
     }
 
     @Override
-    public List<SysClientVo> queryListWithPage(SysClientDto sysClientDto, PageQuery pageQuery) {
+    public List<SysClientVO> queryListWithPage(SysClientDTO sysClientDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysClient> wrapper = Wrappers.<SysClient>lambdaQuery()
                 .like(StringUtils.hasText(sysClientDto.getClientId()), SysClient::getClientId, sysClientDto.getClientId())
                 .eq(StringUtils.hasText(sysClientDto.getClientKey()), SysClient::getClientKey, sysClientDto.getClientKey())
@@ -59,23 +59,23 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
         } else {
             sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        List<SysClientVo> result = MapstructUtil.convert(sysClientList, SysClientVo.class);
+        List<SysClientVO> result = MapstructUtil.convert(sysClientList, SysClientVO.class);
         result.forEach(r -> r.setGrantTypeList(List.of(r.getGrantTypes().split(","))));
         return result;
     }
 
     @Override
-    public List<ClientTreeVo> listTreeList() {
+    public List<ClientTreeVO> listTreeList() {
         // TODO 是否分页
         List<SysClient> sysClientList = baseMapper.selectList(Wrappers.<SysClient>lambdaQuery()
                 .select(SysClient::getClientId, SysClient::getClientName)
                 .orderByAsc(SysClient::getCreateTime));
 
-        return MapstructUtil.convert(sysClientList, ClientTreeVo.class);
+        return MapstructUtil.convert(sysClientList, ClientTreeVO.class);
     }
 
     @Override
-    public boolean insertOne(SysClientDto sysClientDto) {
+    public boolean insertOne(SysClientDTO sysClientDto) {
         SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
         if (Objects.isNull(sysClient.getClientSecret())) {
             sysClient.setClientSecret(IdsUtil.simpleUUID());
@@ -89,7 +89,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public boolean updateOne(SysClientDto sysClientDto) {
+    public boolean updateOne(SysClientDTO sysClientDto) {
         SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
         sysClient.setGrantTypes(String.join(",", sysClientDto.getGrantTypeList()));
         return baseMapper.updateById(sysClient) > 0;

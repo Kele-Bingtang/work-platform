@@ -4,9 +4,9 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
+import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
-import cn.youngkbt.uac.sys.model.dto.SysUserDto;
-import cn.youngkbt.uac.sys.model.vo.SysUserVo;
 import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.StringUtil;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,8 +30,8 @@ public class SysUserController {
     private final SysUserService sysUserService;
 
     @GetMapping("/{id}")
-    public Response<SysUserVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysUserVo sysUserVo = sysUserService.listById(id);
+    public Response<SysUserVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysUserVO sysUserVo = sysUserService.listById(id);
         return HttpResult.ok(sysUserVo);
     }
 
@@ -39,9 +39,9 @@ public class SysUserController {
      * 客户端列表查询
      */
     @GetMapping("/list")
-    public Response<List<SysUserVo>> list(SysUserDto sysUserDto, PageQuery pageQuery) {
-        List<SysUserVo> sysUserVoList = sysUserService.queryListWithPage(sysUserDto, pageQuery);
-        return HttpResult.ok(sysUserVoList);
+    public Response<List<SysUserVO>> list(SysUserDTO sysUserDto, PageQuery pageQuery) {
+        List<SysUserVO> sysUserVOList = sysUserService.queryListWithPage(sysUserDto, pageQuery);
+        return HttpResult.ok(sysUserVOList);
     }
     
     @GetMapping("/rolePostList")
@@ -54,7 +54,7 @@ public class SysUserController {
      * 客户端新增
      */
     @PostMapping
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDto sysUserDto) {
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDTO sysUserDto) {
         if (sysUserService.checkUserNameUnique(sysUserDto)) {
             return HttpResult.failMessage("新增用户「" + sysUserDto.getUsername() + "」失败，登录账号已存在");
         } else if (StringUtil.hasText(sysUserDto.getPhone()) && sysUserService.checkPhoneUnique(sysUserDto)) {
@@ -70,7 +70,7 @@ public class SysUserController {
      * 客户端修改
      */
     @PutMapping
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDto sysUserDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDTO sysUserDto) {
         if (sysUserService.checkUserNameUnique(sysUserDto)) {
             return HttpResult.failMessage("修改用户「" + sysUserDto.getUsername() + "」失败，登录账号已存在");
         } else if (StringUtil.hasText(sysUserDto.getPhone()) && sysUserService.checkPhoneUnique(sysUserDto)) {

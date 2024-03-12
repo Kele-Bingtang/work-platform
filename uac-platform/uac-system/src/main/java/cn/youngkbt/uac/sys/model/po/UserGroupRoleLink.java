@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.UserGroupRoleLinkVo;
+import cn.youngkbt.uac.sys.model.vo.UserGroupRoleLinkVO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_user_group_role_link")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = UserGroupRoleLinkVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = UserGroupRoleLinkVO.class, reverseConvertGenerate = false)
 public class UserGroupRoleLink extends BaseDO {
     /**
      * 用户组 ID

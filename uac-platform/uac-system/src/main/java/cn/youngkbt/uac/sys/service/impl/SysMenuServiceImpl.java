@@ -10,10 +10,10 @@ import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
-import cn.youngkbt.uac.sys.model.dto.SysMenuDto;
+import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
-import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
+import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import cn.youngkbt.uac.sys.utils.MenuTreeUtil;
@@ -41,14 +41,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private final RoleMenuLinkMapper roleMenuLinkMapper;
 
     @Override
-    public SysMenuVo listById(Long id) {
+    public SysMenuVO listById(Long id) {
         SysMenu sysMenu = baseMapper.selectById(id);
         Assert.nonNull(sysMenu, "菜单不存在");
-        return MapstructUtil.convert(sysMenu, SysMenuVo.class);
+        return MapstructUtil.convert(sysMenu, SysMenuVO.class);
     }
 
     @Override
-    public List<SysMenuVo> queryListWithPage(SysMenuDto sysMenuDto, PageQuery pageQuery) {
+    public List<SysMenuVO> queryListWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
 
         List<SysMenu> sysMenuList;
@@ -57,14 +57,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         } else {
             sysMenuList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(sysMenuList, SysMenuVo.class);
+        return MapstructUtil.convert(sysMenuList, SysMenuVO.class);
     }
 
     /**
      * 构建前端需要的路由菜单
      */
     @Override
-    public List<Tree<String>> listMenuTreeSelect(SysMenuDto sysMenuDto) {
+    public List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDto) {
         // 查询正常状态的部门
         sysMenuDto.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
@@ -73,14 +73,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<MenuTree> listMenuTreeTable(SysMenuDto sysMenuDto) {
+    public List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDto) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
         List<MenuTree> menuTreeList = MapstructUtil.convert(sysMenuList, MenuTree.class);
         return MenuTreeUtil.build(menuTreeList);
     }
 
-    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuDto sysMenuDto) {
+    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuDTO sysMenuDto) {
         return Wrappers.<SysMenu>lambdaQuery()
                 .eq(StringUtil.hasText(sysMenuDto.getMenuCode()), SysMenu::getMenuCode, sysMenuDto.getMenuCode())
                 .eq(StringUtil.hasText(sysMenuDto.getMenuName()), SysMenu::getMenuName, sysMenuDto.getMenuName())
@@ -107,7 +107,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean checkMenuNameUnique(SysMenuDto sysMenuDto) {
+    public boolean checkMenuNameUnique(SysMenuDTO sysMenuDto) {
         boolean exist = baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
                 .eq(SysMenu::getMenuName, sysMenuDto.getMenuName())
                 .eq(SysMenu::getParentId, sysMenuDto.getParentId())
@@ -129,7 +129,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean insertOne(SysMenuDto sysMenuDto) {
+    public boolean insertOne(SysMenuDTO sysMenuDto) {
         SysMenu sysMenu = MapstructUtil.convert(sysMenuDto, SysMenu.class);
 
         if (StringUtil.hasText(sysMenu.getParentId())) {
@@ -149,7 +149,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean updateOne(SysMenuDto sysMenuDto) {
+    public boolean updateOne(SysMenuDTO sysMenuDto) {
         SysMenu sysMenu = MapstructUtil.convert(sysMenuDto, SysMenu.class);
         return baseMapper.updateById(sysMenu) > 0;
     }

@@ -1,10 +1,10 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysClientDto;
+import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.po.SysClient;
-import cn.youngkbt.uac.sys.model.vo.SysClientVo;
-import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVo;
+import cn.youngkbt.uac.sys.model.vo.SysClientVO;
+import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Collection;
@@ -19,15 +19,15 @@ public interface SysClientService extends IService<SysClient> {
 
     SysClient checkClientIdThenGet(String clientId);
 
-    SysClientVo listById(Long id);
+    SysClientVO listById(Long id);
 
-    List<SysClientVo> queryListWithPage(SysClientDto sysClientDto, PageQuery pageQuery);
+    List<SysClientVO> queryListWithPage(SysClientDTO sysClientDto, PageQuery pageQuery);
 
-    List<ClientTreeVo> listTreeList();
+    List<ClientTreeVO> listTreeList();
 
-    boolean insertOne(SysClientDto sysClientDto);
+    boolean insertOne(SysClientDTO sysClientDto);
 
-    boolean updateOne(SysClientDto sysClientDto);
+    boolean updateOne(SysClientDTO sysClientDto);
 
     boolean updateStatus(Long id, Integer status);
 

@@ -8,14 +8,14 @@ import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
-import cn.youngkbt.uac.sys.model.dto.SysPostDto;
-import cn.youngkbt.uac.sys.model.dto.SysRoleDto;
-import cn.youngkbt.uac.sys.model.dto.SysUserDto;
+import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
+import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
+import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.po.SysUser;
-import cn.youngkbt.uac.sys.model.vo.SysPostVo;
-import cn.youngkbt.uac.sys.model.vo.SysRoleVo;
-import cn.youngkbt.uac.sys.model.vo.SysUserVo;
+import cn.youngkbt.uac.sys.model.vo.SysPostVO;
+import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
+import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.uac.sys.service.SysRoleService;
@@ -68,25 +68,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUserVo listById(Long id) {
+    public SysUserVO listById(Long id) {
         SysUser sysUser = baseMapper.selectById(id);
         Assert.nonNull(sysUser, "用户不存在");
-        return MapstructUtil.convert(sysUser, SysUserVo.class);
+        return MapstructUtil.convert(sysUser, SysUserVO.class);
     }
 
     @Override
-    public List<SysUserVo> queryListWithPage(SysUserDto sysUserDto, PageQuery pageQuery) {
+    public List<SysUserVO> queryListWithPage(SysUserDTO sysUserDto, PageQuery pageQuery) {
         Wrapper<SysUser> wrapper = buildQueryWrapper(sysUserDto);
-        List<SysUserVo> sysUserVoList;
+        List<SysUserVO> sysUserVOList;
         if (Objects.isNull(pageQuery)) {
-            sysUserVoList = baseMapper.selectListWithPage(null, wrapper);
+            sysUserVOList = baseMapper.selectListWithPage(null, wrapper);
         } else {
-            sysUserVoList = baseMapper.selectListWithPage(pageQuery.buildPage(), wrapper);
+            sysUserVOList = baseMapper.selectListWithPage(pageQuery.buildPage(), wrapper);
         }
-        return sysUserVoList;
+        return sysUserVOList;
     }
 
-    private Wrapper<SysUser> buildQueryWrapper(SysUserDto sysUserDto) {
+    private Wrapper<SysUser> buildQueryWrapper(SysUserDTO sysUserDto) {
         QueryWrapper<SysUser> wrapper = Wrappers.query();
         wrapper.eq("su.is_deleted", ColumnConstant.NON_DELETED)
                 .eq(StringUtils.hasText(sysUserDto.getUserId()), "su.user_id", sysUserDto.getUserId())
@@ -111,21 +111,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean checkUserNameUnique(SysUserDto sysUserDto) {
+    public boolean checkUserNameUnique(SysUserDTO sysUserDto) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getUsername, sysUserDto.getUsername())
                 .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
     }
 
     @Override
-    public boolean checkPhoneUnique(SysUserDto sysUserDto) {
+    public boolean checkPhoneUnique(SysUserDTO sysUserDto) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getPhone, sysUserDto.getPhone())
                 .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
     }
 
     @Override
-    public boolean checkEmailUnique(SysUserDto sysUserDto) {
+    public boolean checkEmailUnique(SysUserDTO sysUserDto) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getEmail, sysUserDto.getEmail())
                 .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
@@ -133,18 +133,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public RolePostVo rolePostList() {
-        List<SysPostVo> sysPostVoList = sysPostService.queryListWithPage(new SysPostDto(), null);
-        List<SysRoleVo> sysRoleVoList = sysRoleService.queryListWithPage(new SysRoleDto(), null);
+        List<SysPostVO> sysPostVOList = sysPostService.queryListWithPage(new SysPostDTO(), null);
+        List<SysRoleVO> sysRoleVOList = sysRoleService.queryListWithPage(new SysRoleDTO(), null);
 
         RolePostVo rolePostVo = new RolePostVo();
-        rolePostVo.setPostList(sysPostVoList)
-                .setRoleList(sysRoleVoList);
+        rolePostVo.setPostList(sysPostVOList)
+                .setRoleList(sysRoleVOList);
 
         return rolePostVo;
     }
 
     @Override
-    public boolean insertOne(SysUserDto sysUserDto) {
+    public boolean insertOne(SysUserDTO sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         sysUser.setRegisterTime(new Date());
         if (Objects.isNull(sysUser.getPassword())) {
@@ -154,13 +154,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean updateOne(SysUserDto sysUserDto) {
+    public boolean updateOne(SysUserDTO sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         return baseMapper.updateById(sysUser) > 0;
     }
 
     @Override
-    public boolean updateOneByUserId(SysUserDto sysUserDto) {
+    public boolean updateOneByUserId(SysUserDTO sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         return baseMapper.update(sysUser, Wrappers.<SysUser>lambdaUpdate()
                 .eq(SysUser::getUsername, sysUserDto.getUsername())) > 0;

@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserGroupRoleLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.UserGroupRoleLinkDto;
+import cn.youngkbt.uac.sys.model.dto.UserGroupRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
-import cn.youngkbt.uac.sys.model.vo.UserGroupRoleLinkVo;
+import cn.youngkbt.uac.sys.model.vo.UserGroupRoleLinkVO;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkMapper, UserGroupRoleLink> implements UserGroupRoleLinkService {
 
     @Override
-    public List<UserGroupRoleLinkVo> queryLinkByAppId(UserGroupRoleLinkDto userGroupRoleLinkDto, PageQuery pageQuery) {
+    public List<UserGroupRoleLinkVO> queryLinkByAppId(UserGroupRoleLinkDTO userGroupRoleLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<UserGroupRoleLink> wrapper = Wrappers.<UserGroupRoleLink>lambdaQuery()
                 .eq(UserGroupRoleLink::getAppId, userGroupRoleLinkDto.getAppId())
                 .eq(StringUtil.hasText(userGroupRoleLinkDto.getUserGroupId()), UserGroupRoleLink::getUserGroupId, userGroupRoleLinkDto.getUserGroupId())
@@ -38,7 +38,7 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
         } else {
             userGroupRoleLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(userGroupRoleLinkList, UserGroupRoleLinkVo.class);
+        return MapstructUtil.convert(userGroupRoleLinkList, UserGroupRoleLinkVO.class);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
     }
 
     @Override
-    public boolean addOneLink(UserGroupRoleLinkDto userGroupRoleLinkDto) {
+    public boolean addOneLink(UserGroupRoleLinkDTO userGroupRoleLinkDto) {
         UserGroupRoleLink userGroupRoleLink = MapstructUtil.convert(userGroupRoleLinkDto, UserGroupRoleLink.class);
         return baseMapper.insert(userGroupRoleLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(UserGroupRoleLinkDto userGroupRoleLinkDto) {
+    public boolean updateOneLink(UserGroupRoleLinkDTO userGroupRoleLinkDto) {
         UserGroupRoleLink userGroupRoleLink = MapstructUtil.convert(userGroupRoleLinkDto, UserGroupRoleLink.class);
         return baseMapper.updateById(userGroupRoleLink) > 0;
     }

@@ -5,7 +5,7 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysLoginLogMapper;
-import cn.youngkbt.uac.sys.model.dto.SysUserDto;
+import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysLoginLog;
 import cn.youngkbt.uac.sys.service.SysLoginLogService;
 import cn.youngkbt.uac.sys.service.SysUserService;
@@ -70,7 +70,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         baseMapper.insert(loginLog);
         
         // 更新用户的登录记录
-        SysUserDto sysUserDto = new SysUserDto();
+        SysUserDTO sysUserDto = new SysUserDTO();
         sysUserDto.setUsername(loginInfoEvent.getUsername())
                 .setUserStatus(1)
                 .setLoginIp(clientIp)

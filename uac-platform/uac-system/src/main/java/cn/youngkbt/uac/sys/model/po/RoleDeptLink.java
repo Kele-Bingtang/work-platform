@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.RoleDeptLinkVo;
+import cn.youngkbt.uac.sys.model.vo.RoleDeptLinkVO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_role_dept_link")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = RoleDeptLinkVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = RoleDeptLinkVO.class, reverseConvertGenerate = false)
 public class RoleDeptLink extends BaseDO {
 
     /**

@@ -47,7 +47,7 @@ public abstract class BaseDO implements Serializable {
      */
     @Schema(description = "创建人id")
     @TableField(value = "create_by_id",fill = FieldFill.INSERT)
-    public Long createById;
+    public String createById;
 
     /**
      * 创建时间
@@ -68,7 +68,7 @@ public abstract class BaseDO implements Serializable {
      */
     @Schema(description = "更新人id")
     @TableField(value = "update_by_id", fill = FieldFill.INSERT_UPDATE)
-    public Long updateById;
+    public String updateById;
 
     /**
      * 更新时间

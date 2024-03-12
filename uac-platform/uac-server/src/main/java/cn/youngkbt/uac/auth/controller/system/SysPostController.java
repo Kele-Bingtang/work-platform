@@ -5,8 +5,8 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysPostDto;
-import cn.youngkbt.uac.sys.model.vo.SysPostVo;
+import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
+import cn.youngkbt.uac.sys.model.vo.SysPostVO;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -28,8 +28,8 @@ public class SysPostController {
     private final SysPostService sysPostService;
 
     @GetMapping("/{id}")
-    public Response<SysPostVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysPostVo sysPostVo = sysPostService.listById(id);
+    public Response<SysPostVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysPostVO sysPostVo = sysPostService.listById(id);
         return HttpResult.ok(sysPostVo);
     }
 
@@ -37,16 +37,16 @@ public class SysPostController {
      * 客户端列表查询
      */
     @GetMapping("/list")
-    public Response<List<SysPostVo>> list(SysPostDto sysPostDto, PageQuery pageQuery) {
-        List<SysPostVo> sysPostVoList = sysPostService.queryListWithPage(sysPostDto, pageQuery);
-        return HttpResult.ok(sysPostVoList);
+    public Response<List<SysPostVO>> list(SysPostDTO sysPostDto, PageQuery pageQuery) {
+        List<SysPostVO> sysPostVOList = sysPostService.queryListWithPage(sysPostDto, pageQuery);
+        return HttpResult.ok(sysPostVOList);
     }
 
     /**
      * 客户端新增
      */
     @PostMapping
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysPostDto sysPostDto) {
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysPostDTO sysPostDto) {
         if (sysPostService.checkPostNameUnique(sysPostDto)) {
             return HttpResult.failMessage("新增岗位「" + sysPostDto.getPostName() + "」失败，岗位名称已存在");
         } else if (sysPostService.checkPostCodeUnique(sysPostDto)) {
@@ -60,7 +60,7 @@ public class SysPostController {
      * 客户端修改
      */
     @PutMapping
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysPostDto sysPostDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysPostDTO sysPostDto) {
         if (sysPostService.checkPostNameUnique(sysPostDto)) {
             return HttpResult.failMessage("修改岗位「" + sysPostDto.getPostName() + "」失败，岗位名称已存在");
         } else if (sysPostService.checkPostCodeUnique(sysPostDto)) {

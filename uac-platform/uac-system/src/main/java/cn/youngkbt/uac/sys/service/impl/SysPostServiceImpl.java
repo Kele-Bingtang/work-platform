@@ -4,10 +4,10 @@ import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysPostMapper;
 import cn.youngkbt.uac.sys.mapper.UserPostLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.SysPostDto;
+import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.po.SysPost;
 import cn.youngkbt.uac.sys.model.po.UserPostLink;
-import cn.youngkbt.uac.sys.model.vo.SysPostVo;
+import cn.youngkbt.uac.sys.model.vo.SysPostVO;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -32,14 +32,14 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private final UserPostLinkMapper userPostLinkMapper;
 
     @Override
-    public SysPostVo listById(Long id) {
+    public SysPostVO listById(Long id) {
         SysPost sysPost = baseMapper.selectById(id);
         Assert.nonNull(sysPost, "岗位不存在");
-        return MapstructUtil.convert(sysPost, SysPostVo.class);
+        return MapstructUtil.convert(sysPost, SysPostVO.class);
     }
 
     @Override
-    public List<SysPostVo> queryListWithPage(SysPostDto sysPostDto, PageQuery pageQuery) {
+    public List<SysPostVO> queryListWithPage(SysPostDTO sysPostDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysPost> wrapper = Wrappers.<SysPost>lambdaQuery()
                 .eq(StringUtils.hasText(sysPostDto.getPostCode()), SysPost::getPostCode, sysPostDto.getPostCode())
                 .eq(StringUtils.hasText(sysPostDto.getPostName()), SysPost::getPostName, sysPostDto.getPostName())
@@ -52,37 +52,37 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         } else {
             sysPostList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(sysPostList, SysPostVo.class);
+        return MapstructUtil.convert(sysPostList, SysPostVO.class);
     }
 
     @Override
-    public boolean checkPostNameUnique(SysPostDto sysPostDto) {
+    public boolean checkPostNameUnique(SysPostDTO sysPostDto) {
         return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
                 .eq(SysPost::getPostName, sysPostDto.getPostName())
                 .ne(Objects.nonNull(sysPostDto.getPostId()), SysPost::getPostId, sysPostDto.getPostId()));
     }
 
     @Override
-    public boolean checkPostCodeUnique(SysPostDto sysPostDto) {
+    public boolean checkPostCodeUnique(SysPostDTO sysPostDto) {
         return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
                 .eq(SysPost::getPostCode, sysPostDto.getPostCode())
                 .ne(Objects.nonNull(sysPostDto.getPostId()), SysPost::getPostId, sysPostDto.getPostId()));
     }
 
     @Override
-    public boolean checkPostExitUser(SysPostDto sysPostDto) {
+    public boolean checkPostExitUser(SysPostDTO sysPostDto) {
         return userPostLinkMapper.exists(new LambdaQueryWrapper<UserPostLink>()
                 .eq(UserPostLink::getPostId, sysPostDto.getPostId()));
     }
 
     @Override
-    public boolean insertOne(SysPostDto sysPostDto) {
+    public boolean insertOne(SysPostDTO sysPostDto) {
         SysPost sysPost = MapstructUtil.convert(sysPostDto, SysPost.class);
         return baseMapper.insert(sysPost) > 0;
     }
 
     @Override
-    public boolean updateOne(SysPostDto sysPostDto) {
+    public boolean updateOne(SysPostDTO sysPostDto) {
         SysPost sysPost = MapstructUtil.convert(sysPostDto, SysPost.class);
         return baseMapper.updateById(sysPost) > 0;
     }

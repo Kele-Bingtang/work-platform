@@ -3,9 +3,9 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysDictDataMapper;
-import cn.youngkbt.uac.sys.model.dto.SysDictDataDto;
+import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictData;
-import cn.youngkbt.uac.sys.model.vo.SysDictDataVo;
+import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -27,14 +27,14 @@ import java.util.Objects;
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements SysDictDataService {
 
     @Override
-    public SysDictDataVo listById(Long id) {
+    public SysDictDataVO listById(Long id) {
         SysDictData sysDictData = baseMapper.selectById(id);
         Assert.nonNull(sysDictData, "数据不存在");
-        return MapstructUtil.convert(sysDictData, SysDictDataVo.class);
+        return MapstructUtil.convert(sysDictData, SysDictDataVO.class);
     }
 
     @Override
-    public List<SysDictDataVo> queryListWithPage(SysDictDataDto sysDictDataDto, PageQuery pageQuery) {
+    public List<SysDictDataVO> queryListWithPage(SysDictDataDTO sysDictDataDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictData> wrapper = Wrappers.<SysDictData>lambdaQuery()
                 .eq(Objects.nonNull(sysDictDataDto.getDictSort()), SysDictData::getDictSort, sysDictDataDto.getDictSort())
                 .eq(StringUtils.hasText(sysDictDataDto.getDictLabel()), SysDictData::getDictLabel, sysDictDataDto.getDictCode())
@@ -48,18 +48,18 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
         } else {
             sysDictDataDtoList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(sysDictDataDtoList, SysDictDataVo.class);
+        return MapstructUtil.convert(sysDictDataDtoList, SysDictDataVO.class);
     }
 
     @Override
-    public boolean insertOne(SysDictDataDto sysDictDataDto) {
+    public boolean insertOne(SysDictDataDTO sysDictDataDto) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDto, SysDictData.class);
         return baseMapper.insert(sysDictData) > 0;
     }
 
     @Override
     @Transactional
-    public boolean updateOne(SysDictDataDto sysDictDataDto) {
+    public boolean updateOne(SysDictDataDTO sysDictDataDto) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDto, SysDictData.class);
         return baseMapper.updateById(sysDictData) > 0;
     }

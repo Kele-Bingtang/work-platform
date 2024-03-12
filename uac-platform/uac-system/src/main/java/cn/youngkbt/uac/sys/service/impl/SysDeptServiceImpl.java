@@ -9,9 +9,9 @@ import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
-import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
+import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.po.SysDept;
-import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
+import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
 import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import cn.youngkbt.uac.sys.service.SysDeptService;
 import cn.youngkbt.uac.sys.utils.DeptTreeUtil;
@@ -41,14 +41,14 @@ import java.util.Objects;
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
     @Override
-    public SysDeptVo listById(Long id) {
+    public SysDeptVO listById(Long id) {
         SysDept sysDept = baseMapper.selectById(id);
         Assert.nonNull(sysDept, "部门不存在");
-        return MapstructUtil.convert(sysDept, SysDeptVo.class);
+        return MapstructUtil.convert(sysDept, SysDeptVO.class);
     }
 
     @Override
-    public List<SysDeptVo> queryListWithPage(SysDeptDto sysDeptDto, PageQuery pageQuery) {
+    public List<SysDeptVO> queryListWithPage(SysDeptDTO sysDeptDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
 
         List<SysDept> sysDeptList;
@@ -57,11 +57,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         } else {
             sysDeptList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(sysDeptList, SysDeptVo.class);
+        return MapstructUtil.convert(sysDeptList, SysDeptVO.class);
     }
 
     @Override
-    public List<Tree<String>> listDeptTreeList(SysDeptDto sysDeptDto) {
+    public List<Tree<String>> listDeptTreeList(SysDeptDTO sysDeptDto) {
         // 查询正常状态的部门
         sysDeptDto.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
@@ -70,14 +70,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public List<DeptTree> listDeptTreeTable(SysDeptDto sysDeptDto) {
+    public List<DeptTree> listDeptTreeTable(SysDeptDTO sysDeptDto) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
         List<DeptTree> sysDeptVoList = MapstructUtil.convert(sysDeptList, DeptTree.class);
         return DeptTreeUtil.build(sysDeptVoList);
     }
 
-    private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptDto sysDeptDto) {
+    private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptDTO sysDeptDto) {
         return Wrappers.<SysDept>lambdaQuery()
                 .eq(StringUtils.hasText(sysDeptDto.getDeptId()), SysDept::getDeptId, sysDeptDto.getDeptId())
                 .eq(StringUtils.hasText(sysDeptDto.getParentId()), SysDept::getParentId, sysDeptDto.getParentId())
@@ -105,7 +105,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 通过一个部门 ID 查询其父部门名字
      */
     @Override
-    public SysDeptVo listParentDeptByDeptId(String deptId) {
+    public SysDeptVO listParentDeptByDeptId(String deptId) {
         SysDept sysDept = baseMapper.selectOne(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptId, deptId));
         if (Objects.isNull(sysDept)) {
@@ -114,7 +114,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         SysDept parentDept = baseMapper.selectOne(Wrappers.<SysDept>lambdaQuery()
                 .select(SysDept::getDeptName)
                 .eq(SysDept::getDeptId, sysDept.getParentId()));
-        SysDeptVo sysDeptVo = MapstructUtil.convert(sysDept, SysDeptVo.class);
+        SysDeptVO sysDeptVo = MapstructUtil.convert(sysDept, SysDeptVO.class);
 
         sysDeptVo.setDeptName(parentDept.getDeptName());
         return sysDeptVo;
@@ -163,7 +163,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 校验部门名称是否唯一
      */
     @Override
-    public boolean checkDeptNameUnique(SysDeptDto sysDeptDto) {
+    public boolean checkDeptNameUnique(SysDeptDTO sysDeptDto) {
         return baseMapper.exists(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptName, sysDeptDto.getDeptName())
                 .eq(SysDept::getParentId, sysDeptDto.getParentId())
@@ -189,7 +189,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public boolean insertOne(SysDeptDto sysDeptDto) {
+    public boolean insertOne(SysDeptDTO sysDeptDto) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDto, SysDept.class);
 
         if (StringUtil.hasText(sysDeptDto.getParentId())) {
@@ -211,7 +211,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateOne(SysDeptDto sysDeptDto) {
+    public boolean updateOne(SysDeptDTO sysDeptDto) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDto, SysDept.class);
 
         // 如果更新为启用状态，则上级上级所有部门都启用

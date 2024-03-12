@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.model.vo.extra;
 
 import cn.youngkbt.uac.sys.model.po.SysDept;
-import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
+import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +17,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AutoMapper(target = SysDept.class, convertGenerate = false)
-public class DeptTree extends SysDeptVo {
-    private List<SysDeptVo> children = new ArrayList<>();
+public class DeptTree extends SysDeptVO {
+    private List<SysDeptVO> children = new ArrayList<>();
 }

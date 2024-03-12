@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserPostLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.UserPostLinkDto;
+import cn.youngkbt.uac.sys.model.dto.UserPostLinkDTO;
 import cn.youngkbt.uac.sys.model.po.UserPostLink;
-import cn.youngkbt.uac.sys.model.vo.UserPostLinkVo;
+import cn.youngkbt.uac.sys.model.vo.UserPostLinkVO;
 import cn.youngkbt.uac.sys.service.UserPostLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, UserPostLink> implements UserPostLinkService {
 
     @Override
-    public List<UserPostLinkVo> queryLinkByTenantId(UserPostLinkDto userPostLinkDto, PageQuery pageQuery) {
+    public List<UserPostLinkVO> queryLinkByTenantId(UserPostLinkDTO userPostLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<UserPostLink> wrapper = Wrappers.<UserPostLink>lambdaQuery()
                 .eq(UserPostLink::getTenantId, userPostLinkDto.getTenantId())
                 .eq(StringUtil.hasText(userPostLinkDto.getUserId()), UserPostLink::getUserId, userPostLinkDto.getUserId())
@@ -38,7 +38,7 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
         } else {
             userPostLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(userPostLinkList, UserPostLinkVo.class);
+        return MapstructUtil.convert(userPostLinkList, UserPostLinkVO.class);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
     }
 
     @Override
-    public boolean addOneLink(UserPostLinkDto userPostLinkDto) {
+    public boolean addOneLink(UserPostLinkDTO userPostLinkDto) {
         UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDto, UserPostLink.class);
         return baseMapper.insert(userPostLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(UserPostLinkDto userPostLinkDto) {
+    public boolean updateOneLink(UserPostLinkDTO userPostLinkDto) {
         UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDto, UserPostLink.class);
         return baseMapper.updateById(userPostLink) > 0;
     }

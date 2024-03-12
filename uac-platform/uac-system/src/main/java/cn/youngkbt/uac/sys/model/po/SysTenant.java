@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.SysTenantVo;
+import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.util.Date;
 @TableName("t_sys_tenant")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysTenantVo.class)
+@AutoMapper(target = SysTenantVO.class)
 public class SysTenant extends BaseDO {
 
     /**

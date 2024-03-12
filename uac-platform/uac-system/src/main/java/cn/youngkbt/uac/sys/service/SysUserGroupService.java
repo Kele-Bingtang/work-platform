@@ -1,7 +1,13 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
+import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
+import cn.youngkbt.uac.sys.model.vo.extra.UserGroupBindUserVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysUserGroupService extends IService<SysUserGroup> {
 
+    List<SysUserGroupVO> list(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery);
+
+    List<SysUserGroupVO> listUserGroupByUserId(String appId, String userId, PageQuery pageQuery);
+
+    List<UserGroupBindUserVO> listUserGroupWithDisabledByUserId(String appId, String userId);
 }

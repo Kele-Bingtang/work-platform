@@ -2,7 +2,7 @@ package cn.youngkbt.uac.sys.mapper;
 
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.po.SysUser;
-import cn.youngkbt.uac.sys.model.vo.SysUserVo;
+import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
@@ -22,7 +22,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 
     SecurityUser selectUserByUsername(@Param("username") String username);
     
-    List<SysUserVo> selectListWithPage(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+    List<SysUserVO> selectListWithPage(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 }
 
 

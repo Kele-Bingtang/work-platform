@@ -1,9 +1,9 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.RoleDeptLinkDto;
+import cn.youngkbt.uac.sys.model.dto.RoleDeptLinkDTO;
 import cn.youngkbt.uac.sys.model.po.RoleDeptLink;
-import cn.youngkbt.uac.sys.model.vo.RoleDeptLinkVo;
+import cn.youngkbt.uac.sys.model.vo.RoleDeptLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -14,15 +14,15 @@ import java.util.List;
  * @note 针对表【t_role_dept_link(角色关联部门表)】的数据库操作Service
  */
 public interface RoleDeptLinkService extends IService<RoleDeptLink> {
-    List<RoleDeptLinkVo> queryLinkByAppId(RoleDeptLinkDto roleDeptLinkDto, PageQuery pageQuery);
+    List<RoleDeptLinkVO> queryLinkByAppId(RoleDeptLinkDTO roleDeptLinkDto, PageQuery pageQuery);
 
     boolean checkDeptExistRole(String deptId);
 
     boolean checkRoleExistDept(String roleId);
 
-    boolean addOneLink(RoleDeptLinkDto roleDeptLinkDto);
+    boolean addOneLink(RoleDeptLinkDTO roleDeptLinkDto);
 
-    boolean updateOneLink(RoleDeptLinkDto roleDeptLinkDto);
+    boolean updateOneLink(RoleDeptLinkDTO roleDeptLinkDto);
 
     boolean removeOneLink(Long id);
 }

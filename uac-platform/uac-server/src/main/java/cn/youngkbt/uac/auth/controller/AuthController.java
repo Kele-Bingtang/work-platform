@@ -14,10 +14,10 @@ import cn.youngkbt.uac.auth.model.vo.LoginVo;
 import cn.youngkbt.uac.auth.model.vo.TenantSelectVo;
 import cn.youngkbt.uac.auth.model.vo.UserInfoVo;
 import cn.youngkbt.uac.auth.service.LoginService;
-import cn.youngkbt.uac.sys.model.dto.SysTenantDto;
+import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import cn.youngkbt.uac.sys.model.po.SysClient;
-import cn.youngkbt.uac.sys.model.vo.SysTenantVo;
+import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import cn.youngkbt.uac.sys.service.SysTenantService;
@@ -91,8 +91,8 @@ public class AuthController {
      */
     @GetMapping("/tenant/list")
     public Response<LoginTenantSelectVo> tenantSelectOption(HttpServletRequest request) {
-        List<SysTenantVo> sysTenantVoList = sysTenantService.queryListWithPage(new SysTenantDto(), null);
-        List<TenantSelectVo> tenantSelectVoList = MapstructUtil.convert(sysTenantVoList, TenantSelectVo.class);
+        List<SysTenantVO> sysTenantVOList = sysTenantService.queryListWithPage(new SysTenantDTO(), null);
+        List<TenantSelectVo> tenantSelectVoList = MapstructUtil.convert(sysTenantVOList, TenantSelectVo.class);
 
         // 获取域名
         String serverName = request.getServerName();

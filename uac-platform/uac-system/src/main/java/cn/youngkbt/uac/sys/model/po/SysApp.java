@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.SysAppVo;
+import cn.youngkbt.uac.sys.model.vo.SysAppVO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_app")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysAppVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = SysAppVO.class, reverseConvertGenerate = false)
 public class SysApp extends BaseDO {
     /**
      * 应用 ID

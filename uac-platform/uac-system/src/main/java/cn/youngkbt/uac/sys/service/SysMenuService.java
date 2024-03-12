@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysMenuDto;
+import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
-import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
+import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,23 +17,23 @@ import java.util.List;
  */
 public interface SysMenuService extends IService<SysMenu> {
 
-    SysMenuVo listById(Long id);
+    SysMenuVO listById(Long id);
 
-    List<SysMenuVo> queryListWithPage(SysMenuDto sysMenuDto, PageQuery pageQuery);
+    List<SysMenuVO> queryListWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery);
     
-    List<Tree<String>> listMenuTreeSelect(SysMenuDto sysMenuDto);
+    List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDto);
 
-    List<MenuTree> listMenuTreeTable(SysMenuDto sysMenuDto);
+    List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDto);
 
-    boolean checkMenuNameUnique(SysMenuDto sysMenuDto);
+    boolean checkMenuNameUnique(SysMenuDTO sysMenuDto);
 
     boolean hasChild(String menuId);
 
     boolean checkMenuExistRole(String menuId);
 
-    boolean insertOne(SysMenuDto sysMenuDto);
+    boolean insertOne(SysMenuDTO sysMenuDto);
 
-    boolean updateOne(SysMenuDto sysMenuDto);
+    boolean updateOne(SysMenuDTO sysMenuDto);
 
     boolean removeOne(Long id);
 

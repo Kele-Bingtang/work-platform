@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.SysUserVo;
+import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -21,7 +21,7 @@ import java.util.Date;
 @TableName("t_sys_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysUserVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = SysUserVO.class, reverseConvertGenerate = false)
 public class SysUser extends BaseDO {
     /**
      * 用户 ID

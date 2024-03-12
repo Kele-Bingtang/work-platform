@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.SysDictTypeVo;
+import cn.youngkbt.uac.sys.model.vo.SysDictTypeVO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_dict_type")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysDictTypeVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = SysDictTypeVO.class, reverseConvertGenerate = false)
 public class SysDictType extends BaseDO {
     /**
      * 字典 ID

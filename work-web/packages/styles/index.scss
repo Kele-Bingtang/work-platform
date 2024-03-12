@@ -72,6 +72,12 @@ div:focus {
   align-items: center;
 }
 
+.flx-justify-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 /* clearfix */
 .clearfix-after {
   display: block;

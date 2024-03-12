@@ -5,9 +5,9 @@ import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysTenantMapper;
-import cn.youngkbt.uac.sys.model.dto.SysTenantDto;
+import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.po.SysTenant;
-import cn.youngkbt.uac.sys.model.vo.SysTenantVo;
+import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysTenantService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -37,14 +37,14 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public SysTenantVo listById(Long id) {
+    public SysTenantVO listById(Long id) {
         SysTenant sysTenant = baseMapper.selectById(id);
         Assert.nonNull(sysTenant, "租户不存在");
-        return MapstructUtil.convert(sysTenant, SysTenantVo.class);
+        return MapstructUtil.convert(sysTenant, SysTenantVO.class);
     }
 
     @Override
-    public List<SysTenantVo> queryListWithPage(SysTenantDto sysTenantDto, PageQuery pageQuery) {
+    public List<SysTenantVO> queryListWithPage(SysTenantDTO sysTenantDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysTenant> wrapper = Wrappers.<SysTenant>lambdaQuery()
                 .eq(StringUtils.hasText(sysTenantDto.getTenantId()), SysTenant::getTenantId, sysTenantDto.getTenantId())
                 .eq(Objects.nonNull(sysTenantDto.getUserCount()), SysTenant::getUserCount, sysTenantDto.getUserCount())
@@ -57,11 +57,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         } else {
             sysTenantList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(sysTenantList, SysTenantVo.class);
+        return MapstructUtil.convert(sysTenantList, SysTenantVO.class);
     }
 
     @Override
-    public boolean checkCompanyNameUnique(SysTenantDto sysTenantDto) {
+    public boolean checkCompanyNameUnique(SysTenantDTO sysTenantDto) {
         return baseMapper.exists(new LambdaQueryWrapper<SysTenant>()
                 .eq(SysTenant::getTenantName, sysTenantDto.getTenantName())
                 .ne(Objects.nonNull(sysTenantDto.getTenantId()), SysTenant::getTenantId, sysTenantDto.getTenantId()));
@@ -69,7 +69,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertOne(SysTenantDto sysTenantDto) {
+    public boolean insertOne(SysTenantDTO sysTenantDto) {
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDto, SysTenant.class);
         // 获取数据库所有的租户 ID，然后根据最后一个生成新的 ID
         List<SysTenant> sysTenantList = baseMapper.selectList(Wrappers.<SysTenant>lambdaQuery().select(SysTenant::getTenantId));
@@ -114,7 +114,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public boolean updateOne(SysTenantDto sysTenantDto) {
+    public boolean updateOne(SysTenantDTO sysTenantDto) {
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDto, SysTenant.class);
         return baseMapper.updateById(sysTenant) > 0;
     }

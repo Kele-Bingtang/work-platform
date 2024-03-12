@@ -34,7 +34,7 @@ export const getRolePostList = () => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/rolePostList`);
 };
 
-export const list = (params: http.Page<{ deptId: number }>) => {
+export const list = (params: Partial<User.UserInfo>) => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
 };
 

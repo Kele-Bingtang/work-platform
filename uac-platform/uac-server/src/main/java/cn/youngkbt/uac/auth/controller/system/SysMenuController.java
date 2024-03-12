@@ -5,8 +5,8 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysMenuDto;
-import cn.youngkbt.uac.sys.model.vo.SysMenuVo;
+import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
+import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import jakarta.validation.constraints.NotNull;
@@ -28,8 +28,8 @@ public class SysMenuController {
     private final SysMenuService sysMenuService;
 
     @GetMapping("/{id}")
-    public Response<SysMenuVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysMenuVo sysMenuVo = sysMenuService.listById(id);
+    public Response<SysMenuVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysMenuVO sysMenuVo = sysMenuService.listById(id);
         return HttpResult.ok(sysMenuVo);
     }
 
@@ -37,22 +37,22 @@ public class SysMenuController {
      * 菜单列表查询
      */
     @GetMapping("/list")
-    public Response<List<SysMenuVo>> list(SysMenuDto sysMenuDto, PageQuery pageQuery) {
-        List<SysMenuVo> sysMenuVoList = sysMenuService.queryListWithPage(sysMenuDto, pageQuery);
-        return HttpResult.ok(sysMenuVoList);
+    public Response<List<SysMenuVO>> list(SysMenuDTO sysMenuDto, PageQuery pageQuery) {
+        List<SysMenuVO> sysMenuVOList = sysMenuService.queryListWithPage(sysMenuDto, pageQuery);
+        return HttpResult.ok(sysMenuVOList);
     }
 
     /**
      * 菜单下拉值查询
      */
     @GetMapping("/treeSelect")
-    public Response<List<Tree<String>>> listMenuTreeSelect(SysMenuDto sysMenuDto) {
+    public Response<List<Tree<String>>> listMenuTreeSelect(SysMenuDTO sysMenuDto) {
         List<Tree<String>> menuTreeList = sysMenuService.listMenuTreeSelect(sysMenuDto);
         return HttpResult.ok(menuTreeList);
     }
 
     @GetMapping("/treeTable")
-    public Response<List<MenuTree>> listMenuTreeTable(SysMenuDto sysMenuDto) {
+    public Response<List<MenuTree>> listMenuTreeTable(SysMenuDTO sysMenuDto) {
         List<MenuTree> treeTable = sysMenuService.listMenuTreeTable(sysMenuDto);
         return HttpResult.ok(treeTable);
     }
@@ -61,7 +61,7 @@ public class SysMenuController {
      * 菜单新增
      */
     @PostMapping
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDto sysMenuDto) {
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDTO sysMenuDto) {
         if (!sysMenuService.checkMenuNameUnique(sysMenuDto)) {
             return HttpResult.failMessage("新增菜单「" + sysMenuDto.getMenuName() + "」失败，菜单名称已存在");
         }
@@ -73,7 +73,7 @@ public class SysMenuController {
      * 菜单修改
      */
     @PutMapping
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysMenuDto sysMenuDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysMenuDTO sysMenuDto) {
 
         if (sysMenuDto.getParentId().equals(sysMenuDto.getMenuId())) {
             return HttpResult.failMessage("修改菜单「" + sysMenuDto.getMenuName() + "」失败，上级菜单不能是自己");

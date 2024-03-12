@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.security.domain.SecurityUser;
-import cn.youngkbt.uac.sys.model.dto.SysUserDto;
+import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysUser;
-import cn.youngkbt.uac.sys.model.vo.SysUserVo;
+import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -21,21 +21,21 @@ public interface SysUserService extends IService<SysUser> {
 
     SecurityUser selectUserByUsername(String username);
 
-    SysUserVo listById(Long id);
+    SysUserVO listById(Long id);
 
-    List<SysUserVo> queryListWithPage(SysUserDto sysUserDto, PageQuery pageQuery);
+    List<SysUserVO> queryListWithPage(SysUserDTO sysUserDto, PageQuery pageQuery);
 
-    boolean checkUserNameUnique(SysUserDto sysUserDto);
+    boolean checkUserNameUnique(SysUserDTO sysUserDto);
 
-    boolean checkPhoneUnique(SysUserDto sysUserDto);
+    boolean checkPhoneUnique(SysUserDTO sysUserDto);
 
-    boolean checkEmailUnique(SysUserDto sysUserDto);
+    boolean checkEmailUnique(SysUserDTO sysUserDto);
 
-    boolean insertOne(SysUserDto sysUserDto);
+    boolean insertOne(SysUserDTO sysUserDto);
 
-    boolean updateOne(SysUserDto sysUserDto);
+    boolean updateOne(SysUserDTO sysUserDto);
 
-    boolean updateOneByUserId(SysUserDto sysUserDto);
+    boolean updateOneByUserId(SysUserDTO sysUserDto);
 
     boolean removeBatch(List<Long> ids);
 

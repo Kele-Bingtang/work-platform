@@ -35,10 +35,9 @@
 </template>
 
 <script setup lang="ts" name="TreeFilter">
-import { ref, watch, onBeforeMount, type Component } from "vue";
+import { ref, watch, onBeforeMount } from "vue";
 import { ElTree } from "element-plus";
 import TreeFilter from "./index.vue";
-import { User } from "@element-plus/icons-vue";
 export type TreeFilterInstance = Omit<
   InstanceType<typeof TreeFilter>,
   keyof ComponentPublicInstance | keyof TreeFilterProps
@@ -53,7 +52,8 @@ interface TreeFilterProps {
   label?: string; // 显示的label ==> 非必传，默认为 “label”
   multiple?: boolean; // 是否为多选 ==> 非必传，默认为 false
   defaultValue?: any; // 默认选中的值 ==> 非必传
-  enableTotal?: boolean; // 是否显示全部选项
+  enableTotal?: boolean; // 是否显示【全部】选项
+  defaultFirst?: boolean; // 是否默认选中第一个选项
 }
 const props = withDefaults(defineProps<TreeFilterProps>(), {
   id: "id",
@@ -85,9 +85,19 @@ onBeforeMount(async () => {
     treeAllData.value = props.data;
     return;
   }
+
   const { data } = await props.requestApi!();
+
   treeData.value = data;
   treeAllData.value = props.enableTotal ? [{ [props.id]: "", [props.label]: "全部" }, ...data] : data;
+
+  if (props.defaultFirst && treeAllData.value?.length) {
+    nextTick(() => {
+      const firstData = treeAllData.value[0];
+      treeRef.value?.setCurrentKey(firstData[props.id]);
+      emit("change", firstData[props.id], firstData);
+    });
+  }
 });
 
 watch(filterText, val => {
@@ -110,14 +120,14 @@ const filterNode = (value: string, data: { [key: string]: any }, node: any) => {
 };
 
 interface FilterEmits {
-  (e: "change", value: any): void;
+  (e: "change", value: any, data?: any): void;
 }
 const emit = defineEmits<FilterEmits>();
 
 // 单选
 const handleNodeClick = (data: { [key: string]: any }) => {
   if (props.multiple) return;
-  emit("change", data[props.id]);
+  emit("change", data[props.id], data);
 };
 
 // 多选

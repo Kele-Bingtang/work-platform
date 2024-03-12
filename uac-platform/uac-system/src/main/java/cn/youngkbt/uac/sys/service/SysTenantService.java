@@ -1,9 +1,9 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysTenantDto;
+import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.po.SysTenant;
-import cn.youngkbt.uac.sys.model.vo.SysTenantVo;
+import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -17,15 +17,15 @@ public interface SysTenantService extends IService<SysTenant> {
 
     SysTenant queryByTenantId(String tenantId);
 
-    SysTenantVo listById(Long id);
+    SysTenantVO listById(Long id);
 
-    List<SysTenantVo> queryListWithPage(SysTenantDto sysTenantDto, PageQuery pageQuery);
+    List<SysTenantVO> queryListWithPage(SysTenantDTO sysTenantDto, PageQuery pageQuery);
 
-    boolean insertOne(SysTenantDto sysTenantDto);
+    boolean insertOne(SysTenantDTO sysTenantDto);
 
-    boolean updateOne(SysTenantDto sysTenantDto);
+    boolean updateOne(SysTenantDTO sysTenantDto);
 
     boolean removeBatch(List<Long> ids);
 
-    boolean checkCompanyNameUnique(SysTenantDto sysTenantDto);
+    boolean checkCompanyNameUnique(SysTenantDTO sysTenantDto);
 }

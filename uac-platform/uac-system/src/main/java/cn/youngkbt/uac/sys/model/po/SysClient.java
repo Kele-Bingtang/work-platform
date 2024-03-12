@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.SysClientVo;
+import cn.youngkbt.uac.sys.model.vo.SysClientVO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value ="t_sys_client")
 @Data
-@AutoMapper(target = SysClientVo.class)
+@AutoMapper(target = SysClientVO.class)
 public class SysClient extends BaseDO {
     /**
      * 客户端 ID

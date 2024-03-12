@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserRoleLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDto;
+import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
-import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVo;
+import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVO;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, UserRoleLink> implements UserRoleLinkService {
 
     @Override
-    public List<UserRoleLinkVo> queryLinkByAppId(UserRoleLinkDto userRoleLinkDto, PageQuery pageQuery) {
+    public List<UserRoleLinkVO> queryLinkByAppId(UserRoleLinkDTO userRoleLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<UserRoleLink> wrapper = Wrappers.<UserRoleLink>lambdaQuery()
                 .eq(UserRoleLink::getAppId, userRoleLinkDto.getAppId())
                 .eq(StringUtil.hasText(userRoleLinkDto.getUserId()), UserRoleLink::getUserId, userRoleLinkDto.getUserId())
@@ -38,7 +38,7 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
         } else {
             userRoleLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(userRoleLinkList, UserRoleLinkVo.class);
+        return MapstructUtil.convert(userRoleLinkList, UserRoleLinkVO.class);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     }
 
     @Override
-    public boolean addOneLink(UserRoleLinkDto userRoleLinkDto) {
+    public boolean addOneLink(UserRoleLinkDTO userRoleLinkDto) {
         UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDto, UserRoleLink.class);
         return baseMapper.insert(userRoleLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(UserRoleLinkDto userRoleLinkDto) {
+    public boolean updateOneLink(UserRoleLinkDTO userRoleLinkDto) {
         UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDto, UserRoleLink.class);
         return baseMapper.updateById(userRoleLink) > 0;
     }

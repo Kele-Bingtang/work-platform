@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserGroupLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDto;
+import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.UserGroupLinkVo;
+import cn.youngkbt.uac.sys.model.vo.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, UserGroupLink> implements UserGroupLinkService {
 
     @Override
-    public List<UserGroupLinkVo> queryLinkByTenantId(UserGroupLinkDto userGroupLinkDto, PageQuery pageQuery) {
+    public List<UserGroupLinkVO> queryLinkByTenantId(UserGroupLinkDTO userGroupLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<UserGroupLink> wrapper = Wrappers.<UserGroupLink>lambdaQuery()
                 .eq(UserGroupLink::getTenantId, userGroupLinkDto.getTenantId())
                 .eq(StringUtil.hasText(userGroupLinkDto.getUserId()), UserGroupLink::getUserId, userGroupLinkDto.getUserId())
@@ -38,7 +38,7 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
         } else {
             userGroupLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(userGroupLinkList, UserGroupLinkVo.class);
+        return MapstructUtil.convert(userGroupLinkList, UserGroupLinkVO.class);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
-    public boolean addOneLink(UserGroupLinkDto userGroupLinkDto) {
+    public boolean addOneLink(UserGroupLinkDTO userGroupLinkDto) {
         UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDto, UserGroupLink.class);
         return baseMapper.insert(userGroupLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(UserGroupLinkDto userGroupLinkDto) {
+    public boolean updateOneLink(UserGroupLinkDTO userGroupLinkDto) {
         UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDto, UserGroupLink.class);
         return baseMapper.updateById(userGroupLink) > 0;
     }

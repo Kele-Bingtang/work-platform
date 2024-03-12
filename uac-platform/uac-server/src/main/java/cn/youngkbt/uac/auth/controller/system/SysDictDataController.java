@@ -4,8 +4,8 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysDictDataDto;
-import cn.youngkbt.uac.sys.model.vo.SysDictDataVo;
+import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
+import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -27,8 +27,8 @@ public class SysDictDataController {
     private final SysDictDataService sysDictDataService;
 
     @GetMapping("/{id}")
-    public Response<SysDictDataVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysDictDataVo sysDictDataVo = sysDictDataService.listById(id);
+    public Response<SysDictDataVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysDictDataVO sysDictDataVo = sysDictDataService.listById(id);
         return HttpResult.ok(sysDictDataVo);
     }
 
@@ -36,16 +36,16 @@ public class SysDictDataController {
      * 客户端列表查询
      */
     @GetMapping("/list")
-    public Response<List<SysDictDataVo>> list(SysDictDataDto sysDictDataDto, PageQuery pageQuery) {
-        List<SysDictDataVo> sysDictDataVoList = sysDictDataService.queryListWithPage(sysDictDataDto, pageQuery);
-        return HttpResult.ok(sysDictDataVoList);
+    public Response<List<SysDictDataVO>> list(SysDictDataDTO sysDictDataDto, PageQuery pageQuery) {
+        List<SysDictDataVO> sysDictDataVOList = sysDictDataService.queryListWithPage(sysDictDataDto, pageQuery);
+        return HttpResult.ok(sysDictDataVOList);
     }
 
     /**
      * 客户端新增
      */
     @PostMapping
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictDataDto sysDictDataDto) {
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictDataDTO sysDictDataDto) {
         return HttpResult.ok(sysDictDataService.insertOne(sysDictDataDto));
     }
 
@@ -53,7 +53,7 @@ public class SysDictDataController {
      * 客户端修改
      */
     @PutMapping
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictDataDto sysDictDataDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictDataDTO sysDictDataDto) {
         return HttpResult.ok(sysDictDataService.updateOne(sysDictDataDto));
     }
 

@@ -31,13 +31,13 @@
         <result property="deptId" column="dept_id" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <resultMap id="BaseResultMapVo" type="cn.youngkbt.uac.sys.model.vo.SysUserVo">
+    <resultMap id="BaseResultMapVo" type="cn.youngkbt.uac.sys.model.vo.SysUserVO">
         <id property="id" column="id"/>
         <result property="deptId" column="dept_id"/>
         <association property="dept" resultMap="deptResult" />
     </resultMap>
 
-    <resultMap id="deptResult" type="cn.youngkbt.uac.sys.model.vo.SysDeptVo">
+    <resultMap id="deptResult" type="cn.youngkbt.uac.sys.model.vo.SysDeptVO">
         <id property="deptId" column="dept_id"/>
         <result property="email" column="dept_email"/>
         <result property="status" column="dept_status"/>

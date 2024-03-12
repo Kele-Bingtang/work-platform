@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysDeptDto;
+import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.po.SysDept;
-import cn.youngkbt.uac.sys.model.vo.SysDeptVo;
+import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
 import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,15 +17,15 @@ import java.util.List;
  */
 public interface SysDeptService extends IService<SysDept> {
 
-    SysDeptVo listById(Long id);
+    SysDeptVO listById(Long id);
 
-    List<SysDeptVo> queryListWithPage(SysDeptDto sysDeptDto, PageQuery pageQuery);
+    List<SysDeptVO> queryListWithPage(SysDeptDTO sysDeptDto, PageQuery pageQuery);
 
-    List<Tree<String>> listDeptTreeList(SysDeptDto sysDeptDto);
+    List<Tree<String>> listDeptTreeList(SysDeptDTO sysDeptDto);
 
-    List<DeptTree> listDeptTreeTable(SysDeptDto sysDeptDto);
+    List<DeptTree> listDeptTreeTable(SysDeptDTO sysDeptDto);
     
-    SysDeptVo listParentDeptByDeptId(String deptId);
+    SysDeptVO listParentDeptByDeptId(String deptId);
     
     List<String> listDeptNamesByIds(List<String> ids);
     
@@ -35,13 +35,13 @@ public interface SysDeptService extends IService<SysDept> {
     
     boolean checkDeptExistUser(String deptId);
 
-    boolean checkDeptNameUnique(SysDeptDto sysDeptDto);
+    boolean checkDeptNameUnique(SysDeptDTO sysDeptDto);
     
     Integer getDeptUserCount(String deptId);
     
-    boolean insertOne(SysDeptDto sysDeptDto);
+    boolean insertOne(SysDeptDTO sysDeptDto);
 
-    boolean updateOne(SysDeptDto sysDeptDto);
+    boolean updateOne(SysDeptDTO sysDeptDto);
 
     boolean removeOne(Long id);
 

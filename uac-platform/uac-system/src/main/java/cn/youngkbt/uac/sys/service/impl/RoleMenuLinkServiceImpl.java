@@ -2,7 +2,7 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.RoleMenuLinkDto;
+import cn.youngkbt.uac.sys.model.dto.RoleMenuLinkDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.vo.RoleMenuLinkVO;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, RoleMenuLink> implements RoleMenuLinkService {
 
     @Override
-    public List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDto roleMenuLinkDto, PageQuery pageQuery) {
+    public List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDTO roleMenuLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<RoleMenuLink> wrapper = Wrappers.<RoleMenuLink>lambdaQuery()
                 .eq(RoleMenuLink::getAppId, roleMenuLinkDto.getAppId())
                 .eq(StringUtil.hasText(roleMenuLinkDto.getRoleId()), RoleMenuLink::getRoleId, roleMenuLinkDto.getRoleId())
@@ -54,13 +54,13 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
     }
 
     @Override
-    public boolean addOneLink(RoleMenuLinkDto roleMenuLinkDto) {
+    public boolean addOneLink(RoleMenuLinkDTO roleMenuLinkDto) {
         RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDto, RoleMenuLink.class);
         return baseMapper.insert(menuLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(RoleMenuLinkDto roleMenuLinkDto) {
+    public boolean updateOneLink(RoleMenuLinkDTO roleMenuLinkDto) {
         RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDto, RoleMenuLink.class);
         return baseMapper.updateById(menuLink) > 0;
     }

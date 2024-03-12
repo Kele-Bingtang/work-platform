@@ -3,7 +3,9 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
 import com.baomidou.mybatisplus.annotation.*;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_user_group")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = SysUserGroupVO.class, reverseConvertGenerate = false)
 public class SysUserGroup extends BaseDO {
     /**
      * 用户组 ID
@@ -37,5 +40,10 @@ public class SysUserGroup extends BaseDO {
      * 租户编号
      */
     private String tenantId;
+
+    /**
+     * 应用 ID
+     */
+    private String appId;
 
 }

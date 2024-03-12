@@ -2,9 +2,9 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.RoleDeptLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.RoleDeptLinkDto;
+import cn.youngkbt.uac.sys.model.dto.RoleDeptLinkDTO;
 import cn.youngkbt.uac.sys.model.po.RoleDeptLink;
-import cn.youngkbt.uac.sys.model.vo.RoleDeptLinkVo;
+import cn.youngkbt.uac.sys.model.vo.RoleDeptLinkVO;
 import cn.youngkbt.uac.sys.service.RoleDeptLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, RoleDeptLink> implements RoleDeptLinkService {
 
     @Override
-    public List<RoleDeptLinkVo> queryLinkByAppId(RoleDeptLinkDto roleDeptLinkDto, PageQuery pageQuery) {
+    public List<RoleDeptLinkVO> queryLinkByAppId(RoleDeptLinkDTO roleDeptLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<RoleDeptLink> wrapper = Wrappers.<RoleDeptLink>lambdaQuery()
                 .eq(RoleDeptLink::getAppId, roleDeptLinkDto.getAppId())
                 .eq(StringUtil.hasText(roleDeptLinkDto.getRoleId()), RoleDeptLink::getRoleId, roleDeptLinkDto.getRoleId())
@@ -38,7 +38,7 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
         } else {
             roleDeptLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
-        return MapstructUtil.convert(roleDeptLinkList, RoleDeptLinkVo.class);
+        return MapstructUtil.convert(roleDeptLinkList, RoleDeptLinkVO.class);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
-    public boolean addOneLink(RoleDeptLinkDto roleDeptLinkDto) {
+    public boolean addOneLink(RoleDeptLinkDTO roleDeptLinkDto) {
         RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDto, RoleDeptLink.class);
         return baseMapper.insert(roleDeptLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(RoleDeptLinkDto roleDeptLinkDto) {
+    public boolean updateOneLink(RoleDeptLinkDTO roleDeptLinkDto) {
         RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDto, RoleDeptLink.class);
         return baseMapper.updateById(roleDeptLink) > 0;
     }

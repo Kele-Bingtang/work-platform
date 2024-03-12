@@ -4,9 +4,9 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysAppDto;
-import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVo;
-import cn.youngkbt.uac.sys.model.vo.SysAppVo;
+import cn.youngkbt.uac.sys.model.dto.SysAppDTO;
+import cn.youngkbt.uac.sys.model.vo.SysAppVO;
+import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import jakarta.validation.constraints.NotEmpty;
@@ -32,8 +32,8 @@ public class SysAppController {
     private final SysClientService sysClientService;
 
     @GetMapping("/{id}")
-    public Response<SysAppVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysAppVo sysClientVo = sysAppService.listById(id);
+    public Response<SysAppVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysAppVO sysClientVo = sysAppService.listById(id);
         return HttpResult.ok(sysClientVo);
     }
 
@@ -41,32 +41,32 @@ public class SysAppController {
      * 应用列表查询
      */
     @GetMapping("/list")
-    public Response<List<SysAppVo>> list(SysAppDto sysAppDto, PageQuery pageQuery) {
-        List<SysAppVo> sysAppVoList = sysAppService.queryListWithPage(sysAppDto, pageQuery);
-        return HttpResult.ok(sysAppVoList);
+    public Response<List<SysAppVO>> list(SysAppDTO sysAppDto, PageQuery pageQuery) {
+        List<SysAppVO> sysAppVOList = sysAppService.queryListWithPage(sysAppDto, pageQuery);
+        return HttpResult.ok(sysAppVOList);
     }
 
     @GetMapping("/list/{clientId}")
-    public Response<List<SysAppVo>> listFromClient(@NotNull(message = "客户端 ID 不能为空") @PathVariable String clientId, PageQuery pageQuery) {
+    public Response<List<SysAppVO>> listFromClient(@NotNull(message = "客户端 ID 不能为空") @PathVariable String clientId, PageQuery pageQuery) {
         if (Objects.isNull(sysClientService.checkClientIdThenGet(clientId))) {
             return HttpResult.errorMessage("客户端 ID 不存在");
         }
-        SysAppDto sysAppDto = SysAppDto.builder().clientId(clientId).build();
-        List<SysAppVo> sysAppVoList = sysAppService.queryListWithPage(sysAppDto, pageQuery);
-        return HttpResult.ok(sysAppVoList);
+        SysAppDTO sysAppDto = SysAppDTO.builder().clientId(clientId).build();
+        List<SysAppVO> sysAppVOList = sysAppService.queryListWithPage(sysAppDto, pageQuery);
+        return HttpResult.ok(sysAppVOList);
     }
     
     @GetMapping("/treeList")
-    public Response<List<AppTreeVo>> listTreeList() {
-        List<AppTreeVo> appTreeVoList = sysAppService.listTreeList();
-        return HttpResult.ok(appTreeVoList);
+    public Response<List<AppTreeVO>> listTreeList() {
+        List<AppTreeVO> appTreeVOList = sysAppService.listTreeList();
+        return HttpResult.ok(appTreeVOList);
     }
 
     /**
      * 应用新增
      */
     @PostMapping
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysAppDto sysAppDto) {
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysAppDTO sysAppDto) {
         return HttpResult.ok(sysAppService.insertOne(sysAppDto));
     }
 
@@ -74,7 +74,7 @@ public class SysAppController {
      * 应用修改
      */
     @PutMapping
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysAppDto sysAppDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysAppDTO sysAppDto) {
         return HttpResult.ok(sysAppService.updateOne(sysAppDto));
     }
 

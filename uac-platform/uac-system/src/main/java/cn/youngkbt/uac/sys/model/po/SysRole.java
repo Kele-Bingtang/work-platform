@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
-import cn.youngkbt.uac.sys.model.vo.SysRoleVo;
+import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @TableName("t_sys_role")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysRoleVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = SysRoleVO.class, reverseConvertGenerate = false)
 public class SysRole extends BaseDO {
     /**
      * 角色 ID

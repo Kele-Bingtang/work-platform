@@ -4,9 +4,9 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.SysClientDto;
-import cn.youngkbt.uac.sys.model.vo.SysClientVo;
-import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVo;
+import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
+import cn.youngkbt.uac.sys.model.vo.SysClientVO;
+import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -33,8 +33,8 @@ public class SysClientController {
      * 查询某个客户端
      */
     @GetMapping("/{id}")
-    public Response<SysClientVo> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysClientVo sysClientVo = clientService.listById(id);
+    public Response<SysClientVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
+        SysClientVO sysClientVo = clientService.listById(id);
         return HttpResult.ok(sysClientVo);
     }
 
@@ -42,14 +42,14 @@ public class SysClientController {
      * 客户端列表查询
      */
     @GetMapping("/list")
-    public Response<List<SysClientVo>> list(SysClientDto sysClientDto, PageQuery pageQuery) {
-        List<SysClientVo> sysClientVoList = clientService.queryListWithPage(sysClientDto, pageQuery);
-        return HttpResult.ok(sysClientVoList);
+    public Response<List<SysClientVO>> list(SysClientDTO sysClientDto, PageQuery pageQuery) {
+        List<SysClientVO> sysClientVOList = clientService.queryListWithPage(sysClientDto, pageQuery);
+        return HttpResult.ok(sysClientVOList);
     }
 
     @GetMapping("/treeList")
-    public Response<List<ClientTreeVo>> listTreeList() {
-        List<ClientTreeVo> sysClientVoList = clientService.listTreeList();
+    public Response<List<ClientTreeVO>> listTreeList() {
+        List<ClientTreeVO> sysClientVoList = clientService.listTreeList();
         return HttpResult.ok(sysClientVoList);
     }
     
@@ -57,7 +57,7 @@ public class SysClientController {
      * 客户端新增
      */
     @PostMapping
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDto sysClientDto) {
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDto) {
         return HttpResult.ok(clientService.insertOne(sysClientDto));
     }
 
@@ -65,7 +65,7 @@ public class SysClientController {
      * 客户端修改
      */
     @PutMapping
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDto sysClientDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDto) {
         return HttpResult.ok(clientService.updateOne(sysClientDto));
     }
 
@@ -73,7 +73,7 @@ public class SysClientController {
      * 客户端状态修改
      */
     @PutMapping("/updateStatus")
-    public Response<Boolean> updateStatus(@RequestBody SysClientDto sysClientDto) {
+    public Response<Boolean> updateStatus(@RequestBody SysClientDTO sysClientDto) {
         return HttpResult.ok(clientService.updateStatus(sysClientDto.getId(), sysClientDto.getStatus()));
     }
 

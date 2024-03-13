@@ -1,8 +1,7 @@
 import type { VNode, ComponentPublicInstance } from "vue";
 import type { BreakPoint, Responsive, FormColumnProps } from "@work/components";
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
-import type { ProTableProps } from "../index.vue";
-import type ProTable from "@/components/ProTable/index.vue";
+import ProTable, { type ProTableProps } from "../index.vue";
 
 type ValueType = string | number | boolean | any[];
 

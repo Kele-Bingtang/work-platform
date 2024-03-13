@@ -1,6 +1,7 @@
 import type { FormProps } from "element-plus/es/components/form/src/form";
 import type { FormItemProps } from "element-plus/es/components/form/src/form-item";
 import type { VNode, ComputedRef } from "vue";
+import ProForm, { type ProFormProps } from "../index.vue";
 
 type ValueType = string | number | boolean | any[];
 
@@ -77,3 +78,5 @@ export interface FormColumnProps<T = any> {
     [key: string]: any;
   };
 }
+
+export type ProFormInstance = Omit<InstanceType<typeof ProForm>, keyof ComponentPublicInstance | keyof ProFormProps>;

@@ -44,7 +44,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public List<SysTenantVO> queryListWithPage(SysTenantDTO sysTenantDto, PageQuery pageQuery) {
+    public List<SysTenantVO> listWithPage(SysTenantDTO sysTenantDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysTenant> wrapper = Wrappers.<SysTenant>lambdaQuery()
                 .eq(StringUtils.hasText(sysTenantDto.getTenantId()), SysTenant::getTenantId, sysTenantDto.getTenantId())
                 .eq(Objects.nonNull(sysTenantDto.getUserCount()), SysTenant::getUserCount, sysTenantDto.getUserCount())

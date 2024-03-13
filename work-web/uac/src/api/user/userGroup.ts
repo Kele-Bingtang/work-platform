@@ -5,9 +5,26 @@ export namespace UserGroup {
     id: number; // 主键
     groupId: string; // 用户组 ID
     groupName: string; // 用户组名
+    ownerId: string; // 负责人 ID
+    ownerName: string; // 负责人 username
     intro: string; // 用户组描述
     appId: string; // 应用 ID
     createTime: string; // 创建时间
+  }
+  export interface UserLinkUserGroup {
+    userId: string; // 用户 ID
+    userGroupIds: string[]; // 用户组 ID
+    validFrom: string; // 负责人 ID
+    expireOn: string; // 负责人 username
+    appId: string; // 应用 ID
+  }
+
+  export interface UserGroupLinkUser {
+    userIds: string[]; // 用户组 ID
+    userGroupIds: string; // 用户组名
+    validFrom: string; // 负责人 ID
+    expireOn: string; // 负责人 username
+    appId: string; // 应用 ID
   }
 }
 
@@ -41,4 +58,8 @@ export const deleteOne = (data: UserGroup.UserGroupInfo) => {
 
 export const deleteBatch = (ids: string[]) => {
   return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
+};
+
+export const addUserToGroups = (data: UserGroup.UserLinkUserGroup) => {
+  return http.post<http.Response<string>>(`${baseUri}/addUserToGroups`, data);
 };

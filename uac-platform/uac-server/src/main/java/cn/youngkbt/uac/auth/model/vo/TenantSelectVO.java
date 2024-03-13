@@ -7,11 +7,11 @@ import lombok.Data;
 /**
  * @author Kele-Bingtang
  * @date 2024/1/16 1:37
- * @note
+ * @note 租户下拉选择列表
  */
 @Data
 @AutoMapper(target = SysTenantVO.class)
-public class TenantSelectVo {
+public class TenantSelectVO {
     private String tenantId;
     private String tenantName;
     private String domain;

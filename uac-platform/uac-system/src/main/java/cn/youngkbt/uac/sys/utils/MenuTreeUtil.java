@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author Kele-Bingtang
  * @date 2024-08-22 22:08:35
- * @note 
+ * @note 菜单树结构构建工具类
 */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MenuTreeUtil {

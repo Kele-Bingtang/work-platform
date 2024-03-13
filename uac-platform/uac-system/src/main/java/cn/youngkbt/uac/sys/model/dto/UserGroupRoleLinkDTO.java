@@ -4,6 +4,8 @@ import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 /**
  * @author Kele-Bingtang
  * @date 2023/12/28 0:03
@@ -21,6 +23,16 @@ public class UserGroupRoleLinkDTO {
      * 角色 ID
      */
     private String roleId;
+
+    /**
+     * 生效时间
+     */
+    private LocalDate validFrom;
+
+    /**
+     * 失效时间
+     */
+    private LocalDate expireOn;
 
     /**
      * 应用 ID

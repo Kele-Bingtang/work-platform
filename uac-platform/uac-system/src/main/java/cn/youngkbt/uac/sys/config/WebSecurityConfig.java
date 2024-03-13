@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 /**
  * @author Kele-Bingtang
  * @date 2023/11/15 22:32
- * @note
+ * @note Web 安全配置
  */
 @RequiredArgsConstructor
 @Configuration

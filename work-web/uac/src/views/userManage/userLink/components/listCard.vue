@@ -14,6 +14,10 @@
 </template>
 
 <script setup lang="ts" name="ListCard">
+import ListCard from "./listCard.vue";
+
+export type ListCardInstance = Omit<InstanceType<typeof ListCard>, keyof ComponentPublicInstance | keyof ListCardProps>;
+
 interface ListCardItem {
   label: string;
   value: string | number;
@@ -44,11 +48,17 @@ onBeforeMount(async () => {
     return;
   }
 
+  getDataList();
+});
+
+const getDataList = async () => {
   if (props.requestApi) {
     const { data } = await props.requestApi({ ...props.requestParams });
     listData.value = data;
   }
-});
+};
+
+defineExpose({ getDataList });
 </script>
 
 <style lang="scss" scoped>

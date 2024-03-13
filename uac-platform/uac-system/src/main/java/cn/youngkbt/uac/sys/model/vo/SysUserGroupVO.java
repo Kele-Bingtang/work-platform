@@ -35,6 +35,16 @@ public class SysUserGroupVO implements Serializable {
     private String intro;
 
     /**
+     * 负责人 ID
+     */
+    private String ownerId;
+
+    /**
+     * 负责人 username
+     */
+    private String ownerName;
+
+    /**
      * 应用 ID
      */
     private String appId;

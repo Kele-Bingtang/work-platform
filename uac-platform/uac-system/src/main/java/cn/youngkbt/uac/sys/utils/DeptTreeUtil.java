@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author Young Kbt
  * @date 2024/2/15 20:46
- * @note
+ * @note 部门树结构构建工具类
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DeptTreeUtil {

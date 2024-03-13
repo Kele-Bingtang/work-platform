@@ -21,7 +21,7 @@ import java.time.Duration;
 /**
  * @author Kele-Bingtang
  * @date 2023/11/18 17:22
- * @note
+ * @note 登录事件监听
  */
 @Component
 @Slf4j

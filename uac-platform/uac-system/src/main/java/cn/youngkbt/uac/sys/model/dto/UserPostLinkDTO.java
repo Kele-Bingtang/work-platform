@@ -21,9 +21,4 @@ public class UserPostLinkDTO {
      * 岗位 ID
      */
     private String postId;
-
-    /**
-     * 租户编号
-     */
-    private String tenantId;
 }

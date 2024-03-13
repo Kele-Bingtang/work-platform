@@ -49,6 +49,16 @@ public class SysApp extends BaseDO {
     private Integer orderNum;
 
     /**
+     * 负责人 ID
+     */
+    private String ownerId;
+
+    /**
+     * 负责人 username
+     */
+    private String ownerName;
+
+    /**
      * 租户编号
      */
     private String tenantId;

@@ -35,12 +35,11 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     public SysAppVO listById(Long id) {
         SysApp sysApp = baseMapper.selectById(id);
         Assert.nonNull(sysApp, "应用不存在");
-        SysAppVO result = MapstructUtil.convert(sysApp, SysAppVO.class);
-        return result;
+        return MapstructUtil.convert(sysApp, SysAppVO.class);
     }
 
     @Override
-    public List<SysAppVO> queryListWithPage(SysAppDTO sysAppDto, PageQuery pageQuery) {
+    public List<SysAppVO> listWithPage(SysAppDTO sysAppDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysApp> wrapper = Wrappers.<SysApp>lambdaQuery()
                 .eq(StringUtils.hasText(sysAppDto.getAppId()), SysApp::getAppId, sysAppDto.getAppId())
                 .eq(StringUtils.hasText(sysAppDto.getAppCode()), SysApp::getAppCode, sysAppDto.getAppCode())

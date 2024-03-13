@@ -39,7 +39,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
-    public List<SysPostVO> queryListWithPage(SysPostDTO sysPostDto, PageQuery pageQuery) {
+    public List<SysPostVO> listWithPage(SysPostDTO sysPostDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysPost> wrapper = Wrappers.<SysPost>lambdaQuery()
                 .eq(StringUtils.hasText(sysPostDto.getPostCode()), SysPost::getPostCode, sysPostDto.getPostCode())
                 .eq(StringUtils.hasText(sysPostDto.getPostName()), SysPost::getPostName, sysPostDto.getPostName())

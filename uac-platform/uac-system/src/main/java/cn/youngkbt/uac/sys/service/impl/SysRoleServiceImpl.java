@@ -6,9 +6,11 @@ import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
+import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public List<SysRoleVO> queryListWithPage(SysRoleDTO sysRoleDto, PageQuery pageQuery) {
+    public List<SysRoleVO> listWithPage(SysRoleDTO sysRoleDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysRole> wrapper = Wrappers.<SysRole>lambdaQuery()
                 .eq(StringUtils.hasText(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId())
                 .eq(StringUtils.hasText(sysRoleDto.getRoleCode()), SysRole::getRoleCode, sysRoleDto.getRoleCode())
@@ -48,6 +50,20 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             sysRoleList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
         return MapstructUtil.convert(sysRoleList, SysRoleVO.class);
+    }
+
+    @Override
+    public List<SysRoleVO> listRoleListByUserId(String appId, String userId) {
+        QueryWrapper<SysRole> wrapper = Wrappers.query();
+        wrapper.eq("tsr.app_id", appId)
+                .eq("turl.user_id", userId);
+        List<SysRole> sysRoleList = baseMapper.selectByUserId(wrapper);
+        return MapstructUtil.convert(sysRoleList, SysRoleVO.class);
+    }
+
+    @Override
+    public List<RoleBindUserVO> listRoleListWithDisabledByUserId(String appId, String userId) {
+        return baseMapper.selectWithDisabledByUserId(appId, userId);
     }
 
     @Override

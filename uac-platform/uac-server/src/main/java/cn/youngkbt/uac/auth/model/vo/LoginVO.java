@@ -5,10 +5,10 @@ import lombok.Data;
 /**
  * @author Kele-Bingtang
  * @date 2023/11/12 14:37
- * @note
+ * @note 返回的登录信息
  */
 @Data
-public class LoginVo {
+public class LoginVO {
     /**
      * 授权令牌
      */

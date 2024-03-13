@@ -27,7 +27,6 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     @Override
     public List<UserGroupLinkVO> queryLinkByTenantId(UserGroupLinkDTO userGroupLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<UserGroupLink> wrapper = Wrappers.<UserGroupLink>lambdaQuery()
-                .eq(UserGroupLink::getTenantId, userGroupLinkDto.getTenantId())
                 .eq(StringUtil.hasText(userGroupLinkDto.getUserId()), UserGroupLink::getUserId, userGroupLinkDto.getUserId())
                 .eq(StringUtil.hasText(userGroupLinkDto.getUserGroupId()), UserGroupLink::getUserGroupId, userGroupLinkDto.getUserGroupId())
                 .orderByAsc(UserGroupLink::getId);

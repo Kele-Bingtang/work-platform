@@ -27,7 +27,6 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
     @Override
     public List<UserPostLinkVO> queryLinkByTenantId(UserPostLinkDTO userPostLinkDto, PageQuery pageQuery) {
         LambdaQueryWrapper<UserPostLink> wrapper = Wrappers.<UserPostLink>lambdaQuery()
-                .eq(UserPostLink::getTenantId, userPostLinkDto.getTenantId())
                 .eq(StringUtil.hasText(userPostLinkDto.getUserId()), UserPostLink::getUserId, userPostLinkDto.getUserId())
                 .eq(StringUtil.hasText(userPostLinkDto.getPostId()), UserPostLink::getPostId, userPostLinkDto.getPostId())
                 .orderByAsc(UserPostLink::getId);

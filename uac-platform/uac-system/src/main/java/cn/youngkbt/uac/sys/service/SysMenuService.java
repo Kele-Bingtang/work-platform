@@ -17,24 +17,85 @@ import java.util.List;
  */
 public interface SysMenuService extends IService<SysMenu> {
 
+    /**
+     * 根据主键查询菜单信息
+     *
+     * @param id 主键
+     * @return 菜单信息
+     */
     SysMenuVO listById(Long id);
 
-    List<SysMenuVO> queryListWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery);
-    
+    /**
+     * 通过条件查询菜单列表（
+     *
+     * @param sysMenuDto 查询条件
+     * @param pageQuery  分页参数
+     * @return 菜单列表
+     */
+    List<SysMenuVO> listWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery);
+
+    /**
+     * 查询菜单下拉框列表
+     *
+     * @param sysMenuDto 查询条件
+     * @return 菜单下拉框列表
+     */
     List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDto);
 
+    /**
+     * 查询菜单树形表格列表
+     *
+     * @param sysMenuDto 查询条件
+     * @return 菜单树形表格列表
+     */
     List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDto);
 
+    /**
+     * 检查菜单名称是否唯一
+     *
+     * @param sysMenuDto 查询条件
+     * @return 是否唯一
+     */
     boolean checkMenuNameUnique(SysMenuDTO sysMenuDto);
 
+    /**
+     * 检查菜单是否存在子菜单
+     *
+     * @param menuId 菜单id
+     * @return 是否存在子菜单
+     */
     boolean hasChild(String menuId);
 
+    /**
+     * 检查菜单是否存在角色关联
+     *
+     * @param menuId 菜单 ID
+     * @return 是否存在角色关联
+     */
     boolean checkMenuExistRole(String menuId);
 
+    /**
+     * 新增菜单
+     *
+     * @param sysMenuDto 新增对象
+     * @return 是否成功
+     */
     boolean insertOne(SysMenuDTO sysMenuDto);
 
+    /**
+     * 修改菜单
+     *
+     * @param sysMenuDto 修改对象
+     * @return 是否成功
+     */
     boolean updateOne(SysMenuDTO sysMenuDto);
 
+    /**
+     * 删除菜单
+     *
+     * @param id 主键
+     * @return 是否成功
+     */
     boolean removeOne(Long id);
 
 }

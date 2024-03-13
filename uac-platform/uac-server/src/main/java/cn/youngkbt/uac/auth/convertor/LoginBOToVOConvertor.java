@@ -1,7 +1,7 @@
 package cn.youngkbt.uac.auth.convertor;
 
 import cn.youngkbt.core.base.BaseMapperConvertor;
-import cn.youngkbt.uac.auth.model.vo.LoginVo;
+import cn.youngkbt.uac.auth.model.vo.LoginVO;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -12,7 +12,7 @@ import org.mapstruct.factory.Mappers;
  * @note
  */
 @Mapper
-public interface LoginBOToVOConvertor extends BaseMapperConvertor<LoginSuccessBO, LoginVo> {
+public interface LoginBOToVOConvertor extends BaseMapperConvertor<LoginSuccessBO, LoginVO> {
     
     LoginBOToVOConvertor INSTANCE = Mappers.getMapper(LoginBOToVOConvertor.class);
 }

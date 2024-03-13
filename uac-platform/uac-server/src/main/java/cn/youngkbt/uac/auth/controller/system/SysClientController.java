@@ -8,6 +8,7 @@ import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.vo.SysClientVO;
 import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
 import cn.youngkbt.uac.sys.service.SysClientService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -29,34 +30,29 @@ public class SysClientController {
 
     private final SysClientService clientService;
 
-    /**
-     * 查询某个客户端
-     */
     @GetMapping("/{id}")
+    @Operation(summary = "客户端列表查询", description = "通过主键查询客户端列表")
     public Response<SysClientVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
         SysClientVO sysClientVo = clientService.listById(id);
         return HttpResult.ok(sysClientVo);
     }
 
-    /**
-     * 客户端列表查询
-     */
     @GetMapping("/list")
+    @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表（支持分页）")
     public Response<List<SysClientVO>> list(SysClientDTO sysClientDto, PageQuery pageQuery) {
-        List<SysClientVO> sysClientVOList = clientService.queryListWithPage(sysClientDto, pageQuery);
+        List<SysClientVO> sysClientVOList = clientService.listWithPage(sysClientDto, pageQuery);
         return HttpResult.ok(sysClientVOList);
     }
 
     @GetMapping("/treeList")
+    @Operation(summary = "客户端树形列表查询", description = "查询客户端树形列表")
     public Response<List<ClientTreeVO>> listTreeList() {
         List<ClientTreeVO> sysClientVoList = clientService.listTreeList();
         return HttpResult.ok(sysClientVoList);
     }
-    
-    /**
-     * 客户端新增
-     */
+
     @PostMapping
+    @Operation(summary = "客户端新增", description = "新增客户端")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDto) {
         return HttpResult.ok(clientService.insertOne(sysClientDto));
     }
@@ -65,22 +61,19 @@ public class SysClientController {
      * 客户端修改
      */
     @PutMapping
+    @Operation(summary = "客户端修改", description = "修改客户端")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDto) {
         return HttpResult.ok(clientService.updateOne(sysClientDto));
     }
 
-    /**
-     * 客户端状态修改
-     */
     @PutMapping("/updateStatus")
+    @Operation(summary = "客户端状态修改", description = "修改客户端状态")
     public Response<Boolean> updateStatus(@RequestBody SysClientDTO sysClientDto) {
         return HttpResult.ok(clientService.updateStatus(sysClientDto.getId(), sysClientDto.getStatus()));
     }
 
-    /**
-     * 客户端删除
-     */
     @DeleteMapping("/{ids}")
+    @Operation(summary = "客户端删除", description = "通过主键批量删除客户端")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         // TODO：如果有 APP 绑定，则无法删除
         return HttpResult.ok(clientService.removeBatch(List.of(ids)));

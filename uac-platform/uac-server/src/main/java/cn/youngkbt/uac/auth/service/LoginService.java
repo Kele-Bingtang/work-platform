@@ -1,12 +1,11 @@
 package cn.youngkbt.uac.auth.service;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.uac.auth.convertor.LoginBOToVOConvertor;
 import cn.youngkbt.uac.auth.convertor.LoginDTOToBOConvertor;
-import cn.youngkbt.uac.auth.model.dto.LoginUserDto;
+import cn.youngkbt.uac.auth.model.dto.LoginUserDTO;
+import cn.youngkbt.uac.auth.model.vo.LoginVO;
 import cn.youngkbt.uac.auth.strategy.AuthHandler;
-import cn.youngkbt.uac.auth.model.vo.LoginVo;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.exception.TenantException;
@@ -27,7 +26,7 @@ import java.util.function.Supplier;
 /**
  * @author Kele-Bingtang
  * @date 2023/11/13 23:18
- * @note
+ * @note 登录服务
  */
 @Service
 @Slf4j
@@ -39,7 +38,7 @@ public class LoginService {
     /**
      * 登录
      */
-    public LoginVo login(LoginUserDto loginUserDto, SysApp sysApp, SysClient sysClient) {
+    public LoginVO login(LoginUserDTO loginUserDto, SysApp sysApp, SysClient sysClient) {
         LoginUserBO loginUserBO = LoginDTOToBOConvertor.INSTANCE.convert(loginUserDto, sysApp);
         LoginSuccessBO login = AuthHandler.loginDispatch(loginUserBO, sysClient);
         return LoginBOToVOConvertor.INSTANCE.convert(login);

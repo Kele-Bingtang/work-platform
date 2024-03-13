@@ -79,18 +79,7 @@ thread-pool:
 tenant:
   enable: true
   excludes-table:
-    - t_role_dept_link
-    - t_role_group_link
-    - t_role_group_menu_link
-    - t_role_menu_link
-    - t_user_group_link
-    - t_user_group_role_group_link
-    - t_user_group_role_link
-    - t_user_post_link
-    - t_user_role_group_link
-    - t_user_role_link
     - t_sys_client
-    - t_sys_role_group
     - t_sys_tenant
 
 # 默认配置

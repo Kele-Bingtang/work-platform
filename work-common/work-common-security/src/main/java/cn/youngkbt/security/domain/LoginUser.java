@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * @author Kele-Bingtang
  * @date 2024/1/21 23:10
- * @note
+ * @note 登录成功后，存储用户信息的实体类
  */
 @Data
 @AutoMapper(target = SecurityUser.class, convertGenerate = false)

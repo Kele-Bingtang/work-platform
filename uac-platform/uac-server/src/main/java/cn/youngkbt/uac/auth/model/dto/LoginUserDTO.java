@@ -10,10 +10,10 @@ import org.hibernate.validator.constraints.Length;
 /**
  * @author Kele-Bingtang
  * @date 2023/11/12 14:49
- * @note
+ * @note 前端登录时传来的用户信息
  */
 @Data
-public class LoginUserDto {
+public class LoginUserDTO {
     /**
      * 租户 ID
      */

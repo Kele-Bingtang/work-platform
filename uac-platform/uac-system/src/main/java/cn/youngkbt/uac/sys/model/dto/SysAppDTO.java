@@ -54,6 +54,16 @@ public class SysAppDTO {
     private Integer orderNum;
 
     /**
+     * 负责人 ID
+     */
+    private String ownerId;
+
+    /**
+     * 负责人 username
+     */
+    private String ownerName;
+
+    /**
      * 部门 ID
      */
     private String deptId;

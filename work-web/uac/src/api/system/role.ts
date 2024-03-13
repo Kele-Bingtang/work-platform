@@ -12,12 +12,29 @@ export namespace Role {
     appId: string; // 应用 ID
     createTime: string; // 创建时间
   }
+  export interface UserLinkRole {
+    userId: string; // 用户 ID
+    roleIds: string[]; // 角色 ID
+    validFrom: string; // 负责人 ID
+    expireOn: string; // 负责人 username
+    appId: string; // 应用 ID
+  }
 }
 
 const baseUri = "/system/role";
 
 export const list = (params: Partial<Role.RoleInfo>) => {
   return http.get<http.Response<Role.RoleInfo[]>>(`${baseUri}/list`, params);
+};
+
+export const listRoleListByUserId = (params: { appId: string; userId: string }) => {
+  return http.get<http.Response<Role.RoleInfo[]>>(`${baseUri}/listByUserId/${params.appId}/${params.userId}`);
+};
+
+export const listRoleListWithDisabledByUserId = (params: { appId: string; userId: string }) => {
+  return http.get<http.Response<Role.RoleInfo[]>>(
+    `${baseUri}/listWithDisabledByUserId/${params.appId}/${params.userId}`
+  );
 };
 
 export const addOne = (data: Role.RoleInfo) => {

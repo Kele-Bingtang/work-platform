@@ -8,11 +8,11 @@ import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.tenant.helper.TenantHelper;
-import cn.youngkbt.uac.auth.model.dto.LoginUserDto;
-import cn.youngkbt.uac.auth.model.vo.LoginTenantSelectVo;
-import cn.youngkbt.uac.auth.model.vo.LoginVo;
-import cn.youngkbt.uac.auth.model.vo.TenantSelectVo;
-import cn.youngkbt.uac.auth.model.vo.UserInfoVo;
+import cn.youngkbt.uac.auth.model.dto.LoginUserDTO;
+import cn.youngkbt.uac.auth.model.vo.LoginTenantSelectVO;
+import cn.youngkbt.uac.auth.model.vo.LoginVO;
+import cn.youngkbt.uac.auth.model.vo.TenantSelectVO;
+import cn.youngkbt.uac.auth.model.vo.UserInfoVO;
 import cn.youngkbt.uac.auth.service.LoginService;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
@@ -23,6 +23,7 @@ import cn.youngkbt.uac.sys.service.SysClientService;
 import cn.youngkbt.uac.sys.service.SysTenantService;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,11 +51,9 @@ public class AuthController {
     private final LoginService loginService;
     private final SysTenantService sysTenantService;
 
-    /**
-     * 执行登录
-     */
     @PostMapping("/login")
-    public Response<LoginVo> login(@Valid @RequestBody LoginUserDto loginUserDto) {
+    @Operation(summary = "执行登录")
+    public Response<LoginVO> login(@Valid @RequestBody LoginUserDTO loginUserDto) {
         // 避免重复登录
         // String username = SecurityUtils.getUsername();
         // if (Objects.nonNull(username) && StringUtils.equals(username, loginUserDTO.getUsername())) {
@@ -86,39 +85,35 @@ public class AuthController {
         return HttpResult.ok(loginService.login(loginUserDto, sysApp, sysClient));
     }
 
-    /**
-     * 多租户下拉选项
-     */
     @GetMapping("/tenant/list")
-    public Response<LoginTenantSelectVo> tenantSelectOption(HttpServletRequest request) {
-        List<SysTenantVO> sysTenantVOList = sysTenantService.queryListWithPage(new SysTenantDTO(), null);
-        List<TenantSelectVo> tenantSelectVoList = MapstructUtil.convert(sysTenantVOList, TenantSelectVo.class);
+    @Operation(summary = "多租户下拉选项")
+    public Response<LoginTenantSelectVO> tenantSelectOption(HttpServletRequest request) {
+        List<SysTenantVO> sysTenantVOList = sysTenantService.listWithPage(new SysTenantDTO(), null);
+        List<TenantSelectVO> tenantSelectVOList = MapstructUtil.convert(sysTenantVOList, TenantSelectVO.class);
 
         // 获取域名
         String serverName = request.getServerName();
-        List<TenantSelectVo> list = ListUtil.newArrayList();
+        List<TenantSelectVO> list = ListUtil.newArrayList();
 
         // 本地不需要过滤
         if ("localhost".equals(serverName)) {
-            list = tenantSelectVoList;
-        } else if (!ListUtil.isEmpty(tenantSelectVoList)) {
+            list = tenantSelectVOList;
+        } else if (!ListUtil.isEmpty(tenantSelectVOList)) {
             // 过滤出租户所在的域名
-            list = tenantSelectVoList.stream().filter(tenantSelectVo -> serverName.equals(tenantSelectVo.getDomain())).toList();
+            list = tenantSelectVOList.stream().filter(tenantSelectVo -> serverName.equals(tenantSelectVo.getDomain())).toList();
         }
 
-        LoginTenantSelectVo loginTenantSelectVo = LoginTenantSelectVo.builder()
+        LoginTenantSelectVO loginTenantSelectVo = LoginTenantSelectVO.builder()
                 .tenantEnabled(TenantHelper.isEnable())
                 .tenantSelectList(list)
                 .build();
 
         return HttpResult.ok(loginTenantSelectVo);
     }
-
-    /**
-     * 获取用户信息
-     */
+    
     @GetMapping("/getUserInfo")
-    public Response<UserInfoVo> getUserInfo() {
+    @Operation(summary = "获取用户信息")
+    public Response<UserInfoVO> getUserInfo() {
         if ("anonymousUser".equals(SecurityUtils.getUsername())) {
             return HttpResult.failMessage("您没有登录！");
         }
@@ -129,16 +124,11 @@ public class AuthController {
             return HttpResult.fail(AuthErrorCodeEnum.UN_AUTHORIZED);
         }
 
-        UserInfoVo userInfoVo = new UserInfoVo();
+        UserInfoVO userInfoVo = new UserInfoVO();
 
         userInfoVo.setUser(loginUser)
                 .setRoles(null)
                 .setPermissions(null);
         return HttpResult.ok(userInfoVo);
-    }
-
-    @GetMapping("/test")
-    public Response<String> testLogin() {
-        return HttpResult.ok("登录成功");
     }
 }

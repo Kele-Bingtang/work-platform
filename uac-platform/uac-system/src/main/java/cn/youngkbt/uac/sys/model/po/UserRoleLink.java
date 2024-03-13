@@ -7,11 +7,13 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDate;
+
 /**
  * @author Kele-Bingtang
  * @date 2023-31-12 00:31:33
  * @note 用户关联角色
-*/
+ */
 @TableName("t_user_role_link")
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,6 +29,21 @@ public class UserRoleLink extends BaseDO {
      */
     private String roleId;
 
+    /**
+     * 生效时间
+     */
+    private LocalDate validFrom;
+
+    /**
+     * 失效时间
+     */
+    private LocalDate expireOn;
+
+    /**
+     * 租户编号
+     */
+    private String tenantId;
+    
     /**
      * 应用 ID
      */

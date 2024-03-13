@@ -48,7 +48,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<SysMenuVO> queryListWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery) {
+    public List<SysMenuVO> listWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
 
         List<SysMenu> sysMenuList;

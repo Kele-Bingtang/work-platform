@@ -75,7 +75,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public List<SysUserVO> queryListWithPage(SysUserDTO sysUserDto, PageQuery pageQuery) {
+    public List<SysUserVO> listWithPage(SysUserDTO sysUserDto, PageQuery pageQuery) {
         Wrapper<SysUser> wrapper = buildQueryWrapper(sysUserDto);
         List<SysUserVO> sysUserVOList;
         if (Objects.isNull(pageQuery)) {
@@ -133,8 +133,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public RolePostVo rolePostList() {
-        List<SysPostVO> sysPostVOList = sysPostService.queryListWithPage(new SysPostDTO(), null);
-        List<SysRoleVO> sysRoleVOList = sysRoleService.queryListWithPage(new SysRoleDTO(), null);
+        List<SysPostVO> sysPostVOList = sysPostService.listWithPage(new SysPostDTO(), null);
+        List<SysRoleVO> sysRoleVOList = sysRoleService.listWithPage(new SysRoleDTO(), null);
 
         RolePostVo rolePostVo = new RolePostVo();
         rolePostVo.setPostList(sysPostVOList)

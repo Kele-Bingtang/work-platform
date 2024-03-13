@@ -11,5 +11,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysLoginLogService extends IService<SysLoginLog> {
 
+    /**
+     * 记录登录日志
+     *
+     * @param loginInfoEvent 登录事件信息
+     */
     void recordLoginLog(LoginInfoEvent loginInfoEvent);
 }

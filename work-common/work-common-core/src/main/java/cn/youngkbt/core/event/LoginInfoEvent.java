@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * @author Kele-Bingtang
  * @date 2023/11/17 0:28
- * @note
+ * @note 登录信息事件类
  */
 @Data
 @Builder

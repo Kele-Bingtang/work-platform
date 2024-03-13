@@ -39,7 +39,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     }
 
     @Override
-    public List<SysDictTypeVO> queryListWithPage(SysDictTypeDTO sysDictTypeDto, PageQuery pageQuery) {
+    public List<SysDictTypeVO> listWithPage(SysDictTypeDTO sysDictTypeDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictType> wrapper = Wrappers.<SysDictType>lambdaQuery()
                 .eq(StringUtils.hasText(sysDictTypeDto.getDictName()), SysDictType::getDictName, sysDictTypeDto.getDictName())
                 .eq(StringUtils.hasText(sysDictTypeDto.getDictCode()), SysDictType::getDictCode, sysDictTypeDto.getDictCode())

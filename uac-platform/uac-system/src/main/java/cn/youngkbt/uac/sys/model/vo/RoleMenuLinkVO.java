@@ -2,6 +2,8 @@ package cn.youngkbt.uac.sys.model.vo;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 /**
  * @author Kele-Bingtang
  * @date 2023/12/16 0:13
@@ -17,14 +19,21 @@ public class RoleMenuLinkVO {
      * 角色 ID
      */
     private String roleId;
-    /**
-     * 角色名
-     */
-    private String roleName;
+
     /**
      * 菜单 ID
      */
     private String menuId;
+
+    /**
+     * 生效时间
+     */
+    private LocalDate validFrom;
+
+    /**
+     * 失效时间
+     */
+    private LocalDate expireOn;
     /**
      * 菜单名
      */

@@ -9,6 +9,7 @@ import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.StringUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -30,30 +31,28 @@ public class SysUserController {
     private final SysUserService sysUserService;
 
     @GetMapping("/{id}")
+    @Operation(summary = "用户列表查询", description = "通过主键查询用户列表")
     public Response<SysUserVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
         SysUserVO sysUserVo = sysUserService.listById(id);
         return HttpResult.ok(sysUserVo);
     }
 
-    /**
-     * 客户端列表查询
-     */
     @GetMapping("/list")
+    @Operation(summary = "用户列表查询", description = "通过条件查询用户列表（分页）")
     public Response<List<SysUserVO>> list(SysUserDTO sysUserDto, PageQuery pageQuery) {
-        List<SysUserVO> sysUserVOList = sysUserService.queryListWithPage(sysUserDto, pageQuery);
+        List<SysUserVO> sysUserVOList = sysUserService.listWithPage(sysUserDto, pageQuery);
         return HttpResult.ok(sysUserVOList);
     }
-    
+
     @GetMapping("/rolePostList")
+    @Operation(summary = "角色岗位列表查询", description = "查询角色列表和岗位列表")
     public Response<RolePostVo> rolePostList() {
         RolePostVo rolePostVo = sysUserService.rolePostList();
         return HttpResult.ok(rolePostVo);
     }
 
-    /**
-     * 客户端新增
-     */
     @PostMapping
+    @Operation(summary = "用户列表新增", description = "新增用户列表")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDTO sysUserDto) {
         if (sysUserService.checkUserNameUnique(sysUserDto)) {
             return HttpResult.failMessage("新增用户「" + sysUserDto.getUsername() + "」失败，登录账号已存在");
@@ -62,14 +61,12 @@ public class SysUserController {
         } else if (StringUtil.hasText(sysUserDto.getEmail()) && sysUserService.checkEmailUnique(sysUserDto)) {
             return HttpResult.failMessage("新增用户「" + sysUserDto.getUsername() + "」失败，邮箱账号已存在");
         }
-        
+
         return HttpResult.ok(sysUserService.insertOne(sysUserDto));
     }
 
-    /**
-     * 客户端修改
-     */
     @PutMapping
+    @Operation(summary = "用户列表修改", description = "修改用户列表")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDTO sysUserDto) {
         if (sysUserService.checkUserNameUnique(sysUserDto)) {
             return HttpResult.failMessage("修改用户「" + sysUserDto.getUsername() + "」失败，登录账号已存在");
@@ -78,14 +75,12 @@ public class SysUserController {
         } else if (StringUtil.hasText(sysUserDto.getEmail()) && sysUserService.checkEmailUnique(sysUserDto)) {
             return HttpResult.failMessage("修改用户「" + sysUserDto.getUsername() + "」失败，邮箱账号已存在");
         }
-        
+
         return HttpResult.ok(sysUserService.updateOne(sysUserDto));
     }
 
-    /**
-     * 客户端删除
-     */
     @DeleteMapping("/{ids}")
+    @Operation(summary = "用户列表删除", description = "通过主键批量删除用户列表")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return HttpResult.ok(sysUserService.removeBatch(List.of(ids)));
     }

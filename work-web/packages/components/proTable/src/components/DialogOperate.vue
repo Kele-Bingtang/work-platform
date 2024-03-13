@@ -1,7 +1,7 @@
 <template>
   <el-dialog v-model="dialogFormVisible" v-bind="dialog" :title="dialogTitle" destroy-on-close>
     <slot name="form">
-      <ProForm v-if="options" ref="formElement" :options="formOptions" v-model="form">
+      <ProForm v-if="options" ref="formElementRef" :options="formOptions" v-model="form">
         <template #footer>
           <slot name="formFooter" v-bind="form"></slot>
         </template>
@@ -73,7 +73,7 @@ export interface DialogFormProps {
 }
 
 const props = defineProps<DialogFormProps>();
-const formElement = shallowRef();
+const formElementRef = shallowRef();
 const dialogFormVisible = ref(false);
 
 // 表单
@@ -123,7 +123,7 @@ const handleEdit = async ({ row }: any) => {
 };
 
 const handleFormConfirm = (f: any, status: string) => {
-  const formRef = formElement.value.formRef as FormInstance;
+  const formRef = formElementRef.value.formRef as FormInstance;
   props.beforeConfirm && props.beforeConfirm(status);
 
   let data = { ...f };

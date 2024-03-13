@@ -9,11 +9,11 @@ import java.util.Set;
 /**
  * @author Kele-Bingtang
  * @date 2024/1/16 23:35
- * @note
+ * @note 返回的用户信息
  */
 @Data
 @Accessors(chain = true)
-public class UserInfoVo {
+public class UserInfoVO {
     /**
      * 用户基本信息
      */

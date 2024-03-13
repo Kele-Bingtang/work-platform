@@ -46,6 +46,16 @@ public class SysAppVO implements Serializable {
     private Integer orderNum;
 
     /**
+     * 负责人 ID
+     */
+    private String ownerId;
+
+    /**
+     * 负责人 username
+     */
+    private String ownerName;
+
+    /**
      * 状态
      */
     private Integer status;

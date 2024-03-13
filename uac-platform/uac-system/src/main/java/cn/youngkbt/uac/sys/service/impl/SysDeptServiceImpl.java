@@ -48,7 +48,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public List<SysDeptVO> queryListWithPage(SysDeptDTO sysDeptDto, PageQuery pageQuery) {
+    public List<SysDeptVO> listWithPage(SysDeptDTO sysDeptDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDto);
 
         List<SysDept> sysDeptList;
@@ -135,7 +135,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * 通过部门 id 查询其子部门数量（正常状态）
      */
     @Override
-    public Long queryChildrenDeptCountById(String deptId) {
+    public Long listChildrenDeptCountById(String deptId) {
         return baseMapper.selectCount(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getStatus, ColumnConstant.STATUS_NORMAL)
                 .apply("FIND_IN_SET({0}, ancestors) > 0", deptId));

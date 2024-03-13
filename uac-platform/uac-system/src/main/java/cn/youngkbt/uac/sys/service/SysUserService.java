@@ -17,27 +17,100 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
+    /**
+     * 根据租户 ID 和用户名查询用户信息
+     *
+     * @param tenantId 租户 ID
+     * @param username 用户名
+     * @return
+     */
     SecurityUser selectTenantUserByUsername(String tenantId, String username);
 
+    /**
+     * 根据用户名查询用户信息
+     *
+     * @param username 用户名
+     * @return 用户信息
+     */
     SecurityUser selectUserByUsername(String username);
 
+    /**
+     * 通过主键获取用户信息
+     *
+     * @param id 主键
+     * @return 用户信息
+     */
     SysUserVO listById(Long id);
 
-    List<SysUserVO> queryListWithPage(SysUserDTO sysUserDto, PageQuery pageQuery);
+    /**
+     * 通过条件查询用户列表
+     *
+     * @param sysUserDto 用户信息
+     * @param pageQuery  分页参数
+     * @return 用户列表
+     */
+    List<SysUserVO> listWithPage(SysUserDTO sysUserDto, PageQuery pageQuery);
 
+    /**
+     * 检查用户名是否唯一通过条件查询用户列表
+     *
+     * @param sysUserDto 用户信息
+     * @return 是否唯一
+     */
     boolean checkUserNameUnique(SysUserDTO sysUserDto);
 
+    /**
+     * 检查手机号是否唯一
+     *
+     * @param sysUserDto 用户信息
+     * @return 是否唯一
+     */
     boolean checkPhoneUnique(SysUserDTO sysUserDto);
 
+    /**
+     * 检查邮箱是否唯一
+     *
+     * @param sysUserDto 用户信息
+     * @return 是否唯一
+     */
     boolean checkEmailUnique(SysUserDTO sysUserDto);
 
+    /**
+     * 新增用户
+     *
+     * @param sysUserDto 用户信息
+     * @return 是否成功
+     */
     boolean insertOne(SysUserDTO sysUserDto);
 
+    /**
+     * 更新用户
+     *
+     * @param sysUserDto 用户信息
+     * @return 是否成功
+     */
     boolean updateOne(SysUserDTO sysUserDto);
 
+    /**
+     * 通过用户 ID 更新用户
+     *
+     * @param sysUserDto 用户信息
+     * @return 是否成功
+     */
     boolean updateOneByUserId(SysUserDTO sysUserDto);
 
+    /**
+     * 批量删除用户
+     *
+     * @param ids 主键列表
+     * @return 是否成功
+     */
     boolean removeBatch(List<Long> ids);
 
+    /**
+     * 获取角色列表和岗位列表
+     *
+     * @return 角色列表和岗位列表
+     */
     RolePostVo rolePostList();
 }

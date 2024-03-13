@@ -44,7 +44,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public List<SysClientVO> queryListWithPage(SysClientDTO sysClientDto, PageQuery pageQuery) {
+    public List<SysClientVO> listWithPage(SysClientDTO sysClientDto, PageQuery pageQuery) {
         LambdaQueryWrapper<SysClient> wrapper = Wrappers.<SysClient>lambdaQuery()
                 .like(StringUtils.hasText(sysClientDto.getClientId()), SysClient::getClientId, sysClientDto.getClientId())
                 .eq(StringUtils.hasText(sysClientDto.getClientKey()), SysClient::getClientKey, sysClientDto.getClientKey())
@@ -77,11 +77,13 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     @Override
     public boolean insertOne(SysClientDTO sysClientDto) {
         SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
+        // 如果没有设置 clientSecret，则自动生成
         if (Objects.isNull(sysClient.getClientSecret())) {
             sysClient.setClientSecret(IdsUtil.simpleUUID());
         }
         String clientSecret = sysClient.getClientSecret();
         String clientKey = sysClient.getClientKey();
+        // 生成 appId
         String appId = SecureUtil.md5(clientSecret + clientKey);
         sysClient.setClientId(appId);
         sysClient.setGrantTypes(String.join(",", sysClientDto.getGrantTypeList()));

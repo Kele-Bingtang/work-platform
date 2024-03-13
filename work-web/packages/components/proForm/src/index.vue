@@ -56,10 +56,11 @@ const setEnumMap = async (column: FormColumnProps) => {
 const initDefaultValue = (column: FormColumnProps) => {
   const { attrs, formItem } = column;
 
+  if (form.value[formItem.prop] || form.value[formItem.prop] === false || form.value[formItem.prop] === 0) return;
+
   // 设置表单项的默认值
   if (attrs?.defaultValue !== undefined && attrs?.defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
-    if (form.value[formItem.prop] || form.value[formItem.prop] === false || form.value[formItem.prop] === 0) return;
     if (isProxy(attrs.enum)) return (form.value[formItem.prop] = (attrs?.defaultValue as ComputedRef).value);
     if (typeof attrs?.defaultValue === "function") return (form.value[formItem.prop] = attrs?.defaultValue());
     return (form.value[formItem.prop] = attrs?.defaultValue);

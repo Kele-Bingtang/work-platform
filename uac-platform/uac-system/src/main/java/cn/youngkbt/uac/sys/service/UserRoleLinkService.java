@@ -20,6 +20,15 @@ public interface UserRoleLinkService extends IService<UserRoleLink> {
 
     boolean checkRoleExistUser(String roleId);
 
+    /**
+     * 检查用户是否已存在某些角色中
+     *
+     * @param userId  用户 ID
+     * @param roleIds 角色 ID 列表
+     * @return 是否存在
+     */
+    boolean checkUserExistRoles(String userId, List<String> roleIds);
+
     boolean addOneLink(UserRoleLinkDTO userRoleLinkDto);
 
     boolean updateOneLink(UserRoleLinkDTO userRoleLinkDto);

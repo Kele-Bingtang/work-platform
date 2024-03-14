@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
@@ -90,4 +91,12 @@ public interface SysRoleService extends IService<SysRole> {
      * @return 角色列表
      */
     List<RoleBindUserVO> listRoleListWithDisabledByUserId(String appId, String userId);
+
+    /**
+     * 添加用户到角色
+     *
+     * @param userLinkRoleDTO 用户绑定角色信息
+     * @return 是否成功
+     */
+    boolean addUserToRoles(UserLinkRoleDTO userLinkRoleDTO);
 }

@@ -26,6 +26,7 @@ import { computed, shallowRef, ref, provide, watch, isRef, type ComputedRef } fr
 import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
+import type { FormInstance } from "element-plus";
 
 export interface ProFormProps {
   options: FormOptionsProps;
@@ -35,7 +36,7 @@ export interface ProFormProps {
 
 const props = withDefaults(defineProps<ProFormProps>(), { disabled: false, modelValue: () => ({}) });
 
-const formRef = shallowRef();
+const formRef = shallowRef<FormInstance>();
 const form = computed(() => props.modelValue);
 
 // 定义 enumMap 存储 enum 值（避免异步请求无法格式化单元格内容 || 无法填充下拉选择）

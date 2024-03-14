@@ -41,6 +41,10 @@ export const addOne = (data: Role.RoleInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
+export const addUserToRoles = (data: Role.UserLinkRole) => {
+  return http.post<http.Response<string>>(`${baseUri}/addUserToRoles`, data);
+};
+
 export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
   return http.put<http.Response<string>>(baseUri, data);
 };

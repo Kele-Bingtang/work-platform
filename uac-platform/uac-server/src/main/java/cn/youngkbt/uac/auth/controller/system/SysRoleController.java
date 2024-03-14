@@ -5,9 +5,11 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
+import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +28,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/system/role")
 public class SysRoleController {
+
     private final SysRoleService sysRoleService;
+    private final UserRoleLinkService userRoleLinkService;
 
     @GetMapping("/{id}")
     @Operation(summary = "角色列表查询", description = "通过主键查询角色列表")
@@ -50,7 +54,7 @@ public class SysRoleController {
         } else if (sysRoleService.checkRoleCodeUnique(sysRoleDto)) {
             return HttpResult.failMessage("新增角色「" + sysRoleDto.getRoleName() + "」失败，角色权限已存在");
         }
-        
+
         return HttpResult.ok(sysRoleService.insertOne(sysRoleDto));
     }
 
@@ -62,7 +66,7 @@ public class SysRoleController {
         } else if (sysRoleService.checkRoleCodeUnique(sysRoleDto)) {
             return HttpResult.failMessage("修改角色「" + sysRoleDto.getRoleName() + "」失败，角色权限已存在");
         }
-        
+
         return HttpResult.ok(sysRoleService.updateOne(sysRoleDto));
     }
 
@@ -89,7 +93,13 @@ public class SysRoleController {
     /**
      * 绑定用户
      */
-    // @PostMapping("addUserToRoles")
-    // public Response<Boolean> addUserToRoles() {
-    // }
+    @PostMapping("addUserToRoles")
+    @Operation(summary = "添加用户到角色", description = "添加用户到角色（多个角色）")
+    public Response<Boolean> addUserToRoles(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
+        if (userRoleLinkService.checkUserExistRoles(userLinkRoleDTO.getUserId(), userLinkRoleDTO.getRoleIds())) {
+            return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
+        }
+        boolean result = sysRoleService.addUserToRoles(userLinkRoleDTO);
+        return HttpResult.ok(result);
+    }
 }

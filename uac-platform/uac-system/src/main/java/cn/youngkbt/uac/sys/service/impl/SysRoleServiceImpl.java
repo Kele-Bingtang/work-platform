@@ -4,15 +4,20 @@ import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
+import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
+import cn.youngkbt.uac.sys.service.UserRoleLinkService;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -25,7 +30,10 @@ import java.util.Objects;
  * @note 针对表【t_sys_role(应用角色信息表)】的数据库操作Service实现
  */
 @Service
+@RequiredArgsConstructor
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
+
+    private final UserRoleLinkService userRoleLinkService;
 
     @Override
     public SysRoleVO listById(Long id) {
@@ -95,6 +103,21 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public boolean addUserToRoles(UserLinkRoleDTO userLinkRoleDTO) {
+        List<String> roleIds = userLinkRoleDTO.getRoleIds();
+
+        List<UserRoleLink> userRoleLinkList = ListUtil.newArrayList(roleIds, roleId ->
+                        new UserRoleLink().setRoleId(roleId)
+                                .setUserId(userLinkRoleDTO.getUserId())
+                                .setValidFrom(userLinkRoleDTO.getValidFrom())
+                                .setExpireOn(userLinkRoleDTO.getExpireOn())
+                                .setAppId(userLinkRoleDTO.getAppId())
+                , UserRoleLink.class);
+
+        return userRoleLinkService.saveBatch(userRoleLinkList);
     }
 }
 

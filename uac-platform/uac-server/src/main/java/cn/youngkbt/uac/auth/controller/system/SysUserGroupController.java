@@ -9,6 +9,7 @@ import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
 import cn.youngkbt.uac.sys.model.vo.extra.UserGroupBindUserVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
+import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +28,7 @@ import java.util.List;
 public class SysUserGroupController {
 
     private final SysUserGroupService sysUserGroupService;
+    private final UserGroupLinkService userGroupLinkService;
 
     @GetMapping("/list")
     @Operation(summary = "用户组列表查询", description = "通过主键查询用户组列表")
@@ -52,6 +54,9 @@ public class SysUserGroupController {
     @PostMapping("/addUserToGroups")
     @Operation(summary = "添加用户到用户组", description = "添加用户到用户组（多个用户组）")
     public Response<Boolean> addUserToGroups(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkUserGroupDTO userLinkUserGroupDTO) {
+        if (userGroupLinkService.checkUserExistUserGroups(userLinkUserGroupDTO.getUserId(), userLinkUserGroupDTO.getUserGroupIds())) {
+            return HttpResult.failMessage("添加用户到用户组失败，用户已存在于用户组中");
+        }
         boolean result = sysUserGroupService.addUserToGroups(userLinkUserGroupDTO);
         return HttpResult.ok(result);
     }

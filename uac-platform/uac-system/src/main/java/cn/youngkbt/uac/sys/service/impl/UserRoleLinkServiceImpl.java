@@ -54,6 +54,13 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     }
 
     @Override
+    public boolean checkUserExistRoles(String userId, List<String> roleIds) {
+        return baseMapper.exists(Wrappers.<UserRoleLink>lambdaQuery()
+                .eq(UserRoleLink::getUserId, userId)
+                .in(UserRoleLink::getRoleId, roleIds));
+    }
+
+    @Override
     public boolean addOneLink(UserRoleLinkDTO userRoleLinkDto) {
         UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDto, UserRoleLink.class);
         return baseMapper.insert(userRoleLink) > 0;

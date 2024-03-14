@@ -53,6 +53,13 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
+    public boolean checkUserExistUserGroups(String userId, List<String> userGroupIds) {
+        return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
+                .eq(UserGroupLink::getUserId, userId)
+                .in(UserGroupLink::getUserGroupId, userGroupIds));
+    }
+
+    @Override
     public boolean addOneLink(UserGroupLinkDTO userGroupLinkDto) {
         UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDto, UserGroupLink.class);
         return baseMapper.insert(userGroupLink) > 0;

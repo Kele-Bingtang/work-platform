@@ -30,7 +30,7 @@
             ref="userGroupListCardRef"
             title="用户组"
             :request-api="listUserGroupByUserId"
-            :request-params="{ appId: uacAppSecret, userId: userInfo.userId }"
+            :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
             value="groupId"
             label="groupName"
           >
@@ -45,7 +45,7 @@
             title="角色"
             :data="[]"
             :request-api="listRoleListByUserId"
-            :request-params="{ appId: uacAppSecret, userId: userInfo.userId }"
+            :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
             value="roleId"
             label="roleName"
           >
@@ -56,47 +56,44 @@
         </el-col>
       </el-row>
 
-      <el-dialog v-model="userGroupDialogVisible" title="添加用户组" width="650" :close-on-click-modal="false">
-        <ProForm ref="userGroupFormElementRef" v-model="userGroupForm" :options="userGroupOptions" />
-        <template #footer>
-          <el-button @click="userGroupDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="userGroupConfirm">确定</el-button>
-        </template>
-      </el-dialog>
+      <DialogForm
+        ref="userGroupDialogFormRef"
+        :transfer-api="listUserGroupWithDisabledByUserId"
+        :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
+        transfer-placeholder="用户组"
+        value="groupId"
+        label="groupName"
+        @confirm="userGroupConfirm"
+      />
 
-      <el-dialog v-model="roleDialogVisible" title="添加角色" width="650" :close-on-click-modal="false">
-        <ProForm ref="roleFormElementRef" v-model="roleForm" :options="roleOptions" />
-        <template #footer>
-          <el-button @click="roleDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="roleConfirm">确定</el-button>
-        </template>
-      </el-dialog>
+      <DialogForm
+        ref="roleDialogFormRef"
+        :transfer-api="listRoleListWithDisabledByUserId"
+        :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
+        transfer-placeholder="角色"
+        value="roleId"
+        label="roleName"
+        @confirm="roleConfirm"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="tsx" name="UserLink">
-import { TreeFilter, ProForm, uacAppSecret, message } from "work";
+import { TreeFilter, uacAppSecret, message } from "work";
 import { list, type User as UserType } from "@/api/user/base";
-import {
-  addUserToGroups,
-  listUserGroupByUserId,
-  listUserGroupWithDisabledByUserId,
-  type UserGroup,
-} from "@/api/user/userGroup";
-import { listRoleListByUserId, listRoleListWithDisabledByUserId, type Role } from "@/api/system/role";
+import { addUserToGroups, listUserGroupByUserId, listUserGroupWithDisabledByUserId } from "@/api/user/userGroup";
+import { addUserToRoles, listRoleListByUserId, listRoleListWithDisabledByUserId, type Role } from "@/api/system/role";
 import { Plus, User } from "@element-plus/icons-vue";
-import type { FormOptionsProps, ProFormInstance } from "@work/components";
-import type { FormRules } from "element-plus";
-import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, dayjs, ElTransfer } from "element-plus";
+import { ElRow, ElCol } from "element-plus";
 import Description, { type DescriptionProps } from "./components/description.vue";
 import ListCard, { type ListCardInstance } from "./components/listCard.vue";
-import { useLayoutStore } from "@/stores/layout";
-import type { DictData } from "@/api/system/dictData";
+import DialogForm, { type DialogFormInstance } from "./components/dialogForm.vue";
 
-const userGroupFormElementRef = shallowRef<ProFormInstance>();
 const userGroupListCardRef = shallowRef<ListCardInstance>();
 const roleListCardRef = shallowRef<ListCardInstance>();
+const userGroupDialogFormRef = shallowRef<DialogFormInstance>();
+const roleDialogFormRef = shallowRef<DialogFormInstance>();
 const userInfo = ref<UserType.UserInfo>();
 
 const descriptionData = ref<DescriptionProps>({
@@ -104,75 +101,9 @@ const descriptionData = ref<DescriptionProps>({
   data: [],
 });
 
-const userGroupInfo: UserGroup.UserLinkUserGroup = {
-  userId: "",
-  userGroupIds: [],
-  validFrom: "",
-  expireOn: "",
-  appId: "",
-};
-
-const roleInfo: Role.UserLinkRole = {
-  userId: "",
-  roleIds: [],
-  validFrom: "",
-  expireOn: "",
-  appId: "",
-};
-
-const userGroupDialogVisible = ref(false);
-const roleDialogVisible = ref(false);
-const userGroupForm = ref<UserGroup.UserLinkUserGroup>({ ...userGroupInfo });
-const roleForm = ref<Role.UserLinkRole>({ ...roleInfo });
-const userGroupData = ref<UserGroup.UserGroupInfo[]>([]);
-const roleData = ref<Role.RoleInfo[]>([]);
-const expireOnOptions = ref<DictData.DictDataInfo[]>([]);
-
-watch(
-  () => userGroupDialogVisible.value,
-  () => {
-    // 点击用户组的新增按钮后，初始化穿梭框的数据
-    if (userGroupDialogVisible.value && !userGroupData.value.length) {
-      listUserGroupWithDisabledByUserId({ appId: uacAppSecret, userId: userInfo.value?.userId || "" }).then(res => {
-        userGroupData.value = res.data;
-      });
-    }
-
-    // 点击用户组的新增按钮后，初始化过期时间的下拉框
-    if (userGroupDialogVisible.value && !expireOnOptions.value.length) {
-      useLayoutStore()
-        .getDictData("sys_expire_on")
-        .then(res => {
-          expireOnOptions.value = res.data;
-        });
-    }
-  }
-);
-watch(
-  () => roleDialogVisible.value,
-  () => {
-    // 点击角色的新增按钮后，初始化穿梭框的数据
-    if (roleDialogVisible.value && !roleData.value.length) {
-      listRoleListWithDisabledByUserId({ appId: uacAppSecret, userId: userInfo.value?.userId || "" }).then(res => {
-        roleData.value = res.data;
-      });
-    }
-
-    // 点击角色的新增按钮后，初始化过期时间的下拉框
-    if (roleDialogVisible.value && !expireOnOptions.value.length) {
-      useLayoutStore()
-        .getDictData("sys_expire_on")
-        .then(res => {
-          expireOnOptions.value = res.data;
-        });
-    }
-  }
-);
-
 // 点击用户列表的回调
 const handleTreeChange = (_: number, data: UserType.UserInfo) => {
   userInfo.value = data;
-
   descriptionData.value.title = data.nickname;
   descriptionData.value.data = [
     { label: "用户名", value: data.username },
@@ -184,184 +115,45 @@ const handleTreeChange = (_: number, data: UserType.UserInfo) => {
 };
 
 // 点击新增用户组按钮的回调
-const handleAddUserGroup = () => {
-  userGroupForm.value = { ...userGroupInfo };
-  userGroupDialogVisible.value = true;
-};
+const handleAddUserGroup = () => userGroupDialogFormRef.value?.open();
 
 // 点击新增角色按钮的回调
-const handleAddRole = () => {
-  roleForm.value = { ...roleInfo };
-  roleDialogVisible.value = true;
-};
+const handleAddRole = () => roleDialogFormRef.value?.open();
 
 // 新增用户组的弹框确认回调
-const userGroupConfirm = () => {
-  userGroupFormElementRef.value?.formRef.validate(valid => {
-    if (valid) {
-      addUserToGroups({
-        ...userGroupForm.value,
-        appId: uacAppSecret,
-        userId: userInfo.value?.userId || "",
-      }).then(res => {
-        if (res.status === "success") {
-          message.success("修改成功");
-          userGroupDialogVisible.value = false;
-          // 刷新外面的用户组列表
-          userGroupListCardRef.value?.getDataList();
-          // 清空穿梭框的数据，下次进来重新获取
-          userGroupData.value = [];
-        }
-      });
+const userGroupConfirm = async (form: any, callback: () => void) => {
+  addUserToGroups({
+    ...form,
+    userGroupIds: form.transferIds,
+    appId: uacAppSecret,
+    userId: userInfo.value?.userId || "",
+  }).then((res: any) => {
+    if (res.status === "success") {
+      message.success("修改成功");
+      // 刷新外面的用户组列表
+      userGroupListCardRef.value?.getDataList();
+      // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
+      callback();
     }
   });
 };
 
 // 新增角色的弹框确认回调
-const roleConfirm = () => {};
-
-// 选择时长后，计算出过期时间
-const selectChange = (value: number) => {
-  if (value === undefined) return;
-  if (value === -1) userGroupForm.value.expireOn = dayjs().add(99, "year").format("YYYY-MM-DD");
-  else userGroupForm.value.expireOn = dayjs().add(value, "year").format("YYYY-MM-DD");
-};
-
-// 表单规则
-const rules = reactive<FormRules>({
-  userGroupIds: [{ required: true, message: "请选择用户组", trigger: "blur" }],
-  validFrom: [{ required: true, message: "请选择生效时间", trigger: "blur" }],
-  expireOn: [{ required: true, message: "请选择过期时间", trigger: "blur" }],
-});
-
-const userGroupOptions: FormOptionsProps = {
-  form: { inline: false, labelPosition: "top", labelWidth: 80, size: "default", rules: rules },
-  columns: [
-    {
-      formItem: { label: "用户组选择", prop: "userGroupIds", br: true },
-      attrs: {
-        render: ({ scope }) => {
-          return (
-            <>
-              <ElTransfer
-                vModel={scope.form.userGroupIds}
-                filterable
-                filter-placeholder="用户组名称"
-                data={userGroupData.value}
-                titles={["选择", "选中"]}
-                props={{ label: "groupName", key: "groupId" }}
-              >
-                {{
-                  default: ({ option }) => <span>{option.groupName}</span>,
-                }}
-              </ElTransfer>
-            </>
-          );
-        },
-      },
-    },
-    {
-      formItem: { label: "生效时间", prop: "validFrom", br: true },
-      attrs: { el: "el-date-picker", props: { clearable: true, placeholder: "请选择生效时间" } },
-    },
-    {
-      formItem: { label: "过期时间", prop: "expireOn", br: true },
-      attrs: {
-        render: ({ scope }) => {
-          return (
-            <ElRow gutter={10}>
-              <ElCol span={12}>
-                <ElSelect
-                  vModel={scope.form.expireOnNum}
-                  placeholder="请选择时长"
-                  style={{ width: "100%" }}
-                  onChange={(val: string) => selectChange(Number(val))}
-                  clearable
-                >
-                  {expireOnOptions.value.map(item => (
-                    <ElOption key={item.dictValue} label={item.dictLabel} value={item.dictValue} />
-                  ))}
-                </ElSelect>
-              </ElCol>
-              <ElCol span={12}>
-                <ElDatePicker
-                  vModel={scope.form.expireOn}
-                  type="date"
-                  placeholder="请选择过期时间"
-                  style={{ width: "100%" }}
-                />
-              </ElCol>
-            </ElRow>
-          );
-        },
-      },
-    },
-  ],
-};
-
-const roleOptions: FormOptionsProps = {
-  form: { inline: false, labelPosition: "top", labelWidth: 80, size: "default", rules: rules },
-  columns: [
-    {
-      formItem: { label: "角色选择", prop: "roleIds", br: true },
-      attrs: {
-        render: ({ scope }) => {
-          return (
-            <>
-              <ElTransfer
-                vModel={scope.form.roleIds}
-                filterable
-                filter-placeholder="角色名称"
-                data={roleData.value}
-                titles={["选择", "选中"]}
-                props={{ label: "roleName", key: "roleId" }}
-              >
-                {{
-                  default: ({ option }) => <span>{option.roleName}</span>,
-                }}
-              </ElTransfer>
-            </>
-          );
-        },
-      },
-    },
-    {
-      formItem: { label: "生效时间", prop: "validFrom", br: true },
-      attrs: { el: "el-date-picker", props: { clearable: true, placeholder: "请选择生效时间" } },
-    },
-    {
-      formItem: { label: "过期时间", prop: "expireOn", br: true },
-      attrs: {
-        render: ({ scope }) => {
-          return (
-            <ElRow gutter={10}>
-              <ElCol span={12}>
-                <ElSelect
-                  vModel={scope.form.expireOnNum}
-                  placeholder="请选择时长"
-                  style={{ width: "100%" }}
-                  onChange={(val: string) => selectChange(Number(val))}
-                  clearable
-                >
-                  {expireOnOptions.value.map(item => (
-                    <ElOption key={item.dictValue} label={item.dictLabel} value={item.dictValue} />
-                  ))}
-                </ElSelect>
-              </ElCol>
-              <ElCol span={12}>
-                <ElDatePicker
-                  vModel={scope.form.expireOn}
-                  type="date"
-                  placeholder="请选择过期时间"
-                  style={{ width: "100%" }}
-                />
-              </ElCol>
-            </ElRow>
-          );
-        },
-      },
-    },
-  ],
+const roleConfirm = async (form: any, callback: () => void) => {
+  addUserToRoles({
+    ...form,
+    roleIds: form.transferIds,
+    appId: uacAppSecret,
+    userId: userInfo.value?.userId || "",
+  }).then((res: any) => {
+    if (res.status === "success") {
+      message.success("修改成功");
+      // 刷新外面的用户组列表
+      roleListCardRef.value?.getDataList();
+      // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
+      callback();
+    }
+  });
 };
 </script>
 

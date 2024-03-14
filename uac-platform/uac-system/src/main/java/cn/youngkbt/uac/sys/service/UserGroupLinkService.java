@@ -20,9 +20,19 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
 
     boolean checkUserGroupExistUser(String userGroupId);
 
+    /**
+     * 检查用户是否在某些用户组中
+     *
+     * @param userId       用户用户 ID
+     * @param userGroupIds 用户组 ID 列表
+     * @return 是否在用户组中
+     */
+    boolean checkUserExistUserGroups(String userId, List<String> userGroupIds);
+
     boolean addOneLink(UserGroupLinkDTO userGroupLinkDto);
 
     boolean updateOneLink(UserGroupLinkDTO userGroupLinkDto);
 
     boolean removeOneLink(Long id);
+
 }

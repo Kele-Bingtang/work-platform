@@ -6,7 +6,9 @@
     </div>
     <el-scrollbar v-if="listData.length">
       <el-menu>
-        <el-menu-item v-for="item in listData" :key="item[value]" :index="item[value]">{{ item[label] }}</el-menu-item>
+        <el-menu-item v-for="item in listData" :key="item[value]" :index="item[value]">
+          {{ item[label] }}
+        </el-menu-item>
       </el-menu>
     </el-scrollbar>
     <el-empty v-else />
@@ -27,12 +29,12 @@ export interface ListCardProps {
   title?: string;
   data?: ListCardItem[] | any;
   requestApi?: (data?: any) => Promise<any>; // 请求数据的 api ==> 非必传
-  requestParams?: any;
+  requestParams?: Record<string, any>;
   label?: string;
   value?: string;
 }
 
-const listData = ref<{ [key: string]: any }[]>([]);
+const listData = ref<Record<string, any>[]>([]);
 
 // 接受父组件参数，配置默认值
 const props = withDefaults(defineProps<ListCardProps>(), {
@@ -57,6 +59,9 @@ const getDataList = async () => {
     listData.value = data;
   }
 };
+
+// 监听页面 requestParam 改化，重新获取数据
+watch(() => props.requestParams, getDataList, { deep: true });
 
 defineExpose({ getDataList });
 </script>

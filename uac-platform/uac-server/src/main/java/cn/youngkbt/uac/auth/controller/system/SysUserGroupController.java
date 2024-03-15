@@ -7,7 +7,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
-import cn.youngkbt.uac.sys.model.vo.extra.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,9 +40,9 @@ public class SysUserGroupController {
 
     @GetMapping("/listByUserId/{appId}/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询某个用户所在的用户组列表")
-    public Response<List<SysUserGroupVO>> listUserIdGroup(@PathVariable String appId, @PathVariable String userId) {
-        List<SysUserGroupVO> sysUserGroupVOList = sysUserGroupService.listUserGroupByUserId(appId, userId);
-        return HttpResult.ok(sysUserGroupVOList);
+    public Response<List<UserGroupListVO>> listUserIdGroup(@PathVariable String appId, @PathVariable String userId) {
+        List<UserGroupListVO> userGroupListVOList = sysUserGroupService.listUserGroupByUserId(appId, userId);
+        return HttpResult.ok(userGroupListVOList);
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
@@ -61,4 +62,10 @@ public class SysUserGroupController {
         return HttpResult.ok(result);
     }
 
+    @DeleteMapping("/removeUserFromUserGroup/{userId}/{userGroupId}")
+    @Operation(summary = "移出用户组", description = "将用户移出项目组")
+    public Response<Boolean> removeUserFromUserGroup(@PathVariable String userId, @PathVariable String userGroupId) {
+        boolean result = sysUserGroupService.removeUserFromUserGroup(userId, userGroupId);
+        return HttpResult.ok(result);
+    }
 }

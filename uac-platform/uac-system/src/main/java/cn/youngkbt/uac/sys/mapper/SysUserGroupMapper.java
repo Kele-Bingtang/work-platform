@@ -1,7 +1,8 @@
 package cn.youngkbt.uac.sys.mapper;
 
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
-import cn.youngkbt.uac.sys.model.vo.extra.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface SysUserGroupMapper extends BaseMapper<SysUserGroup> {
 
-    List<SysUserGroup> selectByUserId(@Param(Constants.WRAPPER) Wrapper<SysUserGroup> queryWrapper);
+    List<UserGroupListVO> selectByUserId(@Param(Constants.WRAPPER) Wrapper<SysUserGroup> queryWrapper);
 
     List<UserGroupBindUserVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
 }

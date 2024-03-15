@@ -32,14 +32,14 @@
         app_id
     </sql>
     
-    <select id="selectByUserId" resultType="cn.youngkbt.uac.sys.model.po.SysRole">
-        select tsr.* from t_sys_role tsr left join t_user_role_link turl on tsr.role_id = turl.role_id
+    <select id="selectByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO">
+        select tsr.*, turl.id as link_id, turl.valid_from, turl.expire_on from t_sys_role tsr left join t_user_role_link turl on tsr.role_id = turl.role_id
             ${ew.getCustomSqlSegment}
     </select>
     
-    <select id="selectWithDisabledByUserId" resultType="cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO">
+    <select id="selectWithDisabledByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO">
         select tsr.*, turl.user_id, case when turl.user_id is not null then 1 else 0 end as disabled
-        from t_sys_role tsr left join t_user_role_link turl on tsr.role_id = turl.role_id and turl.user_id = #{userId}
-        where tsr.app_id = #{appId}
+        from t_sys_role tsr left join t_user_role_link turl on tsr.role_id = turl.role_id and turl.user_id = #{userId} and turl.is_deleted = 0
+        where tsr.app_id = #{appId} and tsr.is_deleted = 0
     </select>
 </mapper>

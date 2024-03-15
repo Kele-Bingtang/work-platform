@@ -9,6 +9,7 @@ import { SearchForm } from "@work/components/searchForm";
 import { Grid } from "@work/components/grid";
 import { WangEditor } from "@work/components/wangEditor";
 import { Drawer } from "@work/components/drawer";
+import { List } from "@work/components/list";
 
 export default [
   Icon,
@@ -22,4 +23,5 @@ export default [
   Grid,
   WangEditor,
   Drawer,
+  List,
 ];

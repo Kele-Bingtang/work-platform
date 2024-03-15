@@ -5,7 +5,8 @@ import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -81,7 +82,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRoleVO> listRoleListByUserId(String appId, String userId);
+    List<UserRoleListVO> listRoleListByUserId(String appId, String userId);
 
     /**
      * 根据应用 ID、用户 ID 查询角色列表，如果角色绑定了用户，则 disabled 属性为 false
@@ -99,4 +100,13 @@ public interface SysRoleService extends IService<SysRole> {
      * @return 是否成功
      */
     boolean addUserToRoles(UserLinkRoleDTO userLinkRoleDTO);
+
+    /**
+     * 将用户移出用户组
+     *
+     * @param userId 用户 ID
+     * @param roleId 角色 ID
+     * @return 是否成功
+     */
+    boolean removeUserFromRole(String userId, String roleId);
 }

@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysUserGroupMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
@@ -7,7 +8,8 @@ import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
-import cn.youngkbt.uac.sys.model.vo.extra.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.utils.ListUtil;
@@ -51,12 +53,12 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
     }
 
     @Override
-    public List<SysUserGroupVO> listUserGroupByUserId(String appId, String userId) {
+    public List<UserGroupListVO> listUserGroupByUserId(String appId, String userId) {
         QueryWrapper<SysUserGroup> wrapper = Wrappers.query();
-        wrapper.eq("tsug.app_id", appId)
+        wrapper.eq("tugl.is_deleted", ColumnConstant.NON_DELETED)
+                .eq("tsug.app_id", appId)
                 .eq("tugl.user_id", userId);
-        List<SysUserGroup> sysUserGroupList = baseMapper.selectByUserId(wrapper);
-        return MapstructUtil.convert(sysUserGroupList, SysUserGroupVO.class);
+        return baseMapper.selectByUserId(wrapper);
     }
 
     @Override
@@ -77,6 +79,13 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
                 , UserGroupLink.class);
 
         return userGroupLinkService.saveBatch(userGroupLinkList);
+    }
+
+    @Override
+    public boolean removeUserFromUserGroup(String userId, String userGroupId) {
+        return userGroupLinkService.remove(Wrappers.<UserGroupLink>lambdaQuery()
+                .eq(UserGroupLink::getUserId, userId)
+                .eq(UserGroupLink::getUserGroupId, userGroupId));
     }
 }
 

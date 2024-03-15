@@ -5,7 +5,8 @@ import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
-import cn.youngkbt.uac.sys.model.vo.extra.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      * @param userId 用户 ID
      * @return 用户组列表
      */
-    List<SysUserGroupVO> listUserGroupByUserId(String appId, String userId);
+    List<UserGroupListVO> listUserGroupByUserId(String appId, String userId);
 
     /**
      * 通过用户 ID 查询用户组列表（包含禁用）
@@ -52,4 +53,12 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      */
     boolean addUserToGroups(UserLinkUserGroupDTO userLinkUserGroupDTO);
 
+    /**
+     * 将用户移出项目组
+     *
+     * @param userId      用户 ID
+     * @param userGroupId 用户组 ID
+     * @return 是否移出成功
+     */
+    boolean removeUserFromUserGroup(String userId, String userGroupId);
 }

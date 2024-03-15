@@ -1,7 +1,8 @@
 package cn.youngkbt.uac.sys.mapper;
 
 import cn.youngkbt.uac.sys.model.po.SysRole;
-import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
@@ -16,7 +17,7 @@ import java.util.List;
 */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-    List<SysRole> selectByUserId(@Param(Constants.WRAPPER) QueryWrapper<SysRole> wrapper);
+    List<UserRoleListVO> selectByUserId(@Param(Constants.WRAPPER) QueryWrapper<SysRole> wrapper);
 
     List<RoleBindUserVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
 }

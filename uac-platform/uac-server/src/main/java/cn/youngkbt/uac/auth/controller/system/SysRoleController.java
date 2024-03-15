@@ -7,7 +7,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,9 +79,9 @@ public class SysRoleController {
 
     @GetMapping("/listByUserId/{appId}/{userId}")
     @Operation(summary = "角色列表查询", description = "查询某个用户所在的角色列表")
-    public Response<List<SysRoleVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<SysRoleVO> sysRoleVOList = sysRoleService.listRoleListByUserId(appId, userId);
-        return HttpResult.ok(sysRoleVOList);
+    public Response<List<UserRoleListVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId) {
+        List<UserRoleListVO> userRoleListVOS = sysRoleService.listRoleListByUserId(appId, userId);
+        return HttpResult.ok(userRoleListVOS);
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
@@ -100,6 +101,13 @@ public class SysRoleController {
             return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
         }
         boolean result = sysRoleService.addUserToRoles(userLinkRoleDTO);
+        return HttpResult.ok(result);
+    }
+
+    @DeleteMapping("/removeUserFromRole/{userId}/{roleId}")
+    @Operation(summary = "移出用户组", description = "将用户移出项目组")
+    public Response<Boolean> removeUserFromRole(@PathVariable String userId, @PathVariable String roleId) {
+        boolean result = sysRoleService.removeUserFromRole(userId, roleId);
         return HttpResult.ok(result);
     }
 }

@@ -12,12 +12,28 @@ export namespace Role {
     appId: string; // 应用 ID
     createTime: string; // 创建时间
   }
+
   export interface UserLinkRole {
     userId: string; // 用户 ID
     roleIds: string[]; // 角色 ID
     validFrom: string; // 负责人 ID
     expireOn: string; // 负责人 username
     appId: string; // 应用 ID
+  }
+
+  export interface UserGroupList {
+    id: number; // 主键
+    roleId: string; // 角色 ID
+    roleCode: string; // 角色码
+    roleName: string; // 角色名
+    status: number; // 状态
+    orderNum: number; // 显示顺序
+    intro: string; // 角色介绍
+    appId: string; // 应用 ID
+    createTime: string; // 创建时间
+    linkId: number; // UserRoleLink 表的主键
+    validFrom: string; // 生效时间
+    expireOn: string; // 过期时间
   }
 }
 
@@ -55,4 +71,8 @@ export const deleteOne = (data: Role.RoleInfo) => {
 
 export const deleteBatch = (ids: string[]) => {
   return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
+};
+
+export const removeUserFromRole = (userId: string, userGroupId: string) => {
+  return http.delete<http.Response<string>>(`${baseUri}/removeUserFromRole/${userId}/${userGroupId}`);
 };

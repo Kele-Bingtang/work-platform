@@ -33,6 +33,8 @@
             :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
             value="groupId"
             label="groupName"
+            @edit="userGroupEdit"
+            @delete="userGroupDelete"
           >
             <template #extra>
               <el-button link :icon="Plus" @click="handleAddUserGroup">新增</el-button>
@@ -48,6 +50,8 @@
             :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
             value="roleId"
             label="roleName"
+            @edit="roleEdit"
+            @delete="roleDelete"
           >
             <template #extra>
               <el-button link :icon="Plus" @click="handleAddRole">新增</el-button>
@@ -82,8 +86,20 @@
 <script setup lang="tsx" name="UserLink">
 import { TreeFilter, uacAppSecret, message } from "work";
 import { list, type User as UserType } from "@/api/user/base";
-import { addUserToGroups, listUserGroupByUserId, listUserGroupWithDisabledByUserId } from "@/api/user/userGroup";
-import { addUserToRoles, listRoleListByUserId, listRoleListWithDisabledByUserId, type Role } from "@/api/system/role";
+import {
+  addUserToGroups,
+  listUserGroupByUserId,
+  listUserGroupWithDisabledByUserId,
+  removeUserFromUserGroup,
+  type UserGroup,
+} from "@/api/user/userGroup";
+import {
+  addUserToRoles,
+  listRoleListByUserId,
+  listRoleListWithDisabledByUserId,
+  removeUserFromRole,
+  type Role,
+} from "@/api/system/role";
 import { Plus, User } from "@element-plus/icons-vue";
 import { ElRow, ElCol } from "element-plus";
 import Description, { type DescriptionProps } from "./components/description.vue";
@@ -115,10 +131,10 @@ const handleTreeChange = (_: number, data: UserType.UserInfo) => {
 };
 
 // 点击新增用户组按钮的回调
-const handleAddUserGroup = () => userGroupDialogFormRef.value?.open();
+const handleAddUserGroup = () => userGroupDialogFormRef.value?.openAdd();
 
 // 点击新增角色按钮的回调
-const handleAddRole = () => roleDialogFormRef.value?.open();
+const handleAddRole = () => roleDialogFormRef.value?.openAdd();
 
 // 新增用户组的弹框确认回调
 const userGroupConfirm = async (form: any, callback: () => void) => {
@@ -152,6 +168,34 @@ const roleConfirm = async (form: any, callback: () => void) => {
       roleListCardRef.value?.getDataList();
       // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
       callback();
+    }
+  });
+};
+
+const userGroupEdit = (item: UserGroup.UserGroupList) => {
+  userGroupDialogFormRef.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
+};
+
+const userGroupDelete = (item: UserGroup.UserGroupInfo) => {
+  removeUserFromUserGroup(userInfo.value?.userId || "", item.groupId).then((res: any) => {
+    if (res.status === "success") {
+      message.success("删除成功");
+      userGroupListCardRef.value?.getDataList();
+      userGroupDialogFormRef.value && (userGroupDialogFormRef.value.transferData = []);
+    }
+  });
+};
+
+const roleEdit = (item: Role.UserGroupList) => {
+  roleDialogFormRef.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
+};
+
+const roleDelete = (item: Role.RoleInfo) => {
+  removeUserFromRole(userInfo.value?.userId || "", item.roleId).then((res: any) => {
+    if (res.status === "success") {
+      message.success("删除成功");
+      roleListCardRef.value?.getDataList();
+      roleDialogFormRef.value && (roleDialogFormRef.value.transferData = []);
     }
   });
 };

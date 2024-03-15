@@ -5,11 +5,25 @@
       <slot name="extra"></slot>
     </div>
     <el-scrollbar v-if="listData.length">
-      <el-menu>
-        <el-menu-item v-for="item in listData" :key="item[value]" :index="item[value]">
-          {{ item[label] }}
-        </el-menu-item>
-      </el-menu>
+      <List :data="listData" :label="label" :value="value">
+        <template #default="item">
+          <span>{{ item[label] }}</span>
+          <template v-if="inCurrentWeek(item.expireOn)">
+            （
+            <span style="color: red">{{ inCurrentWeek(item.expireOn) }}</span>
+            ）
+          </template>
+        </template>
+
+        <template #extra="item">
+          <el-button :icon="Edit" link @click="emits('edit', item)"></el-button>
+          <el-popconfirm title="你确定移出该用户组吗?" @confirm="emits('delete', item)" :width="200">
+            <template #reference>
+              <el-button :icon="Delete" link></el-button>
+            </template>
+          </el-popconfirm>
+        </template>
+      </List>
     </el-scrollbar>
     <el-empty v-else />
   </div>
@@ -17,6 +31,9 @@
 
 <script setup lang="ts" name="ListCard">
 import ListCard from "./listCard.vue";
+import { List } from "work";
+import { Edit, Delete } from "@element-plus/icons-vue";
+import { dayjs } from "element-plus";
 
 export type ListCardInstance = Omit<InstanceType<typeof ListCard>, keyof ComponentPublicInstance | keyof ListCardProps>;
 
@@ -34,7 +51,12 @@ export interface ListCardProps {
   value?: string;
 }
 
-const listData = ref<Record<string, any>[]>([]);
+type EmitProps = {
+  (e: "edit", item: any): void;
+  (e: "delete", item: any): void;
+};
+
+const emits = defineEmits<EmitProps>();
 
 // 接受父组件参数，配置默认值
 const props = withDefaults(defineProps<ListCardProps>(), {
@@ -42,6 +64,8 @@ const props = withDefaults(defineProps<ListCardProps>(), {
   label: "label",
   value: "value",
 });
+
+const listData = ref<Record<string, any>[]>([]);
 
 onBeforeMount(async () => {
   // 有数据就直接赋值，没有数据就执行请求函数
@@ -58,6 +82,14 @@ const getDataList = async () => {
     const { data } = await props.requestApi({ ...props.requestParams });
     listData.value = data;
   }
+};
+
+// expireOn 是否在这七天内，在则返回 expireOn
+const inCurrentWeek = (expireOn: string) => {
+  const expireOnDate = dayjs(expireOn);
+  const dateAgo = dayjs().subtract(7, "day");
+
+  if (expireOnDate.isAfter(dateAgo) && expireOnDate.isBefore(dayjs())) return expireOn;
 };
 
 // 监听页面 requestParam 改化，重新获取数据

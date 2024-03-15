@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
@@ -8,7 +9,8 @@ import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.extra.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
@@ -61,12 +63,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public List<SysRoleVO> listRoleListByUserId(String appId, String userId) {
+    public List<UserRoleListVO> listRoleListByUserId(String appId, String userId) {
         QueryWrapper<SysRole> wrapper = Wrappers.query();
-        wrapper.eq("tsr.app_id", appId)
+        wrapper.eq("turl.is_deleted", ColumnConstant.NON_DELETED)
+                .eq("tsr.app_id", appId)
                 .eq("turl.user_id", userId);
-        List<SysRole> sysRoleList = baseMapper.selectByUserId(wrapper);
-        return MapstructUtil.convert(sysRoleList, SysRoleVO.class);
+        return baseMapper.selectByUserId(wrapper);
     }
 
     @Override
@@ -118,6 +120,13 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                 , UserRoleLink.class);
 
         return userRoleLinkService.saveBatch(userRoleLinkList);
+    }
+
+    @Override
+    public boolean removeUserFromRole(String userId, String roleId) {
+        return userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery()
+                .eq(UserRoleLink::getUserId, userId)
+                .eq(UserRoleLink::getRoleId, roleId));
     }
 }
 

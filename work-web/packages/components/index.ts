@@ -9,3 +9,4 @@ export * from "./searchForm";
 export * from "./grid";
 export * from "./wangEditor";
 export * from "./drawer";
+export * from "./list";

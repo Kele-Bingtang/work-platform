@@ -33,10 +33,11 @@ export interface DialogFormProps {
 const props = withDefaults(defineProps<DialogFormProps>(), {
   value: "key",
   label: "label",
+  status: "add",
 });
 
 type EmitProps = {
-  (e: "confirm", form: any, callback: () => void): boolean;
+  (e: "confirm", form: any, callback: () => void): void;
 };
 
 const emits = defineEmits<EmitProps>();
@@ -46,6 +47,7 @@ const dialogVisible = ref(false);
 const form = ref<{ [key: string]: any }>({});
 const transferData = ref([]);
 const expireOnOptions = ref<DictData.DictDataInfo[]>([]);
+const edit = ref(true);
 
 watch(
   () => dialogVisible.value,
@@ -68,7 +70,14 @@ const getTransferDataList = () => {
 };
 
 // 监听页面 requestParam 改化，重新获取数据
-watch(() => props.requestParams, getTransferDataList, { deep: true });
+watch(
+  () => props.requestParams,
+  () => {
+    if (dialogVisible.value) getTransferDataList();
+    else transferData.value = [];
+  },
+  { deep: true }
+);
 
 // 新增用户组的弹框确认回调
 const handleConfirm = () => {
@@ -102,6 +111,7 @@ const options: FormOptionsProps = {
     {
       formItem: { label: "用户组选择", prop: "transferIds", br: true },
       attrs: {
+        isDestroy: () => edit.value,
         render: ({ scope }) => {
           return (
             <>
@@ -161,12 +171,23 @@ const options: FormOptionsProps = {
   ],
 };
 
-const open = () => (dialogVisible.value = true);
+const openAdd = () => {
+  edit.value = false;
+  dialogVisible.value = true;
+};
+const openEdit = (data: any) => {
+  edit.value = true;
+  form.value = data;
+  dialogVisible.value = true;
+};
 const close = () => (dialogVisible.value = false);
 const toggle = () => (dialogVisible.value = !dialogVisible.value);
 
 defineExpose({
-  open,
+  dialogVisible,
+  transferData,
+  openAdd,
+  openEdit,
   close,
   toggle,
 });

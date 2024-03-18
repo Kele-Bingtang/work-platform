@@ -1,20 +1,17 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserGroupRoleLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.UserGroupRoleLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
-import cn.youngkbt.uac.sys.model.vo.UserGroupRoleLinkVO;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
-import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import cn.youngkbt.utils.ListUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -25,49 +22,47 @@ import java.util.Objects;
 public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkMapper, UserGroupRoleLink> implements UserGroupRoleLinkService {
 
     @Override
-    public List<UserGroupRoleLinkVO> queryLinkByAppId(UserGroupRoleLinkDTO userGroupRoleLinkDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<UserGroupRoleLink> wrapper = Wrappers.<UserGroupRoleLink>lambdaQuery()
-                .eq(UserGroupRoleLink::getAppId, userGroupRoleLinkDto.getAppId())
-                .eq(StringUtil.hasText(userGroupRoleLinkDto.getUserGroupId()), UserGroupRoleLink::getUserGroupId, userGroupRoleLinkDto.getUserGroupId())
-                .eq(StringUtil.hasText(userGroupRoleLinkDto.getRoleId()), UserGroupRoleLink::getRoleId, userGroupRoleLinkDto.getRoleId())
-                .orderByAsc(UserGroupRoleLink::getId);
-
-        List<UserGroupRoleLink> userGroupRoleLinkList;
-        if (Objects.isNull(pageQuery)) {
-            userGroupRoleLinkList = baseMapper.selectList(wrapper);
-        } else {
-            userGroupRoleLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        return MapstructUtil.convert(userGroupRoleLinkList, UserGroupRoleLinkVO.class);
-    }
-
-    @Override
-    public boolean checkUserGroupExistRole(String userGroupId) {
+    public boolean checkRolesExistUserGroup(List<String> roleIds, String userGroupId) {
         return baseMapper.exists(Wrappers.<UserGroupRoleLink>lambdaQuery()
+                .in(UserGroupRoleLink::getRoleId, roleIds)
                 .eq(UserGroupRoleLink::getUserGroupId, userGroupId));
     }
 
     @Override
-    public boolean checkRoleExistUserGroup(String roleId) {
+    public boolean checkRoleExistUserGroups(String roleId, List<String> userGroupIds) {
         return baseMapper.exists(Wrappers.<UserGroupRoleLink>lambdaQuery()
-                .eq(UserGroupRoleLink::getRoleId, roleId));
+                .eq(UserGroupRoleLink::getRoleId, roleId)
+                .in(UserGroupRoleLink::getUserGroupId, userGroupIds));
     }
 
     @Override
-    public boolean addOneLink(UserGroupRoleLinkDTO userGroupRoleLinkDto) {
-        UserGroupRoleLink userGroupRoleLink = MapstructUtil.convert(userGroupRoleLinkDto, UserGroupRoleLink.class);
-        return baseMapper.insert(userGroupRoleLink) > 0;
+    public boolean addUserGroupToRoles(UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
+        List<String> roleIds = userGroupLinkRoleDTO.getRoleIds();
+
+        List<UserGroupRoleLink> userGroupLinkList = ListUtil.newArrayList(roleIds, roleId ->
+                        new UserGroupRoleLink().setRoleId(roleId)
+                                .setUserGroupId(userGroupLinkRoleDTO.getUserGroupId())
+                                .setValidFrom(userGroupLinkRoleDTO.getValidFrom())
+                                .setExpireOn(userGroupLinkRoleDTO.getExpireOn())
+                                .setAppId(userGroupLinkRoleDTO.getAppId())
+                , UserGroupRoleLink.class);
+
+        return Db.saveBatch(userGroupLinkList);
     }
 
     @Override
-    public boolean updateOneLink(UserGroupRoleLinkDTO userGroupRoleLinkDto) {
-        UserGroupRoleLink userGroupRoleLink = MapstructUtil.convert(userGroupRoleLinkDto, UserGroupRoleLink.class);
-        return baseMapper.updateById(userGroupRoleLink) > 0;
-    }
+    public boolean addUserGroupsToRole(RoleLinkUserGroupDTO roleLinkUserGroupDTO) {
+        List<String> userGroupIds = roleLinkUserGroupDTO.getUserGroupIds();
 
-    @Override
-    public boolean removeOneLink(Long id) {
-        return baseMapper.deleteById(id) > 0;
+        List<UserGroupRoleLink> userGroupLinkList = ListUtil.newArrayList(userGroupIds, userGroupId ->
+                        new UserGroupRoleLink().setUserGroupId(userGroupId)
+                                .setRoleId(roleLinkUserGroupDTO.getRoleId())
+                                .setValidFrom(roleLinkUserGroupDTO.getValidFrom())
+                                .setExpireOn(roleLinkUserGroupDTO.getExpireOn())
+                                .setAppId(roleLinkUserGroupDTO.getAppId())
+                , UserGroupRoleLink.class);
+
+        return Db.saveBatch(userGroupLinkList);
     }
 }
 

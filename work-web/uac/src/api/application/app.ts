@@ -21,7 +21,7 @@ export namespace App {
 const baseUri = "/system/app";
 
 export const getAppTreeList = () => {
-  return http.get<App.AppTree>(`${baseUri}/treeList`);
+  return http.get<http.Response<App.AppTree[]>>(`${baseUri}/treeList`);
 };
 
 export const list = (params: Partial<App.AppInfo>) => {

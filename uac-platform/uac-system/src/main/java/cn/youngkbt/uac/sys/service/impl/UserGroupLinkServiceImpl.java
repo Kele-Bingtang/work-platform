@@ -1,20 +1,17 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserGroupLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
-import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import cn.youngkbt.utils.ListUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -25,34 +22,6 @@ import java.util.Objects;
 public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, UserGroupLink> implements UserGroupLinkService {
 
     @Override
-    public List<UserGroupLinkVO> queryLinkByTenantId(UserGroupLinkDTO userGroupLinkDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<UserGroupLink> wrapper = Wrappers.<UserGroupLink>lambdaQuery()
-                .eq(StringUtil.hasText(userGroupLinkDto.getUserId()), UserGroupLink::getUserId, userGroupLinkDto.getUserId())
-                .eq(StringUtil.hasText(userGroupLinkDto.getUserGroupId()), UserGroupLink::getUserGroupId, userGroupLinkDto.getUserGroupId())
-                .orderByAsc(UserGroupLink::getId);
-
-        List<UserGroupLink> userGroupLinkList;
-        if (Objects.isNull(pageQuery)) {
-            userGroupLinkList = baseMapper.selectList(wrapper);
-        } else {
-            userGroupLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        return MapstructUtil.convert(userGroupLinkList, UserGroupLinkVO.class);
-    }
-
-    @Override
-    public boolean checkUserExistUserGroup(String userId) {
-        return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
-                .eq(UserGroupLink::getUserId, userId));
-    }
-
-    @Override
-    public boolean checkUserGroupExistUser(String userGroupId) {
-        return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
-                .eq(UserGroupLink::getUserGroupId, userGroupId));
-    }
-
-    @Override
     public boolean checkUserExistUserGroups(String userId, List<String> userGroupIds) {
         return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
                 .eq(UserGroupLink::getUserId, userId)
@@ -60,20 +29,48 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
-    public boolean addOneLink(UserGroupLinkDTO userGroupLinkDto) {
-        UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDto, UserGroupLink.class);
-        return baseMapper.insert(userGroupLink) > 0;
+    public boolean checkUsersExistUserGroup(List<String> userIds, String userGroupId) {
+        return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
+                .in(UserGroupLink::getUserId, userIds)
+                .eq(UserGroupLink::getUserGroupId, userGroupId)
+        );
     }
 
     @Override
-    public boolean updateOneLink(UserGroupLinkDTO userGroupLinkDto) {
-        UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDto, UserGroupLink.class);
-        return baseMapper.updateById(userGroupLink) > 0;
+    public boolean addUserToUserGroups(UserLinkUserGroupDTO userLinkUserGroupDTO) {
+        List<String> userGroupIds = userLinkUserGroupDTO.getUserGroupIds();
+
+        List<UserGroupLink> userGroupLinkList = ListUtil.newArrayList(userGroupIds, userGroupId ->
+                        new UserGroupLink().setUserGroupId(userGroupId)
+                                .setUserId(userLinkUserGroupDTO.getUserId())
+                                .setValidFrom(userLinkUserGroupDTO.getValidFrom())
+                                .setExpireOn(userLinkUserGroupDTO.getExpireOn())
+                                .setAppId(userLinkUserGroupDTO.getAppId())
+                , UserGroupLink.class);
+
+        return Db.saveBatch(userGroupLinkList);
     }
 
     @Override
-    public boolean removeOneLink(Long id) {
-        return baseMapper.deleteById(id) > 0;
+    public boolean addUsersToUserGroup(UserGroupLinkUserDTO userGroupLinkUserDTO) {
+        List<String> userIds = userGroupLinkUserDTO.getUserIds();
+
+        List<UserGroupLink> userGroupLinkList = ListUtil.newArrayList(userIds, userId ->
+                        new UserGroupLink().setUserId(userId)
+                                .setUserGroupId(userGroupLinkUserDTO.getUserGroupId())
+                                .setValidFrom(userGroupLinkUserDTO.getValidFrom())
+                                .setExpireOn(userGroupLinkUserDTO.getExpireOn())
+                                .setAppId(userGroupLinkUserDTO.getAppId())
+                , UserGroupLink.class);
+
+        return Db.saveBatch(userGroupLinkList);
+    }
+
+    @Override
+    public boolean removeUserFromUserGroup(String userId, String userGroupId) {
+        return baseMapper.delete(Wrappers.<UserGroupLink>lambdaQuery()
+                .eq(UserGroupLink::getUserId, userId)
+                .eq(UserGroupLink::getUserGroupId, userGroupId)) > 0;
     }
 }
 

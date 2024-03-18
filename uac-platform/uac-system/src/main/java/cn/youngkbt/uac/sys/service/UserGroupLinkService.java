@@ -1,9 +1,8 @@
 package cn.youngkbt.uac.sys.service;
 
-import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.UserGroupLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -14,14 +13,9 @@ import java.util.List;
  * @note 针对表【t_user_group_link(用户关联用户组表)】的数据库操作Service
  */
 public interface UserGroupLinkService extends IService<UserGroupLink> {
-    List<UserGroupLinkVO> queryLinkByTenantId(UserGroupLinkDTO userGroupLinkDto, PageQuery pageQuery);
-
-    boolean checkUserExistUserGroup(String userId);
-
-    boolean checkUserGroupExistUser(String userGroupId);
 
     /**
-     * 检查用户是否在某些用户组中
+     * 检查用户是否在某些用户组中（多个用户组）
      *
      * @param userId       用户用户 ID
      * @param userGroupIds 用户组 ID 列表
@@ -29,10 +23,38 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
      */
     boolean checkUserExistUserGroups(String userId, List<String> userGroupIds);
 
-    boolean addOneLink(UserGroupLinkDTO userGroupLinkDto);
+    /**
+     * 检查用户是否在某些用户组中（多个用户）
+     *
+     * @param userIds     用户用户 ID 列表
+     * @param userGroupId 用户组 ID
+     * @return 是否在用户组中
+     */
+    boolean checkUsersExistUserGroup(List<String> userIds, String userGroupId);
 
-    boolean updateOneLink(UserGroupLinkDTO userGroupLinkDto);
+    /**
+     * 添加用户到用户组（多个用户组）
+     *
+     * @param userLinkUserGroupDTO 用户和用户组数据
+     * @return 是否添加成功
+     */
+    boolean addUserToUserGroups(UserLinkUserGroupDTO userLinkUserGroupDTO);
 
-    boolean removeOneLink(Long id);
+    /**
+     * 添加用户到用户组（多个用户）
+     *
+     * @param userGroupLinkUserDTO 用户和用户组数据
+     * @return 是否添加成功
+     */
+    boolean addUsersToUserGroup(UserGroupLinkUserDTO userGroupLinkUserDTO);
+
+    /**
+     * 将用户移出项目组
+     *
+     * @param userId      用户 ID
+     * @param userGroupId 用户组 ID
+     * @return 是否移出成功
+     */
+    boolean removeUserFromUserGroup(String userId, String userGroupId);
 
 }

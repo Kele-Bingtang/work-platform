@@ -2,7 +2,6 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
-import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
@@ -46,19 +45,35 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
     List<UserGroupBindUserVO> listUserGroupWithDisabledByUserId(String appId, String userId);
 
     /**
-     * 添加用户到用户组（支持多个用户组）
+     * 检查用户组名是否唯一
      *
-     * @param userLinkUserGroupDTO 用户和用户组数据
-     * @return 是否添加成功
+     * @param sysUserGroupDto 用户组信息
+     * @return 是否唯一
      */
-    boolean addUserToGroups(UserLinkUserGroupDTO userLinkUserGroupDTO);
+    boolean checkUserGroupNameUnique(SysUserGroupDTO sysUserGroupDto);
 
     /**
-     * 将用户移出项目组
+     * 新增用户组
      *
-     * @param userId      用户 ID
-     * @param userGroupId 用户组 ID
-     * @return 是否移出成功
+     * @param sysUserGroupDto 用户组信息
+     * @return 是否新增成功
      */
-    boolean removeUserFromUserGroup(String userId, String userGroupId);
+    boolean insertOne(SysUserGroupDTO sysUserGroupDto);
+
+    /**
+     * 修改用户组
+     *
+     * @param sysUserGroupDto 用户组信息
+     * @return 是否修改成功
+     */
+    boolean updateOne(SysUserGroupDTO sysUserGroupDto);
+
+    /**
+     * 批量删除用户组
+     *
+     * @param ids 主键列表
+     * @return 是否删除成功
+     */
+    boolean removeBatch(List<Long> ids);
+
 }

@@ -20,7 +20,17 @@
     <div class="right-card">
       <Description :title="descriptionData.title" :data="descriptionData.data">
         <template #extra>
-          <el-button size="small">日志</el-button>
+          <div>
+            <el-select
+              v-model="appId"
+              placeholder="请选择 App 清单"
+              size="small"
+              style="width: 120px; margin-right: 10px"
+            >
+              <el-option v-for="item in appTreeList" :key="item.appId" :label="item.appName" :value="item.appId" />
+            </el-select>
+            <el-button size="small">日志</el-button>
+          </div>
         </template>
       </Description>
 
@@ -30,7 +40,7 @@
             ref="userGroupListCardRef"
             title="用户组"
             :request-api="listUserGroupByUserId"
-            :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
+            :request-params="{ appId: appId, userId: userInfo?.userId }"
             value="groupId"
             label="groupName"
             @edit="userGroupEdit"
@@ -47,7 +57,7 @@
             title="角色"
             :data="[]"
             :request-api="listRoleListByUserId"
-            :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
+            :request-params="{ appId: appId, userId: userInfo?.userId }"
             value="roleId"
             label="roleName"
             @edit="roleEdit"
@@ -63,7 +73,7 @@
       <DialogForm
         ref="userGroupDialogFormRef"
         :transfer-api="listUserGroupWithDisabledByUserId"
-        :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
+        :request-params="{ appId: appId, userId: userInfo?.userId }"
         transfer-placeholder="用户组"
         value="groupId"
         label="groupName"
@@ -73,7 +83,7 @@
       <DialogForm
         ref="roleDialogFormRef"
         :transfer-api="listRoleListWithDisabledByUserId"
-        :request-params="{ appId: uacAppSecret, userId: userInfo?.userId }"
+        :request-params="{ appId: appId, userId: userInfo?.userId }"
         transfer-placeholder="角色"
         value="roleId"
         label="roleName"
@@ -84,7 +94,7 @@
 </template>
 
 <script setup lang="tsx" name="UserLink">
-import { TreeFilter, uacAppSecret, message } from "work";
+import { TreeFilter, message } from "work";
 import { list, type User as UserType } from "@/api/user/base";
 import {
   addUserToGroups,
@@ -105,6 +115,7 @@ import { ElRow, ElCol } from "element-plus";
 import Description, { type DescriptionProps } from "./components/description.vue";
 import ListCard, { type ListCardInstance } from "./components/listCard.vue";
 import DialogForm, { type DialogFormInstance } from "./components/dialogForm.vue";
+import { getAppTreeList, type App } from "@/api/application/app";
 
 const userGroupListCardRef = shallowRef<ListCardInstance>();
 const roleListCardRef = shallowRef<ListCardInstance>();
@@ -115,6 +126,15 @@ const userInfo = ref<UserType.UserInfo>();
 const descriptionData = ref<DescriptionProps>({
   title: "",
   data: [],
+});
+const appId = ref("");
+const appTreeList = ref<App.AppTree[]>([]);
+
+onMounted(() => {
+  getAppTreeList().then(res => {
+    appId.value = res.data[0]?.appId;
+    appTreeList.value = res.data;
+  });
 });
 
 // 点击用户列表的回调
@@ -141,7 +161,7 @@ const userGroupConfirm = async (form: any, callback: () => void) => {
   addUserToGroups({
     ...form,
     userGroupIds: form.transferIds,
-    appId: uacAppSecret,
+    appId: appId.value,
     userId: userInfo.value?.userId || "",
   }).then((res: any) => {
     if (res.status === "success") {
@@ -159,7 +179,7 @@ const roleConfirm = async (form: any, callback: () => void) => {
   addUserToRoles({
     ...form,
     roleIds: form.transferIds,
-    appId: uacAppSecret,
+    appId: appId.value,
     userId: userInfo.value?.userId || "",
   }).then((res: any) => {
     if (res.status === "success") {

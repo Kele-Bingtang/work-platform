@@ -78,14 +78,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Override
     public boolean checkRoleCodeUnique(SysRoleDTO sysRoleDto) {
-        return baseMapper.exists(new LambdaQueryWrapper<SysRole>()
+        return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
                 .eq(SysRole::getRoleCode, sysRoleDto.getRoleCode())
                 .ne(Objects.nonNull(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId()));
     }
 
     @Override
     public boolean checkRoleNameUnique(SysRoleDTO sysRoleDto) {
-        return baseMapper.exists(new LambdaQueryWrapper<SysRole>()
+        return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
                 .eq(SysRole::getRoleName, sysRoleDto.getRoleName())
                 .ne(Objects.nonNull(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId()));
     }

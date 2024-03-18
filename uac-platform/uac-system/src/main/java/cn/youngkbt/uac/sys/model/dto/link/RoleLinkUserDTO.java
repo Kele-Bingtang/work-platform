@@ -10,11 +10,11 @@ import java.util.List;
 
 /**
  * @author Kele-Bingtang
- * @date 2024/3/14 22:51
+ * @date 2024/3/18 20:43
  * @note
  */
 @Data
-public class UserLinkRoleDTO {
+public class RoleLinkUserDTO {
     /**
      * 主键 ID
      */
@@ -25,13 +25,13 @@ public class UserLinkRoleDTO {
      * 用户 ID
      */
     @NotBlank(message = "用户 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private String userId;
+    private List<String> userIds;
 
     /**
      * 角色 ID
      */
     @NotNull(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private List<String> roleIds;
+    private String roleId;
 
     /**
      * 生效时间

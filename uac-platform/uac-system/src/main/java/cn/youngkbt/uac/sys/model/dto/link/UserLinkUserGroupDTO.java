@@ -1,8 +1,6 @@
 package cn.youngkbt.uac.sys.model.dto.link;
 
 import cn.youngkbt.core.validate.RestGroup;
-import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -16,7 +14,6 @@ import java.util.List;
  * @note
  */
 @Data
-@AutoMapper(target = UserGroupLink.class, reverseConvertGenerate = false)
 public class UserLinkUserGroupDTO {
     /**
      * 主键 ID
@@ -31,7 +28,7 @@ public class UserLinkUserGroupDTO {
     private String userId;
 
     /**
-     * 用户组 UID
+     * 用户组 ID
      */
     @NotNull(message = "用户组 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private List<String> userGroupIds;

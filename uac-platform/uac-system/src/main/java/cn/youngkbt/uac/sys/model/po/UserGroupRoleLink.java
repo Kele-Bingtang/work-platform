@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @TableName("t_user_group_role_link")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 @AutoMapper(target = UserGroupRoleLinkVO.class, reverseConvertGenerate = false)
 public class UserGroupRoleLink extends BaseDO {
     /**

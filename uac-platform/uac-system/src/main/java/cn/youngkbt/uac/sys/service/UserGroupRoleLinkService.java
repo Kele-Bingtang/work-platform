@@ -1,9 +1,8 @@
 package cn.youngkbt.uac.sys.service;
 
-import cn.youngkbt.mp.base.PageQuery;
-import cn.youngkbt.uac.sys.model.dto.UserGroupRoleLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
-import cn.youngkbt.uac.sys.model.vo.UserGroupRoleLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -14,15 +13,38 @@ import java.util.List;
  * @note 针对表【t_user_group_role_link(用户组关联角色表)】的数据库操作Service
  */
 public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
-    List<UserGroupRoleLinkVO> queryLinkByAppId(UserGroupRoleLinkDTO userGroupRoleLinkDto, PageQuery pageQuery);
+    /**
+     * 检查角色是否已存在用户组
+     *
+     * @param roleIds     角色 id 集合
+     * @param userGroupId 用户组 id
+     * @return 是否存在
+     */
+    boolean checkRolesExistUserGroup(List<String> roleIds, String userGroupId);
 
-    boolean checkUserGroupExistRole(String userGroupId);
 
-    boolean checkRoleExistUserGroup(String roleId);
+    /**
+     * 检查用户组是否已存在角色
+     *
+     * @param roleId       角色 id
+     * @param userGroupIds 用户组 id 集合
+     * @return 是否存在
+     */
+    boolean checkRoleExistUserGroups(String roleId, List<String> userGroupIds);
 
-    boolean addOneLink(UserGroupRoleLinkDTO userGroupRoleLinkDto);
+    /**
+     * 添加角色到用户组（多个角色）
+     *
+     * @param userGroupLinkRoleDTO 用户组角色关联实体
+     * @return 是否成功
+     */
+    boolean addUserGroupToRoles(UserGroupLinkRoleDTO userGroupLinkRoleDTO);
 
-    boolean updateOneLink(UserGroupRoleLinkDTO userGroupRoleLinkDto);
-
-    boolean removeOneLink(Long id);
+    /**
+     * 添加用户到用户组（多个用户组）
+     *
+     * @param roleLinkUserGroupDTO 角色用户组关联实体
+     * @return 是否成功
+     */
+    boolean addUserGroupsToRole(RoleLinkUserGroupDTO roleLinkUserGroupDTO);
 }

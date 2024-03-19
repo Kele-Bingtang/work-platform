@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts" name="ProForm">
-import { computed, shallowRef, ref, provide, watch, isRef, type ComputedRef } from "vue";
+import { computed, shallowRef, ref, provide, watch, isRef, isProxy, type Ref } from "vue";
 import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
@@ -39,6 +39,10 @@ const props = withDefaults(defineProps<ProFormProps>(), { disabled: false, model
 const formRef = shallowRef<FormInstance>();
 const form = computed(() => props.modelValue);
 
+const isResponsive = (obj: any) => {
+  return isRef(obj) || isProxy(obj);
+};
+
 // 定义 enumMap 存储 enum 值（避免异步请求无法格式化单元格内容 || 无法填充下拉选择）
 const enumMap = ref(new Map<string, { [key: string]: any }[]>());
 provide("enumMap", enumMap);
@@ -47,7 +51,7 @@ const setEnumMap = async (column: FormColumnProps) => {
   const formItem = column.formItem;
   if (!attrs.enum) return;
   // 如果当前 enum 为后台数据需要请求数据，则调用该请求接口，并存储到 enumMap
-  if (isRef(attrs.enum)) return enumMap.value.set(formItem.prop!, (attrs.enum as ComputedRef).value!);
+  if (isResponsive(attrs.enum)) return enumMap.value.set(formItem.prop!, (attrs.enum as Ref).value!);
   if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop!, (attrs.enum as FormEnumProps[])!);
   const { data } = await attrs.enum(enumMap.value);
   enumMap.value.set(formItem.prop!, data);
@@ -62,7 +66,7 @@ const initDefaultValue = (column: FormColumnProps) => {
   // 设置表单项的默认值
   if (attrs?.defaultValue !== undefined && attrs?.defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
-    if (isProxy(attrs.enum)) return (form.value[formItem.prop] = (attrs?.defaultValue as ComputedRef).value);
+    if (isResponsive(attrs.defaultValue)) return (form.value[formItem.prop] = (attrs?.defaultValue as Ref).value);
     if (typeof attrs?.defaultValue === "function") return (form.value[formItem.prop] = attrs?.defaultValue());
     return (form.value[formItem.prop] = attrs?.defaultValue);
   }

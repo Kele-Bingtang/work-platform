@@ -3,9 +3,9 @@
     <slot name="avatar">
       <el-avatar v-if="data?.length" class="head-icon" :icon="User" />
     </slot>
-    <div class="descriptions-box">
+    <div class="descriptions-box flex1">
       <div class="flx-justify-between">
-        <span>{{ title }}</span>
+        <span class="descriptions-title">{{ title }}</span>
         <slot name="extra"></slot>
       </div>
       <el-row class="descriptions-content flx-align-center">
@@ -49,12 +49,15 @@ withDefaults(defineProps<DescriptionProps>(), {
   }
 
   .descriptions-box {
-    flex: 1;
+    .descriptions-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #191919;
+    }
 
     .descriptions-content {
       flex-wrap: wrap;
       min-height: 28px;
-      padding: 0 8px;
 
       .descriptions-item {
         display: flex;

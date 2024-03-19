@@ -61,6 +61,11 @@ div:focus {
   justify-content: center;
 }
 
+.flx-column {
+  display: flex;
+  flex-direction: column;
+}
+
 .flx-justify-between {
   display: flex;
   align-items: center;
@@ -76,6 +81,10 @@ div:focus {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+}
+
+.flex1 {
+  flex: 1;
 }
 
 /* clearfix */

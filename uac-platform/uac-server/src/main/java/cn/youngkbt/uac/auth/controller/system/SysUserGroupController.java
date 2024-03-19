@@ -10,6 +10,7 @@ import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserInfoByGroupVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +52,13 @@ public class SysUserGroupController {
     public Response<List<UserGroupBindUserVO>> listUserGroupWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
         List<UserGroupBindUserVO> sysUserGroupVOList = sysUserGroupService.listUserGroupWithDisabledByUserId(appId, userId);
         return HttpResult.ok(sysUserGroupVOList);
+    }
+
+    @GetMapping("listUserLinkByGroupId/{appId}/{userGroupId}")
+    @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询用户列表")
+    public Response<List<UserInfoByGroupVO>> listUserLinkByGroupId(@PathVariable String appId, @PathVariable String userGroupId) {
+        List<UserInfoByGroupVO> userInfoByGroupVOList = userGroupLinkService.listUserLinkByGroupId(appId, userGroupId);
+        return HttpResult.ok(userInfoByGroupVOList);
     }
 
     @PostMapping("/addUserToGroups")

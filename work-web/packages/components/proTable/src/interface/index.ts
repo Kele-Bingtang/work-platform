@@ -45,7 +45,7 @@ export type SearchProps = {
   order?: number; // 搜索项排序（从大到小）
   span?: number; // 搜索项所占用的列数，默认为 1 列
   offset?: number; // 搜索字段左侧偏移列数
-  defaultValue?: ValueType | (() => ValueType | any) | ComputedRef<ValueType>; // 搜索项默认值
+  defaultValue?: ValueType | (() => ValueType | any) | Ref<ValueType>; // 搜索项默认值
   beforeSearch?: (val: ValueType, searchParams: { [key: string]: any }, col: TableColumnProps) => any; // 自定义搜索内容渲染（tsx 语法）
   type?: string; // el-select 有 el-select-group
   render?: (scope: SearchRenderScope) => VNode; // 自定义搜索内容渲染（tsx 语法）

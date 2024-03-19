@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.model.dto;
 
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
  * @note
  */
 @Data
-@AutoMapper(target = SysUserGroupDTO.class, reverseConvertGenerate = false)
+@AutoMapper(target = SysUserGroup.class, reverseConvertGenerate = false)
 public class SysUserGroupDTO {
 
     @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })

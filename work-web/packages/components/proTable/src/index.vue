@@ -334,7 +334,11 @@ const pageTotal = computed(() => {
 onMounted(() => props.requestAuto && getTableList());
 
 // 监听页面 initRequestParam 改化，重新获取表格数据
-watch(() => props.initRequestParam, getTableList, { deep: true });
+watch(
+  () => props.initRequestParam,
+  () => getTableList(props.initRequestParam),
+  { deep: true }
+);
 
 // 接收 columns 并设置为响应式
 const tableColumns = ref<TableColumnProps[]>(props.columns);

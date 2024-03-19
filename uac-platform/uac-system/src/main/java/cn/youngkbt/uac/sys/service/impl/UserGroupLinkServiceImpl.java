@@ -4,11 +4,13 @@ import cn.youngkbt.uac.sys.mapper.UserGroupLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
+import cn.youngkbt.uac.sys.model.vo.link.UserInfoByGroupVO;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.utils.ListUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,9 @@ import java.util.List;
  * @note 针对表【t_user_group_link(用户关联用户组表)】的数据库操作Service实现
  */
 @Service
+@RequiredArgsConstructor
 public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, UserGroupLink> implements UserGroupLinkService {
-
+    
     @Override
     public boolean checkUserExistUserGroups(String userId, List<String> userGroupIds) {
         return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
@@ -71,6 +74,11 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
         return baseMapper.delete(Wrappers.<UserGroupLink>lambdaQuery()
                 .eq(UserGroupLink::getUserId, userId)
                 .eq(UserGroupLink::getUserGroupId, userGroupId)) > 0;
+    }
+
+    @Override
+    public List<UserInfoByGroupVO> listUserLinkByGroupId(String appId, String userGroupId) {
+        return baseMapper.listUserLinkByGroupId(appId, userGroupId);
     }
 }
 

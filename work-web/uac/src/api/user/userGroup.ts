@@ -40,6 +40,14 @@ export namespace UserGroup {
     validFrom: string; // 生效时间
     expireOn: string; // 过期时间
   }
+
+  export interface UserLinkInfo {
+    username: string; // 用户名
+    validFrom: string; // 负责人 ID
+    expireOn: string; // 负责人 username
+    appId: string; // 应用 ID
+    createTime: string; // 创建时间
+  }
 }
 
 const baseUri = "/system/userGroup";
@@ -55,6 +63,12 @@ export const listUserGroupByUserId = (params: { appId: string; userId: string })
 export const listUserGroupWithDisabledByUserId = (params: { appId: string; userId: string }) => {
   return http.get<http.Response<UserGroup.UserGroupInfo[]>>(
     `${baseUri}/listWithDisabledByUserId/${params.appId}/${params.userId}`
+  );
+};
+
+export const listUserLinkByGroupId = (params: { appId: string; userGroupId: string }) => {
+  return http.get<http.Response<UserGroup.UserLinkInfo[]>>(
+    `${baseUri}/listUserLinkByGroupId/${params.appId}/${params.userGroupId}`
   );
 };
 

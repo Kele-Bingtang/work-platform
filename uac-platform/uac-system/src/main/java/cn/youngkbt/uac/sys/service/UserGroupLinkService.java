@@ -3,6 +3,7 @@ package cn.youngkbt.uac.sys.service;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
+import cn.youngkbt.uac.sys.model.vo.link.UserInfoByGroupVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -57,4 +58,12 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
      */
     boolean removeUserFromUserGroup(String userId, String userGroupId);
 
+    /**
+     * 查询用户组下的用户列表
+     *
+     * @param appId       应用 ID
+     * @param userGroupId 用户组 ID
+     * @return 用户列表
+     */
+    List<UserInfoByGroupVO> listUserLinkByGroupId(String appId, String userGroupId);
 }

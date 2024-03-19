@@ -90,11 +90,11 @@ export const useTable = (
    * @description 获取表格数据
    * @return void
    * */
-  const getTableList = async () => {
+  const getTableList = async (requestParam: object = initRequestParam) => {
     if (!api) return;
     try {
       // 先把初始化参数和分页参数放到总参数里面
-      Object.assign(state.totalParam, initRequestParam, isBackPage(openPage) ? pageParam.value : {});
+      Object.assign(state.totalParam, requestParam, isBackPage(openPage) ? pageParam.value : {});
       let searchParam = { ...state.searchInitParam, ...state.totalParam };
       beforeSearch && (searchParam = beforeSearch(searchParam) ?? searchParam);
 

@@ -15,9 +15,16 @@
 
 <script setup lang="tsx" name="LinkUser">
 import { ProTable } from "work";
-import { listUserLinkByGroupId, addOne, editOne, deleteOne, deleteBatch, type UserGroup } from "@/api/user/userGroup";
+import {
+  listUserLinkByGroupId,
+  addUsersToGroup,
+  updateLinkInfo,
+  removeUserFromUserGroup,
+  deleteBatch,
+  type UserGroup,
+} from "@/api/user/userGroup";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { options } from "./linkUserFormOptions";
+import { useFormOptions } from "./linkUserFormOptions";
 
 export interface LinkUserProps {
   appId: string;
@@ -53,10 +60,17 @@ const columns: TableColumnProps<UserGroup.UserLinkInfo>[] = [
 ];
 
 const detailForm: DialogForm = {
-  options: options,
-  addApi: addOne,
-  editApi: editOne,
-  deleteApi: deleteOne,
+  options: useFormOptions(requestParam.appId, requestParam.userGroupId).options,
+  addApi: form =>
+    addUsersToGroup({
+      ...form,
+      userIds: form.userIds,
+      userGroupId: requestParam.userGroupId,
+      appId: requestParam.appId,
+    }),
+  editApi: form => updateLinkInfo({ ...form, id: form.linkId }),
+  editFilterParams: ["userId", "appId", "userIds"],
+  deleteApi: form => removeUserFromUserGroup([form.linkId]),
   deleteBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),

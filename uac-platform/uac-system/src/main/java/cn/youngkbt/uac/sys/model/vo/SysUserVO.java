@@ -95,4 +95,9 @@ public class SysUserVO implements Serializable {
      * 部门对象
      */
     private SysDeptVO dept;
+
+    /**
+     * 是否禁用，给前端使用
+     */
+    private Boolean disabled;
 }

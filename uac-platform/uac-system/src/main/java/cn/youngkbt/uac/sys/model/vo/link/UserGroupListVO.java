@@ -17,7 +17,7 @@ public class UserGroupListVO extends SysUserGroupVO {
     /**
      * UserGroupLink 表的主键
      */
-    private String linkId;
+    private Long linkId;
     /**
      * 生效时间
      */

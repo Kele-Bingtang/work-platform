@@ -1,12 +1,14 @@
 package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.uac.sys.mapper.UserGroupLinkMapper;
+import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
 import cn.youngkbt.uac.sys.model.vo.link.UserInfoByGroupVO;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.utils.ListUtil;
+import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -23,7 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, UserGroupLink> implements UserGroupLinkService {
-    
+
     @Override
     public boolean checkUserExistUserGroups(String userId, List<String> userGroupIds) {
         return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
@@ -70,15 +72,19 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
-    public boolean removeUserFromUserGroup(String userId, String userGroupId) {
-        return baseMapper.delete(Wrappers.<UserGroupLink>lambdaQuery()
-                .eq(UserGroupLink::getUserId, userId)
-                .eq(UserGroupLink::getUserGroupId, userGroupId)) > 0;
+    public boolean removeUserFromUserGroup(List<Long> ids) {
+        return baseMapper.deleteBatchIds(ids) > 0;
     }
 
     @Override
     public List<UserInfoByGroupVO> listUserLinkByGroupId(String appId, String userGroupId) {
         return baseMapper.listUserLinkByGroupId(appId, userGroupId);
+    }
+
+    @Override
+    public boolean updateOne(UserGroupLinkDTO userGroupLinkDTO) {
+        UserGroupLink userGroupLink = MapstructUtil.convert(userGroupLinkDTO, UserGroupLink.class);
+        return baseMapper.updateById(userGroupLink) > 0;
     }
 }
 

@@ -75,5 +75,4 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      * @return 是否删除成功
      */
     boolean removeBatch(List<Long> ids);
-
 }

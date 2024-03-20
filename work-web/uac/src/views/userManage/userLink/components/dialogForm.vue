@@ -33,11 +33,10 @@ export interface DialogFormProps {
 const props = withDefaults(defineProps<DialogFormProps>(), {
   value: "key",
   label: "label",
-  status: "add",
 });
 
 type EmitProps = {
-  (e: "confirm", form: any, callback: () => void): void;
+  (e: "confirm", form: any, status: "add" | "edit", callback: () => void): void;
 };
 
 const emits = defineEmits<EmitProps>();
@@ -47,7 +46,7 @@ const dialogVisible = ref(false);
 const form = ref<{ [key: string]: any }>({});
 const transferData = ref([]);
 const expireOnOptions = ref<DictData.DictDataInfo[]>([]);
-const edit = ref(true);
+const status = ref<"add" | "edit">("add");
 
 watch(
   () => dialogVisible.value,
@@ -83,7 +82,7 @@ watch(
 const handleConfirm = () => {
   formElementRef.value?.formRef?.validate(async valid => {
     if (valid) {
-      emits("confirm", form.value, () => {
+      emits("confirm", form.value, status.value, () => {
         dialogVisible.value = false;
         transferData.value = [];
       });
@@ -111,7 +110,7 @@ const options: FormOptionsProps = {
     {
       formItem: { label: "用户组选择", prop: "transferIds", br: true },
       attrs: {
-        isDestroy: () => edit.value,
+        isDestroy: () => status.value === "edit",
         render: ({ scope }) => {
           return (
             <>
@@ -122,11 +121,7 @@ const options: FormOptionsProps = {
                 data={transferData.value}
                 titles={["选择", "选中"]}
                 props={{ label: props.label, key: props.value }}
-              >
-                {/* {{
-                  default: ({ option }: any) => <span>{option[props.label]}</span>,
-                }} */}
-              </ElTransfer>
+              ></ElTransfer>
             </>
           );
         },
@@ -161,6 +156,7 @@ const options: FormOptionsProps = {
                   type="date"
                   placeholder="请选择过期时间"
                   style={{ width: "100%" }}
+                  value-format="YYYY-MM-DD"
                 />
               </ElCol>
             </ElRow>
@@ -172,11 +168,11 @@ const options: FormOptionsProps = {
 };
 
 const openAdd = () => {
-  edit.value = false;
+  status.value = "add";
   dialogVisible.value = true;
 };
 const openEdit = (data: any) => {
-  edit.value = true;
+  status.value = "edit";
   form.value = data;
   dialogVisible.value = true;
 };

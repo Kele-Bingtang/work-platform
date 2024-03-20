@@ -10,6 +10,8 @@ import { Grid } from "@work/components/grid";
 import { WangEditor } from "@work/components/wangEditor";
 import { Drawer } from "@work/components/drawer";
 import { List } from "@work/components/list";
+import { UserSelect } from "@work/components/userSelect";
+import { TransferSelect } from "@work/components/transferSelect";
 
 export default [
   Icon,
@@ -24,4 +26,6 @@ export default [
   WangEditor,
   Drawer,
   List,
+  UserSelect,
+  TransferSelect,
 ];

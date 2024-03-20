@@ -5,6 +5,7 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
+import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
@@ -104,7 +105,7 @@ public class SysRoleController {
         if (userRoleLinkService.checkUserExistRoles(userLinkRoleDTO.getUserId(), userLinkRoleDTO.getRoleIds())) {
             return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
         }
-        boolean result = sysRoleService.addUserToRoles(userLinkRoleDTO);
+        boolean result = userRoleLinkService.addUserToRoles(userLinkRoleDTO);
         return HttpResult.ok(result);
     }
 
@@ -128,10 +129,16 @@ public class SysRoleController {
         return HttpResult.ok(result);
     }
 
-    @DeleteMapping("/removeUserFromRole/{userId}/{roleId}")
-    @Operation(summary = "移出用户组", description = "将用户移出项目组")
-    public Response<Boolean> removeUserFromRole(@PathVariable String userId, @PathVariable String roleId) {
-        boolean result = sysRoleService.removeUserFromRole(userId, roleId);
+    @DeleteMapping("/removeUserFromRole/{ids}")
+    @Operation(summary = "移出用户组", description = "将用户移出角色")
+    public Response<Boolean> removeUserFromRole(@PathVariable Long[] ids) {
+        boolean result = userRoleLinkService.removeUserFromRole(List.of(ids));
         return HttpResult.ok(result);
+    }
+
+    @PutMapping("/updateLinkInfo")
+    @Operation(summary = "用户关联角色信息修改", description = "修改用户组和角色关联信息")
+    public Response<Boolean> updateLinkInfo(@Validated(RestGroup.EditGroup.class) @RequestBody UserRoleLinkDTO userRoleLinkDTO) {
+        return HttpResult.ok(userRoleLinkService.updateOne(userRoleLinkDTO));
     }
 }

@@ -11,7 +11,9 @@ export namespace UserGroup {
     appId: string; // 应用 ID
     createTime: string; // 创建时间
   }
+
   export interface UserLinkUserGroup {
+    linkId: number; // 关联 ID
     userId: string; // 用户 ID
     userGroupIds: string[]; // 用户组 ID
     validFrom: string; // 负责人 ID
@@ -20,8 +22,9 @@ export namespace UserGroup {
   }
 
   export interface UserGroupLinkUser {
+    linkId: number; // 关联 ID
     userIds: string[]; // 用户组 ID
-    userGroupIds: string; // 用户组名
+    userGroupId: string; // 用户组名
     validFrom: string; // 负责人 ID
     expireOn: string; // 负责人 username
     appId: string; // 应用 ID
@@ -41,8 +44,24 @@ export namespace UserGroup {
     expireOn: string; // 过期时间
   }
 
+  export interface UserGroupLinkInfo {
+    appId: string;
+    createTime: string;
+    expireOn: string;
+    groupId: string;
+    groupName: string;
+    id: string;
+    intro: string;
+    linkId: number;
+    ownerId: string;
+    ownerName: string;
+    validFrom: string;
+  }
+
   export interface UserLinkInfo {
+    userId: string; // 用户 ID
     username: string; // 用户名
+    linkId: number; // 关联 ID
     validFrom: string; // 负责人 ID
     expireOn: string; // 负责人 username
     appId: string; // 应用 ID
@@ -57,7 +76,9 @@ export const list = (params: Partial<UserGroup.UserGroupInfo>) => {
 };
 
 export const listUserGroupByUserId = (params: { appId: string; userId: string }) => {
-  return http.get<http.Response<UserGroup.UserGroupInfo[]>>(`${baseUri}/listByUserId/${params.appId}/${params.userId}`);
+  return http.get<http.Response<UserGroup.UserGroupLinkInfo[]>>(
+    `${baseUri}/listByUserId/${params.appId}/${params.userId}`
+  );
 };
 
 export const listUserGroupWithDisabledByUserId = (params: { appId: string; userId: string }) => {
@@ -80,8 +101,16 @@ export const addUserToGroups = (data: UserGroup.UserLinkUserGroup) => {
   return http.post<http.Response<string>>(`${baseUri}/addUserToGroups`, data);
 };
 
+export const addUsersToGroup = (data: UserGroup.UserGroupLinkUser) => {
+  return http.post<http.Response<string>>(`${baseUri}/addUsersToGroup`, data);
+};
+
 export const editOne = (data: RequiredKeyPartialOther<UserGroup.UserGroupInfo, "id">) => {
   return http.put<http.Response<string>>(baseUri, data);
+};
+
+export const editUserGroupLinkInfo = (data: RequiredKeyPartialOther<UserGroup.UserGroupLinkInfo, "id">) => {
+  return http.put<http.Response<string>>(`${baseUri}/updateLinkInfo`, data);
 };
 
 export const deleteOne = (data: UserGroup.UserGroupInfo) => {
@@ -92,6 +121,6 @@ export const deleteBatch = (ids: string[]) => {
   return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
 };
 
-export const removeUserFromUserGroup = (userId: string, userGroupId: string) => {
-  return http.delete<http.Response<string>>(`${baseUri}/removeUserFromUserGroup/${userId}/${userGroupId}`);
+export const removeUserFromUserGroup = (ids: string[]) => {
+  return http.delete<http.Response<string>>(`${baseUri}/removeUserFromUserGroup/${ids.join(",")}`);
 };

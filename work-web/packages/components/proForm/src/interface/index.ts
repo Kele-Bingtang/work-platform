@@ -46,6 +46,7 @@ export type FormRenderScope = {
   scope: {
     form: { [key: string]: any };
     data: ValueType;
+    enumData: { [key: string]: any };
   };
   placeholder: string;
   clearable: boolean;

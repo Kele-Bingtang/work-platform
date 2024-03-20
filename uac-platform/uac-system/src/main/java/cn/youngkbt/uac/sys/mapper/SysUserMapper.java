@@ -23,6 +23,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     SecurityUser selectUserByUsername(@Param("username") String username);
     
     List<SysUserVO> selectListWithPage(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+
+    List<SysUserVO> listDisabledGroupId(@Param("appId") String appId, @Param("userGroupId") String userGroupId);
 }
 
 

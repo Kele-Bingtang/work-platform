@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -29,9 +30,22 @@ public interface UserRoleLinkService extends IService<UserRoleLink> {
      */
     boolean checkUserExistRoles(String userId, List<String> roleIds);
 
-    boolean addOneLink(UserRoleLinkDTO userRoleLinkDto);
+    /**
+     * 添加用户到角色
+     *
+     * @param userLinkRoleDTO 用户绑定角色信息
+     * @return 是否成功
+     */
+    boolean addUserToRoles(UserLinkRoleDTO userLinkRoleDTO);
 
-    boolean updateOneLink(UserRoleLinkDTO userRoleLinkDto);
+    boolean updateOne(UserRoleLinkDTO userRoleLinkDto);
 
-    boolean removeOneLink(Long id);
+    /**
+     * 将用户移出角色
+     *
+     * @param ids 关联 ID
+     * @return 是否成功
+     */
+    boolean removeUserFromRole(List<Long> ids);
+
 }

@@ -5,6 +5,7 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
+import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
@@ -48,7 +49,7 @@ public class SysUserGroupController {
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
-    @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 false")
+    @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 true")
     public Response<List<UserGroupBindUserVO>> listUserGroupWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
         List<UserGroupBindUserVO> sysUserGroupVOList = sysUserGroupService.listUserGroupWithDisabledByUserId(appId, userId);
         return HttpResult.ok(sysUserGroupVOList);
@@ -81,11 +82,17 @@ public class SysUserGroupController {
         return HttpResult.ok(result);
     }
 
-    @DeleteMapping("/removeUserFromUserGroup/{userId}/{userGroupId}")
+    @DeleteMapping("/removeUserFromUserGroup/{ids}")
     @Operation(summary = "移出用户组", description = "将用户移出项目组")
-    public Response<Boolean> removeUserFromUserGroup(@PathVariable String userId, @PathVariable String userGroupId) {
-        boolean result = userGroupLinkService.removeUserFromUserGroup(userId, userGroupId);
+    public Response<Boolean> removeUserFromUserGroup(@PathVariable Long[] ids) {
+        boolean result = userGroupLinkService.removeUserFromUserGroup(List.of(ids));
         return HttpResult.ok(result);
+    }
+
+    @PutMapping("/updateLinkInfo")
+    @Operation(summary = "用户关联用户信息修改", description = "修改用户组和用户䣌关联信息")
+    public Response<Boolean> updateLinkInfo(@Validated(RestGroup.EditGroup.class) @RequestBody UserGroupLinkDTO userGroupLinkDTO) {
+        return HttpResult.ok(userGroupLinkService.updateOne(userGroupLinkDTO));
     }
 
     @PostMapping

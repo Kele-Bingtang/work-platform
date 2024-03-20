@@ -12,10 +12,22 @@ import java.time.LocalDateTime;
  */
 @Data
 public class UserInfoByGroupVO {
+
+    /**
+     * 用户 ID
+     */
+    private String userId;
+    
     /**
      * 用户名
      */
     private String username;
+
+    /**
+     * 关联 ID
+     */
+    private Long linkId;
+    
     /**
      * 生效时间
      */
@@ -30,7 +42,7 @@ public class UserInfoByGroupVO {
      * 创建时间
      */
     private LocalDateTime createTime;
-    
+
     /**
      * 应用 ID
      */

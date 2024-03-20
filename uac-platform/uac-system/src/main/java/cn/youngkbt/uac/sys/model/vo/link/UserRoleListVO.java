@@ -17,7 +17,7 @@ public class UserRoleListVO extends SysRoleVO {
     /**
      * UserRoleLink 表的主键
      */
-    private String linkId;
+    private Long linkId;
     /**
      * 生效时间
      */

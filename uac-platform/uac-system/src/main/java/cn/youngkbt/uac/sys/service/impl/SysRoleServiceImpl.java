@@ -5,15 +5,12 @@ import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
-import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
-import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
-import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -107,27 +104,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 
-    @Override
-    public boolean addUserToRoles(UserLinkRoleDTO userLinkRoleDTO) {
-        List<String> roleIds = userLinkRoleDTO.getRoleIds();
-
-        List<UserRoleLink> userRoleLinkList = ListUtil.newArrayList(roleIds, roleId ->
-                        new UserRoleLink().setRoleId(roleId)
-                                .setUserId(userLinkRoleDTO.getUserId())
-                                .setValidFrom(userLinkRoleDTO.getValidFrom())
-                                .setExpireOn(userLinkRoleDTO.getExpireOn())
-                                .setAppId(userLinkRoleDTO.getAppId())
-                , UserRoleLink.class);
-
-        return userRoleLinkService.saveBatch(userRoleLinkList);
-    }
-
-    @Override
-    public boolean removeUserFromRole(String userId, String roleId) {
-        return userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery()
-                .eq(UserRoleLink::getUserId, userId)
-                .eq(UserRoleLink::getRoleId, roleId));
-    }
 }
 
 

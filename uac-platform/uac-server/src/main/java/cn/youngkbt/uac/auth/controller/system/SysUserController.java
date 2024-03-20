@@ -51,6 +51,13 @@ public class SysUserController {
         return HttpResult.ok(rolePostVo);
     }
 
+    @GetMapping("/listDisabledGroupId/{appId}/{userGroupId}")
+    @Operation(summary = "用户列表查询", description = "下拉查询用户列表（已选的被禁用）")
+    public Response<List<SysUserVO>> listDisabledGroupId(@PathVariable String appId, @PathVariable String userGroupId) {
+        List<SysUserVO> sysUserVOList = sysUserService.listDisabledGroupId(appId, userGroupId);
+        return HttpResult.ok(sysUserVOList);
+    }
+
     @PostMapping
     @Operation(summary = "用户列表新增", description = "新增用户列表")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDTO sysUserDto) {

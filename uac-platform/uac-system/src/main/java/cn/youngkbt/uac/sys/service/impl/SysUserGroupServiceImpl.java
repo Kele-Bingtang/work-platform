@@ -84,6 +84,7 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
     }
+
 }
 
 

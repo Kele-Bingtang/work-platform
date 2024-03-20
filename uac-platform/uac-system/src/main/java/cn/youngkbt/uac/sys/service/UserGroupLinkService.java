@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
@@ -52,11 +53,10 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
     /**
      * 将用户移出项目组
      *
-     * @param userId      用户 ID
-     * @param userGroupId 用户组 ID
+     * @param ids 关联 ID
      * @return 是否移出成功
      */
-    boolean removeUserFromUserGroup(String userId, String userGroupId);
+    boolean removeUserFromUserGroup(List<Long> ids);
 
     /**
      * 查询用户组下的用户列表
@@ -66,4 +66,12 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
      * @return 用户列表
      */
     List<UserInfoByGroupVO> listUserLinkByGroupId(String appId, String userGroupId);
+
+    /**
+     * 修改用户组和用户的关联信息
+     *
+     * @param userGroupLinkDTO 用户组信息
+     * @return 是否修改成功
+     */
+    boolean updateOne(UserGroupLinkDTO userGroupLinkDTO);
 }

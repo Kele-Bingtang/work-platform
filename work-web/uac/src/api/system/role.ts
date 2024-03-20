@@ -21,7 +21,7 @@ export namespace Role {
     appId: string; // 应用 ID
   }
 
-  export interface UserGroupList {
+  export interface RoleLinkInfo {
     id: number; // 主键
     roleId: string; // 角色 ID
     roleCode: string; // 角色码
@@ -44,7 +44,7 @@ export const list = (params: Partial<Role.RoleInfo>) => {
 };
 
 export const listRoleListByUserId = (params: { appId: string; userId: string }) => {
-  return http.get<http.Response<Role.RoleInfo[]>>(`${baseUri}/listByUserId/${params.appId}/${params.userId}`);
+  return http.get<http.Response<Role.RoleLinkInfo[]>>(`${baseUri}/listByUserId/${params.appId}/${params.userId}`);
 };
 
 export const listRoleListWithDisabledByUserId = (params: { appId: string; userId: string }) => {
@@ -65,6 +65,10 @@ export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 
+export const editUserRoleLinkInfo = (data: RequiredKeyPartialOther<Role.RoleLinkInfo, "id">) => {
+  return http.put<http.Response<string>>(`${baseUri}/updateLinkInfo`, data);
+};
+
 export const deleteOne = (data: Role.RoleInfo) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
 };
@@ -73,6 +77,6 @@ export const deleteBatch = (ids: string[]) => {
   return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
 };
 
-export const removeUserFromRole = (userId: string, userGroupId: string) => {
-  return http.delete<http.Response<string>>(`${baseUri}/removeUserFromRole/${userId}/${userGroupId}`);
+export const removeUserFromRole = (ids: string[]) => {
+  return http.delete<http.Response<string>>(`${baseUri}/removeUserFromRole/${ids.join(",")}`);
 };

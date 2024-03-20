@@ -24,13 +24,13 @@ public class UserGroupLinkUserDTO {
     /**
      * 用户 ID
      */
-    @NotBlank(message = "用户 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotNull(message = "用户 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private List<String> userIds;
 
     /**
      * 用户组 ID
      */
-    @NotNull(message = "用户组 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "用户组 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String userGroupId;
 
     /**

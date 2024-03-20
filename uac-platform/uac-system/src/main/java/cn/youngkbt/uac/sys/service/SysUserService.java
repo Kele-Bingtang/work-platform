@@ -76,6 +76,13 @@ public interface SysUserService extends IService<SysUser> {
     boolean checkEmailUnique(SysUserDTO sysUserDto);
 
     /**
+     * 下拉查询用户列表（已选的被禁用）
+     * @param userGroupId 用户组 ID
+     * @return 用户组下的用户列表
+     */
+    List<SysUserVO> listDisabledGroupId(String appId, String userGroupId);
+
+    /**
      * 新增用户
      *
      * @param sysUserDto 用户信息
@@ -113,4 +120,5 @@ public interface SysUserService extends IService<SysUser> {
      * @return 角色列表和岗位列表
      */
     RolePostVo rolePostList();
+
 }

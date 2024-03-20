@@ -1,7 +1,9 @@
 package cn.youngkbt.uac.sys.model.dto;
 
+import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,6 +16,10 @@ import java.time.LocalDate;
 @Data
 @AutoMapper(target = UserRoleLink.class, reverseConvertGenerate = false)
 public class UserRoleLinkDTO {
+    
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class})
+    private Long id;
+
     /**
      * 用户 ID
      */

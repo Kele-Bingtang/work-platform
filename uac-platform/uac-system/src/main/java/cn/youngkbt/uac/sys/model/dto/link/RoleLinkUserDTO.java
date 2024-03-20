@@ -24,13 +24,13 @@ public class RoleLinkUserDTO {
     /**
      * 用户 ID
      */
-    @NotBlank(message = "用户 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotNull(message = "用户 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private List<String> userIds;
 
     /**
      * 角色 ID
      */
-    @NotNull(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "角色 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String roleId;
 
     /**

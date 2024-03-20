@@ -2,7 +2,11 @@
   <WangEditor
     v-if="column.attrs?.el === 'wang-editor'"
     v-model="_form[column.formItem.prop]"
-    v-bind="{ ...handleFormProps, ...placeholder, scope: { form: _form, data: _form[column.formItem.prop] } }"
+    v-bind="{
+      ...handleFormProps,
+      ...placeholder,
+      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
+    }"
   ></WangEditor>
 
   <component
@@ -12,7 +16,7 @@
     v-bind="{
       ...handleFormProps,
       ...placeholder,
-      scope: { form: _form, data: _form[column.formItem.prop] },
+      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
       clearable,
     }"
     v-model="_form[column.formItem.prop]"

@@ -3,14 +3,17 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserRoleLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVO;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,21 +64,31 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     }
 
     @Override
-    public boolean addOneLink(UserRoleLinkDTO userRoleLinkDto) {
-        UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDto, UserRoleLink.class);
-        return baseMapper.insert(userRoleLink) > 0;
+    public boolean addUserToRoles(UserLinkRoleDTO userLinkRoleDTO) {
+        List<String> roleIds = userLinkRoleDTO.getRoleIds();
+
+        List<UserRoleLink> userRoleLinkList = ListUtil.newArrayList(roleIds, roleId ->
+                        new UserRoleLink().setRoleId(roleId)
+                                .setUserId(userLinkRoleDTO.getUserId())
+                                .setValidFrom(userLinkRoleDTO.getValidFrom())
+                                .setExpireOn(userLinkRoleDTO.getExpireOn())
+                                .setAppId(userLinkRoleDTO.getAppId())
+                , UserRoleLink.class);
+
+        return Db.saveBatch(userRoleLinkList);
     }
 
     @Override
-    public boolean updateOneLink(UserRoleLinkDTO userRoleLinkDto) {
+    public boolean updateOne(UserRoleLinkDTO userRoleLinkDto) {
         UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDto, UserRoleLink.class);
         return baseMapper.updateById(userRoleLink) > 0;
     }
 
     @Override
-    public boolean removeOneLink(Long id) {
-        return baseMapper.deleteById(id) > 0;
+    public boolean removeUserFromRole(List<Long> ids) {
+        return baseMapper.deleteBatchIds(ids) > 0;
     }
+
 }
 
 

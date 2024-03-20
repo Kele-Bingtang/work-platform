@@ -101,10 +101,12 @@ import {
   listUserGroupByUserId,
   listUserGroupWithDisabledByUserId,
   removeUserFromUserGroup,
+  editUserGroupLinkInfo,
   type UserGroup,
 } from "@/api/user/userGroup";
 import {
   addUserToRoles,
+  editUserRoleLinkInfo,
   listRoleListByUserId,
   listRoleListWithDisabledByUserId,
   removeUserFromRole,
@@ -130,7 +132,7 @@ const descriptionData = ref<DescriptionProps>({
 const appId = ref("");
 const appTreeList = ref<App.AppTree[]>([]);
 
-onMounted(() => {
+onBeforeMount(() => {
   getAppTreeList().then(res => {
     appId.value = res.data[0]?.appId;
     appTreeList.value = res.data;
@@ -157,47 +159,71 @@ const handleAddUserGroup = () => userGroupDialogFormRef.value?.openAdd();
 const handleAddRole = () => roleDialogFormRef.value?.openAdd();
 
 // 新增用户组的弹框确认回调
-const userGroupConfirm = async (form: any, callback: () => void) => {
-  addUserToGroups({
-    ...form,
-    userGroupIds: form.transferIds,
-    appId: appId.value,
-    userId: userInfo.value?.userId || "",
-  }).then((res: any) => {
-    if (res.status === "success") {
-      message.success("修改成功");
-      // 刷新外面的用户组列表
-      userGroupListCardRef.value?.getDataList();
-      // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
-      callback();
-    }
-  });
+const userGroupConfirm = async (form: any, status: "add" | "edit", callback: () => void) => {
+  if (status === "add") {
+    addUserToGroups({
+      ...form,
+      userGroupIds: form.transferIds,
+      appId: appId.value,
+      userId: userInfo.value?.userId || "",
+    }).then((res: any) => {
+      if (res.status === "success") {
+        message.success("新增成功");
+        // 刷新外面的用户组列表
+        userGroupListCardRef.value?.getDataList();
+        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
+        callback();
+      }
+    });
+  } else {
+    editUserGroupLinkInfo(form).then((res: any) => {
+      if (res.status === "success") {
+        message.success("修改成功");
+        // 刷新外面的用户组列表
+        userGroupListCardRef.value?.getDataList();
+        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
+        callback();
+      }
+    });
+  }
 };
 
 // 新增角色的弹框确认回调
-const roleConfirm = async (form: any, callback: () => void) => {
-  addUserToRoles({
-    ...form,
-    roleIds: form.transferIds,
-    appId: appId.value,
-    userId: userInfo.value?.userId || "",
-  }).then((res: any) => {
-    if (res.status === "success") {
-      message.success("修改成功");
-      // 刷新外面的用户组列表
-      roleListCardRef.value?.getDataList();
-      // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
-      callback();
-    }
-  });
+const roleConfirm = async (form: any, status: "add" | "edit", callback: () => void) => {
+  if (status === "add") {
+    addUserToRoles({
+      ...form,
+      roleIds: form.transferIds,
+      appId: appId.value,
+      userId: userInfo.value?.userId || "",
+    }).then((res: any) => {
+      if (res.status === "success") {
+        message.success("新增成功");
+        // 刷新外面的用户组列表
+        roleListCardRef.value?.getDataList();
+        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
+        callback();
+      }
+    });
+  } else {
+    editUserRoleLinkInfo(form).then((res: any) => {
+      if (res.status === "success") {
+        message.success("修改成功");
+        // 刷新外面的用户组列表
+        roleListCardRef.value?.getDataList();
+        // 触发 dialog 的回调，关闭 dialog，清除 dialog 的数据
+        callback();
+      }
+    });
+  }
 };
 
-const userGroupEdit = (item: UserGroup.UserGroupList) => {
+const userGroupEdit = (item: UserGroup.UserGroupLinkInfo) => {
   userGroupDialogFormRef.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
 };
 
-const userGroupDelete = (item: UserGroup.UserGroupInfo) => {
-  removeUserFromUserGroup(userInfo.value?.userId || "", item.groupId).then((res: any) => {
+const userGroupDelete = (item: UserGroup.UserGroupLinkInfo) => {
+  removeUserFromUserGroup([item.linkId + ""]).then((res: any) => {
     if (res.status === "success") {
       message.success("删除成功");
       userGroupListCardRef.value?.getDataList();
@@ -206,12 +232,12 @@ const userGroupDelete = (item: UserGroup.UserGroupInfo) => {
   });
 };
 
-const roleEdit = (item: Role.UserGroupList) => {
+const roleEdit = (item: Role.RoleLinkInfo) => {
   roleDialogFormRef.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
 };
 
-const roleDelete = (item: Role.RoleInfo) => {
-  removeUserFromRole(userInfo.value?.userId || "", item.roleId).then((res: any) => {
+const roleDelete = (item: Role.RoleLinkInfo) => {
+  removeUserFromRole([item.linkId + ""]).then((res: any) => {
     if (res.status === "success") {
       message.success("删除成功");
       roleListCardRef.value?.getDataList();

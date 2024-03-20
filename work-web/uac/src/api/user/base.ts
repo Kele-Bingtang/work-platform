@@ -1,6 +1,4 @@
 import http from "@/config/request";
-import type { Post } from "../system/post";
-import type { Role } from "../system/role";
 
 export namespace User {
   export interface UserInfo {
@@ -21,11 +19,6 @@ export namespace User {
     deptId: string; // 部门 ID
     status: number; // 状态
   }
-
-  export interface RolePost {
-    postList: Post.PostInfo;
-    roleList: Role.RoleInfo;
-  }
 }
 
 const baseUri = "/system/user";
@@ -36,6 +29,12 @@ export const getRolePostList = () => {
 
 export const list = (params: Partial<User.UserInfo>) => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
+};
+
+export const listDisabledGroupId = (params: { appId: string; userGroupId: string }) => {
+  return http.get<http.Response<User.UserInfo[]>>(
+    `${baseUri}/listDisabledGroupId/${params.appId}/${params.userGroupId}`
+  );
 };
 
 export const addOne = (data: User.UserInfo) => {

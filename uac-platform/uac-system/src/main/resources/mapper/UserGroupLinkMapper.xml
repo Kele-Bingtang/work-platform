@@ -26,11 +26,11 @@
         status,is_deleted,tenant_id
     </sql>
     
-    <select id="listUserLinkByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserInfoByGroupVO">
-        select tsu.user_id, tsu.username, tugl.id as link_id, tugl.valid_from, tugl.expire_on, tugl.create_time, tugl.app_id
+    <select id="listUserLinkByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO">
+        select tsu.user_id, tsu.username, tsu.nickname, tugl.id as link_id, tugl.valid_from, tugl.expire_on, tugl.create_time, tugl.app_id
         from t_user_group_link tugl
-        left join t_sys_user tsu on tsu.user_id = tugl.user_id
-        where tugl.is_deleted = 0 and tugl.status = 1 and tugl.app_id = #{appId} and tugl.user_group_id = #{userGroupId}
+        left join t_sys_user tsu on tsu.user_id = tugl.user_id and tsu.is_deleted = 0
+        where tugl.is_deleted = 0 and tugl.user_group_id = #{userGroupId}
     </select>
     
 </mapper>

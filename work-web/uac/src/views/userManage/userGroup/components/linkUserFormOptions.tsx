@@ -1,4 +1,4 @@
-import { listDisabledGroupId } from "@/api/user/base";
+import { listWithDisabledByGroupId } from "@/api/user/base";
 import type { UserGroup } from "@/api/user/userGroup";
 import { useLayoutStore } from "@/stores/layout";
 import type { FormOptionsProps } from "@work/components";
@@ -11,7 +11,7 @@ const rules = reactive<FormRules>({
   expireOn: [{ required: true, message: "请选择过期时间", trigger: "blur" }],
 });
 
-export const useFormOptions = (appId: string, userGroupId: string) => {
+export const useFormOptions = (userGroupId: string) => {
   const { getDictData } = useLayoutStore();
 
   // 选择时长后，计算出过期时间
@@ -30,13 +30,12 @@ export const useFormOptions = (appId: string, userGroupId: string) => {
           destroy: ["edit"],
           render: ({ scope }) => {
             return (
-              <>
-                <UserSelect
-                  vModel={scope.form.userIds}
-                  requestApi={listDisabledGroupId}
-                  requestParams={{ appId, userGroupId }}
-                ></UserSelect>
-              </>
+              <UserSelect
+                v-model={scope.form.userIds}
+                request-api={listWithDisabledByGroupId}
+                request-params={{ userGroupId }}
+                multiple
+              ></UserSelect>
             );
           },
         },
@@ -49,25 +48,25 @@ export const useFormOptions = (appId: string, userGroupId: string) => {
         formItem: { label: "过期时间", prop: "expireOn", br: true },
         attrs: {
           enum: () => getDictData("sys_expire_on"),
-          render: ({ scope, enumData }) => {
+          render: ({ scope }) => {
             return (
               <ElRow gutter={10}>
                 <ElCol span={12}>
                   <ElSelect
-                    vModel={scope.form.expireOnNum}
+                    v-model={scope.form.expireOnNum}
                     placeholder="请选择时长"
                     style={{ width: "100%" }}
                     onChange={(val: string) => selectChange(scope.form, Number(val))}
                     clearable
                   >
-                    {enumData?.map(item => (
+                    {scope.enumData?.map((item: any) => (
                       <ElOption key={item.dictValue} label={item.dictLabel} value={item.dictValue} />
                     ))}
                   </ElSelect>
                 </ElCol>
                 <ElCol span={12}>
                   <ElDatePicker
-                    vModel={scope.form.expireOn}
+                    v-model={scope.form.expireOn}
                     type="date"
                     placeholder="请选择过期时间"
                     style={{ width: "100%" }}

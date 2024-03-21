@@ -57,7 +57,6 @@
     
     <select id="selectTenantUserByUsername" resultType="cn.youngkbt.security.domain.SecurityUser"></select>
     
-    
     <select id="selectUserByUsername" resultType="cn.youngkbt.security.domain.SecurityUser"></select>
     
     <select id="selectListWithPage" resultMap="BaseResultMapVo">
@@ -65,14 +64,15 @@
             su.login_ip, su.login_date, su.user_status, su.status, su.dept_id,
             sd.dept_name, sd.leader, su1.user_id as leader_name
         from t_sys_user su
-        left join t_sys_dept sd on su.dept_id = sd.dept_id
-        left join t_sys_user su1 on su1.user_id = sd.leader
+        left join t_sys_dept sd on su.dept_id = sd.dept_id and sd.is_deleted = 0
+        left join t_sys_user su1 on su1.user_id = sd.leader and su1.is_deleted = 0
         ${ew.getCustomSqlSegment}
     </select>
     
-    <select id="listDisabledGroupId" resultType="cn.youngkbt.uac.sys.model.vo.SysUserVO">
+    <select id="listWithDisabledByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.SysUserVO">
         select tsu.*, case when tugl.user_group_id is not null then 1 else 0 end as disabled
-        from t_sys_user tsu left join t_user_group_link tugl on tsu.user_id = tugl.user_id and tugl.user_group_id = #{userGroupId} and tugl.app_id = #{appId} and tugl.is_deleted = 0
+        from t_sys_user tsu 
+        left join t_user_group_link tugl on tsu.user_id = tugl.user_id and tugl.user_group_id = #{userGroupId} and tugl.is_deleted = 0
         where tsu.is_deleted = 0
     </select>
 

@@ -218,10 +218,12 @@ const roleConfirm = async (form: any, status: "add" | "edit", callback: () => vo
   }
 };
 
+// 编辑用户组的回调
 const userGroupEdit = (item: UserGroup.UserGroupLinkInfo) => {
   userGroupDialogFormRef.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
 };
 
+// 删除用户组的回调
 const userGroupDelete = (item: UserGroup.UserGroupLinkInfo) => {
   removeUserFromUserGroup([item.linkId + ""]).then((res: any) => {
     if (res.status === "success") {
@@ -232,10 +234,12 @@ const userGroupDelete = (item: UserGroup.UserGroupLinkInfo) => {
   });
 };
 
+// 编辑角色的回调
 const roleEdit = (item: Role.RoleLinkInfo) => {
   roleDialogFormRef.value?.openEdit({ id: item.linkId, validFrom: item.validFrom, expireOn: item.expireOn });
 };
 
+// 删除角色的回调
 const roleDelete = (item: Role.RoleLinkInfo) => {
   removeUserFromRole([item.linkId + ""]).then((res: any) => {
     if (res.status === "success") {

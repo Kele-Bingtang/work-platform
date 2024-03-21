@@ -21,6 +21,18 @@ export namespace Role {
     appId: string; // 应用 ID
   }
 
+  export interface UserGroupLinkRole {
+    userGroupId: string; // 用户组 ID
+    roleIds: string[]; // 角色 ID
+    appId: string; // 应用 ID
+  }
+
+  export interface RoleLinkUserGroup {
+    userGroupIds: string[]; // 用户组 ID
+    roleId: string; // 角色 ID
+    appId: string; // 应用 ID
+  }
+
   export interface RoleLinkInfo {
     id: number; // 主键
     roleId: string; // 角色 ID
@@ -34,6 +46,16 @@ export namespace Role {
     linkId: number; // UserRoleLink 表的主键
     validFrom: string; // 生效时间
     expireOn: string; // 过期时间
+  }
+
+  export interface UserLinkInfo {
+    userId: string; // 用户 ID
+    username: string; // 用户名
+    linkId: number; // 关联 ID
+    validFrom: string; // 负责人 ID
+    expireOn: string; // 负责人 username
+    appId: string; // 应用 ID
+    createTime: string; // 创建时间
   }
 }
 
@@ -53,12 +75,28 @@ export const listRoleListWithDisabledByUserId = (params: { appId: string; userId
   );
 };
 
+export const listUserLinkByRoleId = (params: { roleId: string }) => {
+  return http.get<http.Response<Role.UserLinkInfo[]>>(`${baseUri}/listUserLinkByRoleId/${params.roleId}`);
+};
+
+export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
+  return http.get<http.Response<Role.UserLinkInfo[]>>(`${baseUri}/listWithDisabledByGroupId/${params.userGroupId}`);
+};
+
 export const addOne = (data: Role.RoleInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
 export const addUserToRoles = (data: Role.UserLinkRole) => {
   return http.post<http.Response<string>>(`${baseUri}/addUserToRoles`, data);
+};
+
+export const addUserGroupsToRole = (data: Role.RoleLinkUserGroup) => {
+  return http.post<http.Response<string>>(`${baseUri}/addUserGroupsToRole`, data);
+};
+
+export const addUserGroupToRoles = (data: Role.UserGroupLinkRole) => {
+  return http.post<http.Response<string>>(`${baseUri}/addUserGroupToRoles`, data);
 };
 
 export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
@@ -79,4 +117,8 @@ export const deleteBatch = (ids: string[]) => {
 
 export const removeUserFromRole = (ids: string[]) => {
   return http.delete<http.Response<string>>(`${baseUri}/removeUserFromRole/${ids.join(",")}`);
+};
+
+export const removeUserGroupFromRole = (ids: string[]) => {
+  return http.delete<http.Response<string>>(`${baseUri}/removeUserGroupFromRole/${ids.join(",")}`);
 };

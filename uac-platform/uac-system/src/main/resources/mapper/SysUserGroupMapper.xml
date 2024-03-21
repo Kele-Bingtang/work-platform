@@ -29,13 +29,16 @@
     </sql>
     
     <select id="selectByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO">
-        select tsug.*, tugl.id as link_id, tugl.valid_from, tugl.expire_on from t_sys_user_group tsug left join t_user_group_link tugl on tsug.group_id = tugl.user_group_id
-            ${ew.getCustomSqlSegment}
+        select tsug.*, tugl.id as link_id, tugl.valid_from, tugl.expire_on
+        from t_sys_user_group tsug
+        left join t_user_group_link tugl on tsug.group_id = tugl.user_group_id and tugl.is_deleted = 0
+        ${ew.getCustomSqlSegment}
     </select>
     
     <select id="selectWithDisabledByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO">
         select tsug.*, tugl.user_id, case when tugl.user_id is not null then 1 else 0 end as disabled
-        from t_sys_user_group tsug left join t_user_group_link tugl on tsug.group_id = tugl.user_group_id and tugl.user_id = #{userId} and tugl.is_deleted = 0
-            where tsug.app_id = #{appId} and tsug.is_deleted = 0
+        from t_sys_user_group tsug
+        left join t_user_group_link tugl on tsug.group_id = tugl.user_group_id and tugl.user_id = #{userId} and tugl.is_deleted = 0
+        where tsug.app_id = #{appId} and tsug.is_deleted = 0
     </select>
 </mapper>

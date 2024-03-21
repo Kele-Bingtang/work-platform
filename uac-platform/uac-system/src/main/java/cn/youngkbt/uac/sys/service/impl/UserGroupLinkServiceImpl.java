@@ -5,7 +5,7 @@ import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.link.UserInfoByGroupVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
@@ -77,8 +77,8 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
-    public List<UserInfoByGroupVO> listUserLinkByGroupId(String appId, String userGroupId) {
-        return baseMapper.listUserLinkByGroupId(appId, userGroupId);
+    public List<UserLinkInfoVO> listUserLinkByGroupId(String userGroupId) {
+        return baseMapper.listUserLinkByGroupId(userGroupId);
     }
 
     @Override

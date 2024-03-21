@@ -5,9 +5,10 @@
       :request-api="listUserLinkByGroupId"
       :init-request-param="requestParam"
       :columns="columns"
-      :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
+      :search-cols="{ xs: 1, sm: 1, md: 3, lg: 3, xl: 3 }"
       :detailForm="detailForm"
       :border="false"
+      row-key="linkId"
       height="100%"
     ></ProTable>
   </div>
@@ -18,9 +19,8 @@ import { ProTable } from "work";
 import {
   listUserLinkByGroupId,
   addUsersToGroup,
-  updateLinkInfo,
+  editUserGroupLinkInfo,
   removeUserFromUserGroup,
-  deleteBatch,
   type UserGroup,
 } from "@/api/user/userGroup";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
@@ -38,6 +38,7 @@ const requestParam = reactive({
   userGroupId: props.userGroupId,
 });
 
+// 监听 userGroupId，变化后修改关联的表格查询默认值
 watch(
   () => props.userGroupId,
   () => {
@@ -50,17 +51,20 @@ watch(
 
 const proTableRef = shallowRef<ProTableInstance>();
 
+// 表格列配置项
 const columns: TableColumnProps<UserGroup.UserLinkInfo>[] = [
   { type: "selection", fixed: "left", width: 10 },
-  { prop: "username", label: "用户名", minWidth: 120, search: { el: "el-input" } },
+  { prop: "username", label: "用户名称", minWidth: 120, search: { el: "el-input" } },
+  { prop: "nickname", label: "用户昵称", minWidth: 120, search: { el: "el-input" } },
   { prop: "validFrom", label: "生效时间", minWidth: 120 },
   { prop: "expireOn", label: "过期时间", minWidth: 120 },
   { prop: "createTime", label: "创建时间", minWidth: 160 },
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+// 新增、编辑弹框配置项
 const detailForm: DialogForm = {
-  options: useFormOptions(requestParam.appId, requestParam.userGroupId).options,
+  options: useFormOptions(requestParam.userGroupId).options,
   addApi: form =>
     addUsersToGroup({
       ...form,
@@ -68,10 +72,10 @@ const detailForm: DialogForm = {
       userGroupId: requestParam.userGroupId,
       appId: requestParam.appId,
     }),
-  editApi: form => updateLinkInfo({ ...form, id: form.linkId }),
+  editApi: form => editUserGroupLinkInfo({ ...form, id: form.linkId }),
   editFilterParams: ["userId", "appId", "userIds"],
   deleteApi: form => removeUserFromUserGroup([form.linkId]),
-  deleteBatchApi: deleteBatch,
+  deleteBatchApi: removeUserFromUserGroup,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

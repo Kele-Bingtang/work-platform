@@ -4,7 +4,7 @@
       ref="proTableRef"
       :request-api="list"
       :columns="columns"
-      :search-col="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
+      :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
       class="pro-table"
       :detailForm="detailForm"
       :border="false"

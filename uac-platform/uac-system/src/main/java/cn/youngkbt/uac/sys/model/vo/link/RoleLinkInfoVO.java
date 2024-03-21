@@ -2,41 +2,34 @@ package cn.youngkbt.uac.sys.model.vo.link;
 
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
- * @date 2024/3/19 22:20
+ * @date 2024/3/21 22:40
  * @note
  */
 @Data
-public class UserInfoByGroupVO {
+public class RoleLinkInfoVO {
+    /**
+     * 角色 ID
+     */
+    private String roleId;
 
     /**
-     * 用户 ID
+     * 角色名
      */
-    private String userId;
+    private String roleName;
     
     /**
-     * 用户名
+     * 角色码
      */
-    private String username;
+    private String roleCode;
 
     /**
      * 关联 ID
      */
     private Long linkId;
-    
-    /**
-     * 生效时间
-     */
-    private LocalDate validFrom;
-
-    /**
-     * 失效时间
-     */
-    private LocalDate expireOn;
 
     /**
      * 创建时间

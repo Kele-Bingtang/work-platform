@@ -4,6 +4,7 @@ import cn.youngkbt.uac.sys.mapper.UserGroupRoleLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkInfoVO;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -42,8 +43,6 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
         List<UserGroupRoleLink> userGroupLinkList = ListUtil.newArrayList(roleIds, roleId ->
                         new UserGroupRoleLink().setRoleId(roleId)
                                 .setUserGroupId(userGroupLinkRoleDTO.getUserGroupId())
-                                .setValidFrom(userGroupLinkRoleDTO.getValidFrom())
-                                .setExpireOn(userGroupLinkRoleDTO.getExpireOn())
                                 .setAppId(userGroupLinkRoleDTO.getAppId())
                 , UserGroupRoleLink.class);
 
@@ -57,12 +56,20 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
         List<UserGroupRoleLink> userGroupLinkList = ListUtil.newArrayList(userGroupIds, userGroupId ->
                         new UserGroupRoleLink().setUserGroupId(userGroupId)
                                 .setRoleId(roleLinkUserGroupDTO.getRoleId())
-                                .setValidFrom(roleLinkUserGroupDTO.getValidFrom())
-                                .setExpireOn(roleLinkUserGroupDTO.getExpireOn())
                                 .setAppId(roleLinkUserGroupDTO.getAppId())
                 , UserGroupRoleLink.class);
 
         return Db.saveBatch(userGroupLinkList);
+    }
+
+    @Override
+    public List<RoleLinkInfoVO> listRoleLinkByGroupId(String userGroupId) {
+        return baseMapper.listRoleLinkByGroupId(userGroupId);
+    }
+
+    @Override
+    public boolean removeUserGroupFromRole(List<Long> ids) {
+        return baseMapper.deleteBatchIds(ids) > 0;
     }
 }
 

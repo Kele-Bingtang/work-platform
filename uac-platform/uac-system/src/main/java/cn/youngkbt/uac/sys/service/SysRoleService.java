@@ -5,6 +5,7 @@ import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -91,5 +92,21 @@ public interface SysRoleService extends IService<SysRole> {
      * @return 角色列表
      */
     List<RoleBindUserVO> listRoleListWithDisabledByUserId(String appId, String userId);
+
+    /**
+     * 通过角色 ID 查询用户列表
+     *
+     * @param roleId 角色 ID
+     * @return 用户列表
+     */
+    List<UserLinkInfoVO> listUserLinkByRoleId(String roleId);
+
+    /**
+     * 查询角色列表（已选的被禁用）
+     *
+     * @param userGroupId 用户组 ID
+     * @return 角色列表
+     */
+    List<SysRoleVO> listWithDisabledByGroupId(String userGroupId);
 
 }

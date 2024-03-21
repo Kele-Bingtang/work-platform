@@ -3,31 +3,33 @@
     <el-select-v2
       v-model="selectValue"
       :options="userData"
-      placeholder="Select User"
-      :props="{ value: 'userId' }"
+      placeholder="请选择用户"
+      :props="{ value: 'username', label: 'nickname' }"
       v-bind="$attrs"
       :multiple="multiple"
+      clearable
       @change="handleSelectChange"
     >
       <template #default="{ item }">{{ item.nickname }} {{ item.username }}</template>
     </el-select-v2>
 
-    <el-button :icon="User" link @click="dialogVisible = true"></el-button>
+    <el-button :icon="User" link @click="handleOpenUseTransferSelect"></el-button>
 
     <el-dialog v-model="dialogVisible" title="添加用户" width="700" class="select-dialog">
       <TransferSelect
         v-model="selectedUserList"
-        :columns="transferSelectColumn"
+        :columns="transferSelectColumns"
         :data="userData"
         :list-icon="User"
         :multiple="multiple"
+        :id="value"
       >
         <template #name="item">{{ item.username }} {{ item.nickname }}</template>
       </TransferSelect>
       <template #footer>
         <div>
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSelectUser">确定</el-button>
+          <el-button type="primary" @click="handleConfirmSelect">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -47,18 +49,40 @@ export interface UserSelectProps {
   requestParams?: Record<string, any>;
   multiple?: boolean;
 }
-// 接受父组件参数，配置默认值
-const props = withDefaults(defineProps<UserSelectProps>(), { multiple: true });
 
-type EmitProps = { (e: "update:modelValue", value: any): void };
+// 接受父组件参数，配置默认值
+const props = withDefaults(defineProps<UserSelectProps>(), {
+  multiple: false,
+});
+
+type EmitProps = {
+  (e: "update:modelValue", value: any): void; // 用户 ID
+  (e: "update:user", value: any): void; // 完整的用户信息
+};
 
 const emits = defineEmits<EmitProps>();
 
-const selectValue = ref();
 const userData = ref<Record<string, any>[]>([]);
 const dialogVisible = ref(false);
+const selectedUserList = ref<Record<string, any>[]>([]);
+const value = "username";
 
-const selectedUserList = ref<Record<string, any>[] | Record<string, any>>();
+/**
+ * @description 初始化选中项
+ */
+const selectValue = computed({
+  get() {
+    if (props.multiple) return props.modelValue || [];
+    return props.modelValue || "";
+  },
+  set(val) {
+    const { multiple } = props;
+    emits("update:modelValue", val);
+
+    const r = userData.value.filter(item => (multiple ? val?.includes(item[value]) : val === item[value]));
+    emits("update:user", props.multiple ? r : r[0]);
+  },
+});
 
 onBeforeMount(async () => {
   // 有数据就直接赋值，没有数据就执行请求函数
@@ -66,7 +90,6 @@ onBeforeMount(async () => {
     userData.value = props.data;
     return;
   }
-
   getDataList();
 });
 
@@ -77,24 +100,45 @@ const getDataList = async () => {
   }
 };
 
-const handleSelectChange = (val: string) => {
-  emits("update:modelValue", val);
+/**
+ * @description 下拉框选择某个元素回调
+ */
+const handleSelectChange = (val: string | string[]) => {
+  const { multiple } = props;
+  selectedUserList.value = userData.value.filter(item => (multiple ? val?.includes(item[value]) : val === item[value]));
+  selectValue.value = val;
 };
 
-const handleSelectUser = () => {
+/**
+ * @description 打开用户选择弹窗回调
+ */
+const handleOpenUseTransferSelect = () => {
+  const { multiple } = props;
+  selectedUserList.value = userData.value?.filter(item =>
+    multiple ? selectValue.value?.includes(item[value]) : selectValue.value === item[value]
+  );
+  dialogVisible.value = true;
+};
+
+/**
+ * @description 确认选择用户回调
+ */
+const handleConfirmSelect = () => {
   const { multiple } = props;
   let selectUserIds;
 
-  if (multiple) selectUserIds = (selectedUserList.value as Record<string, any>[])?.map(item => item.userId);
-  else selectUserIds = (selectedUserList.value as Record<string, any>).userId;
+  if (multiple) selectUserIds = (selectedUserList.value as Record<string, any>[])?.map(item => item[value]);
+  else selectUserIds = (selectedUserList.value as Record<string, any>)[value];
 
   selectValue.value = selectUserIds;
-
   emits("update:modelValue", selectUserIds);
   dialogVisible.value = false;
 };
 
-const transferSelectColumn: TransferTableColumn[] = [
+/**
+ * @description 用户弹框表格列配置项
+ */
+const transferSelectColumns: TransferTableColumn[] = [
   { prop: "username", label: "用户名称" },
   { prop: "nickname", label: "用户昵称" },
 ];

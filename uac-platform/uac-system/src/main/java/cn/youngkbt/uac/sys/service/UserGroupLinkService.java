@@ -4,7 +4,7 @@ import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.link.UserInfoByGroupVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -61,11 +61,10 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
     /**
      * 查询用户组下的用户列表
      *
-     * @param appId       应用 ID
      * @param userGroupId 用户组 ID
      * @return 用户列表
      */
-    List<UserInfoByGroupVO> listUserLinkByGroupId(String appId, String userGroupId);
+    List<UserLinkInfoVO> listUserLinkByGroupId(String userGroupId);
 
     /**
      * 修改用户组和用户的关联信息
@@ -74,4 +73,5 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
      * @return 是否修改成功
      */
     boolean updateOne(UserGroupLinkDTO userGroupLinkDTO);
+
 }

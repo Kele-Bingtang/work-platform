@@ -11,6 +11,7 @@ import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
@@ -96,9 +97,20 @@ public class SysRoleController {
         return HttpResult.ok(roleBindUserVOList);
     }
 
-    /**
-     * 绑定用户
-     */
+    @GetMapping("listUserLinkByRoleId/{roleId}")
+    @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表")
+    public Response<List<UserLinkInfoVO>> listUserLinkByRoleId(@PathVariable String roleId) {
+        List<UserLinkInfoVO> userLinkInfoVOList = sysRoleService.listUserLinkByRoleId(roleId);
+        return HttpResult.ok(userLinkInfoVOList);
+    }
+
+    @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
+    @Operation(summary = "角色列表查询", description = "查询角色列表（已选的被禁用）")
+    public Response<List<SysRoleVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
+        List<SysRoleVO> userVOList = sysRoleService.listWithDisabledByGroupId(userGroupId);
+        return HttpResult.ok(userVOList);
+    }
+    
     @PostMapping("addUserToRoles")
     @Operation(summary = "添加用户到角色", description = "添加用户到角色（多个角色）")
     public Response<Boolean> addUserToRoles(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
@@ -133,6 +145,13 @@ public class SysRoleController {
     @Operation(summary = "移出用户组", description = "将用户移出角色")
     public Response<Boolean> removeUserFromRole(@PathVariable Long[] ids) {
         boolean result = userRoleLinkService.removeUserFromRole(List.of(ids));
+        return HttpResult.ok(result);
+    }
+    
+    @DeleteMapping("/removeUserGroupFromRole/{ids}")
+    @Operation(summary = "移出角色", description = "将用户组移出角色")
+    public Response<Boolean> removeUserGroupFromRole(@PathVariable Long[] ids) {
+        boolean result = userGroupRoleLinkService.removeUserGroupFromRole(List.of(ids));
         return HttpResult.ok(result);
     }
 

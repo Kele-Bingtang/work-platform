@@ -67,6 +67,14 @@ export namespace UserGroup {
     appId: string; // 应用 ID
     createTime: string; // 创建时间
   }
+  export interface RoleLinkInfo {
+    roleId: string; // 角色 ID
+    roleName: string; // 角色名
+    roleCode: string; // 角色码
+    linkId: number; // 关联 ID
+    appId: string; // 应用 ID
+    createTime: string; // 创建时间
+  }
 }
 
 const baseUri = "/system/userGroup";
@@ -87,10 +95,12 @@ export const listUserGroupWithDisabledByUserId = (params: { appId: string; userI
   );
 };
 
-export const listUserLinkByGroupId = (params: { appId: string; userGroupId: string }) => {
-  return http.get<http.Response<UserGroup.UserLinkInfo[]>>(
-    `${baseUri}/listUserLinkByGroupId/${params.appId}/${params.userGroupId}`
-  );
+export const listUserLinkByGroupId = (params: { userGroupId: string }) => {
+  return http.get<http.Response<UserGroup.UserLinkInfo[]>>(`${baseUri}/listUserLinkByGroupId/${params.userGroupId}`);
+};
+
+export const listRoleLinkByGroupId = (params: { userGroupId: string }) => {
+  return http.get<http.Response<UserGroup.RoleLinkInfo[]>>(`${baseUri}/listRoleLinkByGroupId/${params.userGroupId}`);
 };
 
 export const addOne = (data: UserGroup.UserGroupInfo) => {

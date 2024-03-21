@@ -80,7 +80,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param userGroupId 用户组 ID
      * @return 用户组下的用户列表
      */
-    List<SysUserVO> listDisabledGroupId(String appId, String userGroupId);
+    List<SysUserVO> listWithDisabledByGroupId(String userGroupId);
 
     /**
      * 新增用户

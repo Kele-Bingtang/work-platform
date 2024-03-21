@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDate;
-
 /**
  * @author Kele-Bingtang
  * @date 2023-30-12 00:30:42
@@ -30,16 +28,6 @@ public class UserGroupRoleLink extends BaseDO {
      * 角色 ID
      */
     private String roleId;
-
-    /**
-     * 生效时间
-     */
-    private LocalDate validFrom;
-
-    /**
-     * 失效时间
-     */
-    private LocalDate expireOn;
 
     /**
      * 租户编号

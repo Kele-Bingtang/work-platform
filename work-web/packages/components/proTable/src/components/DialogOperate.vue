@@ -131,13 +131,13 @@ const handleFormConfirm = (f: any, status: string) => {
   delete data._enum;
 
   if (status === "add") {
-    // 删除 Insert 不允许传输的数据
-    const filterParams = [...(props?.apiFilterParams || []), ...(props?.addFilterParams || [])];
-    filterParams.forEach(item => delete data[item]);
-
     formRef.validate(async valid => {
       if (valid && props) {
         data = (props.beforeAdd && (await props.beforeAdd(data))) || data;
+
+        // 删除 Insert 不允许传输的数据
+        const filterParams = [...(props?.apiFilterParams || []), ...(props?.addFilterParams || [])];
+        filterParams.forEach(item => delete data[item]);
 
         // 执行新增接口
         executeApi(
@@ -156,13 +156,13 @@ const handleFormConfirm = (f: any, status: string) => {
       }
     });
   } else if (status === "edit") {
-    // 删除 Update 不允许传输的数据
-    const filterParams = [...(props?.apiFilterParams || []), ...(props?.editFilterParams || [])];
-    filterParams.forEach(item => delete data[item]);
-
     formRef.validate(async valid => {
       if (valid && props) {
         data = (props.beforeEdit && (await props.beforeEdit(data))) || data;
+
+        // 删除 Update 不允许传输的数据
+        const filterParams = [...(props?.apiFilterParams || []), ...(props?.editFilterParams || [])];
+        filterParams.forEach(item => delete data[item]);
 
         executeApi(
           props.editApi,
@@ -189,11 +189,11 @@ const handleDelete = async ({ row }: any) => {
     // _enum 是 ProTable 内置的属性，专门存储字典数据，不需要发送给后台
     delete data._enum;
 
+    props.beforeConfirm && props.beforeConfirm("delete");
+    data = (props.beforeDelete && (await props.beforeDelete(data))) || data;
     // 删除 Delete 不允许传输的数据
     const filterParams = [...(props?.apiFilterParams || []), ...(props?.deleteFilterParams || [])];
     filterParams.forEach(item => delete data[item]);
-    props.beforeConfirm && props.beforeConfirm("delete");
-    data = (props.beforeDelete && (await props.beforeDelete(data))) || data;
 
     executeApi(
       props.deleteApi,

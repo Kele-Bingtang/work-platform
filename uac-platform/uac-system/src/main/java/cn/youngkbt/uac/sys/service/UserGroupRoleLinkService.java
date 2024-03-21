@@ -3,6 +3,7 @@ package cn.youngkbt.uac.sys.service;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkInfoVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -47,4 +48,20 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
      * @return 是否成功
      */
     boolean addUserGroupsToRole(RoleLinkUserGroupDTO roleLinkUserGroupDTO);
+
+    /**
+     * 通过用户组 ID 查询角色列表
+     *
+     * @param userGroupId 用户组 ID
+     * @return 角色列表
+     */
+    List<RoleLinkInfoVO> listRoleLinkByGroupId(String userGroupId);
+
+    /**
+     * 将用户组移出角色
+     *
+     * @param ids 用户组 id 集合
+     * @return 是否成功
+     */
+    boolean removeUserGroupFromRole(List<Long> ids);
 }

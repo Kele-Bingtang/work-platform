@@ -144,8 +144,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public List<SysUserVO> listDisabledGroupId(String appId, String userGroupId) {
-        return baseMapper.listDisabledGroupId(appId, userGroupId);
+    public List<SysUserVO> listWithDisabledByGroupId(String userGroupId) {
+        return baseMapper.listWithDisabledByGroupId(userGroupId);
     }
 
     @Override

@@ -31,10 +31,8 @@ export const list = (params: Partial<User.UserInfo>) => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
 };
 
-export const listDisabledGroupId = (params: { appId: string; userGroupId: string }) => {
-  return http.get<http.Response<User.UserInfo[]>>(
-    `${baseUri}/listDisabledGroupId/${params.appId}/${params.userGroupId}`
-  );
+export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
+  return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/listWithDisabledByGroupId/${params.userGroupId}`);
 };
 
 export const addOne = (data: User.UserInfo) => {

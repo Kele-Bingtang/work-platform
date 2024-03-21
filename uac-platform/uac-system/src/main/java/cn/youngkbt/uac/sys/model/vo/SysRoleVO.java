@@ -60,4 +60,9 @@ public class SysRoleVO implements Serializable {
      */
     private String appId;
 
+    /**
+     * 是否禁用，给前端使用
+     */
+    private Boolean disabled;
+
 }

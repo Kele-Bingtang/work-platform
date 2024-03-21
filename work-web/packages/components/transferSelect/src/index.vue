@@ -6,8 +6,7 @@
         :data="tableData"
         border
         show-overflow-tooltip
-        highlight-current-row
-        @selection-change="handleSelectionChange"
+        @select="handleSelect"
         @row-click="handleRowClick"
       >
         <el-table-column v-if="multiple" type="selection" width="40" :selectable="(row: any) => !row.disabled" />
@@ -21,7 +20,7 @@
       <div class="flx-justify-between">
         <div class="select-num">
           选择数：
-          <span class="num">{{ selectedList.length || "" }}</span>
+          <span class="num">{{ selectedList?.length || "" }}</span>
         </div>
         <el-button link @click="handleClearSelect">清空</el-button>
       </div>
@@ -51,15 +50,20 @@
 <script setup lang="ts" name="TransferSelect">
 import { Close } from "@element-plus/icons-vue";
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
-import { ElMessage } from "element-plus";
-import { ref, shallowRef, watch, onBeforeMount, type Component } from "vue";
+import { type TableInstance, ElMessage } from "element-plus";
+import { ref, shallowRef, onBeforeMount, type Component } from "vue";
+import TransferSelect from "./index.vue";
 
+export type TransferSelectInstance = Omit<
+  InstanceType<typeof TransferSelect>,
+  keyof ComponentPublicInstance | keyof TransferSelectProps
+>;
 type CommonObjType = Record<string, any>;
 
 export type TransferTableColumn<T = CommonObjType> = Partial<TableColumnCtx<T>>;
 
 export interface TransferSelectProps<T = CommonObjType> {
-  modelValue: any;
+  modelValue: CommonObjType | CommonObjType[] | any; // v-model
   columns: TransferTableColumn<T>[]; // 表格列配置项
   data?: CommonObjType[] | any; // 表格数据
   requestApi?: (data?: any) => Promise<any>; // 请求数据的 api ==> 非必传
@@ -67,15 +71,20 @@ export interface TransferSelectProps<T = CommonObjType> {
   multiple?: boolean; // 是否多选
   listIcon?: Component; // 选择内容的前缀
   closeIcon?: Component; // 移除内容的 Icon
+  id?: string; // 一行的唯一标识，添加和移出选择项时用到
 }
 
 // 接受父组件参数，配置默认值
 const props = withDefaults(defineProps<TransferSelectProps>(), { multiple: true, closeIcon: Close });
-type EmitProps = { (e: "update:modelValue", value: any): void };
+
+type EmitProps = {
+  (e: "update:modelValue", value: CommonObjType | CommonObjType[]): void; // 选择的行数据
+  (e: "update:ids", value: string | string[]): void; // 选择的 ids
+};
+
 const emits = defineEmits<EmitProps>();
 const tableData = ref([]);
-const selectedList = ref<CommonObjType[]>([]);
-const elTableRef = shallowRef();
+const elTableRef = shallowRef<TableInstance>();
 
 onBeforeMount(async () => {
   // 有数据就直接赋值，没有数据就执行请求函数
@@ -87,11 +96,39 @@ onBeforeMount(async () => {
   getDataList();
 });
 
-watch(
-  () => selectedList.value,
-  () => emits("update:modelValue", props.multiple ? selectedList.value : selectedList.value[0])
-);
+/**
+ * @description 初始化选中项（可传入符合条件的数据，会自动激活选中）
+ * 计算出来的 selectedList 一定是一个数组，如果 props 传入一个对象，也会变成 [对象]（转成数组）
+ */
+const selectedList = computed({
+  get() {
+    const { multiple, modelValue } = props;
 
+    if (multiple && Array.isArray(modelValue)) {
+      modelValue?.forEach(row => elTableRef.value?.toggleRowSelection(row, true));
+      return modelValue || [];
+    }
+
+    if (!multiple && Array.isArray(modelValue)) return modelValue[0] ? [modelValue[0]] : [];
+    else return modelValue ? [modelValue] : [];
+  },
+  set(value) {
+    emits("update:modelValue", props.multiple ? value : value[0] || []);
+
+    if (props.multiple) {
+      const selectedIds: string[] = [];
+
+      value?.forEach(item => selectedIds.push(item[props.id ?? props.columns[0]?.prop!]));
+      emits("update:ids", selectedIds);
+    } else {
+      emits("update:ids", value[0][props.id ?? props.columns[0].prop!]);
+    }
+  },
+});
+
+/**
+ * @description 初始化数据
+ */
 const getDataList = async () => {
   if (props.requestApi) {
     const { data } = await props.requestApi({ ...props.requestParams });
@@ -99,33 +136,46 @@ const getDataList = async () => {
   }
 };
 
+/**
+ * @description 表格行点击事件
+ */
 const handleRowClick = (row: CommonObjType) => {
   if (row.disabled) return ElMessage.warning("该数据已被选中过，不允许再次选择");
   !props.multiple && (selectedList.value = [row]);
 };
 
-const handleSelectionChange = (selected: CommonObjType[]) => {
+/**
+ * @description 多选模式下，手动选中项发生变化时触发
+ */
+const handleSelect = (selected: CommonObjType[]) => {
   selectedList.value = selected;
 };
 
+/**
+ * @description 取消选中回调
+ */
 const handleCancelSelect = (row: CommonObjType) => {
-  selectedList.value = selectedList.value?.filter(item => item.username !== row.username);
-  elTableRef.value?.toggleRowSelection(row);
+  selectedList.value = selectedList.value?.filter(
+    (item: any) => item[props.id ?? props.columns[0].prop!] !== row[props.id ?? props.columns[0]?.prop!]
+  );
+  props.multiple && elTableRef.value?.toggleRowSelection(row, false);
 };
 
+/**
+ * @description 清除按钮回调
+ */
 const handleClearSelect = () => {
   selectedList.value = [];
   elTableRef.value?.clearSelection();
 };
 
-// const rowStyle = ({ row }: { row: CommonObjType }) => {
-//   if (row.disabled) return { backgroundColor: "#ebebeb" };
-// };
+defineExpose({ tableElement: elTableRef.value });
 </script>
 
 <style lang="scss" scoped>
 .select-container {
   display: flex;
+  flex: 1;
   align-items: center;
   width: 100%;
 

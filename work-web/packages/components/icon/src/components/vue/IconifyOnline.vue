@@ -6,14 +6,16 @@
   ></IconifyIcon>
 </template>
 
-<script setup lang="ts" name="IconifyOffline">
+<script setup lang="ts">
 import { Icon as IconifyIcon } from "@iconify/vue";
 import type { CSSProperties } from "vue";
 
-interface IconifyOfflineProps {
+defineOptions({ name: "IconifyOnline" });
+
+interface IconifyOnlineProps {
   icon: string;
   style?: CSSProperties;
 }
 
-defineProps<IconifyOfflineProps>();
+defineProps<IconifyOnlineProps>();
 </script>

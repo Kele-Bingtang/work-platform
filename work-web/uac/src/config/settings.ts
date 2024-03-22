@@ -1,5 +1,12 @@
-import { LayoutModeType, LayoutThemeType, TabsNavModeType, type LanguageType, type LayoutSizeType } from "@/stores";
 import {
+  LayoutModeType,
+  LayoutThemeType,
+  TabsNavModeType,
+  type LanguageType,
+  type LayoutSizeType,
+} from "@/stores/interface";
+import {
+  tokenCacheKey,
   userCacheKey,
   settingCacheKey,
   layoutCacheKey,
@@ -51,6 +58,7 @@ interface Settings {
   moreRouteChildrenHideInMenuThenOnlyOne: boolean;
   layoutSize: LayoutSizeType;
   language: LanguageType;
+  tokenCacheKey: string; // 缓存用户的的 token
   userCacheKey: string; // 缓存用户的的 key
   settingCacheKey: string; // 缓存配置的 key
   layoutCacheKey: string; // 缓存布局的 key
@@ -111,6 +119,7 @@ const routerSettings: Partial<Settings> = {
 };
 
 const keySetting: Partial<Settings> = {
+  tokenCacheKey,
   userCacheKey,
   settingCacheKey,
   layoutCacheKey,

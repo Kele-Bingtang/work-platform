@@ -4,9 +4,11 @@
   </div>
 </template>
 
-<script setup lang="ts" name="GridItem">
+<script setup lang="ts">
 import { computed, inject, type Ref, ref, useAttrs, watch } from "vue";
 import type { BreakPoint } from "../index.vue";
+
+defineOptions({ name: "GridItem" });
 
 export type Responsive = {
   span?: number; // 偏移量

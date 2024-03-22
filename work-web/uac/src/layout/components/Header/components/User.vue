@@ -30,8 +30,7 @@
 </template>
 
 <script setup lang="ts" name="User">
-import { useSettingsStore } from "@/stores/settings";
-import { useUserStore } from "@/stores/user";
+import { useSettingsStore, useUserStore } from "@/stores";
 import { useI18n } from "vue-i18n";
 import defaultAvatar from "@work/static/images/default.png";
 import { ArrowDownBold, Setting, Back } from "@element-plus/icons-vue";

@@ -17,7 +17,7 @@ import { ProTable } from "work";
 import { list, addOne, editOne, deleteOne, deleteBatch, type Tenant } from "@/api/system/tenant";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
 

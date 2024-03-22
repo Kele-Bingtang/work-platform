@@ -55,7 +55,7 @@ import {
   type TreeFilterInstance,
 } from "@work/components";
 import { useFormOptions } from "./useFormOptions";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import { Plus } from "@element-plus/icons-vue";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";

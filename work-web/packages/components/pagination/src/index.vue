@@ -21,7 +21,7 @@ import { scrollTo } from "@work/utils";
 export const pageSetting = { currentPage: 1, pageSizes: [10, 20, 50, 100, 200], pageSize: 20 };
 </script>
 
-<script setup lang="ts" name="Pagination">
+<script setup lang="ts">
 export interface Paging {
   currentPage: number; // 当前页
   pageSizes: number[]; // 页数数组
@@ -37,6 +37,8 @@ export interface PaginationProps {
   hidden?: boolean; // 是否不显示分页
   reset?: boolean; // 切换 pageSize，currentPage 重置为 1
 }
+
+defineOptions({ name: "Pagination" });
 
 const props = withDefaults(defineProps<PaginationProps>(), {
   modelValue: () => reactive(pageSetting),

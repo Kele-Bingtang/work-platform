@@ -22,11 +22,13 @@
   </div>
 </template>
 
-<script setup lang="ts" name="SearchForm">
+<script setup lang="ts">
 import { computed, ref } from "vue";
 import { Grid, GridItem, type TableColumnProps, type BreakPoint } from "@work/components";
 import { Delete, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
 import SearchFormItem from "./components/SearchFormItem.vue";
+
+defineOptions({ name: "SearchForm" });
 
 interface SearchFormProps {
   columns?: TableColumnProps[]; // 搜索配置列

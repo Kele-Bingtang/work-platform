@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="Grid">
+<script setup lang="ts">
 import {
   ref,
   watch,
@@ -20,6 +20,8 @@ import {
   type VNode,
 } from "vue";
 import type { Responsive as responsive } from "./components/GridItem.vue";
+
+defineOptions({ name: "Grid" });
 
 export type Responsive = responsive;
 

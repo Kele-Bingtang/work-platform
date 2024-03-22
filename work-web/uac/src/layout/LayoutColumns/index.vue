@@ -41,10 +41,9 @@
 </template>
 
 <script setup lang="ts" name="LayoutVertical">
-import { useSettingsStore } from "@/stores/settings";
 import MainContent from "@/layout/components/MainContent/index.vue";
 import Header from "@/layout/components/Header/index.vue";
-import { usePermissionStore } from "@/stores/permission";
+import { usePermissionStore, useSettingsStore } from "@/stores";
 import { useLayout } from "@/hooks/useLayout";
 import settings from "@/config/settings";
 import CommonIcon from "@/layout/components/CommonIcon/index.vue";

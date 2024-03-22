@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { removeCacheTabNavList } from "@/utils/cache";
-import type { LayoutModeType, LayoutThemeType, TabsNavModeType } from ".";
+import type { LayoutModeType, LayoutThemeType, TabsNavModeType } from "./interface";
 import defaultSettings from "@/config/settings";
 
 const {

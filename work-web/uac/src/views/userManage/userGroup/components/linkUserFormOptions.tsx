@@ -1,6 +1,6 @@
 import { listWithDisabledByGroupId } from "@/api/user/base";
 import type { UserGroup } from "@/api/user/userGroup";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import type { FormOptionsProps } from "@work/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, type FormRules, dayjs } from "element-plus";
 import { UserSelect } from "work";

@@ -23,11 +23,11 @@ export const useFormOptions = () => {
         attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 用户组名" } },
       },
       {
-        formItem: { label: "负责人", prop: "ownerId" },
+        formItem: { label: "负责人", prop: "owner" },
         attrs: {
           render: ({ scope }) => {
             return (
-              <UserSelect v-model={scope.form.ownerId} v-model:user={scope.form.user} requestApi={list}></UserSelect>
+              <UserSelect v-model={scope.form.owner} v-model:user={scope.form.user} requestApi={list}></UserSelect>
             );
           },
         },

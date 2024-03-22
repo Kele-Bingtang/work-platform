@@ -1,6 +1,6 @@
 import type { DictData } from "@/api/system/dictData";
 import type { DictType } from "@/api/system/dictType";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 

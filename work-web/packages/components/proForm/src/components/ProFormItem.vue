@@ -53,10 +53,12 @@
   </component>
 </template>
 
-<script setup lang="ts" name="ProFormItem">
+<script setup lang="ts">
 import { computed, inject, ref } from "vue";
 import type { FormColumnProps } from "../interface";
 import { WangEditor } from "@work/components";
+
+defineOptions({ name: "ProFormItem" });
 
 interface ProFormItemProps {
   column: FormColumnProps;

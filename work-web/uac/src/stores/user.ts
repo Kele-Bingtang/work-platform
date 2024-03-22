@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { UserInfo } from ".";
+import type { UserInfo } from "./interface";
 import { removeCacheToken, setCacheToken } from "@/utils/cache";
 import { useRoutes } from "@/hooks/useRoutes";
 import { resetRouter } from "@/router";

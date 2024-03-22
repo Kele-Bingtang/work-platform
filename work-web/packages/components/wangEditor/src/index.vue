@@ -20,12 +20,14 @@
   </div>
 </template>
 
-<script setup lang="ts" name="WangEditor">
+<script setup lang="ts">
 import { Boot, type IEditorConfig, type IDomEditor } from "@wangeditor/editor";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import attachmentModule from "@wangeditor/plugin-upload-attachment"; // wangeditor 的附件插件
 import "@wangeditor/editor/dist/css/style.css";
 import { toolbarKeys as toolbarKeysConfig } from "./config";
+
+defineOptions({ name: "WangEditor" });
 
 export type ImageInsertFnType = (url: string, alt: string) => void;
 export type VideoInsertFnType = (url: string, poster: string) => void;

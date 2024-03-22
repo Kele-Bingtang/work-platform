@@ -2,9 +2,11 @@
   <canvas ref="domRef" width="120" height="40" class="cursor-pointer" @click="getImgCode" />
 </template>
 
-<script setup lang="ts" name="ImageVerify">
+<script setup lang="ts">
 import { useImageVerify } from "./hooks";
 import { watch } from "vue";
+
+defineOptions({ name: "ImageVerify" });
 
 interface Props {
   code?: string;

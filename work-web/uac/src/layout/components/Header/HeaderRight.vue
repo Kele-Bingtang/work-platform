@@ -19,7 +19,7 @@ import MenuSearch from "./components/MenuSearch.vue";
 import User from "./components/User.vue";
 import ErrorLog from "./components/ErrorLog.vue";
 import settings from "@/config/settings";
-import { useErrorLogStore } from "@/stores/errorLog";
+import { useErrorLogStore } from "@/stores";
 
 const errorLogStore = useErrorLogStore();
 const errorCount = computed(() => {

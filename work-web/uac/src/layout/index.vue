@@ -11,7 +11,7 @@ import LayoutColumns from "./LayoutColumns/index.vue";
 import LayoutMixins from "./LayoutMixins/index.vue";
 import LayoutSubsystem from "./LayoutSubsystem/index.vue";
 import ThemeDrawer from "@/layout/components/ThemeDrawer/index.vue";
-import { useSettingsStore } from "@/stores/settings";
+import { useSettingsStore } from "@/stores";
 import { useLayout } from "@/hooks/useLayout";
 import { getPx, setStyleVar } from "@work/utils";
 

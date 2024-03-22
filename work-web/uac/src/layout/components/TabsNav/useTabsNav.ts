@@ -1,8 +1,6 @@
 import { useLayout } from "@/hooks/useLayout";
 import beforeClose from "@/router/beforeClose";
-import type { TabProp } from "@/stores";
-import { useLayoutStore } from "@/stores/layout";
-import { usePermissionStore } from "@/stores/permission";
+import { useLayoutStore, usePermissionStore, type TabProp } from "@/stores";
 import { getUrlParams } from "@work/utils";
 import Sortable from "sortablejs";
 import type { RefreshFunction } from "../MainContent/index.vue";

@@ -1,13 +1,12 @@
 import router from "@/router";
 import { HOME_NAME, LOGIN_URL, notFoundRouter, rolesRoutes } from "@/router/routesConfig";
-import { usePermissionStore } from "@/stores/permission";
+import { usePermissionStore, useUserStore } from "@/stores";
 import { isExternal, isType } from "@work/utils";
 import { ElNotification } from "element-plus";
 import type { RouteRecordRaw } from "vue-router";
-import { useUserStore } from "@/stores/user";
 import settings from "@/config/settings";
 import { useLayoutNoSetup } from "./useLayout";
-import type { BackstageMenuList } from "@/api/system/menu";
+import type { Menu } from "@/api/system/menu";
 
 const modules = import.meta.glob("@/views/**/*.vue");
 const FrameView = () => import("@/layout/components/FrameLayout/FrameView.vue");
@@ -23,7 +22,7 @@ export const useRoutes = () => {
    * @param roles 权限角色
    * @param api 接口
    */
-  const initDynamicRouters = async (roles?: string[], api?: () => Promise<BackstageMenuList[]>) => {
+  const initDynamicRouters = async (roles?: string[], api?: () => Promise<Menu.MenuInfo[]>) => {
     const { cacheDynamicRoutes, cacheDynamicRoutesKey } = settings;
     let routeList: RouterConfigRaw[] = [];
     let isCacheDynamicRoutes = false;
@@ -318,7 +317,7 @@ export const useRoutes = () => {
    * @param menuCode 菜单 code，等价于路由的 name
    * @returns 路由表信息
    */
-  const getDynamicRouters = (menuList: BackstageMenuList[], menuCode = "") => {
+  const getDynamicRouters = (menuList: any[], menuCode = "") => {
     const dynamicRouterList: RouterConfigRaw[] = [];
     menuList.forEach(item => {
       if (item.parentMenuCode === menuCode) {

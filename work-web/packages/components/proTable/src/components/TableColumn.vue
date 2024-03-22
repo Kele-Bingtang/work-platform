@@ -2,11 +2,13 @@
   <RenderTableColumn v-bind="column" />
 </template>
 
-<script setup lang="tsx" name="TableColumn">
+<script setup lang="tsx">
 import { inject, ref, useSlots } from "vue";
 import type { TableColumnProps, RenderScope, HeaderRenderScope } from "../interface";
 import { filterEnum, filterEnumLabel, formatValue, lastProp, handleRowAccordingToProp } from "../utils";
 import { ElCheckTag, ElTag, ElTableColumn } from "element-plus";
+
+defineOptions({ name: "TableColumn" });
 
 defineProps<{ column: TableColumnProps }>();
 

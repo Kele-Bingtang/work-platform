@@ -54,8 +54,7 @@
 
 <script setup lang="ts" name="TabsNav">
 import type { TabProp } from "@/stores";
-import { useLayoutStore } from "@/stores/layout";
-import { useSettingsStore } from "@/stores/settings";
+import { useLayoutStore, useSettingsStore } from "@/stores";
 import CommonIcon from "@/layout/components/CommonIcon/index.vue";
 import { useTabsNav } from "../useTabsNav";
 import RightMenu from "../components/RightMenu.vue";

@@ -106,10 +106,12 @@ const detailForm: DialogForm = {
   options: useFormOptions().options,
   addApi: form => addOne({ ...form, appId: requestParam.appId }),
   beforeAdd: form => {
+    form.ownerId = form.user.username;
     form.ownerName = form.user.nickname;
   },
   editApi: editOne,
   beforeEdit: form => {
+    form.ownerId = form.user.username;
     form.ownerName = form.user.nickname;
   },
   deleteApi: deleteOne,

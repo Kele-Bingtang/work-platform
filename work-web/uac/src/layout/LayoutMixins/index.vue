@@ -24,9 +24,8 @@
   </el-container>
 </template>
 <script setup lang="ts" name="LayoutMixins">
-import { useSettingsStore } from "@/stores/settings";
 import MainContent from "@/layout/components/MainContent/index.vue";
-import { usePermissionStore } from "@/stores/permission";
+import { usePermissionStore, useSettingsStore } from "@/stores";
 import { useLayout } from "@/hooks/useLayout";
 import { useRoutes } from "@/hooks/useRoutes";
 import settings from "@/config/settings";

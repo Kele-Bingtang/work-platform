@@ -1,6 +1,6 @@
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 
 const rules = reactive<FormRules>({
   clientKey: [{ required: true, message: "请输入客户端 Key", trigger: "blur" }],

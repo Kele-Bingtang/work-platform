@@ -25,10 +25,12 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts" name="DialogOperate">
+<script setup lang="ts">
 import { type DialogProps, ElMessage, type FormInstance, ElMessageBox } from "element-plus";
 import { ProForm, type FormOptionsProps } from "@work/components";
 import { shallowRef, ref, computed } from "vue";
+
+defineOptions({ name: "DialogOperate" });
 
 export type DialogStatus = "" | "edit" | "add" | "read";
 

@@ -1,11 +1,7 @@
-import { DeviceType } from "@/stores";
-import { useLayoutStore } from "@/stores/layout";
-import { usePermissionStore } from "@/stores/permission";
+import { useLayoutStore, usePermissionStore, useSettingsStore, useUserStore, DeviceType } from "@/stores";
 import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
 import settings from "@/config/settings";
-import { useSettingsStore } from "@/stores/settings";
-import { useUserStore } from "@/stores/user";
 import { transformI18n } from "@work/i18n";
 import { isFunction, isString } from "@work/utils";
 import { useRoutes } from "./useRoutes";

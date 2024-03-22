@@ -33,7 +33,7 @@ import { isExternal } from "@work/utils";
 import CommonIcon from "@/layout/components/CommonIcon/index.vue";
 import { Tooltip } from "@work/components";
 import settings from "@/config/settings";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 
 defineProps<{
   menuItem: RouterConfig;

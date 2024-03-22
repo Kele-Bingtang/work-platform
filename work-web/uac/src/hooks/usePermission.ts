@@ -1,5 +1,5 @@
 import router from "@/router";
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from "@/stores";
 import { isIncludeAll, isIncludeSome } from "@work/utils";
 import { isString } from "@work/utils";
 

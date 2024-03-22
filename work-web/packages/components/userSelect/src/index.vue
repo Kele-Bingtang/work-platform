@@ -4,7 +4,7 @@
       v-model="selectValue"
       :options="userData"
       placeholder="请选择用户"
-      :props="{ value: 'username', label: 'nickname' }"
+      :props="{ value: value, label: 'nickname' }"
       v-bind="$attrs"
       :multiple="multiple"
       clearable
@@ -17,7 +17,8 @@
 
     <el-dialog v-model="dialogVisible" title="添加用户" width="700" class="select-dialog">
       <TransferSelect
-        v-model="selectedUserList"
+        v-model="selectedIds"
+        v-model:rows="selectedUserList"
         :columns="transferSelectColumns"
         :data="userData"
         :list-icon="User"
@@ -36,11 +37,13 @@
   </div>
 </template>
 
-<script setup lang="ts" name="UserSelect">
-import { ref, onBeforeMount } from "vue";
+<script setup lang="ts">
+import { ref, onBeforeMount, computed } from "vue";
 import { User } from "@element-plus/icons-vue";
 import { TransferSelect } from "work";
 import type { TransferTableColumn } from "@work/components";
+
+defineOptions({ name: "UserSelect" });
 
 export interface UserSelectProps {
   modelValue: any;
@@ -64,8 +67,9 @@ const emits = defineEmits<EmitProps>();
 
 const userData = ref<Record<string, any>[]>([]);
 const dialogVisible = ref(false);
-const selectedUserList = ref<Record<string, any>[]>([]);
-const value = "username";
+const selectedIds = ref<string | string[]>([]);
+const selectedUserList = ref<Record<string, any> | Record<string, any>[]>([]);
+const value = "userId";
 
 /**
  * @description 初始化选中项
@@ -104,8 +108,6 @@ const getDataList = async () => {
  * @description 下拉框选择某个元素回调
  */
 const handleSelectChange = (val: string | string[]) => {
-  const { multiple } = props;
-  selectedUserList.value = userData.value.filter(item => (multiple ? val?.includes(item[value]) : val === item[value]));
   selectValue.value = val;
 };
 
@@ -113,10 +115,7 @@ const handleSelectChange = (val: string | string[]) => {
  * @description 打开用户选择弹窗回调
  */
 const handleOpenUseTransferSelect = () => {
-  const { multiple } = props;
-  selectedUserList.value = userData.value?.filter(item =>
-    multiple ? selectValue.value?.includes(item[value]) : selectValue.value === item[value]
-  );
+  selectedIds.value = selectValue.value;
   dialogVisible.value = true;
 };
 
@@ -124,14 +123,8 @@ const handleOpenUseTransferSelect = () => {
  * @description 确认选择用户回调
  */
 const handleConfirmSelect = () => {
-  const { multiple } = props;
-  let selectUserIds;
-
-  if (multiple) selectUserIds = (selectedUserList.value as Record<string, any>[])?.map(item => item[value]);
-  else selectUserIds = (selectedUserList.value as Record<string, any>)[value];
-
-  selectValue.value = selectUserIds;
-  emits("update:modelValue", selectUserIds);
+  selectValue.value = selectedIds.value;
+  emits("update:modelValue", selectedIds.value);
   dialogVisible.value = false;
 };
 

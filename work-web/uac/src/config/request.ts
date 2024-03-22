@@ -14,9 +14,8 @@ import {
 } from "@work/request";
 import qs from "qs";
 import { isArray, isExternal } from "@work/utils";
-import { useErrorLogStore } from "@/stores/errorLog";
+import { useUserStore, useErrorLogStore } from "@/stores";
 import router from "@/router";
-import { useUserStore } from "@/stores/user";
 import { LOGIN_URL } from "@/router/routesConfig";
 import { message } from "@work/utils";
 

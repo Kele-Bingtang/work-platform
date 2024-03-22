@@ -308,15 +308,20 @@
 <script setup lang="ts" name="ThemeDrawer">
 import { useTheme } from "@/hooks/useTheme";
 import settings from "@/config/settings";
-import { useSettingsStore } from "@/stores/settings";
-import { LayoutModeType, LayoutThemeType, TabsNavModeType, DeviceType } from "@/stores";
+import {
+  useLayoutStore,
+  useSettingsStore,
+  LayoutModeType,
+  LayoutThemeType,
+  TabsNavModeType,
+  DeviceType,
+} from "@/stores";
 import { mittBus } from "@work/utils";
 import { Sunny, Moon } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
 import { useLayout } from "@/hooks/useLayout";
 import { ElMessage } from "element-plus";
 import variables from "@work/styles/variables.module.scss";
-import { useLayoutStore } from "@/stores/layout";
 import {
   Notification,
   CircleCheckFilled,
@@ -348,22 +353,10 @@ const colorList = [
 ];
 const { t } = useI18n();
 const titleModeOptions = [
-  {
-    value: "0",
-    label: t("_settings.titleModeOne"),
-  },
-  {
-    value: "1",
-    label: t("_settings.titleModeTwo"),
-  },
-  {
-    value: "2",
-    label: t("_settings.titleModeThree"),
-  },
-  {
-    value: "3",
-    label: t("_settings.titleModeFour"),
-  },
+  { value: "0", label: t("_settings.titleModeOne") },
+  { value: "1", label: t("_settings.titleModeTwo") },
+  { value: "2", label: t("_settings.titleModeThree") },
+  { value: "3", label: t("_settings.titleModeFour") },
 ];
 const route = useRoute();
 const settingsStore = useSettingsStore();

@@ -21,12 +21,14 @@
   </component>
 </template>
 
-<script setup lang="ts" name="ProForm">
+<script setup lang="ts">
 import { computed, shallowRef, ref, provide, watch, isRef, isProxy, type Ref } from "vue";
 import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
 import type { FormInstance } from "element-plus";
+
+defineOptions({ name: "ProForm" });
 
 export interface ProFormProps {
   options: FormOptionsProps;

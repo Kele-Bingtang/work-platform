@@ -206,7 +206,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="ProTable">
+<script setup lang="ts">
 import { ref, watch, provide, onMounted, computed, nextTick, isRef, unref, type ComputedRef } from "vue";
 import { ElMessageBox, ElTable } from "element-plus";
 import { useTable, type Table } from "./hooks/useTable";
@@ -220,6 +220,8 @@ import TableColumn from "./components/TableColumn.vue";
 import DialogOperate from "./components/DialogOperate.vue";
 import type { DialogFormProps } from "./components/DialogOperate.vue";
 import { exportJsonToExcel, formatJsonToArray } from "@work/utils";
+
+defineOptions({ name: "ProTable" });
 
 export type DialogForm = DialogFormProps;
 

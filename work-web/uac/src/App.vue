@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts" name="App">
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore, useSettingsStore } from "@/stores";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
 import { getBrowserLang } from "@work/utils";
@@ -15,7 +15,6 @@ import { useTheme } from "./hooks/useTheme";
 import { useFrame } from "./layout/components/FrameLayout/useFrame";
 import { getCacheVersion, removeProjectsCache, setCacheVersion } from "@/utils/cache";
 import settings from "@/config/settings";
-import { useSettingsStore } from "@/stores/settings";
 
 const layoutStore = useLayoutStore();
 const settingsStore = useSettingsStore();

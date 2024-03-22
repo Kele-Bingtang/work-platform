@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { ErrorLog } from ".";
+import type { ErrorLog } from "./interface";
 import { useUserStore } from "./user";
 
 export const useErrorLogStore = defineStore("errorLogStore", () => {

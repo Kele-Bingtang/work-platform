@@ -1,4 +1,4 @@
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import { findItemNested } from "@work/components";
 import { message } from "@work/utils";
 import { ElMessageBox } from "element-plus";

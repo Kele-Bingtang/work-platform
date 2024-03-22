@@ -4,8 +4,10 @@
   </svg>
 </template>
 
-<script setup lang="ts" name="SvgIcon">
+<script setup lang="ts">
 import type { CSSProperties } from "vue";
+
+defineOptions({ name: "SvgIcon" });
 
 interface SvgProps {
   name: string; // 图标的名称，必传

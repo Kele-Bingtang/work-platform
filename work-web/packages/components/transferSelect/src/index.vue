@@ -47,12 +47,14 @@
     </div>
   </div>
 </template>
-<script setup lang="ts" name="TransferSelect">
+<script setup lang="ts">
 import { Close } from "@element-plus/icons-vue";
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
 import { type TableInstance, ElMessage } from "element-plus";
-import { ref, shallowRef, onBeforeMount, type Component } from "vue";
+import { ref, shallowRef, onBeforeMount, computed, type Component, type ComponentPublicInstance } from "vue";
 import TransferSelect from "./index.vue";
+
+defineOptions({ name: "TransferSelect" });
 
 export type TransferSelectInstance = Omit<
   InstanceType<typeof TransferSelect>,
@@ -63,23 +65,23 @@ type CommonObjType = Record<string, any>;
 export type TransferTableColumn<T = CommonObjType> = Partial<TableColumnCtx<T>>;
 
 export interface TransferSelectProps<T = CommonObjType> {
-  modelValue: CommonObjType | CommonObjType[] | any; // v-model
+  modelValue: string | string[]; // v-model
   columns: TransferTableColumn<T>[]; // 表格列配置项
+  id: string; // 一行的唯一标识，添加和移出选择项时用到
   data?: CommonObjType[] | any; // 表格数据
   requestApi?: (data?: any) => Promise<any>; // 请求数据的 api ==> 非必传
   requestParams?: CommonObjType; // 请求携带的参数
   multiple?: boolean; // 是否多选
   listIcon?: Component; // 选择内容的前缀
   closeIcon?: Component; // 移除内容的 Icon
-  id?: string; // 一行的唯一标识，添加和移出选择项时用到
 }
 
 // 接受父组件参数，配置默认值
 const props = withDefaults(defineProps<TransferSelectProps>(), { multiple: true, closeIcon: Close });
 
 type EmitProps = {
-  (e: "update:modelValue", value: CommonObjType | CommonObjType[]): void; // 选择的行数据
-  (e: "update:ids", value: string | string[]): void; // 选择的 ids
+  (e: "update:modelValue", value: string | string[]): void; // 选择的 ids
+  (e: "update:rows", value: CommonObjType | CommonObjType[]): void; // 选择的行数据
 };
 
 const emits = defineEmits<EmitProps>();
@@ -102,27 +104,37 @@ onBeforeMount(async () => {
  */
 const selectedList = computed({
   get() {
-    const { multiple, modelValue } = props;
+    const { multiple, id, modelValue } = props;
 
     if (multiple && Array.isArray(modelValue)) {
-      modelValue?.forEach(row => elTableRef.value?.toggleRowSelection(row, true));
-      return modelValue || [];
+      const selectedData: CommonObjType[] = [];
+      tableData.value?.forEach(item => {
+        if (modelValue.includes(item[id ?? props.columns[0]?.prop!])) {
+          elTableRef.value?.toggleRowSelection(item, true);
+          selectedData.push(item);
+        } else elTableRef.value?.toggleRowSelection(item, false);
+      });
+
+      return selectedData || [];
     }
 
-    if (!multiple && Array.isArray(modelValue)) return modelValue[0] ? [modelValue[0]] : [];
-    else return modelValue ? [modelValue] : [];
+    const selectedData: CommonObjType[] = tableData.value?.filter(item => {
+      if (!multiple && Array.isArray(modelValue)) return modelValue.includes(item[id ?? props.columns[0]?.prop!]);
+      else return tableData.value?.filter(item => modelValue === item[id ?? props.columns[0]?.prop!]).length;
+    });
+
+    selectedData[0] && elTableRef.value?.toggleRowSelection(selectedData[0], true);
+
+    return selectedData[0] ? [selectedData[0]] : [];
   },
   set(value) {
-    emits("update:modelValue", props.multiple ? value : value[0] || []);
+    const { multiple, id } = props;
 
-    if (props.multiple) {
-      const selectedIds: string[] = [];
+    const selectedIds: string[] = [];
+    value.forEach(item => selectedIds.push(item[id ?? props.columns[0]?.prop!]));
 
-      value?.forEach(item => selectedIds.push(item[props.id ?? props.columns[0]?.prop!]));
-      emits("update:ids", selectedIds);
-    } else {
-      emits("update:ids", value[0][props.id ?? props.columns[0].prop!]);
-    }
+    emits("update:modelValue", multiple ? selectedIds : value[0][id ?? props.columns[0]?.prop!]);
+    emits("update:rows", value);
   },
 });
 

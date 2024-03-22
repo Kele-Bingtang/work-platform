@@ -20,7 +20,7 @@
 
 <script setup lang="ts" name="LayoutSizeSelect">
 import type { LayoutSizeType } from "@/stores";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import { ElMessage } from "element-plus";
 import { useI18n } from "vue-i18n";
 

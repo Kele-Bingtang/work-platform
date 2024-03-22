@@ -71,7 +71,7 @@
 
 <script setup lang="ts" name="ErrorLog">
 import type { ErrorLog } from "@/stores";
-import { useErrorLogStore } from "@/stores/errorLog";
+import { useErrorLogStore } from "@/stores";
 
 const errorStore = useErrorLogStore();
 const dialogErrorStackVisible = ref(false);

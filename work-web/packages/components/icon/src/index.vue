@@ -14,7 +14,7 @@
   <IconifyOnline v-else-if="isIconifyOnline(icon)" :icon="icon" v-bind="attrsComputed"></IconifyOnline>
 </template>
 
-<script setup lang="ts" name="Icon">
+<script setup lang="ts">
 import SvgIcon from "./components/vue/SvgIcon.vue";
 import FontIcon from "./components/vue/FontIcon.vue";
 import IconifyOffline from "./components/vue/IconifyOffline.vue";
@@ -22,6 +22,8 @@ import IconifyOnline from "./components/vue/IconifyOnline.vue";
 import type { IconType } from "./iconType";
 import type { IconifyIcon } from "@iconify/vue";
 import { useAttrs, computed } from "vue";
+
+defineOptions({ name: "Icon" });
 
 const ifReg = /^IF-/;
 const svgReg = /^SVG-/;

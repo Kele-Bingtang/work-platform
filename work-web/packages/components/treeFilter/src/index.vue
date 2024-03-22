@@ -34,10 +34,12 @@
   </div>
 </template>
 
-<script setup lang="ts" name="TreeFilter">
+<script setup lang="ts">
 import { ref, watch, onBeforeMount } from "vue";
 import { ElTree } from "element-plus";
 import TreeFilter from "./index.vue";
+
+defineOptions({ name: "TreeFilter" });
 
 export type TreeFilterInstance = Omit<
   InstanceType<typeof TreeFilter>,

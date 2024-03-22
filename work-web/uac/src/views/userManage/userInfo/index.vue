@@ -27,7 +27,7 @@ import { listDeptTreeList } from "@/api/system/dept";
 import { addOne, editOne, deleteOne, deleteBatch, list, type User } from "@/api/user/base";
 import { options } from "./formOptions";
 import type { DialogForm, ProTableInstance } from "@work/components";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
 

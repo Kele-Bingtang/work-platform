@@ -6,8 +6,10 @@
   <i v-else class="iconfont" :class="icon" v-bind="attrs"></i>
 </template>
 
-<script setup lang="ts" name="FontIcon">
+<script setup lang="ts">
 import { useAttrs } from "vue";
+
+defineOptions({ name: "FontIcon" });
 
 interface FontIconProps {
   icon: string;

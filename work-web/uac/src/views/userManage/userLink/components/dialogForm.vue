@@ -13,7 +13,7 @@ import { ProForm } from "work";
 import type { FormOptionsProps, ProFormInstance } from "@work/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, ElTransfer, dayjs, type FormRules } from "element-plus";
 import type { DictData } from "@/api/system/dictData";
-import { useLayoutStore } from "@/stores/layout";
+import { useLayoutStore } from "@/stores";
 import DialogForm from "./dialogForm.vue";
 
 export type DialogFormInstance = Omit<

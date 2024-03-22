@@ -21,8 +21,11 @@
   </ul>
 </template>
 
-<script setup lang="ts" name="List">
+<script setup lang="ts">
 import List from "./index.vue";
+
+defineOptions({ name: "List" });
+
 export type ListInstance = Omit<InstanceType<typeof List>, keyof ComponentPublicInstance | keyof ListProps>;
 
 export interface ListProps {

@@ -63,7 +63,7 @@
 <script setup lang="ts" name="LoginForm">
 import { useRouter } from "vue-router";
 import { ElNotification, type FormInstance } from "element-plus";
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from "@/stores";
 import { getTimeState } from "@work/utils";
 import settings from "@/config/settings";
 import { ImageVerify } from "@work/components";

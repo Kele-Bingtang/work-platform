@@ -12,6 +12,9 @@
 <script setup lang="ts" name="500">
 import { useRouter } from "vue-router";
 import { HOME_URL } from "@work/constants";
+
+defineOptions({ name: "500" });
+
 const router = useRouter();
 </script>
 

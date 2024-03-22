@@ -1,6 +1,6 @@
 import { isArray } from "@work/utils";
 import settings from "@/config/settings";
-import { useErrorLogStore } from "@/stores/errorLog";
+import { useErrorLogStore } from "@/stores";
 import { ElNotification } from "element-plus";
 
 const { errorLog } = settings;

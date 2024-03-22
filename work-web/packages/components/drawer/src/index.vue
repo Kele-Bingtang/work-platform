@@ -7,7 +7,11 @@
   </el-drawer>
 </template>
 
-<script setup lang="ts" name="BlankDrawer">
+<script setup lang="ts">
+import { computed } from "vue";
+
+defineOptions({ name: "BlankDrawer" });
+
 interface BlankDrawerProps {
   modelValue: any;
 }

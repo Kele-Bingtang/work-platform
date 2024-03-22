@@ -19,9 +19,11 @@
     </div>
   </template>
 </template>
-<script setup lang="ts" name="Tooltip">
+<script setup lang="ts">
 import { ref, useSlots, computed, onMounted, onBeforeMount, onUpdated } from "vue";
 import { isArray } from "@work/utils";
+
+defineOptions({ name: "Tooltip" });
 
 interface TooltipProps {
   line?: number; // 多少行文字溢出开始省略并气泡提示

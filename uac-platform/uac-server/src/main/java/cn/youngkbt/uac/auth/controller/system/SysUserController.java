@@ -5,9 +5,14 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import cn.youngkbt.uac.sys.service.SysUserService;
+import cn.youngkbt.uac.sys.service.UserGroupLinkService;
+import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
@@ -29,6 +34,8 @@ import java.util.List;
 public class SysUserController {
 
     private final SysUserService sysUserService;
+    private final UserGroupLinkService userGroupLinkService;
+    private final UserRoleLinkService userRoleLinkService;
 
     @GetMapping("/{id}")
     @Operation(summary = "用户列表查询", description = "通过主键查询用户列表")
@@ -51,11 +58,25 @@ public class SysUserController {
         return HttpResult.ok(rolePostVo);
     }
 
+    @GetMapping("listUserLinkByRoleId/{roleId}")
+    @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表")
+    public Response<List<UserLinkVO>> listUserLinkByRoleId(@PathVariable String roleId) {
+        List<UserLinkVO> userLinkVOList = userRoleLinkService.listUserLinkByRoleId(roleId);
+        return HttpResult.ok(userLinkVOList);
+    }
+
     @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
-    @Operation(summary = "用户列表查询", description = "下拉查询用户列表（已选的被禁用）")
-    public Response<List<SysUserVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
-        List<SysUserVO> sysUserVOList = sysUserService.listWithDisabledByGroupId(userGroupId);
-        return HttpResult.ok(sysUserVOList);
+    @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true）")
+    public Response<List<UserBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
+        List<UserBindSelectVO> userBindSelectVOList = sysUserService.listWithDisabledByGroupId(userGroupId);
+        return HttpResult.ok(userBindSelectVOList);
+    }
+
+    @GetMapping("listUserLinkByGroupId/{userGroupId}")
+    @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询用户列表")
+    public Response<List<UserLinkVO>> listUserLinkByGroupId(@PathVariable String userGroupId, UserLinkInfoDTO userLinkInfoDTO) {
+        List<UserLinkVO> userLinkVOList = userGroupLinkService.listUserLinkByGroupId(userGroupId, userLinkInfoDTO);
+        return HttpResult.ok(userLinkVOList);
     }
 
     @PostMapping

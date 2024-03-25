@@ -1,8 +1,10 @@
 package cn.youngkbt.uac.sys.mapper;
 
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
 */
 public interface UserGroupLinkMapper extends BaseMapper<UserGroupLink> {
 
-    List<UserLinkInfoVO> listUserLinkByGroupId(@Param("userGroupId") String userGroupId);
+    List<UserLinkVO> listUserLinkByGroupId(@Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
 }
 
 

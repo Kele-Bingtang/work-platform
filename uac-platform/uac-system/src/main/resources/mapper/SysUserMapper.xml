@@ -69,8 +69,8 @@
         ${ew.getCustomSqlSegment}
     </select>
     
-    <select id="listWithDisabledByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.SysUserVO">
-        select tsu.*, case when tugl.user_group_id is not null then 1 else 0 end as disabled
+    <select id="listWithDisabledByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO">
+        select tsu.user_id, tsu.username, tsu.nickname, case when tugl.user_group_id is not null then 1 else 0 end as disabled
         from t_sys_user tsu 
         left join t_user_group_link tugl on tsu.user_id = tugl.user_id and tugl.user_group_id = #{userGroupId} and tugl.is_deleted = 0
         where tsu.is_deleted = 0

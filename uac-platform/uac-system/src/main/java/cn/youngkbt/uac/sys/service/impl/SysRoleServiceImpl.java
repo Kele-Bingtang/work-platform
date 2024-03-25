@@ -7,9 +7,8 @@ import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.MapstructUtil;
@@ -61,7 +60,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public List<UserRoleListVO> listRoleListByUserId(String appId, String userId) {
+    public List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId) {
         QueryWrapper<SysRole> wrapper = Wrappers.query();
         wrapper.eq("turl.is_deleted", ColumnConstant.NON_DELETED)
                 .eq("tsr.app_id", appId)
@@ -70,17 +69,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public List<RoleBindUserVO> listRoleListWithDisabledByUserId(String appId, String userId) {
+    public List<RoleBindSelectVO> listWithDisabledByUserId(String appId, String userId) {
         return baseMapper.selectWithDisabledByUserId(appId, userId);
     }
 
     @Override
-    public List<UserLinkInfoVO> listUserLinkByRoleId(String roleId) {
-        return baseMapper.listUserLinkByRoleId(roleId);
-    }
-
-    @Override
-    public List<SysRoleVO> listWithDisabledByGroupId(String userGroupId) {
+    public List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
         return baseMapper.listWithDisabledByGroupId(userGroupId);
     }
 

@@ -1,12 +1,16 @@
 package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.uac.sys.mapper.UserGroupRoleLinkMapper;
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
+import cn.youngkbt.uac.sys.model.po.UserGroupLink;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
-import cn.youngkbt.uac.sys.model.vo.link.RoleLinkInfoVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
+import cn.youngkbt.utils.StringUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -63,8 +67,14 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
     }
 
     @Override
-    public List<RoleLinkInfoVO> listRoleLinkByGroupId(String userGroupId) {
-        return baseMapper.listRoleLinkByGroupId(userGroupId);
+    public List<UserGroupLinkRoleVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO) {
+        QueryWrapper<UserGroupLink> queryWrapper = Wrappers.query();
+        queryWrapper.eq("tugrl.is_deleted", 0)
+                .eq("tugrl.user_group_id", userGroupId)
+                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleCode()), "tsr.role_code", roleLinkInfoDTO.getRoleCode())
+                .like(StringUtil.hasText(roleLinkInfoDTO.getRoleName()), "tsr.role_name", roleLinkInfoDTO.getRoleName());
+        
+        return baseMapper.listRoleLinkByGroupId(queryWrapper);
     }
 
     @Override

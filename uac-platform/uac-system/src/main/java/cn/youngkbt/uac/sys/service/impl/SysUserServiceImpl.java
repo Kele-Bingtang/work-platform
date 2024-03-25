@@ -17,6 +17,7 @@ import cn.youngkbt.uac.sys.model.vo.SysPostVO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.SysUserService;
@@ -144,7 +145,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public List<SysUserVO> listWithDisabledByGroupId(String userGroupId) {
+    public List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
         return baseMapper.listWithDisabledByGroupId(userGroupId);
     }
 

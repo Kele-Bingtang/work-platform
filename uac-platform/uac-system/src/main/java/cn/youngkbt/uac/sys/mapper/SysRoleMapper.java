@@ -1,10 +1,9 @@
 package cn.youngkbt.uac.sys.mapper;
 
 import cn.youngkbt.uac.sys.model.po.SysRole;
-import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
@@ -19,13 +18,13 @@ import java.util.List;
 */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-    List<UserRoleListVO> selectByUserId(@Param(Constants.WRAPPER) QueryWrapper<SysRole> wrapper);
+    List<RoleLinkVO> selectByUserId(@Param(Constants.WRAPPER) QueryWrapper<SysRole> wrapper);
 
-    List<RoleBindUserVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
+    List<RoleBindSelectVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
 
-    List<UserLinkInfoVO> listUserLinkByRoleId(@Param("roleId") String roleId);
+    List<UserLinkVO> listUserLinkByRoleId(@Param("roleId") String roleId);
 
-    List<SysRoleVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
+    List<RoleBindSelectVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
 }
 
 

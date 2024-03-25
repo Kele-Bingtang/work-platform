@@ -6,13 +6,14 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
@@ -83,34 +84,34 @@ public class SysRoleController {
         return HttpResult.ok(sysRoleService.removeBatch(List.of(ids)));
     }
 
-    @GetMapping("/listByUserId/{appId}/{userId}")
+    @GetMapping("/listRoleLinkByUserId/{appId}/{userId}")
     @Operation(summary = "角色列表查询", description = "查询某个用户所在的角色列表")
-    public Response<List<UserRoleListVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserRoleListVO> userRoleListVOS = sysRoleService.listRoleListByUserId(appId, userId);
-        return HttpResult.ok(userRoleListVOS);
+    public Response<List<RoleLinkVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId) {
+        List<RoleLinkVO> roleLinkVOS = sysRoleService.listRoleLinkByUserId(appId, userId);
+        return HttpResult.ok(roleLinkVOS);
+    }
+
+    @GetMapping("listRoleLinkByGroupId/{userGroupId}")
+    @Operation(summary = "角色列表查询", description = "通过用户组 ID 查询角色列表")
+    public Response<List<UserGroupLinkRoleVO>> listRoleLinkByGroupId(@PathVariable String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO) {
+        List<UserGroupLinkRoleVO> userGroupLinkRoleVOList = userGroupRoleLinkService.listRoleLinkByGroupId(userGroupId, roleLinkInfoDTO);
+        return HttpResult.ok(userGroupLinkRoleVOList);
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
-    @Operation(summary = "角色列表查询", description = "查询所有角色列表，如果角色绑定了用户，则 disabled 属性为 false")
-    public Response<List<RoleBindUserVO>> listRoleListWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<RoleBindUserVO> roleBindUserVOList = sysRoleService.listRoleListWithDisabledByUserId(appId, userId);
-        return HttpResult.ok(roleBindUserVOList);
-    }
-
-    @GetMapping("listUserLinkByRoleId/{roleId}")
-    @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表")
-    public Response<List<UserLinkInfoVO>> listUserLinkByRoleId(@PathVariable String roleId) {
-        List<UserLinkInfoVO> userLinkInfoVOList = sysRoleService.listUserLinkByRoleId(roleId);
-        return HttpResult.ok(userLinkInfoVOList);
+    @Operation(summary = "角色列表查询", description = "查询所有角色列表，如果角色绑定了用户，则 disabled 属性为 true")
+    public Response<List<RoleBindSelectVO>> listWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
+        List<RoleBindSelectVO> roleBindSelectVOList = sysRoleService.listWithDisabledByUserId(appId, userId);
+        return HttpResult.ok(roleBindSelectVOList);
     }
 
     @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
-    @Operation(summary = "角色列表查询", description = "查询角色列表（已选的被禁用）")
-    public Response<List<SysRoleVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
-        List<SysRoleVO> userVOList = sysRoleService.listWithDisabledByGroupId(userGroupId);
-        return HttpResult.ok(userVOList);
+    @Operation(summary = "角色列表查询", description = "查询所有角色列表（查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true）")
+    public Response<List<RoleBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
+        List<RoleBindSelectVO> roleBindSelectVOList = sysRoleService.listWithDisabledByGroupId(userGroupId);
+        return HttpResult.ok(roleBindSelectVOList);
     }
-    
+
     @PostMapping("addUserToRoles")
     @Operation(summary = "添加用户到角色", description = "添加用户到角色（多个角色）")
     public Response<Boolean> addUserToRoles(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
@@ -147,7 +148,7 @@ public class SysRoleController {
         boolean result = userRoleLinkService.removeUserFromRole(List.of(ids));
         return HttpResult.ok(result);
     }
-    
+
     @DeleteMapping("/removeUserGroupFromRole/{ids}")
     @Operation(summary = "移出角色", description = "将用户组移出角色")
     public Response<Boolean> removeUserGroupFromRole(@PathVariable Long[] ids) {

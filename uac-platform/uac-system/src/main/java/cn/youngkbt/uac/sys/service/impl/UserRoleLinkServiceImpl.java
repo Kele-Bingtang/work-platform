@@ -6,11 +6,13 @@ import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -89,6 +91,14 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 
+    @Override
+    public List<UserLinkVO> listUserLinkByRoleId(String roleId) {
+        QueryWrapper<UserRoleLink> queryWrapper = Wrappers.query();
+        queryWrapper.eq("turl.is_deleted", 0)
+                .eq("turl.role_id", roleId);
+        
+        return baseMapper.listUserLinkByRoleId(queryWrapper);
+    }
 }
 
 

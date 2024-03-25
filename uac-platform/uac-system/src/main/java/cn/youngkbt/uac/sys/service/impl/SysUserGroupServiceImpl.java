@@ -6,8 +6,8 @@ import cn.youngkbt.uac.sys.mapper.SysUserGroupMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -47,7 +47,7 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
     }
 
     @Override
-    public List<UserGroupListVO> listUserGroupByUserId(String appId, String userId) {
+    public List<UserGroupLinkVO> listUserGroupByUserId(String appId, String userId) {
         QueryWrapper<SysUserGroup> wrapper = Wrappers.query();
         wrapper.eq("tugl.is_deleted", ColumnConstant.NON_DELETED)
                 .eq("tsug.app_id", appId)
@@ -56,7 +56,7 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
     }
 
     @Override
-    public List<UserGroupBindUserVO> listUserGroupWithDisabledByUserId(String appId, String userId) {
+    public List<UserGroupBindSelectVO> listUserGroupWithDisabledByUserId(String appId, String userId) {
         return baseMapper.selectWithDisabledByUserId(appId, userId);
     }
 

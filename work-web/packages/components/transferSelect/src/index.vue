@@ -65,7 +65,7 @@ type CommonObjType = Record<string, any>;
 export type TransferTableColumn<T = CommonObjType> = Partial<TableColumnCtx<T>>;
 
 export interface TransferSelectProps<T = CommonObjType> {
-  modelValue: string | string[]; // v-model
+  modelValue: string | string[] | any; // v-model
   columns: TransferTableColumn<T>[]; // 表格列配置项
   id: string; // 一行的唯一标识，添加和移出选择项时用到
   data?: CommonObjType[] | any; // 表格数据

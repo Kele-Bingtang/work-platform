@@ -6,6 +6,7 @@ import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -80,7 +81,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param userGroupId 用户组 ID
      * @return 用户组下的用户列表
      */
-    List<SysUserVO> listWithDisabledByGroupId(String userGroupId);
+    List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId);
 
     /**
      * 新增用户

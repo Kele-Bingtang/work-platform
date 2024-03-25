@@ -134,7 +134,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "user-info",
         name: "UserInfo",
-        component: "/userManage/userInfo/index",
+        component: "/user/userInfo/index",
         meta: {
           title: "用户信息",
           icon: HomeFilled,
@@ -143,7 +143,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "user-link",
         name: "UserLink",
-        component: "/userManage/userLink/index",
+        component: "/user/userLink/index",
         meta: {
           title: "用户绑定",
           icon: HomeFilled,
@@ -152,9 +152,37 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "user-group",
         name: "UserGroup",
-        component: "/userManage/userGroup/index",
+        component: "/user/userGroup/index",
         meta: {
           title: "用户组管理",
+          icon: HomeFilled,
+        },
+      },
+    ],
+  },
+  {
+    path: "/role-manage",
+    name: "RoleManage",
+    meta: {
+      title: "角色管理",
+      icon: HomeFilled,
+    },
+    children: [
+      {
+        path: "role-info",
+        name: "RoleInfo",
+        component: "/role/roleInfo/index",
+        meta: {
+          title: "角色信息",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "role-link",
+        name: "RoleLink",
+        component: "/role/roleLink/index",
+        meta: {
+          title: "角色绑定",
           icon: HomeFilled,
         },
       },
@@ -224,18 +252,9 @@ export const rolesRoutes: RouterConfigRaw[] = [
         },
       },
       {
-        path: "role-manage",
-        name: "RoleManage",
-        component: "/system/role/index",
-        meta: {
-          title: "角色管理",
-          icon: HomeFilled,
-        },
-      },
-      {
         path: "menu-manage",
         name: "MenuManage",
-        component: "/system/menu/index",
+        component: "/application/menu/index",
         meta: {
           title: "菜单管理",
           icon: HomeFilled,
@@ -244,7 +263,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
       {
         path: "dict-manage",
         name: "DictManage",
-        component: "/system/dict/index",
+        component: "/application/dict/index",
         meta: {
           title: "字典管理",
           icon: HomeFilled,

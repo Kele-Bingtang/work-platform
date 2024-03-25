@@ -6,7 +6,7 @@ import { ElNotification } from "element-plus";
 import type { RouteRecordRaw } from "vue-router";
 import settings from "@/config/settings";
 import { useLayoutNoSetup } from "./useLayout";
-import type { Menu } from "@/api/system/menu";
+import type { Menu } from "@/api/application/menu";
 
 const modules = import.meta.glob("@/views/**/*.vue");
 const FrameView = () => import("@/layout/components/FrameLayout/FrameView.vue");

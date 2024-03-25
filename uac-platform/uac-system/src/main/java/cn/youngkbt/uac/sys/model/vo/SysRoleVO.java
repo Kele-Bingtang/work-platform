@@ -20,6 +20,7 @@ public class SysRoleVO implements Serializable {
      * id
      */
     private Long id;
+    
     /**
      * 角色 ID
      */
@@ -59,10 +60,5 @@ public class SysRoleVO implements Serializable {
      * 应用 ID
      */
     private String appId;
-
-    /**
-     * 是否禁用，给前端使用
-     */
-    private Boolean disabled;
 
 }

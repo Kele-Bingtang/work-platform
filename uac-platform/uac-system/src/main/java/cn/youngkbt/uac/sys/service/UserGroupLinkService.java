@@ -2,9 +2,10 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
      * @param userGroupId 用户组 ID
      * @return 用户列表
      */
-    List<UserLinkInfoVO> listUserLinkByGroupId(String userGroupId);
+    List<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO);
 
     /**
      * 修改用户组和用户的关联信息

@@ -1,8 +1,11 @@
 package cn.youngkbt.uac.sys.mapper;
 
+import cn.youngkbt.uac.sys.model.po.UserGroupLink;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
-import cn.youngkbt.uac.sys.model.vo.link.RoleLinkInfoVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.List;
  */
 public interface UserGroupRoleLinkMapper extends BaseMapper<UserGroupRoleLink> {
 
-    List<RoleLinkInfoVO> listRoleLinkByGroupId(@Param("userGroupId") String userGroupId);
+    List<UserGroupLinkRoleVO> listRoleLinkByGroupId(@Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
 }
 
 

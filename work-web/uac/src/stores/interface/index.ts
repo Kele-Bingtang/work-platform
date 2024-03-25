@@ -1,5 +1,5 @@
 import type { Auth } from "@/api/auth";
-import type { DictData } from "@/api/system/dictData";
+import type { DictData } from "@/api/application/dictData";
 import type { IconifyIcon } from "@iconify/vue";
 import type { Component } from "vue";
 

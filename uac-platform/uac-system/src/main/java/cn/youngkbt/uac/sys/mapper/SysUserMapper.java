@@ -3,6 +3,7 @@ package cn.youngkbt.uac.sys.mapper;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
@@ -24,7 +25,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     
     List<SysUserVO> selectListWithPage(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
-    List<SysUserVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
+    List<UserBindSelectVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
+
 }
 
 

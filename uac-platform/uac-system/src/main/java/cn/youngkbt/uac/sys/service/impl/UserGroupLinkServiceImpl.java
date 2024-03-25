@@ -3,12 +3,15 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.uac.sys.mapper.UserGroupLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
@@ -77,8 +80,13 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
-    public List<UserLinkInfoVO> listUserLinkByGroupId(String userGroupId) {
-        return baseMapper.listUserLinkByGroupId(userGroupId);
+    public List<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO) {
+        QueryWrapper<UserGroupLink> queryWrapper = Wrappers.query();
+        queryWrapper.eq("tugl.is_deleted", 0)
+                .eq("tugl.user_group_id", userGroupId)
+                .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
+                .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
+        return baseMapper.listUserLinkByGroupId(queryWrapper);
     }
 
     @Override

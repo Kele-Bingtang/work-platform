@@ -5,6 +5,7 @@ import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -48,4 +49,10 @@ public interface UserRoleLinkService extends IService<UserRoleLink> {
      */
     boolean removeUserFromRole(List<Long> ids);
 
+    /**
+     * 通过角色 ID 查询用户列表
+     * @param roleId 角色 ID
+     * @return 用户列表
+     */
+    List<UserLinkVO> listUserLinkByRoleId(String roleId);
 }

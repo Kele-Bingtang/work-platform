@@ -46,7 +46,7 @@ import type { TransferTableColumn } from "@work/components";
 defineOptions({ name: "UserSelect" });
 
 export interface UserSelectProps {
-  modelValue: any;
+  modelValue: string | string[] | any;
   data?: Record<string, any>[];
   requestApi?: (data?: any) => Promise<any>; // 请求数据的 api ==> 非必传
   requestParams?: Record<string, any>;

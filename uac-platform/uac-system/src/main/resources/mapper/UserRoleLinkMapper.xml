@@ -25,4 +25,12 @@
         update_by,update_by_id,update_time,
         status,is_deleted,app_id
     </sql>
+    
+    <select id="listUserLinkByRoleId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserLinkVO">
+        select tsu.user_id, tsu.username, tsu.nickname, turl.id as link_id, turl.create_time, turl.app_id, turl.user_group_id
+        from t_user_role_link turl
+        left join t_sys_user tsu on tsu.user_id = turl.user_id and tsu.is_deleted = 0
+        ${ew.getCustomSqlSegment}
+    </select>
+
 </mapper>

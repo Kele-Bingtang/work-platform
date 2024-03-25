@@ -4,9 +4,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.link.RoleBindUserVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserRoleListVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -82,7 +81,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<UserRoleListVO> listRoleListByUserId(String appId, String userId);
+    List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId);
 
     /**
      * 根据应用 ID、用户 ID 查询角色列表，如果角色绑定了用户，则 disabled 属性为 false
@@ -91,15 +90,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<RoleBindUserVO> listRoleListWithDisabledByUserId(String appId, String userId);
-
-    /**
-     * 通过角色 ID 查询用户列表
-     *
-     * @param roleId 角色 ID
-     * @return 用户列表
-     */
-    List<UserLinkInfoVO> listUserLinkByRoleId(String roleId);
+    List<RoleBindSelectVO> listWithDisabledByUserId(String appId, String userId);
 
     /**
      * 查询角色列表（已选的被禁用）
@@ -107,6 +98,6 @@ public interface SysRoleService extends IService<SysRole> {
      * @param userGroupId 用户组 ID
      * @return 角色列表
      */
-    List<SysRoleVO> listWithDisabledByGroupId(String userGroupId);
+    List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId);
 
 }

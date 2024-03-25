@@ -9,13 +9,10 @@ import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
-import cn.youngkbt.uac.sys.model.vo.link.RoleLinkInfoVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindUserVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupListVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserLinkInfoVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
-import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -35,7 +32,6 @@ public class SysUserGroupController {
 
     private final SysUserGroupService sysUserGroupService;
     private final UserGroupLinkService userGroupLinkService;
-    private final UserGroupRoleLinkService userGroupRoleLinkService;
 
     @GetMapping("/list")
     @Operation(summary = "用户组列表查询", description = "通过主键查询用户组列表")
@@ -44,32 +40,18 @@ public class SysUserGroupController {
         return HttpResult.ok(sysUserGroupVOList);
     }
 
-    @GetMapping("/listByUserId/{appId}/{userId}")
+    @GetMapping("/listUserGroupByUserId/{appId}/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询某个用户所在的用户组列表")
-    public Response<List<UserGroupListVO>> listUserIdGroup(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupListVO> userGroupListVOList = sysUserGroupService.listUserGroupByUserId(appId, userId);
-        return HttpResult.ok(userGroupListVOList);
+    public Response<List<UserGroupLinkVO>> listUserGroupByUserId(@PathVariable String appId, @PathVariable String userId) {
+        List<UserGroupLinkVO> userGroupListVOLink = sysUserGroupService.listUserGroupByUserId(appId, userId);
+        return HttpResult.ok(userGroupListVOLink);
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 true")
-    public Response<List<UserGroupBindUserVO>> listUserGroupWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupBindUserVO> sysUserGroupVOList = sysUserGroupService.listUserGroupWithDisabledByUserId(appId, userId);
+    public Response<List<UserGroupBindSelectVO>> listUserGroupWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
+        List<UserGroupBindSelectVO> sysUserGroupVOList = sysUserGroupService.listUserGroupWithDisabledByUserId(appId, userId);
         return HttpResult.ok(sysUserGroupVOList);
-    }
-
-    @GetMapping("listUserLinkByGroupId/{userGroupId}")
-    @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询用户列表")
-    public Response<List<UserLinkInfoVO>> listUserLinkByGroupId(@PathVariable String userGroupId) {
-        List<UserLinkInfoVO> userLinkInfoVOList = userGroupLinkService.listUserLinkByGroupId(userGroupId);
-        return HttpResult.ok(userLinkInfoVOList);
-    }
-
-    @GetMapping("listRoleLinkByGroupId/{userGroupId}")
-    @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询角色列表")
-    public Response<List<RoleLinkInfoVO>> listRoleLinkByGroupId(@PathVariable String userGroupId) {
-        List<RoleLinkInfoVO> roleLinkInfoVOList = userGroupRoleLinkService.listRoleLinkByGroupId(userGroupId);
-        return HttpResult.ok(roleLinkInfoVOList);
     }
 
     @PostMapping("/addUserToGroups")

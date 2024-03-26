@@ -18,7 +18,6 @@
             <result property="contactUserName" column="contact_user_name" jdbcType="VARCHAR"/>
             <result property="contactPhone" column="contact_phone" jdbcType="VARCHAR"/>
             <result property="domain" column="domain" jdbcType="VARCHAR"/>
-            <result property="parentTenantId" column="parent_tenant_id" jdbcType="VARCHAR"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

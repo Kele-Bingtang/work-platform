@@ -1,11 +1,16 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserRoleLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
+import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
 import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
@@ -94,10 +99,29 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     @Override
     public List<UserLinkVO> listUserLinkByRoleId(String roleId) {
         QueryWrapper<UserRoleLink> queryWrapper = Wrappers.query();
-        queryWrapper.eq("turl.is_deleted", 0)
+        queryWrapper.eq("tsu.is_deleted", 0)
                 .eq("turl.role_id", roleId);
         
         return baseMapper.listUserLinkByRoleId(queryWrapper);
+    }
+
+    @Override
+    public List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId) {
+        QueryWrapper<SysRole> wrapper = Wrappers.query();
+        wrapper.eq("turl.is_deleted", ColumnConstant.NON_DELETED)
+                .eq("tsr.app_id", appId)
+                .eq("turl.user_id", userId);
+        return baseMapper.listRoleLinkByUserId(wrapper);
+    }
+
+    @Override
+    public List<RoleBindSelectVO> listWithDisabledByUserId(String appId, String userId) {
+        return baseMapper.selectWithDisabledByUserId(appId, userId);
+    }
+
+    @Override
+    public List<UserBindSelectVO> listWithDisabledByRoleId(String roleId) {
+        return baseMapper.listWithDisabledByRoleId(roleId);
     }
 }
 

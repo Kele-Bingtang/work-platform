@@ -32,31 +32,4 @@
         app_id
     </sql>
     
-    <select id="selectByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO">
-        select tsr.role_id, tsr.role_code, tsr.role_name, tsr.app_id, turl.id as link_id, turl.valid_from, turl.expire_on, turl.create_time
-        from t_sys_role tsr 
-        left join t_user_role_link turl on tsr.role_id = turl.role_id
-        ${ew.getCustomSqlSegment}
-    </select>
-    
-    <select id="selectWithDisabledByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO">
-        select tsr.role_id, tsr.role_code, tsr.role_name, tsr.app_id, turl.user_id, case when turl.user_id is not null then 1 else 0 end as disabled
-        from t_sys_role tsr
-        left join t_user_role_link turl on tsr.role_id = turl.role_id and turl.user_id = #{userId} and turl.is_deleted = 0
-        where tsr.app_id = #{appId} and tsr.is_deleted = 0
-    </select>
-    
-    <select id="listUserLinkByRoleId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserLinkVO">
-        select tsu.user_id, tsu.username, turl.id as link_id, turl.valid_from, turl.expire_on, turl.create_time, turl.app_id
-        from t_user_role_link turl
-        left join t_sys_user tsu on tsu.user_id = turl.user_id and tsu.is_deleted = 0
-        where turl.is_deleted = 0 and turl.role_id = #{roleId}
-    </select>
-    
-    <select id="listWithDisabledByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO">
-        select tsr.role_id, tsr.role_code, tsr.role_name, tsr.app_id, case when tugrl.user_group_id is not null then 1 else 0 end as disabled
-        from t_sys_role tsr
-        left join t_user_group_role_link tugrl on tsr.role_id = tugrl.role_id and tugrl.user_group_id = #{userGroupId} and tugrl.is_deleted = 0
-        where tsr.is_deleted = 0
-    </select>
 </mapper>

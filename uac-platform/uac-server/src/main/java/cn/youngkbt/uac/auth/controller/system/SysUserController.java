@@ -65,18 +65,25 @@ public class SysUserController {
         return HttpResult.ok(userLinkVOList);
     }
 
-    @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
-    @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true）")
-    public Response<List<UserBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
-        List<UserBindSelectVO> userBindSelectVOList = sysUserService.listWithDisabledByGroupId(userGroupId);
-        return HttpResult.ok(userBindSelectVOList);
-    }
-
     @GetMapping("listUserLinkByGroupId/{userGroupId}")
     @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询用户列表")
     public Response<List<UserLinkVO>> listUserLinkByGroupId(@PathVariable String userGroupId, UserLinkInfoDTO userLinkInfoDTO) {
         List<UserLinkVO> userLinkVOList = userGroupLinkService.listUserLinkByGroupId(userGroupId, userLinkInfoDTO);
         return HttpResult.ok(userLinkVOList);
+    }
+
+    @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
+    @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true")
+    public Response<List<UserBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
+        List<UserBindSelectVO> userBindSelectVOList = userGroupLinkService.listWithDisabledByGroupId(userGroupId);
+        return HttpResult.ok(userBindSelectVOList);
+    }
+
+    @GetMapping("/listWithDisabledByRoleId/{roleId}")
+    @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true")
+    public Response<List<UserBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
+        List<UserBindSelectVO> userBindSelectVOList = userRoleLinkService.listWithDisabledByRoleId(roleId);
+        return HttpResult.ok(userBindSelectVOList);
     }
 
     @PostMapping

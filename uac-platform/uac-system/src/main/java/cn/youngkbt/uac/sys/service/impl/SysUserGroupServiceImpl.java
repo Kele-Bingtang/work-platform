@@ -1,17 +1,13 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysUserGroupMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -45,21 +41,6 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
         }
         return MapstructUtil.convert(sysUserGroupList, SysUserGroupVO.class);
     }
-
-    @Override
-    public List<UserGroupLinkVO> listUserGroupByUserId(String appId, String userId) {
-        QueryWrapper<SysUserGroup> wrapper = Wrappers.query();
-        wrapper.eq("tugl.is_deleted", ColumnConstant.NON_DELETED)
-                .eq("tsug.app_id", appId)
-                .eq("tugl.user_id", userId);
-        return baseMapper.selectByUserId(wrapper);
-    }
-
-    @Override
-    public List<UserGroupBindSelectVO> listUserGroupWithDisabledByUserId(String appId, String userId) {
-        return baseMapper.selectWithDisabledByUserId(appId, userId);
-    }
-
 
     @Override
     public boolean checkUserGroupNameUnique(SysUserGroupDTO sysUserGroupDto) {

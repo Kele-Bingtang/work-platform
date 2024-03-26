@@ -13,6 +13,7 @@ import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
+import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,7 @@ public class SysUserGroupController {
 
     private final SysUserGroupService sysUserGroupService;
     private final UserGroupLinkService userGroupLinkService;
+    private final UserGroupRoleLinkService userGroupRoleLinkService;
 
     @GetMapping("/list")
     @Operation(summary = "用户组列表查询", description = "通过主键查询用户组列表")
@@ -43,14 +45,28 @@ public class SysUserGroupController {
     @GetMapping("/listUserGroupByUserId/{appId}/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询某个用户所在的用户组列表")
     public Response<List<UserGroupLinkVO>> listUserGroupByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupLinkVO> userGroupListVOLink = sysUserGroupService.listUserGroupByUserId(appId, userId);
+        List<UserGroupLinkVO> userGroupListVOLink = userGroupLinkService.listUserGroupByUserId(appId, userId);
+        return HttpResult.ok(userGroupListVOLink);
+    }
+
+    @GetMapping("/listUserGroupByRoleId/{roleId}")
+    @Operation(summary = "用户组列表查询", description = "查询某个角色绑定的用户组列表")
+    public Response<List<UserGroupLinkVO>> listUserGroupByRoleId(@PathVariable String roleId) {
+        List<UserGroupLinkVO> userGroupListVOLink = userGroupRoleLinkService.listUserGroupByRoleId(roleId);
         return HttpResult.ok(userGroupListVOLink);
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 true")
-    public Response<List<UserGroupBindSelectVO>> listUserGroupWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupBindSelectVO> sysUserGroupVOList = sysUserGroupService.listUserGroupWithDisabledByUserId(appId, userId);
+    public Response<List<UserGroupBindSelectVO>> listWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
+        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupLinkService.listWithDisabledByUserId(appId, userId);
+        return HttpResult.ok(sysUserGroupVOList);
+    }
+
+    @GetMapping("listWithDisabledByRoleId/{roleId}")
+    @Operation(summary = "用户组列表查询", description = "查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true")
+    public Response<List<UserGroupBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
+        List<UserGroupBindSelectVO> sysUserGroupVOList = userGroupRoleLinkService.listWithDisabledByRoleId(roleId);
         return HttpResult.ok(sysUserGroupVOList);
     }
 

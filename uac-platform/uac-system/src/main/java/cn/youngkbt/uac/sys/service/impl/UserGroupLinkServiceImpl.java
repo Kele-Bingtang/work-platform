@@ -1,11 +1,16 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.uac.sys.mapper.UserGroupLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
+import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.utils.ListUtil;
@@ -80,14 +85,34 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
     }
 
     @Override
+    public List<UserGroupLinkVO> listUserGroupByUserId(String appId, String userId) {
+        QueryWrapper<SysUserGroup> wrapper = Wrappers.query();
+        wrapper.eq("tugl.is_deleted", ColumnConstant.NON_DELETED)
+                .eq("tsug.app_id", appId)
+                .eq("tugl.user_id", userId);
+        return baseMapper.listUserGroupByUserId(wrapper);
+    }
+
+    @Override
     public List<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO) {
         QueryWrapper<UserGroupLink> queryWrapper = Wrappers.query();
-        queryWrapper.eq("tugl.is_deleted", 0)
+        queryWrapper.eq("tsu.is_deleted", 0)
                 .eq("tugl.user_group_id", userGroupId)
                 .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
                 .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
         return baseMapper.listUserLinkByGroupId(queryWrapper);
     }
+
+    @Override
+    public List<UserGroupBindSelectVO> listWithDisabledByUserId(String appId, String userId) {
+        return baseMapper.selectWithDisabledByUserId(appId, userId);
+    }
+
+    @Override
+    public List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
+        return baseMapper.listWithDisabledByGroupId(userGroupId);
+    }
+
 
     @Override
     public boolean updateOne(UserGroupLinkDTO userGroupLinkDTO) {

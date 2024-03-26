@@ -28,8 +28,30 @@
     
     <select id="listRoleLinkByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO">
         select tsr.role_id, tsr.role_name, tsr.role_code, tugrl.id as link_id, tugrl.create_time, tugrl.app_id
-        from t_user_group_role_link tugrl
-        left join t_sys_role tsr on tsr.role_id = tugrl.role_id and tsr.is_deleted = 0
+        from t_sys_role tsr
+        left join t_user_group_role_link tugrl on tsr.role_id = tugrl.role_id and tugrl.is_deleted = 0 and tsr.app_id = tugrl.app_id
         ${ew.getCustomSqlSegment}
     </select>
+
+    <select id="listUserGroupByRoleId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO">
+        select tsug.group_id, tsr.group_name, tsug.app_id, tugrl.id as link_id, tugrl.create_time, tugrl.app_id
+        from t_sys_user_group tsug
+        left join t_user_group_role_link tugrl on tsug.group_id = tugrl.group_id and tugrl.is_deleted = 0 and tsug.app_id = tugrl.app_id
+        ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="listWithDisabledByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO">
+        select tsr.role_id, tsr.role_code, tsr.role_name, case when tugrl.user_group_id is not null then 1 else 0 end as disabled
+        from t_sys_role tsr
+        left join t_user_group_role_link tugrl on tsr.role_id = tugrl.role_id and tsr.app_id = tugrl.app_id and tugrl.is_deleted = 0 and tugrl.user_group_id = #{userGroupId}
+        where tsr.is_deleted = 0
+    </select>
+    
+    <select id="listWithDisabledByRoleId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO">
+        select tsug.group_id, tsug.group_name, case when tugrl.role_id is not null then 1 else 0 end as disabled
+        from t_sys_user_group tsug
+        left join t_user_group_role_link tugrl on tsug.group_id = tugrl.user_group_id and tugrl.app_id = tsug.app_id and tugrl.is_deleted = 0 and tugrl.role_id = #{roleId}
+        where tsug.is_deleted = 0
+    </select>
+
 </mapper>

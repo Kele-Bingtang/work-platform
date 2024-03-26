@@ -49,7 +49,7 @@ const columns: TableColumnProps<User.UserLinkUserGroupInfo>[] = [
 
 // 新增、编辑弹框配置项
 const detailForm: DialogForm = {
-  options: useFormOptions(requestParam.userGroupId).options,
+  options: useFormOptions(requestParam).options,
   addApi: form =>
     addUsersToGroup({
       ...form,

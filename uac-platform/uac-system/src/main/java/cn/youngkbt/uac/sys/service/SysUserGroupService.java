@@ -4,8 +4,6 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -25,24 +23,6 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      * @return 用户组信息
      */
     List<SysUserGroupVO> list(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery);
-
-    /**
-     * 通过用户 ID 查询用户组列表
-     *
-     * @param appId  应用 ID
-     * @param userId 用户 ID
-     * @return 用户组列表
-     */
-    List<UserGroupLinkVO> listUserGroupByUserId(String appId, String userId);
-
-    /**
-     * 通过用户 ID 查询用户组列表（包含禁用）
-     *
-     * @param appId  应用 ID
-     * @param userId 用户 ID
-     * @return 用户组列表
-     */
-    List<UserGroupBindSelectVO> listUserGroupWithDisabledByUserId(String appId, String userId);
 
     /**
      * 检查用户组名是否唯一
@@ -75,4 +55,5 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      * @return 是否删除成功
      */
     boolean removeBatch(List<Long> ids);
+
 }

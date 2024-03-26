@@ -6,7 +6,6 @@ import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
-import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -75,13 +74,6 @@ public interface SysUserService extends IService<SysUser> {
      * @return 是否唯一
      */
     boolean checkEmailUnique(SysUserDTO sysUserDto);
-
-    /**
-     * 下拉查询用户列表（已选的被禁用）
-     * @param userGroupId 用户组 ID
-     * @return 用户组下的用户列表
-     */
-    List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId);
 
     /**
      * 新增用户

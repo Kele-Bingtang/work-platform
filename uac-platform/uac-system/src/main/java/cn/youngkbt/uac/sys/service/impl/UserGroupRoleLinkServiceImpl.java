@@ -6,7 +6,10 @@ import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -67,20 +70,40 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
     }
 
     @Override
+    public boolean removeUserGroupFromRole(List<Long> ids) {
+        return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
     public List<UserGroupLinkRoleVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO) {
         QueryWrapper<UserGroupLink> queryWrapper = Wrappers.query();
-        queryWrapper.eq("tugrl.is_deleted", 0)
+        queryWrapper.eq("tsr.is_deleted", 0)
                 .eq("tugrl.user_group_id", userGroupId)
                 .like(StringUtil.hasText(roleLinkInfoDTO.getRoleCode()), "tsr.role_code", roleLinkInfoDTO.getRoleCode())
                 .like(StringUtil.hasText(roleLinkInfoDTO.getRoleName()), "tsr.role_name", roleLinkInfoDTO.getRoleName());
-        
+
         return baseMapper.listRoleLinkByGroupId(queryWrapper);
     }
 
     @Override
-    public boolean removeUserGroupFromRole(List<Long> ids) {
-        return baseMapper.deleteBatchIds(ids) > 0;
+    public List<UserGroupLinkVO> listUserGroupByRoleId(String roleId) {
+        QueryWrapper<UserGroupLink> queryWrapper = Wrappers.query();
+        queryWrapper.eq("tsug.is_deleted", 0)
+                .eq("tugrl.role_id", roleId);
+
+        return baseMapper.listUserGroupByRoleId(roleId);
     }
+
+    @Override
+    public List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
+        return baseMapper.listWithDisabledByGroupId(userGroupId);
+    }
+    
+    @Override
+    public List<UserGroupBindSelectVO> listWithDisabledByRoleId(String roleId) {
+        return baseMapper.listWithDisabledByRoleId(roleId);
+    }
+
 }
 
 

@@ -9,7 +9,7 @@ const rules = reactive<FormRules>({
 
 const transferSelectColumn: TransferTableColumn[] = [{ prop: "roleName", label: "角色名称" }];
 
-export const useFormOptions = (userGroupId: string) => {
+export const useFormOptions = (requestParams: { userGroupId: string }) => {
   const options: FormOptionsProps<Role.UserGroupLinkRole> = {
     form: {
       inline: true,
@@ -29,7 +29,7 @@ export const useFormOptions = (userGroupId: string) => {
                 v-model={scope.form.roleIds}
                 columns={transferSelectColumn}
                 request-api={listWithDisabledByGroupId}
-                request-params={{ userGroupId }}
+                request-params={requestParams}
                 multiple
                 list-icon={User}
                 id="roleId"

@@ -1,19 +1,15 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -57,25 +53,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             sysRoleList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
         }
         return MapstructUtil.convert(sysRoleList, SysRoleVO.class);
-    }
-
-    @Override
-    public List<RoleLinkVO> listRoleLinkByUserId(String appId, String userId) {
-        QueryWrapper<SysRole> wrapper = Wrappers.query();
-        wrapper.eq("turl.is_deleted", ColumnConstant.NON_DELETED)
-                .eq("tsr.app_id", appId)
-                .eq("turl.user_id", userId);
-        return baseMapper.selectByUserId(wrapper);
-    }
-
-    @Override
-    public List<RoleBindSelectVO> listWithDisabledByUserId(String appId, String userId) {
-        return baseMapper.selectWithDisabledByUserId(appId, userId);
-    }
-
-    @Override
-    public List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
-        return baseMapper.listWithDisabledByGroupId(userGroupId);
     }
 
     @Override

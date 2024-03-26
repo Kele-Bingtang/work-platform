@@ -4,7 +4,10 @@ import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -51,6 +54,14 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
     boolean addUserGroupsToRole(RoleLinkUserGroupDTO roleLinkUserGroupDTO);
 
     /**
+     * 将用户组移出角色
+     *
+     * @param ids 用户组 id 集合
+     * @return 是否成功
+     */
+    boolean removeUserGroupFromRole(List<Long> ids);
+
+    /**
      * 通过用户组 ID 查询角色列表
      *
      * @param userGroupId 用户组 ID
@@ -59,10 +70,26 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
     List<UserGroupLinkRoleVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO);
 
     /**
-     * 将用户组移出角色
-     *
-     * @param ids 用户组 id 集合
-     * @return 是否成功
+     * 查询某个角色绑定的用户组列表
+     * @param roleId 角色 ID
+     * @return 用户组列表
      */
-    boolean removeUserGroupFromRole(List<Long> ids);
+    List<UserGroupLinkVO> listUserGroupByRoleId(String roleId);
+
+    /**
+     * 查询角色列表（已选的被禁用）
+     *
+     * @param userGroupId 用户组 ID
+     * @return 角色列表
+     */
+    List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId);
+    
+    /**
+     * 查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true
+     *
+     * @param roleId 角色 ID
+     * @return 用户组列表
+     */
+    List<UserGroupBindSelectVO> listWithDisabledByRoleId(String roleId);
+
 }

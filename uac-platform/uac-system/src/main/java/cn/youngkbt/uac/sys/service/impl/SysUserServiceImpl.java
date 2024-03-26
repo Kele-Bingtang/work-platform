@@ -145,11 +145,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
-        return baseMapper.listWithDisabledByGroupId(userGroupId);
-    }
-
-    @Override
     public boolean insertOne(SysUserDTO sysUserDto) {
         SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
         sysUser.setRegisterTime(new Date());

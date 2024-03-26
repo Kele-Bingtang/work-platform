@@ -1,8 +1,13 @@
 package cn.youngkbt.uac.sys.mapper;
 
+import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
+import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
@@ -17,6 +22,12 @@ import java.util.List;
 public interface UserRoleLinkMapper extends BaseMapper<UserRoleLink> {
 
     List<UserLinkVO> listUserLinkByRoleId(@Param(Constants.WRAPPER) Wrapper<UserRoleLink> queryWrapper);
+
+    List<RoleLinkVO> listRoleLinkByUserId(@Param(Constants.WRAPPER) QueryWrapper<SysRole> wrapper);
+
+    List<RoleBindSelectVO> selectWithDisabledByUserId(@Param("appId") String appId, @Param("userId") String userId);
+
+    List<UserBindSelectVO> listWithDisabledByRoleId(@Param("roleId") String roleId);
 }
 
 

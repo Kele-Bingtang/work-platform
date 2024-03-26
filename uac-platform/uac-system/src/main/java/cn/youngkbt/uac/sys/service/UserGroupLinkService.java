@@ -5,6 +5,9 @@ import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
+import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -60,12 +63,38 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
     boolean removeUserFromUserGroup(List<Long> ids);
 
     /**
+     * 通过用户 ID 查询用户组列表
+     *
+     * @param appId  应用 ID
+     * @param userId 用户 ID
+     * @return 用户组列表
+     */
+    List<UserGroupLinkVO> listUserGroupByUserId(String appId, String userId);
+
+    /**
      * 查询用户组下的用户列表
      *
      * @param userGroupId 用户组 ID
      * @return 用户列表
      */
     List<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO);
+
+    /**
+     * 下拉查询用户列表，如果用户组绑定了用户，则 disabled 属性为 true
+     *
+     * @param appId  应用 ID
+     * @param userId 用户 ID
+     * @return 用户组列表
+     */
+    List<UserGroupBindSelectVO> listWithDisabledByUserId(String appId, String userId);
+
+    /**
+     * 下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true
+     *
+     * @param userGroupId 用户组 ID
+     * @return 用户列表
+     */
+    List<UserBindSelectVO> listWithDisabledByGroupId(String userGroupId);
 
     /**
      * 修改用户组和用户的关联信息

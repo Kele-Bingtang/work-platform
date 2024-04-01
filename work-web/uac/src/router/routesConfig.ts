@@ -271,4 +271,59 @@ export const rolesRoutes: RouterConfigRaw[] = [
       },
     ],
   },
+  {
+    path: "/system-monitor",
+    name: "SystemMonitor",
+    meta: {
+      title: "系统监控",
+      icon: HomeFilled,
+    },
+    children: [
+      {
+        path: "login-log",
+        name: "LoginLog",
+        component: "/monitor/loginLog/index",
+        meta: {
+          title: "登录日志",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "operator-log",
+        name: "OperatorLog",
+        component: "/monitor/operatorLog/index",
+        meta: {
+          title: "操作日志",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "online-users",
+        name: "OnlineUsers",
+        component: "/monitor/onlineUsers/index",
+        meta: {
+          title: "在线用户",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "cache-monitor",
+        name: "CacheMonitor",
+        component: "/monitor/cacheMonitor/index",
+        meta: {
+          title: "缓存监控",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "admin-monitor",
+        name: "AdminMonitor",
+        component: "/monitor/adminMonitor/index",
+        meta: {
+          title: "后台监控",
+          icon: HomeFilled,
+        },
+      },
+    ],
+  },
 ];

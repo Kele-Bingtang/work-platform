@@ -20,7 +20,7 @@
     <div class="user-group-box">
       <ProTable
         ref="proTableRef"
-        :request-api="list"
+        :request-api="listPage"
         :init-request-param="requestParam"
         :columns="columns"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }"
@@ -36,11 +36,11 @@
       <Description :title="clickRowInfo?.groupName" :data="descriptionData"></Description>
 
       <el-tabs v-model="activeName" style="height: calc(100% - 70px)">
-        <el-tab-pane label="Authorized User" name="User" style="height: 100%">
+        <el-tab-pane label="关联用户" name="User" style="height: 100%">
           <LinkUser :appId="requestParam.appId" :userGroupId="clickRowInfo.groupId"></LinkUser>
         </el-tab-pane>
 
-        <el-tab-pane lazy label="Authorized Role" name="Role" style="height: 100%">
+        <el-tab-pane lazy label="关联角色" name="Role" style="height: 100%">
           <LinkRole :appId="requestParam.appId" :userGroupId="clickRowInfo.groupId"></LinkRole>
         </el-tab-pane>
       </el-tabs>
@@ -50,7 +50,7 @@
 
 <script setup lang="tsx" name="UserGroup">
 import { ProTable, TreeFilter } from "work";
-import { list, addOne, editOne, deleteOne, deleteBatch, type UserGroup } from "@/api/user/userGroup";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type UserGroup } from "@/api/user/userGroup";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { useFormOptions } from "./formOptions";
 import { getAppTreeList, type App } from "@/api/application/app";
@@ -74,10 +74,10 @@ const handleRowClick = (row: UserGroup.UserGroupInfo) => {
 };
 
 // ProTable 获取数据后的回调
-const dataCallback = (data: UserGroup.UserGroupInfo[]) => {
-  clickRowInfo.value = data[0] || undefined;
-  descriptionData.value[0].value = data[0]?.ownerId ? `${data[0]?.ownerName} ${data[0]?.ownerId}` : "";
-  data[0] && proTableRef.value?.element?.setCurrentRow(data[0]);
+const dataCallback = (data: http.PageData<UserGroup.UserGroupInfo[]>) => {
+  clickRowInfo.value = data.list[0] || undefined;
+  descriptionData.value[0].value = data.list[0]?.ownerId ? `${data.list[0]?.ownerName} ${data.list[0]?.ownerId}` : "";
+  data.list[0] && proTableRef.value?.element?.setCurrentRow(data.list[0]);
 };
 
 // 表格列配置项

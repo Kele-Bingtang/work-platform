@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
@@ -26,37 +27,45 @@ public interface SysMenuService extends IService<SysMenu> {
     SysMenuVO listById(Long id);
 
     /**
-     * 通过条件查询菜单列表（
+     * 通过条件查询菜单列表
      *
-     * @param sysMenuDto 查询条件
+     * @param sysMenuDTO 查询条件
+     * @return 菜单列表
+     */
+    List<SysMenuVO> queryList(SysMenuDTO sysMenuDTO);
+
+    /**
+     * 通过条件查询菜单列表（支持分页）
+     *
+     * @param sysMenuDTO 查询条件
      * @param pageQuery  分页参数
      * @return 菜单列表
      */
-    List<SysMenuVO> listWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery);
+    TablePage<SysMenuVO> listPage(SysMenuDTO sysMenuDTO, PageQuery pageQuery);
 
     /**
      * 查询菜单下拉框列表
      *
-     * @param sysMenuDto 查询条件
+     * @param sysMenuDTO 查询条件
      * @return 菜单下拉框列表
      */
-    List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDto);
+    List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDTO);
 
     /**
      * 查询菜单树形表格列表
      *
-     * @param sysMenuDto 查询条件
+     * @param sysMenuDTO 查询条件
      * @return 菜单树形表格列表
      */
-    List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDto);
+    List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDTO);
 
     /**
      * 检查菜单名称是否唯一
      *
-     * @param sysMenuDto 查询条件
+     * @param sysMenuDTO 查询条件
      * @return 是否唯一
      */
-    boolean checkMenuNameUnique(SysMenuDTO sysMenuDto);
+    boolean checkMenuNameUnique(SysMenuDTO sysMenuDTO);
 
     /**
      * 检查菜单是否存在子菜单
@@ -77,18 +86,18 @@ public interface SysMenuService extends IService<SysMenu> {
     /**
      * 新增菜单
      *
-     * @param sysMenuDto 新增对象
+     * @param sysMenuDTO 新增对象
      * @return 是否成功
      */
-    boolean insertOne(SysMenuDTO sysMenuDto);
+    boolean insertOne(SysMenuDTO sysMenuDTO);
 
     /**
      * 修改菜单
      *
-     * @param sysMenuDto 修改对象
+     * @param sysMenuDTO 修改对象
      * @return 是否成功
      */
-    boolean updateOne(SysMenuDTO sysMenuDto);
+    boolean updateOne(SysMenuDTO sysMenuDTO);
 
     /**
      * 删除菜单

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.hutool.crypto.SecureUtil;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysClientMapper;
 import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.po.SysClient;
@@ -13,6 +14,7 @@ import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -44,24 +46,30 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public List<SysClientVO> listWithPage(SysClientDTO sysClientDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysClient> wrapper = Wrappers.<SysClient>lambdaQuery()
-                .like(StringUtils.hasText(sysClientDto.getClientId()), SysClient::getClientId, sysClientDto.getClientId())
-                .eq(StringUtils.hasText(sysClientDto.getClientKey()), SysClient::getClientKey, sysClientDto.getClientKey())
-                .eq(StringUtils.hasText(sysClientDto.getClientName()), SysClient::getClientName, sysClientDto.getClientName())
-                .like(StringUtils.hasText(sysClientDto.getClientSecret()), SysClient::getClientSecret, sysClientDto.getClientSecret())
-                .in(Objects.nonNull(sysClientDto.getGrantTypeList()), SysClient::getGrantTypes, sysClientDto.getGrantTypeList())
-                .eq(Objects.nonNull(sysClientDto.getStatus()), SysClient::getStatus, sysClientDto.getStatus());
+    public List<SysClientVO> queryList(SysClientDTO sysClientDTO) {
+        LambdaQueryWrapper<SysClient> wrapper = buildQueryWrapper(sysClientDTO);
+        List<SysClient> sysAppList = baseMapper.selectList(wrapper);
+        return MapstructUtil.convert(sysAppList, SysClientVO.class);
+    }
 
-        List<SysClient> sysClientList;
-        if (Objects.isNull(pageQuery)) {
-            sysClientList = baseMapper.selectList(wrapper);
-        } else {
-            sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        List<SysClientVO> result = MapstructUtil.convert(sysClientList, SysClientVO.class);
-        result.forEach(r -> r.setGrantTypeList(List.of(r.getGrantTypes().split(","))));
-        return result;
+    @Override
+    public TablePage<SysClientVO> listPage(SysClientDTO sysClientDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysClient> wrapper = buildQueryWrapper(sysClientDTO);
+        Page<SysClient> sysClientPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+
+        TablePage<SysClientVO> tablePage = TablePage.build(sysClientPage, SysClientVO.class);
+        tablePage.getList().forEach(r -> r.setGrantTypeList(List.of(r.getGrantTypes().split(","))));
+        return tablePage;
+    }
+
+    private LambdaQueryWrapper<SysClient> buildQueryWrapper(SysClientDTO sysClientDTO) {
+        return Wrappers.<SysClient>lambdaQuery()
+                .like(StringUtils.hasText(sysClientDTO.getClientId()), SysClient::getClientId, sysClientDTO.getClientId())
+                .eq(StringUtils.hasText(sysClientDTO.getClientKey()), SysClient::getClientKey, sysClientDTO.getClientKey())
+                .eq(StringUtils.hasText(sysClientDTO.getClientName()), SysClient::getClientName, sysClientDTO.getClientName())
+                .like(StringUtils.hasText(sysClientDTO.getClientSecret()), SysClient::getClientSecret, sysClientDTO.getClientSecret())
+                .in(Objects.nonNull(sysClientDTO.getGrantTypeList()), SysClient::getGrantTypes, sysClientDTO.getGrantTypeList())
+                .eq(Objects.nonNull(sysClientDTO.getStatus()), SysClient::getStatus, sysClientDTO.getStatus());
     }
 
     @Override
@@ -75,8 +83,8 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public boolean insertOne(SysClientDTO sysClientDto) {
-        SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
+    public boolean insertOne(SysClientDTO sysClientDTO) {
+        SysClient sysClient = MapstructUtil.convert(sysClientDTO, SysClient.class);
         // 如果没有设置 clientSecret，则自动生成
         if (Objects.isNull(sysClient.getClientSecret())) {
             sysClient.setClientSecret(IdsUtil.simpleUUID());
@@ -86,14 +94,14 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
         // 生成 appId
         String appId = SecureUtil.md5(clientSecret + clientKey);
         sysClient.setClientId(appId);
-        sysClient.setGrantTypes(String.join(",", sysClientDto.getGrantTypeList()));
+        sysClient.setGrantTypes(String.join(",", sysClientDTO.getGrantTypeList()));
         return baseMapper.insert(sysClient) > 0;
     }
 
     @Override
-    public boolean updateOne(SysClientDTO sysClientDto) {
-        SysClient sysClient = MapstructUtil.convert(sysClientDto, SysClient.class);
-        sysClient.setGrantTypes(String.join(",", sysClientDto.getGrantTypeList()));
+    public boolean updateOne(SysClientDTO sysClientDTO) {
+        SysClient sysClient = MapstructUtil.convert(sysClientDTO, SysClient.class);
+        sysClient.setGrantTypes(String.join(",", sysClientDTO.getGrantTypeList()));
         return baseMapper.updateById(sysClient) > 0;
     }
 

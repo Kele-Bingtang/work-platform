@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDictTypeDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictType;
 import cn.youngkbt.uac.sys.model.vo.SysDictTypeVO;
@@ -17,6 +18,7 @@ public interface SysDictTypeService extends IService<SysDictType> {
 
     /**
      * 根据主键查询字典类型信息
+     *
      * @param id 主键
      * @return 字典类型信息
      */
@@ -24,30 +26,43 @@ public interface SysDictTypeService extends IService<SysDictType> {
 
     /**
      * 通过条件查询字典类型列表
-     * @param sysDictTypeDto 查询条件
-     * @param pageQuery 分页参数
+     *
+     * @param sysDictTypeDTO 查询条件
      * @return 字典类型列表
      */
-    List<SysDictTypeVO> listWithPage(SysDictTypeDTO sysDictTypeDto, PageQuery pageQuery);
+    List<SysDictTypeVO> queryList(SysDictTypeDTO sysDictTypeDTO);
+
+    /**
+     * 通过条件查询字典类型列表
+     *
+     * @param sysDictTypeDTO 查询条件
+     * @param pageQuery      分页参数
+     * @return 字典类型列表
+     */
+    TablePage<SysDictTypeVO> listPage(SysDictTypeDTO sysDictTypeDTO, PageQuery pageQuery);
 
     /**
      * 新增字典类型
-     * @param sysDictTypeDto 新增字典类型信息
+     *
+     * @param sysDictTypeDTO 新增字典类型信息
      * @return 是否新增成功
      */
-    boolean insertOne(SysDictTypeDTO sysDictTypeDto);
+    boolean insertOne(SysDictTypeDTO sysDictTypeDTO);
 
     /**
      * 修改字典类型
-     * @param sysDictTypeDto 修改字典类型信息
+     *
+     * @param sysDictTypeDTO 修改字典类型信息
      * @return 是否修改成功
      */
-    boolean updateOne(SysDictTypeDTO sysDictTypeDto);
+    boolean updateOne(SysDictTypeDTO sysDictTypeDTO);
 
     /**
      * 批量删除字典类型
+     *
      * @param ids 主键列表
      * @return 是否删除成功
      */
     boolean removeBatch(List<Long> ids);
+
 }

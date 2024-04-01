@@ -1,5 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
@@ -77,7 +79,7 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
      * @param userGroupId 用户组 ID
      * @return 用户列表
      */
-    List<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO);
+    TablePage<UserLinkVO> listUserLinkByGroupId(String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery);
 
     /**
      * 下拉查询用户列表，如果用户组绑定了用户，则 disabled 属性为 true

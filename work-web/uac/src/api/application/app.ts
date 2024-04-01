@@ -27,6 +27,11 @@ export const getAppTreeList = () => {
 export const list = (params: Partial<App.AppInfo>) => {
   return http.get<http.Response<App.AppInfo[]>>(`${baseUri}/list`, params);
 };
+
+export const listPage = (params: Partial<App.AppInfo>) => {
+  return http.get<http.Page<App.AppInfo[]>>(`${baseUri}/listPage`, params);
+};
+
 export const addOne = (data: App.AppInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };

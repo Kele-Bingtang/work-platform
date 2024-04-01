@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysDictTypeMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDictTypeDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictType;
@@ -11,6 +12,7 @@ import cn.youngkbt.uac.sys.service.SysDictTypeService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -39,34 +40,41 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     }
 
     @Override
-    public List<SysDictTypeVO> listWithPage(SysDictTypeDTO sysDictTypeDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysDictType> wrapper = Wrappers.<SysDictType>lambdaQuery()
-                .eq(StringUtils.hasText(sysDictTypeDto.getDictName()), SysDictType::getDictName, sysDictTypeDto.getDictName())
-                .eq(StringUtils.hasText(sysDictTypeDto.getDictCode()), SysDictType::getDictCode, sysDictTypeDto.getDictCode())
-                .eq(StringUtils.hasText(sysDictTypeDto.getAppId()), SysDictType::getAppId, sysDictTypeDto.getAppId())
-                .orderByAsc(SysDictType::getDictId);
-
-        List<SysDictType> sysDictTypeList;
-        if (Objects.isNull(pageQuery)) {
-            sysDictTypeList = baseMapper.selectList(wrapper);
-        } else {
-            sysDictTypeList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
+    public List<SysDictTypeVO> queryList(SysDictTypeDTO sysDictTypeDTO) {
+        LambdaQueryWrapper<SysDictType> wrapper = buildQueryWrapper(sysDictTypeDTO);
+        List<SysDictType> sysDictTypeList = baseMapper.selectList(wrapper);
+        
         return MapstructUtil.convert(sysDictTypeList, SysDictTypeVO.class);
     }
 
     @Override
-    public boolean insertOne(SysDictTypeDTO sysDictTypeDto) {
-        SysDictType sysDictType = MapstructUtil.convert(sysDictTypeDto, SysDictType.class);
+    public TablePage<SysDictTypeVO> listPage(SysDictTypeDTO sysDictTypeDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysDictType> wrapper = buildQueryWrapper(sysDictTypeDTO);
+        Page<SysDictType> sysDictTypePage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        
+        return TablePage.build(sysDictTypePage, SysDictTypeVO.class);
+    }
+
+    private LambdaQueryWrapper<SysDictType> buildQueryWrapper(SysDictTypeDTO sysDictTypeDTO) {
+        return Wrappers.<SysDictType>lambdaQuery()
+                .eq(StringUtils.hasText(sysDictTypeDTO.getDictName()), SysDictType::getDictName, sysDictTypeDTO.getDictName())
+                .eq(StringUtils.hasText(sysDictTypeDTO.getDictCode()), SysDictType::getDictCode, sysDictTypeDTO.getDictCode())
+                .eq(StringUtils.hasText(sysDictTypeDTO.getAppId()), SysDictType::getAppId, sysDictTypeDTO.getAppId())
+                .orderByAsc(SysDictType::getDictId);
+    }
+
+    @Override
+    public boolean insertOne(SysDictTypeDTO sysDictTypeDTO) {
+        SysDictType sysDictType = MapstructUtil.convert(sysDictTypeDTO, SysDictType.class);
         return baseMapper.insert(sysDictType) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateOne(SysDictTypeDTO sysDictTypeDto) {
-        SysDictType newSysDictType = MapstructUtil.convert(sysDictTypeDto, SysDictType.class);
+    public boolean updateOne(SysDictTypeDTO sysDictTypeDTO) {
+        SysDictType newSysDictType = MapstructUtil.convert(sysDictTypeDTO, SysDictType.class);
         // 同步更新 dictData d的 dictCode
-        SysDictType oldDictType = baseMapper.selectById(sysDictTypeDto.getId());
+        SysDictType oldDictType = baseMapper.selectById(sysDictTypeDTO.getId());
         sysDictDataService.updateDictCode(oldDictType.getDictCode(), newSysDictType.getDictCode());
         return baseMapper.updateById(newSysDictType) > 0;
     }

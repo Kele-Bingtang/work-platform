@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
@@ -18,35 +19,42 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
     /**
      * 通过条件查询用户组信息
      *
+     * @return 用户组信息
+     */
+    List<SysUserGroupVO> queryList(SysUserGroupDTO sysUserGroupDTO);
+    
+    /**
+     * 通过条件查询用户组信息
+     *
      * @param sysUserGroupDTO 查询条件
      * @param pageQuery       分页条件
      * @return 用户组信息
      */
-    List<SysUserGroupVO> list(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery);
+    TablePage<SysUserGroupVO> listPage(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery);
 
     /**
      * 检查用户组名是否唯一
      *
-     * @param sysUserGroupDto 用户组信息
+     * @param sysUserGroupDTO 用户组信息
      * @return 是否唯一
      */
-    boolean checkUserGroupNameUnique(SysUserGroupDTO sysUserGroupDto);
+    boolean checkUserGroupNameUnique(SysUserGroupDTO sysUserGroupDTO);
 
     /**
      * 新增用户组
      *
-     * @param sysUserGroupDto 用户组信息
+     * @param sysUserGroupDTO 用户组信息
      * @return 是否新增成功
      */
-    boolean insertOne(SysUserGroupDTO sysUserGroupDto);
+    boolean insertOne(SysUserGroupDTO sysUserGroupDTO);
 
     /**
      * 修改用户组
      *
-     * @param sysUserGroupDto 用户组信息
+     * @param sysUserGroupDTO 用户组信息
      * @return 是否修改成功
      */
-    boolean updateOne(SysUserGroupDTO sysUserGroupDto);
+    boolean updateOne(SysUserGroupDTO sysUserGroupDTO);
 
     /**
      * 批量删除用户组

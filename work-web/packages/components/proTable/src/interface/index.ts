@@ -57,6 +57,8 @@ export type RenderScope<T> = { row: T; $index: number; column: TableColumnCtx<T>
 
 export type HeaderRenderScope<T> = { $index: number; column: TableColumnCtx<T>; [key: string]: any };
 
+declare type PartialKey<T, U extends keyof T> = Pick<T, Exclude<keyof T, U>> & Partial<Pick<T, U>>;
+
 /**
  * 表字段属性配置
  * 在 Element Plus 的类型基础增强

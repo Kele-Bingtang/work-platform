@@ -4,6 +4,7 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
@@ -37,9 +38,16 @@ public class SysUserGroupController {
 
     @GetMapping("/list")
     @Operation(summary = "用户组列表查询", description = "通过主键查询用户组列表")
-    public Response<List<SysUserGroupVO>> list(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery) {
-        List<SysUserGroupVO> sysUserGroupVOList = sysUserGroupService.list(sysUserGroupDTO, pageQuery);
+    public Response<List<SysUserGroupVO>> list(SysUserGroupDTO sysUserGroupDTO) {
+        List<SysUserGroupVO> sysUserGroupVOList = sysUserGroupService.queryList(sysUserGroupDTO);
         return HttpResult.ok(sysUserGroupVOList);
+    }
+
+    @GetMapping("/listPage")
+    @Operation(summary = "用户组列表查询", description = "通过主键查询用户组列表（分页）")
+    public Response<TablePage<SysUserGroupVO>> listPage(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery) {
+        TablePage<SysUserGroupVO> tablePage = sysUserGroupService.listPage(sysUserGroupDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
     @GetMapping("/listUserGroupByUserId/{appId}/{userId}")
@@ -105,21 +113,21 @@ public class SysUserGroupController {
 
     @PostMapping
     @Operation(summary = "用户组列表新增", description = "新增用户组")
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDto) {
-        if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDto)) {
-            return HttpResult.failMessage("修改用户组「" + sysUserGroupDto.getGroupName() + "」失败，用户组名称已存在");
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDTO) {
+        if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDTO)) {
+            return HttpResult.failMessage("修改用户组「" + sysUserGroupDTO.getGroupName() + "」失败，用户组名称已存在");
         }
 
-        return HttpResult.ok(sysUserGroupService.insertOne(sysUserGroupDto));
+        return HttpResult.ok(sysUserGroupService.insertOne(sysUserGroupDTO));
     }
 
     @PutMapping
     @Operation(summary = "用户组列表修改", description = "修改用户组")
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDto) {
-        if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDto)) {
-            return HttpResult.failMessage("修改用户组「" + sysUserGroupDto.getGroupName() + "」失败，用户组名称已存在");
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDTO) {
+        if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDTO)) {
+            return HttpResult.failMessage("修改用户组「" + sysUserGroupDTO.getGroupName() + "」失败，用户组名称已存在");
         }
-        return HttpResult.ok(sysUserGroupService.updateOne(sysUserGroupDto));
+        return HttpResult.ok(sysUserGroupService.updateOne(sysUserGroupDTO));
     }
 
     @DeleteMapping("/{ids}")

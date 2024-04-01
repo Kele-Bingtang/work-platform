@@ -2,7 +2,7 @@
   <div class="tenant-container">
     <ProTable
       ref="proTableRef"
-      :request-api="list"
+      :request-api="listPage"
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
       class="pro-table"
@@ -14,7 +14,7 @@
 
 <script setup lang="tsx" name="Tenant">
 import { ProTable } from "work";
-import { list, addOne, editOne, deleteOne, deleteBatch, type Tenant } from "@/api/system/tenant";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type Tenant } from "@/api/system/tenant";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores";

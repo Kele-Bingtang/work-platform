@@ -35,11 +35,11 @@ import java.util.Objects;
 public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, UserRoleLink> implements UserRoleLinkService {
 
     @Override
-    public List<UserRoleLinkVO> queryLinkByAppId(UserRoleLinkDTO userRoleLinkDto, PageQuery pageQuery) {
+    public List<UserRoleLinkVO> queryLinkByAppId(UserRoleLinkDTO userRoleLinkDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<UserRoleLink> wrapper = Wrappers.<UserRoleLink>lambdaQuery()
-                .eq(UserRoleLink::getAppId, userRoleLinkDto.getAppId())
-                .eq(StringUtil.hasText(userRoleLinkDto.getUserId()), UserRoleLink::getUserId, userRoleLinkDto.getUserId())
-                .eq(StringUtil.hasText(userRoleLinkDto.getRoleId()), UserRoleLink::getRoleId, userRoleLinkDto.getRoleId())
+                .eq(UserRoleLink::getAppId, userRoleLinkDTO.getAppId())
+                .eq(StringUtil.hasText(userRoleLinkDTO.getUserId()), UserRoleLink::getUserId, userRoleLinkDTO.getUserId())
+                .eq(StringUtil.hasText(userRoleLinkDTO.getRoleId()), UserRoleLink::getRoleId, userRoleLinkDTO.getRoleId())
                 .orderByAsc(UserRoleLink::getId);
 
         List<UserRoleLink> userRoleLinkList;
@@ -86,8 +86,8 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     }
 
     @Override
-    public boolean updateOne(UserRoleLinkDTO userRoleLinkDto) {
-        UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDto, UserRoleLink.class);
+    public boolean updateOne(UserRoleLinkDTO userRoleLinkDTO) {
+        UserRoleLink userRoleLink = MapstructUtil.convert(userRoleLinkDTO, UserRoleLink.class);
         return baseMapper.updateById(userRoleLink) > 0;
     }
 

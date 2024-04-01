@@ -14,15 +14,15 @@ import java.util.List;
  * @note 针对表【t_role_dept_link(角色关联部门表)】的数据库操作Service
  */
 public interface RoleDeptLinkService extends IService<RoleDeptLink> {
-    List<RoleDeptLinkVO> queryLinkByAppId(RoleDeptLinkDTO roleDeptLinkDto, PageQuery pageQuery);
+    List<RoleDeptLinkVO> queryLinkByAppId(RoleDeptLinkDTO roleDeptLinkDTO, PageQuery pageQuery);
 
     boolean checkDeptExistRole(String deptId);
 
     boolean checkRoleExistDept(String roleId);
 
-    boolean addOneLink(RoleDeptLinkDTO roleDeptLinkDto);
+    boolean addOneLink(RoleDeptLinkDTO roleDeptLinkDTO);
 
-    boolean updateOneLink(RoleDeptLinkDTO roleDeptLinkDto);
+    boolean updateOneLink(RoleDeptLinkDTO roleDeptLinkDTO);
 
     boolean removeOneLink(Long id);
 }

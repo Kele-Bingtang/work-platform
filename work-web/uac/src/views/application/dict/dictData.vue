@@ -1,7 +1,7 @@
 <template>
   <ProTable
     ref="proTableRef"
-    :request-api="list"
+    :request-api="listPage"
     :columns="columns"
     :init-request-param="initRequestParam"
     :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -11,7 +11,7 @@
 
 <script setup lang="ts" name="DictData">
 import { ProTable } from "work";
-import { list, addOne, editOne, removeOne, type DictData } from "@/api/application/dictData";
+import { listPage, addOne, editOne, removeOne, type DictData } from "@/api/application/dictData";
 import { type DialogForm, type TableColumnProps } from "@work/components";
 import { useFormOptions } from "./useFormOptions";
 

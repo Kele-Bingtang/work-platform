@@ -25,10 +25,10 @@ import java.util.Objects;
 public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, UserPostLink> implements UserPostLinkService {
 
     @Override
-    public List<UserPostLinkVO> queryLinkByTenantId(UserPostLinkDTO userPostLinkDto, PageQuery pageQuery) {
+    public List<UserPostLinkVO> queryLinkByTenantId(UserPostLinkDTO userPostLinkDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<UserPostLink> wrapper = Wrappers.<UserPostLink>lambdaQuery()
-                .eq(StringUtil.hasText(userPostLinkDto.getUserId()), UserPostLink::getUserId, userPostLinkDto.getUserId())
-                .eq(StringUtil.hasText(userPostLinkDto.getPostId()), UserPostLink::getPostId, userPostLinkDto.getPostId())
+                .eq(StringUtil.hasText(userPostLinkDTO.getUserId()), UserPostLink::getUserId, userPostLinkDTO.getUserId())
+                .eq(StringUtil.hasText(userPostLinkDTO.getPostId()), UserPostLink::getPostId, userPostLinkDTO.getPostId())
                 .orderByAsc(UserPostLink::getId);
 
         List<UserPostLink> userPostLinkList;
@@ -53,14 +53,14 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
     }
 
     @Override
-    public boolean addOneLink(UserPostLinkDTO userPostLinkDto) {
-        UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDto, UserPostLink.class);
+    public boolean addOneLink(UserPostLinkDTO userPostLinkDTO) {
+        UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDTO, UserPostLink.class);
         return baseMapper.insert(userPostLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(UserPostLinkDTO userPostLinkDto) {
-        UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDto, UserPostLink.class);
+    public boolean updateOneLink(UserPostLinkDTO userPostLinkDTO) {
+        UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDTO, UserPostLink.class);
         return baseMapper.updateById(userPostLink) > 0;
     }
 

@@ -8,7 +8,9 @@ import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
  */
 public interface UserGroupRoleLinkMapper extends BaseMapper<UserGroupRoleLink> {
 
-    List<UserGroupLinkRoleVO> listRoleLinkByGroupId(@Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
+    IPage<UserGroupLinkRoleVO> listRoleLinkByGroupId(@Param("page") Page<UserGroupLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
 
     List<UserGroupLinkVO> listUserGroupByRoleId(@Param("roleId") String roleId);
 

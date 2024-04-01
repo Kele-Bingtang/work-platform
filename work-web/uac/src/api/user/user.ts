@@ -67,6 +67,10 @@ export const list = (params: Partial<User.UserInfo>) => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
 };
 
+export const listPage = (params: Partial<User.UserInfo>) => {
+  return http.get<http.Page<User.UserInfo[]>>(`${baseUri}/listPage`, params);
+};
+
 /**
  * 下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true
  */

@@ -59,6 +59,10 @@ export const list = (params: Partial<UserGroup.UserGroupInfo>) => {
   return http.get<http.Response<UserGroup.UserGroupInfo[]>>(`${baseUri}/list`, params);
 };
 
+export const listPage = (params: Partial<UserGroup.UserGroupInfo>) => {
+  return http.get<http.Page<UserGroup.UserGroupInfo[]>>(`${baseUri}/listPage`, params);
+};
+
 /**
  * 查询某个用户所在的用户组列表
  */

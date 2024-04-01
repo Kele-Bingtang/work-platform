@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysTenantMapper;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.po.SysTenant;
@@ -12,6 +13,7 @@ import cn.youngkbt.uac.sys.service.SysTenantService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Service
 public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements SysTenantService {
-    
+
     private final ReentrantLock reentrantLock = new ReentrantLock();
 
     @Override
@@ -44,33 +46,40 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public List<SysTenantVO> listWithPage(SysTenantDTO sysTenantDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysTenant> wrapper = Wrappers.<SysTenant>lambdaQuery()
-                .eq(StringUtils.hasText(sysTenantDto.getTenantId()), SysTenant::getTenantId, sysTenantDto.getTenantId())
-                .eq(Objects.nonNull(sysTenantDto.getUserCount()), SysTenant::getUserCount, sysTenantDto.getUserCount())
-                .eq(Objects.nonNull(sysTenantDto.getStatus()), SysTenant::getStatus, sysTenantDto.getStatus())
-                .orderByAsc(SysTenant::getId);
-
-        List<SysTenant> sysTenantList;
-        if (Objects.isNull(pageQuery)) {
-            sysTenantList = baseMapper.selectList(wrapper);
-        } else {
-            sysTenantList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
+    public List<SysTenantVO> queryList(SysTenantDTO sysTenantDTO) {
+        LambdaQueryWrapper<SysTenant> wrapper = buildQueryWrapper(sysTenantDTO);
+        List<SysTenant> sysTenantList = baseMapper.selectList(wrapper);
+        
         return MapstructUtil.convert(sysTenantList, SysTenantVO.class);
     }
 
     @Override
-    public boolean checkCompanyNameUnique(SysTenantDTO sysTenantDto) {
+    public TablePage<SysTenantVO> listPage(SysTenantDTO sysTenantDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysTenant> wrapper = buildQueryWrapper(sysTenantDTO);
+        Page<SysTenant> sysTenantPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        
+        return TablePage.build(sysTenantPage, SysTenantVO.class);
+    }
+
+    private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenantDTO sysTenantDTO) {
+        return Wrappers.<SysTenant>lambdaQuery()
+                .eq(StringUtils.hasText(sysTenantDTO.getTenantId()), SysTenant::getTenantId, sysTenantDTO.getTenantId())
+                .eq(Objects.nonNull(sysTenantDTO.getUserCount()), SysTenant::getUserCount, sysTenantDTO.getUserCount())
+                .eq(Objects.nonNull(sysTenantDTO.getStatus()), SysTenant::getStatus, sysTenantDTO.getStatus())
+                .orderByAsc(SysTenant::getId);
+    }
+
+    @Override
+    public boolean checkCompanyNameUnique(SysTenantDTO sysTenantDTO) {
         return baseMapper.exists(new LambdaQueryWrapper<SysTenant>()
-                .eq(SysTenant::getTenantName, sysTenantDto.getTenantName())
-                .ne(Objects.nonNull(sysTenantDto.getTenantId()), SysTenant::getTenantId, sysTenantDto.getTenantId()));
+                .eq(SysTenant::getTenantName, sysTenantDTO.getTenantName())
+                .ne(Objects.nonNull(sysTenantDTO.getTenantId()), SysTenant::getTenantId, sysTenantDTO.getTenantId()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertOne(SysTenantDTO sysTenantDto) {
-        SysTenant sysTenant = MapstructUtil.convert(sysTenantDto, SysTenant.class);
+    public boolean insertOne(SysTenantDTO sysTenantDTO) {
+        SysTenant sysTenant = MapstructUtil.convert(sysTenantDTO, SysTenant.class);
         // 获取数据库所有的租户 ID，然后根据最后一个生成新的 ID
         List<SysTenant> sysTenantList = baseMapper.selectList(Wrappers.<SysTenant>lambdaQuery().select(SysTenant::getTenantId));
 
@@ -88,16 +97,16 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         if (!result) {
             throw new ServiceException("创建租户失败");
         }
-        
+
         // TODO
         // 创建角色
 
         // 创建菜单
 
         // 创建部门: 企业名称是部门名称
-        
+
         // 创建系统用户
-        
+
         // 创建字典数据
 
         return true;
@@ -114,8 +123,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public boolean updateOne(SysTenantDTO sysTenantDto) {
-        SysTenant sysTenant = MapstructUtil.convert(sysTenantDto, SysTenant.class);
+    public boolean updateOne(SysTenantDTO sysTenantDTO) {
+        SysTenant sysTenant = MapstructUtil.convert(sysTenantDTO, SysTenant.class);
         return baseMapper.updateById(sysTenant) > 0;
     }
 

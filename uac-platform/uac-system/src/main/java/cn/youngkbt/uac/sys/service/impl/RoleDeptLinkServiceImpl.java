@@ -25,11 +25,11 @@ import java.util.Objects;
 public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, RoleDeptLink> implements RoleDeptLinkService {
 
     @Override
-    public List<RoleDeptLinkVO> queryLinkByAppId(RoleDeptLinkDTO roleDeptLinkDto, PageQuery pageQuery) {
+    public List<RoleDeptLinkVO> queryLinkByAppId(RoleDeptLinkDTO roleDeptLinkDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<RoleDeptLink> wrapper = Wrappers.<RoleDeptLink>lambdaQuery()
-                .eq(RoleDeptLink::getAppId, roleDeptLinkDto.getAppId())
-                .eq(StringUtil.hasText(roleDeptLinkDto.getRoleId()), RoleDeptLink::getRoleId, roleDeptLinkDto.getRoleId())
-                .eq(StringUtil.hasText(roleDeptLinkDto.getDeptId()), RoleDeptLink::getDeptId, roleDeptLinkDto.getDeptId())
+                .eq(RoleDeptLink::getAppId, roleDeptLinkDTO.getAppId())
+                .eq(StringUtil.hasText(roleDeptLinkDTO.getRoleId()), RoleDeptLink::getRoleId, roleDeptLinkDTO.getRoleId())
+                .eq(StringUtil.hasText(roleDeptLinkDTO.getDeptId()), RoleDeptLink::getDeptId, roleDeptLinkDTO.getDeptId())
                 .orderByAsc(RoleDeptLink::getId);
 
         List<RoleDeptLink> roleDeptLinkList;
@@ -54,14 +54,14 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     }
 
     @Override
-    public boolean addOneLink(RoleDeptLinkDTO roleDeptLinkDto) {
-        RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDto, RoleDeptLink.class);
+    public boolean addOneLink(RoleDeptLinkDTO roleDeptLinkDTO) {
+        RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDTO, RoleDeptLink.class);
         return baseMapper.insert(roleDeptLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(RoleDeptLinkDTO roleDeptLinkDto) {
-        RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDto, RoleDeptLink.class);
+    public boolean updateOneLink(RoleDeptLinkDTO roleDeptLinkDTO) {
+        RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDTO, RoleDeptLink.class);
         return baseMapper.updateById(roleDeptLink) > 0;
     }
 

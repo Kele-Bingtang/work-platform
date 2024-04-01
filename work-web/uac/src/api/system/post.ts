@@ -19,6 +19,10 @@ export const list = () => {
   return http.get<http.Response<Post.PostInfo[]>>(`${baseUri}/list`);
 };
 
+export const listPage = () => {
+  return http.get<http.Page<Post.PostInfo[]>>(`${baseUri}/listPage`);
+};
+
 export const addOne = (data: Post.PostInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };

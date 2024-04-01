@@ -6,6 +6,7 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
 import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
@@ -37,27 +38,31 @@ public class SysDeptController {
         return HttpResult.ok(sysDeptVo);
     }
 
-    /**
-     * 部门列表查询
-     */
     @GetMapping("/list")
-    @Operation(summary = "部门列表查询", description = "通过部门条件查询部门列表（支持分页）")
-    public Response<List<SysDeptVO>> list(SysDeptDTO sysDeptDto, PageQuery pageQuery) {
-        List<SysDeptVO> sysDeptVOList = sysDeptService.listWithPage(sysDeptDto, pageQuery);
+    @Operation(summary = "部门列表查询", description = "通过部门条件查询部门列表")
+    public Response<List<SysDeptVO>> list(SysDeptDTO sysDeptDTO) {
+        List<SysDeptVO> sysDeptVOList = sysDeptService.queryList(sysDeptDTO);
         return HttpResult.ok(sysDeptVOList);
+    }
+
+    @GetMapping("/listPage")
+    @Operation(summary = "部门列表查询", description = "通过部门条件查询部门列表（支持分页）")
+    public Response<TablePage<SysDeptVO>> listPage(SysDeptDTO sysDeptDTO, PageQuery pageQuery) {
+        TablePage<SysDeptVO> tablePage = sysDeptService.listPage(sysDeptDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
     @GetMapping("/treeList")
     @Operation(summary = "部门树形结构查询", description = "通过部门条件查询部门树形结构")
-    public Response<List<Tree<String>>> listDeptTreeList(SysDeptDTO sysDeptDto) {
-        List<Tree<String>> deptTreeList = sysDeptService.listDeptTreeList(sysDeptDto);
+    public Response<List<Tree<String>>> listDeptTreeList(SysDeptDTO sysDeptDTO) {
+        List<Tree<String>> deptTreeList = sysDeptService.listDeptTreeList(sysDeptDTO);
         return HttpResult.ok(deptTreeList);
     }
 
     @GetMapping("/treeTable")
     @Operation(summary = "部门树形表格查询", description = "通过部门条件查询部门树形表格")
-    public Response<List<DeptTree>> listDeptTreeTable(SysDeptDTO sysDeptDto) {
-        List<DeptTree> treeTable = sysDeptService.listDeptTreeTable(sysDeptDto);
+    public Response<List<DeptTree>> listDeptTreeTable(SysDeptDTO sysDeptDTO) {
+        List<DeptTree> treeTable = sysDeptService.listDeptTreeTable(sysDeptDTO);
         return HttpResult.ok(treeTable);
     }
 
@@ -84,27 +89,27 @@ public class SysDeptController {
 
     @PostMapping
     @Operation(summary = "部门新增", description = "新增部门")
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDeptDTO sysDeptDto) {
-        if (sysDeptService.checkDeptNameUnique(sysDeptDto)) {
-            return HttpResult.failMessage("新增部门「" + sysDeptDto.getDeptName() + "」失败，部门名称已存在");
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDeptDTO sysDeptDTO) {
+        if (sysDeptService.checkDeptNameUnique(sysDeptDTO)) {
+            return HttpResult.failMessage("新增部门「" + sysDeptDTO.getDeptName() + "」失败，部门名称已存在");
         }
 
-        return HttpResult.ok(sysDeptService.insertOne(sysDeptDto));
+        return HttpResult.ok(sysDeptService.insertOne(sysDeptDTO));
     }
 
     @PutMapping
     @Operation(summary = "部门修改", description = "修改部门")
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDeptDTO sysDeptDto) {
-        String deptId = sysDeptDto.getDeptId();
-        if (sysDeptDto.getParentId().equals(deptId)) {
-            return HttpResult.failMessage("修改部门「" + sysDeptDto.getDeptName() + "」失败，上级部门不能是自己");
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDeptDTO sysDeptDTO) {
+        String deptId = sysDeptDTO.getDeptId();
+        if (sysDeptDTO.getParentId().equals(deptId)) {
+            return HttpResult.failMessage("修改部门「" + sysDeptDTO.getDeptName() + "」失败，上级部门不能是自己");
         }
 
-        if (sysDeptService.checkDeptNameUnique(sysDeptDto)) {
-            return HttpResult.failMessage("修改部门「" + sysDeptDto.getDeptName() + "」失败，部门名称已存在");
+        if (sysDeptService.checkDeptNameUnique(sysDeptDTO)) {
+            return HttpResult.failMessage("修改部门「" + sysDeptDTO.getDeptName() + "」失败，部门名称已存在");
         }
 
-        if (ColumnConstant.STATUS_EXCEPTION.equals(sysDeptDto.getStatus())) {
+        if (ColumnConstant.STATUS_EXCEPTION.equals(sysDeptDTO.getStatus())) {
             if (sysDeptService.listChildrenDeptCountById(deptId) > 0) {
                 return HttpResult.failMessage("该部门包含未停用的子部门，不能禁用");
             }
@@ -114,7 +119,7 @@ public class SysDeptController {
             }
         }
 
-        return HttpResult.ok(sysDeptService.updateOne(sysDeptDto));
+        return HttpResult.ok(sysDeptService.updateOne(sysDeptDTO));
     }
 
     @DeleteMapping("/{id}/{deptId}")

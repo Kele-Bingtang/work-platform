@@ -15,15 +15,15 @@ import java.util.List;
  */
 public interface RoleMenuLinkService extends IService<RoleMenuLink> {
 
-    List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDTO roleMenuLinkDto, PageQuery pageQuery);
+    List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDTO roleMenuLinkDTO, PageQuery pageQuery);
 
     boolean checkMenuExistRole(String menuId);
 
     boolean checkRoleExistMenu(String roleId);
     
-    boolean addOneLink(RoleMenuLinkDTO roleMenuLinkDto);
+    boolean addOneLink(RoleMenuLinkDTO roleMenuLinkDTO);
     
-    boolean updateOneLink(RoleMenuLinkDTO roleMenuLinkDto);
+    boolean updateOneLink(RoleMenuLinkDTO roleMenuLinkDTO);
     
     boolean removeOneLink(Long id);
     

@@ -71,10 +71,17 @@ export namespace Role {
 const baseUri = "/system/role";
 
 /**
- * 通过条件查询角色列表（支持分页）
+ * 通过条件查询角色列表
  */
 export const list = (params: Partial<Role.RoleInfo>) => {
   return http.get<http.Response<Role.RoleInfo[]>>(`${baseUri}/list`, params);
+};
+
+/**
+ * 通过条件查询角色列表（支持分页）
+ */
+export const listPage = (params: Partial<Role.RoleInfo>) => {
+  return http.get<http.Page<Role.RoleInfo[]>>(`${baseUri}/listPage`, params);
 };
 
 /**

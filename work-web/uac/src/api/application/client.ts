@@ -31,6 +31,10 @@ export const list = (params?: Partial<Client.ClientInfo>) => {
   return http.get<http.Response<Client.ClientInfo[]>>(`${baseUri}/list`, params);
 };
 
+export const listPage = (params?: Partial<Client.ClientInfo>) => {
+  return http.get<http.Page<Client.ClientInfo[]>>(`${baseUri}/listPage`, params);
+};
+
 export const listClientGrantTypeList = (clientId: string) => {
   return http.get<http.Response<Client.ClientInfo[]>>(`${baseUri}/grantTypeList/${clientId}`);
 };

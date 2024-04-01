@@ -53,14 +53,14 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "执行登录")
-    public Response<LoginVO> login(@Valid @RequestBody LoginUserDTO loginUserDto) {
+    public Response<LoginVO> login(@Valid @RequestBody LoginUserDTO loginUserDTO) {
         // 避免重复登录
         // String username = SecurityUtils.getUsername();
         // if (Objects.nonNull(username) && StringUtils.equals(username, loginUserDTO.getUsername())) {
         //     return HttpResult.ok("用户名已登录");
         // }
 
-        String appId = loginUserDto.getAppId();
+        String appId = loginUserDTO.getAppId();
         // 校验 App ID
         SysApp sysApp = appService.checkAppIdThenGet(appId);
         if (Objects.isNull(sysApp)) {
@@ -80,15 +80,15 @@ public class AuthController {
             return HttpResult.failMessage("客户端[" + clientName + "]已被禁用");
         }
         // 校验租户 ID
-        loginService.checkTenant(loginUserDto.getTenantId());
+        loginService.checkTenant(loginUserDTO.getTenantId());
         // 执行登录
-        return HttpResult.ok(loginService.login(loginUserDto, sysApp, sysClient));
+        return HttpResult.ok(loginService.login(loginUserDTO, sysApp, sysClient));
     }
 
     @GetMapping("/tenant/list")
     @Operation(summary = "多租户下拉选项")
     public Response<LoginTenantSelectVO> tenantSelectOption(HttpServletRequest request) {
-        List<SysTenantVO> sysTenantVOList = sysTenantService.listWithPage(new SysTenantDTO(), null);
+        List<SysTenantVO> sysTenantVOList = sysTenantService.queryList(new SysTenantDTO());
         List<TenantSelectVO> tenantSelectVOList = MapstructUtil.convert(sysTenantVOList, TenantSelectVO.class);
 
         // 获取域名

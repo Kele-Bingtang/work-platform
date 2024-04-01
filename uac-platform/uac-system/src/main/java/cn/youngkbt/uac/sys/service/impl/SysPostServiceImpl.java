@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysPostMapper;
 import cn.youngkbt.uac.sys.mapper.UserPostLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
@@ -12,6 +13,7 @@ import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,51 +41,58 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
-    public List<SysPostVO> listWithPage(SysPostDTO sysPostDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysPost> wrapper = Wrappers.<SysPost>lambdaQuery()
-                .eq(StringUtils.hasText(sysPostDto.getPostCode()), SysPost::getPostCode, sysPostDto.getPostCode())
-                .eq(StringUtils.hasText(sysPostDto.getPostName()), SysPost::getPostName, sysPostDto.getPostName())
-                .eq(Objects.nonNull(sysPostDto.getStatus()), SysPost::getStatus, sysPostDto.getStatus())
-                .orderByAsc(SysPost::getOrderNum);
+    public List<SysPostVO> queryList(SysPostDTO sysPostDTO) {
+        LambdaQueryWrapper<SysPost> wrapper = buildQueryWrapper(sysPostDTO);
+        List<SysPost> sysPostList = baseMapper.selectList(wrapper);
 
-        List<SysPost> sysPostList;
-        if (Objects.isNull(pageQuery)) {
-            sysPostList = baseMapper.selectList(wrapper);
-        } else {
-            sysPostList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
         return MapstructUtil.convert(sysPostList, SysPostVO.class);
     }
 
     @Override
-    public boolean checkPostNameUnique(SysPostDTO sysPostDto) {
-        return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
-                .eq(SysPost::getPostName, sysPostDto.getPostName())
-                .ne(Objects.nonNull(sysPostDto.getPostId()), SysPost::getPostId, sysPostDto.getPostId()));
+    public TablePage<SysPostVO> listPage(SysPostDTO sysPostDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysPost> wrapper = buildQueryWrapper(sysPostDTO);
+        Page<SysPost> sysPostPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        
+        return TablePage.build(sysPostPage, SysPostVO.class);
+    }
+
+    private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPostDTO sysPostDTO) {
+        return Wrappers.<SysPost>lambdaQuery()
+                .eq(StringUtils.hasText(sysPostDTO.getPostCode()), SysPost::getPostCode, sysPostDTO.getPostCode())
+                .eq(StringUtils.hasText(sysPostDTO.getPostName()), SysPost::getPostName, sysPostDTO.getPostName())
+                .eq(Objects.nonNull(sysPostDTO.getStatus()), SysPost::getStatus, sysPostDTO.getStatus())
+                .orderByAsc(SysPost::getOrderNum);
     }
 
     @Override
-    public boolean checkPostCodeUnique(SysPostDTO sysPostDto) {
+    public boolean checkPostNameUnique(SysPostDTO sysPostDTO) {
         return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
-                .eq(SysPost::getPostCode, sysPostDto.getPostCode())
-                .ne(Objects.nonNull(sysPostDto.getPostId()), SysPost::getPostId, sysPostDto.getPostId()));
+                .eq(SysPost::getPostName, sysPostDTO.getPostName())
+                .ne(Objects.nonNull(sysPostDTO.getPostId()), SysPost::getPostId, sysPostDTO.getPostId()));
     }
 
     @Override
-    public boolean checkPostExitUser(SysPostDTO sysPostDto) {
+    public boolean checkPostCodeUnique(SysPostDTO sysPostDTO) {
+        return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
+                .eq(SysPost::getPostCode, sysPostDTO.getPostCode())
+                .ne(Objects.nonNull(sysPostDTO.getPostId()), SysPost::getPostId, sysPostDTO.getPostId()));
+    }
+
+    @Override
+    public boolean checkPostExitUser(SysPostDTO sysPostDTO) {
         return userPostLinkMapper.exists(new LambdaQueryWrapper<UserPostLink>()
-                .eq(UserPostLink::getPostId, sysPostDto.getPostId()));
+                .eq(UserPostLink::getPostId, sysPostDTO.getPostId()));
     }
 
     @Override
-    public boolean insertOne(SysPostDTO sysPostDto) {
-        SysPost sysPost = MapstructUtil.convert(sysPostDto, SysPost.class);
+    public boolean insertOne(SysPostDTO sysPostDTO) {
+        SysPost sysPost = MapstructUtil.convert(sysPostDTO, SysPost.class);
         return baseMapper.insert(sysPost) > 0;
     }
 
     @Override
-    public boolean updateOne(SysPostDTO sysPostDto) {
-        SysPost sysPost = MapstructUtil.convert(sysPostDto, SysPost.class);
+    public boolean updateOne(SysPostDTO sysPostDTO) {
+        SysPost sysPost = MapstructUtil.convert(sysPostDTO, SysPost.class);
         return baseMapper.updateById(sysPost) > 0;
     }
 

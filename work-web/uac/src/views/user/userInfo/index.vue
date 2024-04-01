@@ -10,7 +10,7 @@
     <div class="user-table">
       <ProTable
         ref="proTableRef"
-        :request-api="list"
+        :request-api="listPage"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -24,7 +24,7 @@
 <script setup lang="tsx" name="UserInfo">
 import { TreeFilter, ProTable, type TableColumnProps } from "work";
 import { listDeptTreeList } from "@/api/system/dept";
-import { addOne, editOne, deleteOne, deleteBatch, list, type User } from "@/api/user/user";
+import { addOne, editOne, deleteOne, deleteBatch, listPage, type User } from "@/api/user/user";
 import { options } from "./formOptions";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";

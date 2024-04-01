@@ -4,6 +4,7 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
@@ -17,14 +18,13 @@ import cn.youngkbt.uac.sys.model.vo.SysPostVO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
-import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -76,34 +76,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public List<SysUserVO> listWithPage(SysUserDTO sysUserDto, PageQuery pageQuery) {
-        Wrapper<SysUser> wrapper = buildQueryWrapper(sysUserDto);
-        List<SysUserVO> sysUserVOList;
-        if (Objects.isNull(pageQuery)) {
-            sysUserVOList = baseMapper.selectListWithPage(null, wrapper);
-        } else {
-            sysUserVOList = baseMapper.selectListWithPage(pageQuery.buildPage(), wrapper);
-        }
-        return sysUserVOList;
+    public List<SysUserVO> queryList(SysUserDTO sysUserDTO) {
+        QueryWrapper<SysUser> wrapper = buildQueryWrapper(sysUserDTO);
+        return baseMapper.queryList(wrapper);
     }
 
-    private Wrapper<SysUser> buildQueryWrapper(SysUserDTO sysUserDto) {
+    @Override
+    public TablePage<SysUserVO> listPage(SysUserDTO sysUserDTO, PageQuery pageQuery) {
+        QueryWrapper<SysUser> wrapper = buildQueryWrapper(sysUserDTO);
+        IPage<SysUserVO> sysUserVOIPage = baseMapper.selectListWithPage(pageQuery.buildPage(), wrapper);
+
+        return TablePage.build(sysUserVOIPage);
+    }
+
+    private QueryWrapper<SysUser> buildQueryWrapper(SysUserDTO sysUserDTO) {
         QueryWrapper<SysUser> wrapper = Wrappers.query();
         wrapper.eq("su.is_deleted", ColumnConstant.NON_DELETED)
-                .eq(StringUtils.hasText(sysUserDto.getUserId()), "su.user_id", sysUserDto.getUserId())
-                .like(StringUtils.hasText(sysUserDto.getUsername()), "su.username", sysUserDto.getUsername())
-                .like(StringUtils.hasText(sysUserDto.getPhone()), "su.phone", sysUserDto.getPhone())
-                .like(StringUtils.hasText(sysUserDto.getEmail()), "su.email", sysUserDto.getEmail())
-                .eq(Objects.nonNull(sysUserDto.getStatus()), "su.status", sysUserDto.getStatus())
-                .and(StringUtils.hasText(sysUserDto.getDeptId()), c -> {
+                .eq(StringUtils.hasText(sysUserDTO.getUserId()), "su.user_id", sysUserDTO.getUserId())
+                .like(StringUtils.hasText(sysUserDTO.getUsername()), "su.username", sysUserDTO.getUsername())
+                .like(StringUtils.hasText(sysUserDTO.getPhone()), "su.phone", sysUserDTO.getPhone())
+                .like(StringUtils.hasText(sysUserDTO.getEmail()), "su.email", sysUserDTO.getEmail())
+                .eq(Objects.nonNull(sysUserDTO.getStatus()), "su.status", sysUserDTO.getStatus())
+                .and(StringUtils.hasText(sysUserDTO.getDeptId()), c -> {
                     // 查出 deptId 所对应的部门及其子部门 ID 信息
                     List<SysDept> sysDeptList = sysDeptMapper.selectList(Wrappers.<SysDept>lambdaQuery()
                             .select(SysDept::getDeptId)
-                            .apply("FIND_IN_SET({0}, ancestors) > 0", sysUserDto.getDeptId()));
+                            .apply("FIND_IN_SET({0}, ancestors) > 0", sysUserDTO.getDeptId()));
                     // 获取所有子部门 ID
                     List<String> deptIds = sysDeptList.stream().map(SysDept::getDeptId).filter(Objects::nonNull).collect(Collectors.toList());
                     // 加上当前部门
-                    deptIds.add(sysUserDto.getDeptId());
+                    deptIds.add(sysUserDTO.getDeptId());
                     c.in("su.dept_id", deptIds);
                 })
                 .orderByAsc("su.id");
@@ -112,30 +114,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean checkUserNameUnique(SysUserDTO sysUserDto) {
+    public boolean checkUserNameUnique(SysUserDTO sysUserDTO) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getUsername, sysUserDto.getUsername())
-                .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
+                .eq(SysUser::getUsername, sysUserDTO.getUsername())
+                .ne(Objects.nonNull(sysUserDTO.getUserId()), SysUser::getUserId, sysUserDTO.getUserId()));
     }
 
     @Override
-    public boolean checkPhoneUnique(SysUserDTO sysUserDto) {
+    public boolean checkPhoneUnique(SysUserDTO sysUserDTO) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getPhone, sysUserDto.getPhone())
-                .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
+                .eq(SysUser::getPhone, sysUserDTO.getPhone())
+                .ne(Objects.nonNull(sysUserDTO.getUserId()), SysUser::getUserId, sysUserDTO.getUserId()));
     }
 
     @Override
-    public boolean checkEmailUnique(SysUserDTO sysUserDto) {
+    public boolean checkEmailUnique(SysUserDTO sysUserDTO) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getEmail, sysUserDto.getEmail())
-                .ne(Objects.nonNull(sysUserDto.getUserId()), SysUser::getUserId, sysUserDto.getUserId()));
+                .eq(SysUser::getEmail, sysUserDTO.getEmail())
+                .ne(Objects.nonNull(sysUserDTO.getUserId()), SysUser::getUserId, sysUserDTO.getUserId()));
     }
 
     @Override
     public RolePostVo rolePostList() {
-        List<SysPostVO> sysPostVOList = sysPostService.listWithPage(new SysPostDTO(), null);
-        List<SysRoleVO> sysRoleVOList = sysRoleService.listWithPage(new SysRoleDTO(), null);
+        List<SysPostVO> sysPostVOList = sysPostService.queryList(new SysPostDTO());
+        List<SysRoleVO> sysRoleVOList = sysRoleService.queryList(new SysRoleDTO());
 
         RolePostVo rolePostVo = new RolePostVo();
         rolePostVo.setPostList(sysPostVOList)
@@ -145,8 +147,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean insertOne(SysUserDTO sysUserDto) {
-        SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
+    public boolean insertOne(SysUserDTO sysUserDTO) {
+        SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setRegisterTime(new Date());
         if (Objects.isNull(sysUser.getPassword())) {
             sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
@@ -155,16 +157,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean updateOne(SysUserDTO sysUserDto) {
-        SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
+    public boolean updateOne(SysUserDTO sysUserDTO) {
+        SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         return baseMapper.updateById(sysUser) > 0;
     }
 
     @Override
-    public boolean updateOneByUserId(SysUserDTO sysUserDto) {
-        SysUser sysUser = MapstructUtil.convert(sysUserDto, SysUser.class);
+    public boolean updateOneByUserId(SysUserDTO sysUserDTO) {
+        SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         return baseMapper.update(sysUser, Wrappers.<SysUser>lambdaUpdate()
-                .eq(SysUser::getUsername, sysUserDto.getUsername())) > 0;
+                .eq(SysUser::getUsername, sysUserDTO.getUsername())) > 0;
     }
 
     @Override

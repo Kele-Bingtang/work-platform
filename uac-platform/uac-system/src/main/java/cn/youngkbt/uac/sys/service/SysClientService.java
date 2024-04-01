@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.model.vo.SysClientVO;
@@ -36,11 +37,19 @@ public interface SysClientService extends IService<SysClient> {
     /**
      * 通过条件查询客户端信息
      *
-     * @param sysClientDto 客户端信息
+     * @param sysClientDTO 客户端信息
+     * @return 客户端信息
+     */
+    List<SysClientVO> queryList(SysClientDTO sysClientDTO);
+
+    /**
+     * 通过条件查询客户端信息
+     *
+     * @param sysClientDTO 客户端信息
      * @param pageQuery    分页参数
      * @return 客户端信息
      */
-    List<SysClientVO> listWithPage(SysClientDTO sysClientDto, PageQuery pageQuery);
+    TablePage<SysClientVO> listPage(SysClientDTO sysClientDTO, PageQuery pageQuery);
 
     /**
      * 查询客户端树形列表
@@ -52,18 +61,18 @@ public interface SysClientService extends IService<SysClient> {
     /**
      * 新增客户端信息
      *
-     * @param sysClientDto 客户端信息
+     * @param sysClientDTO 客户端信息
      * @return 是否成功
      */
-    boolean insertOne(SysClientDTO sysClientDto);
+    boolean insertOne(SysClientDTO sysClientDTO);
 
     /**
      * 修改客户端信息
      *
-     * @param sysClientDto 客户端信息
+     * @param sysClientDTO 客户端信息
      * @return 是否成功
      */
-    boolean updateOne(SysClientDTO sysClientDto);
+    boolean updateOne(SysClientDTO sysClientDTO);
 
     /**
      * 修改客户端状态

@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
@@ -11,6 +12,7 @@ import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,46 +40,54 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public List<SysRoleVO> listWithPage(SysRoleDTO sysRoleDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysRole> wrapper = Wrappers.<SysRole>lambdaQuery()
-                .eq(StringUtils.hasText(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId())
-                .eq(StringUtils.hasText(sysRoleDto.getRoleCode()), SysRole::getRoleCode, sysRoleDto.getRoleCode())
-                .eq(StringUtils.hasText(sysRoleDto.getAppId()), SysRole::getAppId, sysRoleDto.getAppId())
-                .eq(Objects.nonNull(sysRoleDto.getStatus()), SysRole::getStatus, sysRoleDto.getStatus())
-                .orderByAsc(SysRole::getOrderNum);
+    public List<SysRoleVO> queryList(SysRoleDTO sysRoleDTO) {
+        LambdaQueryWrapper<SysRole> wrapper = buildQueryWrapper(sysRoleDTO);
+        List<SysRole> sysRoleList = baseMapper.selectList(wrapper);
 
-        List<SysRole> sysRoleList;
-        if (Objects.isNull(pageQuery)) {
-            sysRoleList = baseMapper.selectList(wrapper);
-        } else {
-            sysRoleList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
         return MapstructUtil.convert(sysRoleList, SysRoleVO.class);
     }
 
     @Override
-    public boolean checkRoleCodeUnique(SysRoleDTO sysRoleDto) {
-        return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
-                .eq(SysRole::getRoleCode, sysRoleDto.getRoleCode())
-                .ne(Objects.nonNull(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId()));
+    public TablePage<SysRoleVO> listPage(SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysRole> wrapper = buildQueryWrapper(sysRoleDTO);
+        Page<SysRole> sysRolePage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+
+        return TablePage.build(sysRolePage, SysRoleVO.class);
+    }
+
+    private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRoleDTO sysRoleDTO) {
+        return Wrappers.<SysRole>lambdaQuery()
+                .eq(StringUtils.hasText(sysRoleDTO.getRoleId()), SysRole::getRoleId, sysRoleDTO.getRoleId())
+                .eq(StringUtils.hasText(sysRoleDTO.getRoleCode()), SysRole::getRoleCode, sysRoleDTO.getRoleCode())
+                .eq(StringUtils.hasText(sysRoleDTO.getAppId()), SysRole::getAppId, sysRoleDTO.getAppId())
+                .eq(Objects.nonNull(sysRoleDTO.getStatus()), SysRole::getStatus, sysRoleDTO.getStatus())
+                .orderByAsc(SysRole::getOrderNum);
+
     }
 
     @Override
-    public boolean checkRoleNameUnique(SysRoleDTO sysRoleDto) {
+    public boolean checkRoleCodeUnique(SysRoleDTO sysRoleDTO) {
         return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
-                .eq(SysRole::getRoleName, sysRoleDto.getRoleName())
-                .ne(Objects.nonNull(sysRoleDto.getRoleId()), SysRole::getRoleId, sysRoleDto.getRoleId()));
+                .eq(SysRole::getRoleCode, sysRoleDTO.getRoleCode())
+                .ne(Objects.nonNull(sysRoleDTO.getRoleId()), SysRole::getRoleId, sysRoleDTO.getRoleId()));
     }
 
     @Override
-    public boolean insertOne(SysRoleDTO sysRoleDto) {
-        SysRole sysRole = MapstructUtil.convert(sysRoleDto, SysRole.class);
+    public boolean checkRoleNameUnique(SysRoleDTO sysRoleDTO) {
+        return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
+                .eq(SysRole::getRoleName, sysRoleDTO.getRoleName())
+                .ne(Objects.nonNull(sysRoleDTO.getRoleId()), SysRole::getRoleId, sysRoleDTO.getRoleId()));
+    }
+
+    @Override
+    public boolean insertOne(SysRoleDTO sysRoleDTO) {
+        SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         return baseMapper.insert(sysRole) > 0;
     }
 
     @Override
-    public boolean updateOne(SysRoleDTO sysRoleDto) {
-        SysRole sysRole = MapstructUtil.convert(sysRoleDto, SysRole.class);
+    public boolean updateOne(SysRoleDTO sysRoleDTO) {
+        SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         return baseMapper.updateById(sysRole) > 0;
     }
 

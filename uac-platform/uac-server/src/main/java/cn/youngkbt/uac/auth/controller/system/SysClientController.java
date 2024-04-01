@@ -4,6 +4,7 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.vo.SysClientVO;
 import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
@@ -38,10 +39,17 @@ public class SysClientController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表（支持分页）")
-    public Response<List<SysClientVO>> list(SysClientDTO sysClientDto, PageQuery pageQuery) {
-        List<SysClientVO> sysClientVOList = clientService.listWithPage(sysClientDto, pageQuery);
+    @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表）")
+    public Response<List<SysClientVO>> list(SysClientDTO sysClientDTO) {
+        List<SysClientVO> sysClientVOList = clientService.queryList(sysClientDTO);
         return HttpResult.ok(sysClientVOList);
+    }
+
+    @GetMapping("/listPage")
+    @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表（支持分页）")
+    public Response<TablePage<SysClientVO>> listPage(SysClientDTO sysClientDTO, PageQuery pageQuery) {
+        TablePage<SysClientVO> tablePage = clientService.listPage(sysClientDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
     @GetMapping("/treeList")
@@ -53,8 +61,8 @@ public class SysClientController {
 
     @PostMapping
     @Operation(summary = "客户端新增", description = "新增客户端")
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDto) {
-        return HttpResult.ok(clientService.insertOne(sysClientDto));
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDTO) {
+        return HttpResult.ok(clientService.insertOne(sysClientDTO));
     }
 
     /**
@@ -62,14 +70,14 @@ public class SysClientController {
      */
     @PutMapping
     @Operation(summary = "客户端修改", description = "修改客户端")
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDto) {
-        return HttpResult.ok(clientService.updateOne(sysClientDto));
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDTO) {
+        return HttpResult.ok(clientService.updateOne(sysClientDTO));
     }
 
     @PutMapping("/updateStatus")
     @Operation(summary = "客户端状态修改", description = "修改客户端状态")
-    public Response<Boolean> updateStatus(@RequestBody SysClientDTO sysClientDto) {
-        return HttpResult.ok(clientService.updateStatus(sysClientDto.getId(), sysClientDto.getStatus()));
+    public Response<Boolean> updateStatus(@RequestBody SysClientDTO sysClientDTO) {
+        return HttpResult.ok(clientService.updateStatus(sysClientDTO.getId(), sysClientDTO.getStatus()));
     }
 
     @DeleteMapping("/{ids}")

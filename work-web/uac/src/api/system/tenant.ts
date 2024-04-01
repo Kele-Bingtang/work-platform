@@ -27,6 +27,10 @@ export const list = () => {
   return http.get<http.Response<Tenant.TenantInfo[]>>(`${baseUri}/list`);
 };
 
+export const listPage = () => {
+  return http.get<http.Page<Tenant.TenantInfo[]>>(`${baseUri}/listPage`);
+};
+
 export const addOne = (data: Tenant.TenantInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };

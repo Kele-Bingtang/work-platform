@@ -4,6 +4,7 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysTenantService;
@@ -35,30 +36,34 @@ public class SysTenantController {
         return HttpResult.ok(sysTenantVo);
     }
 
-    /**
-     * 多租户列表查询
-     */
     @GetMapping("/list")
-    @Operation(summary = "租户列表查询", description = "通过条件查询租户列表（分页）")
-    public Response<List<SysTenantVO>> list(SysTenantDTO sysTenantDto, PageQuery pageQuery) {
-        List<SysTenantVO> sysTenantVOList = sysTenantService.listWithPage(sysTenantDto, pageQuery);
+    @Operation(summary = "租户列表查询", description = "通过条件查询租户列表")
+    public Response<List<SysTenantVO>> list(SysTenantDTO sysTenantDTO) {
+        List<SysTenantVO> sysTenantVOList = sysTenantService.queryList(sysTenantDTO);
         return HttpResult.ok(sysTenantVOList);
+    }
+
+    @GetMapping("/listPage")
+    @Operation(summary = "租户列表查询", description = "通过条件查询租户列表")
+    public Response<TablePage<SysTenantVO>> listPage(SysTenantDTO sysTenantDTO, PageQuery pageQuery) {
+        TablePage<SysTenantVO> tablePage = sysTenantService.listPage(sysTenantDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
 
     @PostMapping
     @Operation(summary = "租户列表新增", description = "新增租户")
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDTO sysTenantDto) {
-        if (sysTenantService.checkCompanyNameUnique(sysTenantDto)) {
-            return HttpResult.failMessage("新增租户'" + sysTenantDto.getTenantName() + "'失败，企业名称已存在");
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
+        if (sysTenantService.checkCompanyNameUnique(sysTenantDTO)) {
+            return HttpResult.failMessage("新增租户'" + sysTenantDTO.getTenantName() + "'失败，企业名称已存在");
         }
-        return HttpResult.ok(sysTenantService.insertOne(sysTenantDto));
+        return HttpResult.ok(sysTenantService.insertOne(sysTenantDTO));
     }
 
     @PutMapping
     @Operation(summary = "租户列表修改", description = "修改租户")
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysTenantDTO sysTenantDto) {
-        return HttpResult.ok(sysTenantService.updateOne(sysTenantDto));
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
+        return HttpResult.ok(sysTenantService.updateOne(sysTenantDTO));
     }
 
     @DeleteMapping("/{ids}")

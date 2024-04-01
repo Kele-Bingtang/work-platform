@@ -5,6 +5,7 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
@@ -36,48 +37,55 @@ public class SysMenuController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "菜单列表查询", description = "通过查询条件查询菜单列表（支持分页）")
-    public Response<List<SysMenuVO>> list(SysMenuDTO sysMenuDto, PageQuery pageQuery) {
-        List<SysMenuVO> sysMenuVOList = sysMenuService.listWithPage(sysMenuDto, pageQuery);
+    @Operation(summary = "菜单列表查询", description = "通过查询条件查询菜单列表")
+    public Response<List<SysMenuVO>> list(SysMenuDTO sysMenuDTO) {
+        List<SysMenuVO> sysMenuVOList = sysMenuService.queryList(sysMenuDTO);
         return HttpResult.ok(sysMenuVOList);
+    }
+
+    @GetMapping("/listPage")
+    @Operation(summary = "菜单列表查询", description = "通过查询条件查询菜单列表（支持分页）")
+    public Response<TablePage<SysMenuVO>> listPage(SysMenuDTO sysMenuDTO, PageQuery pageQuery) {
+        TablePage<SysMenuVO> tablePage = sysMenuService.listPage(sysMenuDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
     @GetMapping("/treeSelect")
     @Operation(summary = "菜单下拉值查询", description = "通过查询条件查询菜单下拉值（下拉框查询使用）")
-    public Response<List<Tree<String>>> listMenuTreeSelect(SysMenuDTO sysMenuDto) {
-        List<Tree<String>> menuTreeList = sysMenuService.listMenuTreeSelect(sysMenuDto);
+    public Response<List<Tree<String>>> listMenuTreeSelect(SysMenuDTO sysMenuDTO) {
+        List<Tree<String>> menuTreeList = sysMenuService.listMenuTreeSelect(sysMenuDTO);
         return HttpResult.ok(menuTreeList);
     }
 
     @GetMapping("/treeTable")
     @Operation(summary = "菜单树表查询", description = "通过查询条件查询菜单树表")
-    public Response<List<MenuTree>> listMenuTreeTable(SysMenuDTO sysMenuDto) {
-        List<MenuTree> treeTable = sysMenuService.listMenuTreeTable(sysMenuDto);
+    public Response<List<MenuTree>> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
+        List<MenuTree> treeTable = sysMenuService.listMenuTreeTable(sysMenuDTO);
         return HttpResult.ok(treeTable);
     }
 
     @PostMapping
     @Operation(summary = "菜单新增", description = "新增菜单")
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDTO sysMenuDto) {
-        if (!sysMenuService.checkMenuNameUnique(sysMenuDto)) {
-            return HttpResult.failMessage("新增菜单「" + sysMenuDto.getMenuName() + "」失败，菜单名称已存在");
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
+        if (!sysMenuService.checkMenuNameUnique(sysMenuDTO)) {
+            return HttpResult.failMessage("新增菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称已存在");
         }
 
-        return HttpResult.ok(sysMenuService.insertOne(sysMenuDto));
+        return HttpResult.ok(sysMenuService.insertOne(sysMenuDTO));
     }
 
     @PutMapping
     @Operation(summary = "菜单修改", description = "修改菜单")
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysMenuDTO sysMenuDto) {
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
 
-        if (sysMenuDto.getParentId().equals(sysMenuDto.getMenuId())) {
-            return HttpResult.failMessage("修改菜单「" + sysMenuDto.getMenuName() + "」失败，上级菜单不能是自己");
+        if (sysMenuDTO.getParentId().equals(sysMenuDTO.getMenuId())) {
+            return HttpResult.failMessage("修改菜单「" + sysMenuDTO.getMenuName() + "」失败，上级菜单不能是自己");
         }
 
-        if (!sysMenuService.checkMenuNameUnique(sysMenuDto)) {
-            return HttpResult.failMessage("修改菜单「" + sysMenuDto.getMenuName() + "」失败，菜单名称已存在");
+        if (!sysMenuService.checkMenuNameUnique(sysMenuDTO)) {
+            return HttpResult.failMessage("修改菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称已存在");
         }
-        return HttpResult.ok(sysMenuService.updateOne(sysMenuDto));
+        return HttpResult.ok(sysMenuService.updateOne(sysMenuDTO));
     }
 
     @DeleteMapping("/{id}/{menuId}")

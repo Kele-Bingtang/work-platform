@@ -23,6 +23,10 @@ export const list = (params: Partial<DictData.DictDataInfo>) => {
   return http.get<http.Response<DictData.DictDataInfo[]>>(`${baseUri}/list`, params);
 };
 
+export const listPage = (params: Partial<DictData.DictDataInfo>) => {
+  return http.get<http.Page<DictData.DictDataInfo[]>>(`${baseUri}/listPage`, params);
+};
+
 export const addOne = (data: DictData.DictDataInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };

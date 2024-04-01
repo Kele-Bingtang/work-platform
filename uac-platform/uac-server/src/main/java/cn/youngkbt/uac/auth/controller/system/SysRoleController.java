@@ -4,6 +4,7 @@ import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
@@ -48,34 +49,41 @@ public class SysRoleController {
     }
 
     @GetMapping("/list")
-    @Operation(summary = "角色列表查询", description = "通过条件查询角色列表（支持分页）")
-    public Response<List<SysRoleVO>> list(SysRoleDTO sysRoleDto, PageQuery pageQuery) {
-        List<SysRoleVO> sysRoleVOList = sysRoleService.listWithPage(sysRoleDto, pageQuery);
+    @Operation(summary = "角色列表查询", description = "通过条件查询角色列表")
+    public Response<List<SysRoleVO>> list(SysRoleDTO sysRoleDTO) {
+        List<SysRoleVO> sysRoleVOList = sysRoleService.queryList(sysRoleDTO);
         return HttpResult.ok(sysRoleVOList);
+    }
+
+    @GetMapping("/listPage")
+    @Operation(summary = "角色列表查询", description = "通过条件查询角色列表（支持分页）")
+    public Response<TablePage<SysRoleVO>> listPage(SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
+        TablePage<SysRoleVO> tablePage = sysRoleService.listPage(sysRoleDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
     @PostMapping
     @Operation(summary = "角色列表新增", description = "新增角色")
-    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysRoleDTO sysRoleDto) {
-        if (sysRoleService.checkRoleNameUnique(sysRoleDto)) {
-            return HttpResult.failMessage("新增角色「" + sysRoleDto.getRoleName() + "」失败，角色名称已存在");
-        } else if (sysRoleService.checkRoleCodeUnique(sysRoleDto)) {
-            return HttpResult.failMessage("新增角色「" + sysRoleDto.getRoleName() + "」失败，角色权限已存在");
+    public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
+        if (sysRoleService.checkRoleNameUnique(sysRoleDTO)) {
+            return HttpResult.failMessage("新增角色「" + sysRoleDTO.getRoleName() + "」失败，角色名称已存在");
+        } else if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
+            return HttpResult.failMessage("新增角色「" + sysRoleDTO.getRoleName() + "」失败，角色权限已存在");
         }
 
-        return HttpResult.ok(sysRoleService.insertOne(sysRoleDto));
+        return HttpResult.ok(sysRoleService.insertOne(sysRoleDTO));
     }
 
     @PutMapping
     @Operation(summary = "角色列表修改", description = "修改角色")
-    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysRoleDTO sysRoleDto) {
-        if (sysRoleService.checkRoleNameUnique(sysRoleDto)) {
-            return HttpResult.failMessage("修改角色「" + sysRoleDto.getRoleName() + "」失败，角色名称已存在");
-        } else if (sysRoleService.checkRoleCodeUnique(sysRoleDto)) {
-            return HttpResult.failMessage("修改角色「" + sysRoleDto.getRoleName() + "」失败，角色权限已存在");
+    public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
+        if (sysRoleService.checkRoleNameUnique(sysRoleDTO)) {
+            return HttpResult.failMessage("修改角色「" + sysRoleDTO.getRoleName() + "」失败，角色名称已存在");
+        } else if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
+            return HttpResult.failMessage("修改角色「" + sysRoleDTO.getRoleName() + "」失败，角色权限已存在");
         }
 
-        return HttpResult.ok(sysRoleService.updateOne(sysRoleDto));
+        return HttpResult.ok(sysRoleService.updateOne(sysRoleDTO));
     }
 
     @DeleteMapping("/{ids}")
@@ -93,9 +101,9 @@ public class SysRoleController {
 
     @GetMapping("listRoleLinkByGroupId/{userGroupId}")
     @Operation(summary = "角色列表查询", description = "通过用户组 ID 查询角色列表")
-    public Response<List<UserGroupLinkRoleVO>> listRoleLinkByGroupId(@PathVariable String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO) {
-        List<UserGroupLinkRoleVO> userGroupLinkRoleVOList = userGroupRoleLinkService.listRoleLinkByGroupId(userGroupId, roleLinkInfoDTO);
-        return HttpResult.ok(userGroupLinkRoleVOList);
+    public Response<TablePage<UserGroupLinkRoleVO>> listRoleLinkByGroupId(@PathVariable String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
+        TablePage<UserGroupLinkRoleVO> tablePage = userGroupRoleLinkService.listRoleLinkByGroupId(userGroupId, roleLinkInfoDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")

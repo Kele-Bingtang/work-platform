@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.po.SysPost;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
@@ -26,51 +27,59 @@ public interface SysPostService extends IService<SysPost> {
     /**
      * 通过条件查询岗位列表
      *
-     * @param sysPostDto 岗位列表查询参数
+     * @param sysPostDTO 岗位列表查询参数
+     * @return 岗位列表
+     */
+    List<SysPostVO> queryList(SysPostDTO sysPostDTO);
+
+    /**
+     * 通过条件查询岗位列表
+     *
+     * @param sysPostDTO 岗位列表查询参数
      * @param pageQuery  分页参数
      * @return 岗位列表
      */
-    List<SysPostVO> listWithPage(SysPostDTO sysPostDto, PageQuery pageQuery);
+    TablePage<SysPostVO> listPage(SysPostDTO sysPostDTO, PageQuery pageQuery);
 
     /**
      * 校验岗位名称是否唯一
      *
-     * @param sysPostDto 岗位列表查询参数
+     * @param sysPostDTO 岗位列表查询参数
      * @return 岗位列表
      */
-    boolean checkPostNameUnique(SysPostDTO sysPostDto);
+    boolean checkPostNameUnique(SysPostDTO sysPostDTO);
 
     /**
      * 校验岗位编码是否唯一
      *
-     * @param sysPostDto 岗位列表查询参数
+     * @param sysPostDTO 岗位列表查询参数
      * @return 岗位列表
      */
-    boolean checkPostCodeUnique(SysPostDTO sysPostDto);
+    boolean checkPostCodeUnique(SysPostDTO sysPostDTO);
 
     /**
      * 校验岗位存在用户
      *
-     * @param sysPostDto 查询参数
+     * @param sysPostDTO 查询参数
      * @return 是否存在用户
      */
-    boolean checkPostExitUser(SysPostDTO sysPostDto);
+    boolean checkPostExitUser(SysPostDTO sysPostDTO);
 
     /**
      * 新增岗位
      *
-     * @param sysPostDto 岗位列表查询参数
+     * @param sysPostDTO 岗位列表查询参数
      * @return 是否成功
      */
-    boolean insertOne(SysPostDTO sysPostDto);
+    boolean insertOne(SysPostDTO sysPostDTO);
 
     /**
      * 更新岗位
      *
-     * @param sysPostDto 岗位列表查询参数
+     * @param sysPostDTO 岗位列表查询参数
      * @return 是否成功
      */
-    boolean updateOne(SysPostDTO sysPostDto);
+    boolean updateOne(SysPostDTO sysPostDTO);
 
     /**
      * 批量删除岗位

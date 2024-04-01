@@ -17,7 +17,7 @@
     <div class="role-table">
       <ProTable
         ref="proTableRef"
-        :request-api="list"
+        :request-api="listPage"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -30,7 +30,7 @@
 <script setup lang="tsx" name="App">
 import { TreeFilter, ProTable } from "work";
 import { getClientTreeList } from "@/api/application/client";
-import { list, addOne, editOne, deleteOne, deleteBatch, type App } from "@/api/application/app";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type App } from "@/api/application/app";
 import {
   type DialogForm,
   type ProTableInstance,

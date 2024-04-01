@@ -1,5 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
@@ -62,12 +64,12 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
     boolean removeUserGroupFromRole(List<Long> ids);
 
     /**
-     * 通过用户组 ID 查询角色列表
+     * 通过用户组 ID 查询角色列表（分页）
      *
      * @param userGroupId 用户组 ID
      * @return 角色列表
      */
-    List<UserGroupLinkRoleVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO);
+    TablePage<UserGroupLinkRoleVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery);
 
     /**
      * 查询某个角色绑定的用户组列表

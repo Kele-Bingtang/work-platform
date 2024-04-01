@@ -2,14 +2,16 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysAppMapper;
 import cn.youngkbt.uac.sys.model.dto.SysAppDTO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
-import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
 import cn.youngkbt.uac.sys.model.vo.SysAppVO;
+import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -39,23 +41,29 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public List<SysAppVO> listWithPage(SysAppDTO sysAppDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysApp> wrapper = Wrappers.<SysApp>lambdaQuery()
-                .eq(StringUtils.hasText(sysAppDto.getAppId()), SysApp::getAppId, sysAppDto.getAppId())
-                .eq(StringUtils.hasText(sysAppDto.getAppCode()), SysApp::getAppCode, sysAppDto.getAppCode())
-                .eq(StringUtils.hasText(sysAppDto.getAppName()), SysApp::getAppName, sysAppDto.getAppName())
-                .eq(Objects.nonNull(sysAppDto.getStatus()), SysApp::getStatus, sysAppDto.getStatus())
-                .eq(StringUtils.hasText(sysAppDto.getDeptId()), SysApp::getDeptId, sysAppDto.getDeptId())
-                .eq(StringUtils.hasText(sysAppDto.getClientId()), SysApp::getClientId, sysAppDto.getClientId())
-                .orderByAsc(SysApp::getOrderNum);
+    public List<SysAppVO> queryList(SysAppDTO sysAppDTO) {
+        LambdaQueryWrapper<SysApp> wrapper = buildQueryWrapper(sysAppDTO);
+        List<SysApp> sysAppList = baseMapper.selectList(wrapper);
+        return MapstructUtil.convert(sysAppList, SysAppVO.class);
+    }
 
-        List<SysApp> sysClientList;
-        if (Objects.isNull(pageQuery)) {
-            sysClientList = baseMapper.selectList(wrapper);
-        } else {
-            sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        return MapstructUtil.convert(sysClientList, SysAppVO.class);
+    @Override
+    public TablePage<SysAppVO> listPage(SysAppDTO sysAppDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysApp> wrapper = buildQueryWrapper(sysAppDTO);
+        IPage<SysApp> sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        
+        return TablePage.build(sysClientList, SysAppVO.class);
+    }
+
+    private LambdaQueryWrapper<SysApp> buildQueryWrapper(SysAppDTO sysAppDTO) {
+        return Wrappers.<SysApp>lambdaQuery()
+                .eq(StringUtils.hasText(sysAppDTO.getAppId()), SysApp::getAppId, sysAppDTO.getAppId())
+                .eq(StringUtils.hasText(sysAppDTO.getAppCode()), SysApp::getAppCode, sysAppDTO.getAppCode())
+                .eq(StringUtils.hasText(sysAppDTO.getAppName()), SysApp::getAppName, sysAppDTO.getAppName())
+                .eq(Objects.nonNull(sysAppDTO.getStatus()), SysApp::getStatus, sysAppDTO.getStatus())
+                .eq(StringUtils.hasText(sysAppDTO.getDeptId()), SysApp::getDeptId, sysAppDTO.getDeptId())
+                .eq(StringUtils.hasText(sysAppDTO.getClientId()), SysApp::getClientId, sysAppDTO.getClientId())
+                .orderByAsc(SysApp::getOrderNum);
     }
 
     @Override
@@ -69,14 +77,14 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public boolean insertOne(SysAppDTO sysAppDto) {
-        SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
+    public boolean insertOne(SysAppDTO sysAppDTO) {
+        SysApp sysApp = MapstructUtil.convert(sysAppDTO, SysApp.class);
         return baseMapper.insert(sysApp) > 0;
     }
 
     @Override
-    public boolean updateOne(SysAppDTO sysAppDto) {
-        SysApp sysApp = MapstructUtil.convert(sysAppDto, SysApp.class);
+    public boolean updateOne(SysAppDTO sysAppDTO) {
+        SysApp sysApp = MapstructUtil.convert(sysAppDTO, SysApp.class);
         return baseMapper.updateById(sysApp) > 0;
     }
 

@@ -23,6 +23,12 @@ export default {
     DictManage: "字典管理",
     ApplicationManage: "应用管理",
     ClientManage: "客户端管理",
+    SystemMonitor: "系统监控",
+    LoginLog: "登录日志",
+    OperatorLog: "操作日志",
+    OnlineUsers: "在线用户",
+    CacheMonitor: "缓存监控",
+    AdminMonitor: "后台监控",
     AppManage: "App 管理",
   },
   _tabsNav: {

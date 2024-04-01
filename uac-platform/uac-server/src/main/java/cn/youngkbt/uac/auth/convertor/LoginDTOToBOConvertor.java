@@ -16,7 +16,7 @@ import org.mapstruct.factory.Mappers;
 public interface LoginDTOToBOConvertor {
     LoginDTOToBOConvertor INSTANCE = Mappers.getMapper(LoginDTOToBOConvertor.class);
 
-    @Mapping(source = "loginUserDto.appId", target = "appId")
-    @Mapping(source = "loginUserDto.tenantId", target = "tenantId")
-    LoginUserBO convert(LoginUserDTO loginUserDto, SysApp sysApp);
+    @Mapping(source = "loginUserDTO.appId", target = "appId")
+    @Mapping(source = "loginUserDTO.tenantId", target = "tenantId")
+    LoginUserBO convert(LoginUserDTO loginUserDTO, SysApp sysApp);
 }

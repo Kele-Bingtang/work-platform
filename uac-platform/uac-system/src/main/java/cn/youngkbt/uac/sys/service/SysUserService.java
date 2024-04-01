@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysUser;
@@ -45,59 +46,67 @@ public interface SysUserService extends IService<SysUser> {
     /**
      * 通过条件查询用户列表
      *
-     * @param sysUserDto 用户信息
+     * @param sysUserDTO 用户信息
+     * @return 用户列表
+     */
+    List<SysUserVO> queryList(SysUserDTO sysUserDTO);
+
+    /**
+     * 通过条件查询用户列表
+     *
+     * @param sysUserDTO 用户信息
      * @param pageQuery  分页参数
      * @return 用户列表
      */
-    List<SysUserVO> listWithPage(SysUserDTO sysUserDto, PageQuery pageQuery);
+    TablePage<SysUserVO> listPage(SysUserDTO sysUserDTO, PageQuery pageQuery);
 
     /**
      * 检查用户名是否唯一通过条件查询用户列表
      *
-     * @param sysUserDto 用户信息
+     * @param sysUserDTO 用户信息
      * @return 是否唯一
      */
-    boolean checkUserNameUnique(SysUserDTO sysUserDto);
+    boolean checkUserNameUnique(SysUserDTO sysUserDTO);
 
     /**
      * 检查手机号是否唯一
      *
-     * @param sysUserDto 用户信息
+     * @param sysUserDTO 用户信息
      * @return 是否唯一
      */
-    boolean checkPhoneUnique(SysUserDTO sysUserDto);
+    boolean checkPhoneUnique(SysUserDTO sysUserDTO);
 
     /**
      * 检查邮箱是否唯一
      *
-     * @param sysUserDto 用户信息
+     * @param sysUserDTO 用户信息
      * @return 是否唯一
      */
-    boolean checkEmailUnique(SysUserDTO sysUserDto);
+    boolean checkEmailUnique(SysUserDTO sysUserDTO);
 
     /**
      * 新增用户
      *
-     * @param sysUserDto 用户信息
+     * @param sysUserDTO 用户信息
      * @return 是否成功
      */
-    boolean insertOne(SysUserDTO sysUserDto);
+    boolean insertOne(SysUserDTO sysUserDTO);
 
     /**
      * 更新用户
      *
-     * @param sysUserDto 用户信息
+     * @param sysUserDTO 用户信息
      * @return 是否成功
      */
-    boolean updateOne(SysUserDTO sysUserDto);
+    boolean updateOne(SysUserDTO sysUserDTO);
 
     /**
      * 通过用户 ID 更新用户
      *
-     * @param sysUserDto 用户信息
+     * @param sysUserDTO 用户信息
      * @return 是否成功
      */
-    boolean updateOneByUserId(SysUserDTO sysUserDto);
+    boolean updateOneByUserId(SysUserDTO sysUserDTO);
 
     /**
      * 批量删除用户

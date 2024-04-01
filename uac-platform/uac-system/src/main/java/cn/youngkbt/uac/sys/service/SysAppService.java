@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysAppDTO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import cn.youngkbt.uac.sys.model.vo.SysAppVO;
@@ -34,27 +35,35 @@ public interface SysAppService extends IService<SysApp> {
     /**
      * 通过条件查询 App 清单列表
      *
-     * @param sysAppDto 应用信息查询条件
+     * @param sysAppDTO 应用信息查询条件
+     * @return 应用信息清单
+     */
+    List<SysAppVO> queryList(SysAppDTO sysAppDTO);
+
+    /**
+     * 通过条件查询 App 清单列表
+     *
+     * @param sysAppDTO 应用信息查询条件
      * @param pageQuery 分页查询条件
      * @return 应用信息清单
      */
-    List<SysAppVO> listWithPage(SysAppDTO sysAppDto, PageQuery pageQuery);
+    TablePage<SysAppVO> listPage(SysAppDTO sysAppDTO, PageQuery pageQuery);
 
     /**
      * 新增一条应用信息
      *
-     * @param sysAppDto 应用信息
+     * @param sysAppDTO 应用信息
      * @return 是否成功
      */
-    boolean insertOne(SysAppDTO sysAppDto);
+    boolean insertOne(SysAppDTO sysAppDTO);
 
     /**
      * 更新一条应用信息
      *
-     * @param sysAppDto 应用信息
+     * @param sysAppDTO 应用信息
      * @return 是否成功
      */
-    boolean updateOne(SysAppDTO sysAppDto);
+    boolean updateOne(SysAppDTO sysAppDTO);
 
     /**
      * 批量删除应用信息
@@ -70,4 +79,5 @@ public interface SysAppService extends IService<SysApp> {
      * @return 应用树形清单
      */
     List<AppTreeVO> listTreeList();
+
 }

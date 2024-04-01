@@ -1,6 +1,5 @@
 import type { Paging } from "@work/components";
 import type { TableColumnProps } from "../interface";
-import { isArray } from "@work/utils";
 import { reactive, computed, toRefs } from "vue";
 
 export namespace Table {
@@ -51,8 +50,7 @@ export const useTable = (
   beforeSearch?: (searchParam: any) => any,
   dataCallBack?: (data: any) => any,
   requestError?: (error: any) => void,
-  columns?: TableColumnProps[],
-  enumCallBack?: (data: any) => any
+  columns?: TableColumnProps[]
 ) => {
   const state = reactive<Table.StateProps>({
     // 表格数据
@@ -115,12 +113,9 @@ export const useTable = (
       }
 
       let { data } = await api(searchParam);
-      // 配置 _enum 字典信息
-      enumCallBack && (data = enumCallBack(data) || data);
 
       dataCallBack && (data = dataCallBack(data) || data);
-
-      if (isArray(data)) state.tableData = data;
+      if (data) state.tableData = isBackPage(openPage) ? data.list : data;
 
       // 解构后台返回的分页数据 (如果有分页更新分页信息)
       if (isBackPage(openPage)) {
@@ -151,7 +146,7 @@ export const useTable = (
         nowSearchParam[key] = state.searchParam[key];
       }
     }
-    Object.assign(state.totalParam, nowSearchParam, isBackPage(openPage) ? pageParam.value : {});
+    Object.assign(state.totalParam, nowSearchParam, isBackPage() ? pageParam.value : {});
   };
 
   /**
@@ -196,25 +191,25 @@ export const useTable = (
   const handlePagination = (paging: Paging) => {
     state.paging.pageNum = paging.currentPage;
     state.paging.pageSize = paging.pageSize;
-    if (isBackPage(openPage)) getTableList();
+    if (isBackPage()) getTableList();
   };
 
-  const isOpenPage = (openPage: boolean | Table.PaginationProps) => {
-    if (openPage === true) return true;
-    if ((openPage as Table.PaginationProps)?.enabled) return true;
+  const isOpenPage = (open: boolean | Table.PaginationProps = openPage) => {
+    if (open === true) return true;
+    if ((open as Table.PaginationProps)?.enabled) return true;
     return false;
   };
 
-  const isBackPage = (openPage: boolean | Table.PaginationProps) => {
-    if (openPage === true) return true;
-    if (openPage === false) return false;
-    if ((openPage as Table.PaginationProps)?.enabled && (openPage as Table.PaginationProps)?.fake !== true) return true;
+  const isBackPage = (open: boolean | Table.PaginationProps = openPage) => {
+    if (open === true) return true;
+    if (open === false) return false;
+    if ((open as Table.PaginationProps)?.enabled && (open as Table.PaginationProps)?.fake !== true) return true;
     return false;
   };
 
-  const isFrontPage = (openPage: boolean | Table.PaginationProps) => {
-    if (openPage === true || openPage === false) return false;
-    if ((openPage as Table.PaginationProps)?.enabled && (openPage as Table.PaginationProps)?.fake) return true;
+  const isFrontPage = (open: boolean | Table.PaginationProps = openPage) => {
+    if (open === true || open === false) return false;
+    if ((open as Table.PaginationProps)?.enabled && (open as Table.PaginationProps)?.fake) return true;
     return false;
   };
 

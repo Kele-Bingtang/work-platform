@@ -17,7 +17,7 @@
     <div class="dict-table">
       <ProTable
         ref="proTableRef"
-        :request-api="list"
+        :request-api="listPage"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
@@ -36,7 +36,7 @@
 <script setup lang="tsx" name="DictType">
 import { ProTable, TreeFilter, Drawer } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { list, addOne, editOne, removeOne, type DictType } from "@/api/application/dictType";
+import { listPage, addOne, editOne, removeOne, type DictType } from "@/api/application/dictType";
 import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
 import DictData from "./dictData.vue";
 import { ElLink } from "element-plus";

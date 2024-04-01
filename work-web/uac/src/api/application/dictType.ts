@@ -16,6 +16,10 @@ export const list = (params: Partial<DictType.DictTypeInfo>) => {
   return http.get<http.Response<DictType.DictTypeInfo[]>>(`${baseUri}/list`, params);
 };
 
+export const listPage = (params: Partial<DictType.DictTypeInfo>) => {
+  return http.get<http.Page<DictType.DictTypeInfo[]>>(`${baseUri}/listPage`, params);
+};
+
 export const addOne = (data: DictType.DictTypeInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };

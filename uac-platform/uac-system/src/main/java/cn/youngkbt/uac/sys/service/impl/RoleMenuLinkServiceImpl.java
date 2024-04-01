@@ -25,11 +25,11 @@ import java.util.Objects;
 public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, RoleMenuLink> implements RoleMenuLinkService {
 
     @Override
-    public List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDTO roleMenuLinkDto, PageQuery pageQuery) {
+    public List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDTO roleMenuLinkDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<RoleMenuLink> wrapper = Wrappers.<RoleMenuLink>lambdaQuery()
-                .eq(RoleMenuLink::getAppId, roleMenuLinkDto.getAppId())
-                .eq(StringUtil.hasText(roleMenuLinkDto.getRoleId()), RoleMenuLink::getRoleId, roleMenuLinkDto.getRoleId())
-                .eq(StringUtil.hasText(roleMenuLinkDto.getMenuId()), RoleMenuLink::getMenuId, roleMenuLinkDto.getMenuId())
+                .eq(RoleMenuLink::getAppId, roleMenuLinkDTO.getAppId())
+                .eq(StringUtil.hasText(roleMenuLinkDTO.getRoleId()), RoleMenuLink::getRoleId, roleMenuLinkDTO.getRoleId())
+                .eq(StringUtil.hasText(roleMenuLinkDTO.getMenuId()), RoleMenuLink::getMenuId, roleMenuLinkDTO.getMenuId())
                 .orderByAsc(RoleMenuLink::getId);
 
         List<RoleMenuLink> roleMenuLinkList;
@@ -54,14 +54,14 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
     }
 
     @Override
-    public boolean addOneLink(RoleMenuLinkDTO roleMenuLinkDto) {
-        RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDto, RoleMenuLink.class);
+    public boolean addOneLink(RoleMenuLinkDTO roleMenuLinkDTO) {
+        RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDTO, RoleMenuLink.class);
         return baseMapper.insert(menuLink) > 0;
     }
 
     @Override
-    public boolean updateOneLink(RoleMenuLinkDTO roleMenuLinkDto) {
-        RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDto, RoleMenuLink.class);
+    public boolean updateOneLink(RoleMenuLinkDTO roleMenuLinkDTO) {
+        RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDTO, RoleMenuLink.class);
         return baseMapper.updateById(menuLink) > 0;
     }
 

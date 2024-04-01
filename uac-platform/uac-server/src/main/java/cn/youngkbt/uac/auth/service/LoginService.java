@@ -38,8 +38,8 @@ public class LoginService {
     /**
      * 登录
      */
-    public LoginVO login(LoginUserDTO loginUserDto, SysApp sysApp, SysClient sysClient) {
-        LoginUserBO loginUserBO = LoginDTOToBOConvertor.INSTANCE.convert(loginUserDto, sysApp);
+    public LoginVO login(LoginUserDTO loginUserDTO, SysApp sysApp, SysClient sysClient) {
+        LoginUserBO loginUserBO = LoginDTOToBOConvertor.INSTANCE.convert(loginUserDTO, sysApp);
         LoginSuccessBO login = AuthHandler.loginDispatch(loginUserBO, sysClient);
         return LoginBOToVOConvertor.INSTANCE.convert(login);
     }

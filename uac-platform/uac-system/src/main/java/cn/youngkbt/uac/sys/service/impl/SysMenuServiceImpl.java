@@ -8,6 +8,7 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
@@ -21,6 +22,7 @@ import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,44 +50,47 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<SysMenuVO> listWithPage(SysMenuDTO sysMenuDto, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
+    public List<SysMenuVO> queryList(SysMenuDTO sysMenuDTO) {
+        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
+        List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
 
-        List<SysMenu> sysMenuList;
-        if (Objects.isNull(pageQuery)) {
-            sysMenuList = baseMapper.selectList(wrapper);
-        } else {
-            sysMenuList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
         return MapstructUtil.convert(sysMenuList, SysMenuVO.class);
+    }
+
+    @Override
+    public TablePage<SysMenuVO> listPage(SysMenuDTO sysMenuDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
+        Page<SysMenu> sysMenuPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        
+        return TablePage.build(sysMenuPage, SysMenuVO.class);
     }
 
     /**
      * 构建前端需要的路由菜单
      */
     @Override
-    public List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDto) {
+    public List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDTO) {
         // 查询正常状态的部门
-        sysMenuDto.setStatus(ColumnConstant.STATUS_NORMAL);
-        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
+        sysMenuDTO.setStatus(ColumnConstant.STATUS_NORMAL);
+        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
         return buildDeptTree(sysMenuList);
     }
 
     @Override
-    public List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDto) {
-        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDto);
+    public List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
+        LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
         List<MenuTree> menuTreeList = MapstructUtil.convert(sysMenuList, MenuTree.class);
         return MenuTreeUtil.build(menuTreeList);
     }
 
-    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuDTO sysMenuDto) {
+    private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuDTO sysMenuDTO) {
         return Wrappers.<SysMenu>lambdaQuery()
-                .eq(StringUtil.hasText(sysMenuDto.getMenuCode()), SysMenu::getMenuCode, sysMenuDto.getMenuCode())
-                .eq(StringUtil.hasText(sysMenuDto.getMenuName()), SysMenu::getMenuName, sysMenuDto.getMenuName())
-                .eq(StringUtil.hasText(sysMenuDto.getAppId()), SysMenu::getAppId, sysMenuDto.getAppId())
-                .eq(Objects.nonNull(sysMenuDto.getStatus()), SysMenu::getStatus, sysMenuDto.getStatus())
+                .eq(StringUtil.hasText(sysMenuDTO.getMenuCode()), SysMenu::getMenuCode, sysMenuDTO.getMenuCode())
+                .eq(StringUtil.hasText(sysMenuDTO.getMenuName()), SysMenu::getMenuName, sysMenuDTO.getMenuName())
+                .eq(StringUtil.hasText(sysMenuDTO.getAppId()), SysMenu::getAppId, sysMenuDTO.getAppId())
+                .eq(Objects.nonNull(sysMenuDTO.getStatus()), SysMenu::getStatus, sysMenuDTO.getStatus())
                 .orderByAsc(SysMenu::getParentId)
                 .orderByAsc(SysMenu::getOrderNum);
     }
@@ -107,11 +112,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean checkMenuNameUnique(SysMenuDTO sysMenuDto) {
+    public boolean checkMenuNameUnique(SysMenuDTO sysMenuDTO) {
         boolean exist = baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
-                .eq(SysMenu::getMenuName, sysMenuDto.getMenuName())
-                .eq(SysMenu::getParentId, sysMenuDto.getParentId())
-                .ne(Objects.nonNull(sysMenuDto.getMenuId()), SysMenu::getMenuId, sysMenuDto.getMenuId()));
+                .eq(SysMenu::getMenuName, sysMenuDTO.getMenuName())
+                .eq(SysMenu::getParentId, sysMenuDTO.getParentId())
+                .ne(Objects.nonNull(sysMenuDTO.getMenuId()), SysMenu::getMenuId, sysMenuDTO.getMenuId()));
 
         return !exist;
     }
@@ -129,8 +134,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean insertOne(SysMenuDTO sysMenuDto) {
-        SysMenu sysMenu = MapstructUtil.convert(sysMenuDto, SysMenu.class);
+    public boolean insertOne(SysMenuDTO sysMenuDTO) {
+        SysMenu sysMenu = MapstructUtil.convert(sysMenuDTO, SysMenu.class);
 
         if (StringUtil.hasText(sysMenu.getParentId())) {
             SysMenu menu = baseMapper.selectOne(Wrappers.<SysMenu>lambdaQuery()
@@ -149,8 +154,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean updateOne(SysMenuDTO sysMenuDto) {
-        SysMenu sysMenu = MapstructUtil.convert(sysMenuDto, SysMenu.class);
+    public boolean updateOne(SysMenuDTO sysMenuDTO) {
+        SysMenu sysMenu = MapstructUtil.convert(sysMenuDTO, SysMenu.class);
         return baseMapper.updateById(sysMenu) > 0;
     }
 

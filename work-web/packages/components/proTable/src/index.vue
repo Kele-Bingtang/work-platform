@@ -264,12 +264,12 @@ const props = withDefaults(defineProps<ProTableProps>(), {
 });
 
 // 配置 _enum 字典信息
-const enumCallback = (data: any) => {
+const enumCallback = (data: Record<string, any>[]) => {
   tableColumns.value.forEach(async col => {
     const enumObj = enumMap.value.get(col.prop!);
     // 如果字段有配置枚举信息，则存放到 _enum[col.prop] 里
     if (enumObj && col.isFilterEnum) {
-      data = data.map((row: any) => {
+      data = data.map(row => {
         const d = filterEnumLabel(
           filterEnum(handleRowAccordingToProp(row, col.prop!), enumObj, col.fieldNames),
           col.fieldNames
@@ -308,10 +308,16 @@ const {
   props.initRequestParam,
   props.pagination,
   props.beforeSearch,
-  props.dataCallback,
+  data => {
+    // 配置 _enum 字典信息
+    if (isBackPage()) data.list = enumCallback(data.list) || data.list;
+    else data = enumCallback(data) || data;
+
+    props.dataCallback && (data = props.dataCallback(data) || data);
+    return data;
+  },
   props.requestError,
-  props.columns,
-  enumCallback
+  props.columns
 );
 
 // 清空选中数据列表

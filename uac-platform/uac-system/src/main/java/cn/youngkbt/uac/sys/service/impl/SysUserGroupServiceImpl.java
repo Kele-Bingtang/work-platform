@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysUserGroupMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
@@ -9,6 +10,7 @@ import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,37 +29,44 @@ import java.util.Objects;
 public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, SysUserGroup> implements SysUserGroupService {
 
     @Override
-    public List<SysUserGroupVO> list(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysUserGroup> wrapper = Wrappers.<SysUserGroup>lambdaQuery()
-                .eq(StringUtils.hasText(sysUserGroupDTO.getGroupName()), SysUserGroup::getGroupName, sysUserGroupDTO.getGroupName())
-                .eq(StringUtils.hasText(sysUserGroupDTO.getAppId()), SysUserGroup::getAppId, sysUserGroupDTO.getAppId())
-                .orderByAsc(SysUserGroup::getCreateTime);
+    public List<SysUserGroupVO> queryList(SysUserGroupDTO sysUserGroupDTO) {
+        LambdaQueryWrapper<SysUserGroup> wrapper = buildQueryWrapper(sysUserGroupDTO);
+        List<SysUserGroup> sysUserGroupList = baseMapper.selectList(wrapper);
 
-        List<SysUserGroup> sysUserGroupList;
-        if (Objects.isNull(pageQuery)) {
-            sysUserGroupList = baseMapper.selectList(wrapper);
-        } else {
-            sysUserGroupList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
         return MapstructUtil.convert(sysUserGroupList, SysUserGroupVO.class);
     }
 
     @Override
-    public boolean checkUserGroupNameUnique(SysUserGroupDTO sysUserGroupDto) {
-        return baseMapper.exists(Wrappers.<SysUserGroup>lambdaQuery()
-                .eq(SysUserGroup::getGroupName, sysUserGroupDto.getGroupName())
-                .ne(Objects.nonNull(sysUserGroupDto.getGroupId()), SysUserGroup::getGroupId, sysUserGroupDto.getGroupId()));
+    public TablePage<SysUserGroupVO> listPage(SysUserGroupDTO sysUserGroupDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<SysUserGroup> wrapper = buildQueryWrapper(sysUserGroupDTO);
+        Page<SysUserGroup> sysUserGroupPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        
+        return TablePage.build(sysUserGroupPage, SysUserGroupVO.class);
+    }
+
+    private LambdaQueryWrapper<SysUserGroup> buildQueryWrapper(SysUserGroupDTO sysUserGroupDTO) {
+        return Wrappers.<SysUserGroup>lambdaQuery()
+                .eq(StringUtils.hasText(sysUserGroupDTO.getGroupName()), SysUserGroup::getGroupName, sysUserGroupDTO.getGroupName())
+                .eq(StringUtils.hasText(sysUserGroupDTO.getAppId()), SysUserGroup::getAppId, sysUserGroupDTO.getAppId())
+                .orderByAsc(SysUserGroup::getCreateTime);
     }
 
     @Override
-    public boolean insertOne(SysUserGroupDTO sysUserGroupDto) {
-        SysUserGroup userGroup = MapstructUtil.convert(sysUserGroupDto, SysUserGroup.class);
+    public boolean checkUserGroupNameUnique(SysUserGroupDTO sysUserGroupDTO) {
+        return baseMapper.exists(Wrappers.<SysUserGroup>lambdaQuery()
+                .eq(SysUserGroup::getGroupName, sysUserGroupDTO.getGroupName())
+                .ne(Objects.nonNull(sysUserGroupDTO.getGroupId()), SysUserGroup::getGroupId, sysUserGroupDTO.getGroupId()));
+    }
+
+    @Override
+    public boolean insertOne(SysUserGroupDTO sysUserGroupDTO) {
+        SysUserGroup userGroup = MapstructUtil.convert(sysUserGroupDTO, SysUserGroup.class);
         return baseMapper.insert(userGroup) > 0;
     }
 
     @Override
-    public boolean updateOne(SysUserGroupDTO sysUserGroupDto) {
-        SysUserGroup userGroup = MapstructUtil.convert(sysUserGroupDto, SysUserGroup.class);
+    public boolean updateOne(SysUserGroupDTO sysUserGroupDTO) {
+        SysUserGroup userGroup = MapstructUtil.convert(sysUserGroupDTO, SysUserGroup.class);
         return baseMapper.updateById(userGroup) > 0;
     }
 

@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictData;
 import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
@@ -26,27 +27,35 @@ public interface SysDictDataService extends IService<SysDictData> {
     /**
      * 通过条件查询字典数据列表
      *
-     * @param sysDictDataDto 查询条件
+     * @param sysDictDataDTO 查询条件
+     * @return 字典数据列表
+     */
+    List<SysDictDataVO> queryList(SysDictDataDTO sysDictDataDTO);
+    
+    /**
+     * 通过条件查询字典数据列表
+     *
+     * @param sysDictDataDTO 查询条件
      * @param pageQuery      分页参数
      * @return 字典数据列表
      */
-    List<SysDictDataVO> listWithPage(SysDictDataDTO sysDictDataDto, PageQuery pageQuery);
+    TablePage<SysDictDataVO> listPage(SysDictDataDTO sysDictDataDTO, PageQuery pageQuery);
 
     /**
      * 新增字典数据
      *
-     * @param sysDictDataDto 字典数据
+     * @param sysDictDataDTO 字典数据
      * @return 是否成功
      */
-    boolean insertOne(SysDictDataDTO sysDictDataDto);
+    boolean insertOne(SysDictDataDTO sysDictDataDTO);
 
     /**
      * 修改字典数据
      *
-     * @param sysDictDataDto 字典数据
+     * @param sysDictDataDTO 字典数据
      * @return 是否成功
      */
-    boolean updateOne(SysDictDataDTO sysDictDataDto);
+    boolean updateOne(SysDictDataDTO sysDictDataDTO);
 
     /**
      * 更新字典编码
@@ -64,4 +73,5 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @return 是否成功
      */
     boolean removeBatch(List<Long> ids);
+
 }

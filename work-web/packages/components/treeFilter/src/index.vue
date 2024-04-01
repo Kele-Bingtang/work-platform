@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeMount } from "vue";
+import { ref, watch, onBeforeMount, nextTick, type ComponentPublicInstance } from "vue";
 import { ElTree } from "element-plus";
 import TreeFilter from "./index.vue";
 

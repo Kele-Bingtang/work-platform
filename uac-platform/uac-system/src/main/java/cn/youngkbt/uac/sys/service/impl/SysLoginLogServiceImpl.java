@@ -70,13 +70,13 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         baseMapper.insert(loginLog);
         
         // 更新用户的登录记录
-        SysUserDTO sysUserDto = new SysUserDTO();
-        sysUserDto.setUsername(loginInfoEvent.getUsername())
+        SysUserDTO sysUserDTO = new SysUserDTO();
+        sysUserDTO.setUsername(loginInfoEvent.getUsername())
                 .setUserStatus(1)
                 .setLoginIp(clientIp)
                 .setLoginDate(new Date());
         
-        sysUserService.updateOneByUserId(sysUserDto);
+        sysUserService.updateOneByUserId(sysUserDTO);
     }
 }
 

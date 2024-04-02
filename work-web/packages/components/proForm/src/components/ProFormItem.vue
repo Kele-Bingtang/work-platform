@@ -27,26 +27,69 @@
       <span>{{ data[fieldNames.label] }}</span>
     </template>
 
-    <template v-if="column.attrs?.el === 'el-select' && column.attrs?.type === 'el-select-group'">
-      <component :is="`el-option-group`" v-for="(colGroup, index) in columnEnum" :key="index" :label="colGroup.label">
+    <template v-if="column.attrs?.el === 'el-select'">
+      <template v-if="column.attrs?.type === 'el-select-group'">
+        <component :is="`el-option-group`" v-for="(colGroup, index) in columnEnum" :key="index" :label="colGroup.label">
+          <component
+            :is="`el-option`"
+            v-for="(col, index) in colGroup.options"
+            :key="index"
+            :label="col[fieldNames.label]"
+            :value="col[fieldNames.value]"
+          ></component>
+        </component>
+      </template>
+
+      <template v-else>
         <component
           :is="`el-option`"
-          v-for="(col, index) in colGroup.options"
+          v-for="(col, index) in columnEnum"
           :key="index"
           :label="col[fieldNames.label]"
           :value="col[fieldNames.value]"
         ></component>
-      </component>
+      </template>
     </template>
 
-    <template v-else-if="column.attrs?.el === 'el-select'">
-      <component
-        :is="`el-option`"
-        v-for="(col, index) in columnEnum"
-        :key="index"
-        :label="col[fieldNames.label]"
-        :value="col[fieldNames.value]"
-      ></component>
+    <template v-if="column.attrs?.el === 'el-radio-group'">
+      <template v-if="column.attrs?.type === 'el-radio-button'">
+        <component
+          :is="`el-radio-button`"
+          v-for="(col, index) in columnEnum"
+          :key="index"
+          :value="col[fieldNames.value]"
+          :label="col[fieldNames.label]"
+        ></component>
+      </template>
+
+      <template v-else>
+        <component :is="`el-radio`" v-for="(col, index) in columnEnum" :key="index" :value="col[fieldNames.value]">
+          {{ col[fieldNames.label] }}
+        </component>
+      </template>
+    </template>
+
+    <template v-if="column.attrs?.el === 'el-checkbox-group'">
+      <template v-if="column.attrs?.type === 'el-checkbox-button'">
+        <component
+          :is="`el-checkbox-button`"
+          v-for="(col, index) in columnEnum"
+          :key="index"
+          :value="col[fieldNames.value]"
+        >
+          {{ col[fieldNames.label] }}
+        </component>
+      </template>
+
+      <template v-else>
+        <component
+          :is="`el-checkbox`"
+          v-for="(col, index) in columnEnum"
+          :key="index"
+          :value="col[fieldNames.value]"
+          :label="col[fieldNames.label]"
+        ></component>
+      </template>
     </template>
 
     <slot v-else></slot>

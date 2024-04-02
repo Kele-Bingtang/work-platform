@@ -21,18 +21,6 @@ export namespace User {
     status: number; // 状态
   }
 
-  // 用户关联用户组信息
-  export interface UserLinkUserGroupInfo {
-    userId: string; // 用户 ID
-    username: string; // 用户名
-    nickname: string; // 用户昵称
-    linkId: number; // 关联 ID
-    validFrom: string; // 生效时间
-    expireOn: string; // 失效时间
-    appId: string; // 应用 ID
-    createTime: string; // 创建时间
-  }
-
   // 用户被关联信息，如被用户组关联、被角色关联
   export interface UserLinkInfo {
     userId: string; // 用户 ID
@@ -43,6 +31,25 @@ export namespace User {
     expireOn: string; // 过期时间
     appId: string; // 应用 ID
     createTime: string; // 创建时间
+  }
+
+  // 用户关联角色信息（多个角色）
+  export interface UserLinkRole {
+    userId: string; // 用户 ID
+    roleIds: string[]; // 角色 ID
+    validFrom: string; // 负责人 ID
+    expireOn: string; // 负责人 username
+    appId: string; // 应用 ID
+  }
+
+  // 用户关联用户组信息（多个用户组）
+  export interface UserLinkUserGroup {
+    linkId: number; // 关联 ID
+    userId: string; // 用户 ID
+    userGroupIds: string[]; // 用户组 ID
+    validFrom: string; // 负责人 ID
+    expireOn: string; // 负责人 username
+    appId: string; // 应用 ID
   }
 
   // 用户穿梭框数据，如果 disabled 为 true，则禁选
@@ -79,20 +86,44 @@ export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
 };
 
 /**
+ * 下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true
+ */
+export const listWithDisabledByRoleId = (params: { roleId: string }) => {
+  return http.get<http.Response<User.UserBindSelect[]>>(`${baseUri}/listWithDisabledByRoleId/${params.roleId}`);
+};
+
+/**
  * 通过用户组 ID 查询用户列表
  */
 export const listUserLinkByGroupId = (params: { userGroupId: string }) => {
-  return http.get<http.Response<User.UserLinkUserGroupInfo[]>>(
-    `${baseUri}/listUserLinkByGroupId/${params.userGroupId}`,
-    { ...params, userGroupId: undefined }
-  );
+  return http.get<http.Response<User.UserLinkInfo[]>>(`${baseUri}/listUserLinkByGroupId/${params.userGroupId}`, {
+    ...params,
+    userGroupId: undefined,
+  });
 };
 
 /**
  * 通过角色 ID 查询用户列表
  */
 export const listUserLinkByRoleId = (params: { roleId: string }) => {
-  return http.get<http.Response<User.UserLinkInfo[]>>(`${baseUri}/listUserLinkByRoleId/${params.roleId}`);
+  return http.get<http.Response<User.UserLinkInfo[]>>(`${baseUri}/listUserLinkByRoleId/${params.roleId}`, {
+    ...params,
+    roleId: undefined,
+  });
+};
+
+/**
+ * 添加用户组到用户（多个用户组）
+ */
+export const addUserGroupsToUser = (data: User.UserLinkUserGroup) => {
+  return http.post<http.Response<string>>(`${baseUri}/addUserGroupsToUser`, data);
+};
+
+/**
+ * 添加角色到用户（多个角色）
+ */
+export const addRolesToUser = (data: User.UserLinkRole) => {
+  return http.post<http.Response<string>>(`${baseUri}/addRolesToUser`, data);
 };
 
 export const addOne = (data: User.UserInfo) => {

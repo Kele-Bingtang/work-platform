@@ -38,6 +38,9 @@ export type FormType =
   | "el-time-select"
   | "el-switch"
   | "el-slider"
+  | "el-radio-group"
+  | "el-checkbox"
+  | "el-checkbox-group"
   | "wang-editor";
 
 export type FormFieldNamesProps = { label: string; value: string; children?: string };

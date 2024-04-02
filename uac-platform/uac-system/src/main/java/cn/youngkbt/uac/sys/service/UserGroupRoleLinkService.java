@@ -4,11 +4,12 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -23,21 +24,17 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
     /**
      * 检查角色是否已存在用户组
      *
-     * @param roleIds     角色 id 集合
-     * @param userGroupId 用户组 id
      * @return 是否存在
      */
-    boolean checkRolesExistUserGroup(List<String> roleIds, String userGroupId);
+    boolean checkRolesExistUserGroup(UserGroupLinkRoleDTO userGroupLinkRoleDTO);
 
 
     /**
      * 检查用户组是否已存在角色
      *
-     * @param roleId       角色 id
-     * @param userGroupIds 用户组 id 集合
      * @return 是否存在
      */
-    boolean checkRoleExistUserGroups(String roleId, List<String> userGroupIds);
+    boolean checkRoleExistUserGroups(RoleLinkUserGroupDTO roleLinkUserGroupDTO);
 
     /**
      * 添加角色到用户组（多个角色）
@@ -45,7 +42,7 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
      * @param userGroupLinkRoleDTO 用户组角色关联实体
      * @return 是否成功
      */
-    boolean addUserGroupToRoles(UserGroupLinkRoleDTO userGroupLinkRoleDTO);
+    boolean addRolesToUserGroup(UserGroupLinkRoleDTO userGroupLinkRoleDTO);
 
     /**
      * 添加用户到用户组（多个用户组）
@@ -69,14 +66,14 @@ public interface UserGroupRoleLinkService extends IService<UserGroupRoleLink> {
      * @param userGroupId 用户组 ID
      * @return 角色列表
      */
-    TablePage<UserGroupLinkRoleVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery);
+    TablePage<RoleLinkVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery);
 
     /**
      * 查询某个角色绑定的用户组列表
      * @param roleId 角色 ID
      * @return 用户组列表
      */
-    List<UserGroupLinkVO> listUserGroupByRoleId(String roleId);
+    TablePage<UserGroupLinkVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery);
 
     /**
      * 查询角色列表（已选的被禁用）

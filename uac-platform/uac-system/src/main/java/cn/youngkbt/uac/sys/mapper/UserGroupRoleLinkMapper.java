@@ -3,8 +3,8 @@ package cn.youngkbt.uac.sys.mapper;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
+import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -22,9 +22,9 @@ import java.util.List;
  */
 public interface UserGroupRoleLinkMapper extends BaseMapper<UserGroupRoleLink> {
 
-    IPage<UserGroupLinkRoleVO> listRoleLinkByGroupId(@Param("page") Page<UserGroupLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
+    IPage<RoleLinkVO> listRoleLinkByGroupId(@Param("page") Page<UserGroupLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
 
-    List<UserGroupLinkVO> listUserGroupByRoleId(@Param("roleId") String roleId);
+    IPage<UserGroupLinkVO> listUserGroupByRoleId(@Param("page") Page<UserGroupLink> page, @Param(Constants.WRAPPER) Wrapper<UserGroupLink> queryWrapper);
 
     List<RoleBindSelectVO> listWithDisabledByGroupId(@Param("userGroupId") String userGroupId);
 

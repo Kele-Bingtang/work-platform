@@ -12,10 +12,6 @@ import java.time.LocalDateTime;
  */
 @Data
 public class RoleLinkVO {
-    /**
-     * 角色 ID
-     */
-    private String roleId;
 
     /**
      * 角色码

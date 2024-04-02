@@ -12,15 +12,26 @@ import java.time.LocalDateTime;
  */
 @Data
 public class UserGroupLinkVO {
-    /**
-     * 用户组 ID
-     */
-    private String groupId;
 
     /**
      * 用户组名
      */
     private String groupName;
+
+    /**
+     * 用户组描述
+     */
+    private String intro;
+
+    /**
+     * 负责人 ID
+     */
+    private String ownerId;
+
+    /**
+     * 负责人 username
+     */
+    private String ownerName;
 
     /**
      * 关联 ID

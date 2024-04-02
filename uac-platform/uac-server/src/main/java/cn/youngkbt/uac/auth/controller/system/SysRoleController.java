@@ -8,12 +8,10 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
-import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
-import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
@@ -101,8 +99,8 @@ public class SysRoleController {
 
     @GetMapping("listRoleLinkByGroupId/{userGroupId}")
     @Operation(summary = "角色列表查询", description = "通过用户组 ID 查询角色列表")
-    public Response<TablePage<UserGroupLinkRoleVO>> listRoleLinkByGroupId(@PathVariable String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
-        TablePage<UserGroupLinkRoleVO> tablePage = userGroupRoleLinkService.listRoleLinkByGroupId(userGroupId, roleLinkInfoDTO, pageQuery);
+    public Response<TablePage<RoleLinkVO>> listRoleLinkByGroupId(@PathVariable String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
+        TablePage<RoleLinkVO> tablePage = userGroupRoleLinkService.listRoleLinkByGroupId(userGroupId, roleLinkInfoDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }
 
@@ -120,38 +118,28 @@ public class SysRoleController {
         return HttpResult.ok(roleBindSelectVOList);
     }
 
-    @PostMapping("addUserToRoles")
-    @Operation(summary = "添加用户到角色", description = "添加用户到角色（多个角色）")
-    public Response<Boolean> addUserToRoles(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
-        if (userRoleLinkService.checkUserExistRoles(userLinkRoleDTO.getUserId(), userLinkRoleDTO.getRoleIds())) {
-            return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
-        }
-        boolean result = userRoleLinkService.addUserToRoles(userLinkRoleDTO);
-        return HttpResult.ok(result);
-    }
-
     @PostMapping("/addUserGroupsToRole")
     @Operation(summary = "添加角色到用户组", description = "添加角色到用户组（多个用户组）")
     public Response<Boolean> addUserGroupsToRole(@Validated(RestGroup.AddGroup.class) @RequestBody RoleLinkUserGroupDTO roleLinkUserGroupDTO) {
-        if (userGroupRoleLinkService.checkRoleExistUserGroups(roleLinkUserGroupDTO.getRoleId(), roleLinkUserGroupDTO.getUserGroupIds())) {
+        if (userGroupRoleLinkService.checkRoleExistUserGroups(roleLinkUserGroupDTO)) {
             return HttpResult.failMessage("添加角色到用户组失败，用户组已存在于角色中");
         }
         boolean result = userGroupRoleLinkService.addUserGroupsToRole(roleLinkUserGroupDTO);
         return HttpResult.ok(result);
     }
 
-    @PostMapping("/addUserGroupToRoles")
-    @Operation(summary = "添加角色到用户组", description = "添加角色到用户组（多个角色）")
-    public Response<Boolean> addUserGroupToRoles(@Validated(RestGroup.AddGroup.class) @RequestBody UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
-        if (userGroupRoleLinkService.checkRolesExistUserGroup(userGroupLinkRoleDTO.getRoleIds(), userGroupLinkRoleDTO.getUserGroupId())) {
-            return HttpResult.failMessage("添加角色到用户组失败，用户组已存在于角色中");
+    @PostMapping("/addUsersToRole")
+    @Operation(summary = "添加用户到角色", description = "添加用户到角色（多个用户）")
+    public Response<Boolean> addUsersToRole(@Validated(RestGroup.AddGroup.class) @RequestBody RoleLinkUserDTO roleLinkUserDTO) {
+        if (userRoleLinkService.checkRoleExistUser(roleLinkUserDTO)) {
+            return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
         }
-        boolean result = userGroupRoleLinkService.addUserGroupToRoles(userGroupLinkRoleDTO);
+        boolean result = userRoleLinkService.addUsersToRole(roleLinkUserDTO);
         return HttpResult.ok(result);
     }
 
     @DeleteMapping("/removeUserFromRole/{ids}")
-    @Operation(summary = "移出用户组", description = "将用户移出角色")
+    @Operation(summary = "移出角色", description = "将用户移出角色")
     public Response<Boolean> removeUserFromRole(@PathVariable Long[] ids) {
         boolean result = userRoleLinkService.removeUserFromRole(List.of(ids));
         return HttpResult.ok(result);

@@ -13,18 +13,9 @@ export namespace UserGroup {
     createTime: string; // 创建时间
   }
 
-  // 用户关联用户组信息（多个用户组）
-  export interface UserLinkUserGroup {
-    linkId: number; // 关联 ID
-    userId: string; // 用户 ID
-    userGroupIds: string[]; // 用户组 ID
-    validFrom: string; // 负责人 ID
-    expireOn: string; // 负责人 username
-    appId: string; // 应用 ID
-  }
-
   // 用户组关联用户信息（多个用户）
   export interface UserGroupLinkUser {
+    id: number;
     linkId: number; // 关联 ID
     userIds: string[]; // 用户组 ID
     userGroupId: string; // 用户组名
@@ -43,6 +34,14 @@ export namespace UserGroup {
     validFrom: string; // 过期时间
     appId: string; // 应用 ID
     createTime: string; // 创建时间
+  }
+
+  // 用户组关联角色信息（多个角色）
+  export interface UserGroupLinkRole {
+    id: number;
+    userGroupId: string; // 用户组 ID
+    roleIds: string[]; // 角色 ID
+    appId: string; // 应用 ID
   }
 
   // 用户组穿梭框数据，如果 disabled 为 true，则禁选
@@ -73,6 +72,16 @@ export const listUserGroupByUserId = (params: { appId: string; userId: string })
 };
 
 /**
+ * 查询某个角色绑定的用户组列表
+ */
+export const listUserGroupByRoleId = (params: { roleId: string }) => {
+  return http.get<http.Response<UserGroup.UserGroupLinkInfo[]>>(`${baseUri}/listUserGroupByRoleId/${params.roleId}`, {
+    ...params,
+    roleId: undefined,
+  });
+};
+
+/**
  * 查询所有用户组列表，如果用户组存在用户，则 disabled 属性为 true
  */
 export const listWithDisabledByUserId = (params: { appId: string; userId: string }) => {
@@ -81,15 +90,24 @@ export const listWithDisabledByUserId = (params: { appId: string; userId: string
   );
 };
 
+/**
+ * 查询所有用户组列表，如果用户组绑定角色，则 disabled 属性为 true
+ */
+export const listWithDisabledByRoleId = (params: { roleId: string }) => {
+  return http.get<http.Response<UserGroup.UserGroupBindSelect[]>>(
+    `${baseUri}/listWithDisabledByRoleId/${params.roleId}`
+  );
+};
+
 export const addOne = (data: UserGroup.UserGroupInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };
 
 /**
- * 添加用户到用户组（多个用户组）
+ * 添加角色到用户组（多个角色）
  */
-export const addUserToGroups = (data: UserGroup.UserLinkUserGroup) => {
-  return http.post<http.Response<string>>(`${baseUri}/addUserToGroups`, data);
+export const addRolesToUserGroup = (data: UserGroup.UserGroupLinkRole) => {
+  return http.post<http.Response<string>>(`${baseUri}/addRolesToUserGroup`, data);
 };
 
 /**

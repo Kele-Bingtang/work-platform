@@ -12,6 +12,8 @@
     "@iconify/vue": "^4.1.1",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
-    "@wangeditor/plugin-upload-attachment": "^1.1.0"
+    "@wangeditor/plugin-upload-attachment": "^1.1.0",
+		"@tinymce/tinymce-vue": "^5.1.1",
+		"tinymce": "^6.8.2"
   }
 }

@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -162,6 +166,9 @@ importers:
       '@iconify/vue':
         specifier: ^4.1.1
         version: 4.1.1(vue@3.4.13)
+      '@tinymce/tinymce-vue':
+        specifier: ^5.1.1
+        version: 5.1.1(vue@3.4.13)
       '@wangeditor/editor':
         specifier: ^5.1.23
         version: 5.1.23
@@ -171,6 +178,9 @@ importers:
       '@wangeditor/plugin-upload-attachment':
         specifier: ^1.1.0
         version: 1.1.0(@uppy/core@2.3.4)(@wangeditor/editor@5.1.23)(snabbdom@3.5.1)
+      tinymce:
+        specifier: ^6.8.2
+        version: 6.8.3
 
   packages/constants: {}
 
@@ -1377,6 +1387,15 @@ packages:
   /@sxzz/popperjs-es@2.11.7:
     resolution: {integrity: sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==}
     dev: false
+
+  /@tinymce/tinymce-vue@5.1.1(vue@3.4.13):
+    resolution: {integrity: sha512-iO57HOWesFOhsaqjA5Ea6sDvQBmJJH3/dq00Uvg7metlct2kLF+ctRgoDsetLt6gmeZ7COPftr814/XzqnJ/dg==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      tinymce: 6.8.3
+      vue: 3.4.13(typescript@5.3.3)
+    dev: true
 
   /@transloadit/prettier-bytes@0.0.7:
     resolution: {integrity: sha512-VeJbUb0wEKbcwaSlj5n+LscBl9IPgLPkHVGBkh00cztv6X4L/TJXK58LzFuBKX7/GAfiGhIwH67YTLTlzvIzBA==}
@@ -7696,6 +7715,10 @@ packages:
 
   /tiny-warning@1.0.3:
     resolution: {integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==}
+    dev: true
+
+  /tinymce@6.8.3:
+    resolution: {integrity: sha512-3fCHKAeqT+xNwBVESf6iDbDV0VNwZNmfrkx9c/6Gz5iB8piMfaO6s7FvoiTrj1hf1gVbfyLTnz1DooI6DhgINQ==}
     dev: true
 
   /tmp@0.0.33:

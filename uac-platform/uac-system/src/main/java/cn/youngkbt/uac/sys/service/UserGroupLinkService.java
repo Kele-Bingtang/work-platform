@@ -25,20 +25,16 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
     /**
      * 检查用户是否在某些用户组中（多个用户组）
      *
-     * @param userId       用户用户 ID
-     * @param userGroupIds 用户组 ID 列表
      * @return 是否在用户组中
      */
-    boolean checkUserExistUserGroups(String userId, List<String> userGroupIds);
+    boolean checkUserExistUserGroups(UserLinkUserGroupDTO userLinkUserGroupDTO);
 
     /**
      * 检查用户是否在某些用户组中（多个用户）
      *
-     * @param userIds     用户用户 ID 列表
-     * @param userGroupId 用户组 ID
      * @return 是否在用户组中
      */
-    boolean checkUsersExistUserGroup(List<String> userIds, String userGroupId);
+    boolean checkUsersExistUserGroup(UserGroupLinkUserDTO userGroupLinkUserDTO);
 
     /**
      * 添加用户到用户组（多个用户组）
@@ -46,7 +42,7 @@ public interface UserGroupLinkService extends IService<UserGroupLink> {
      * @param userLinkUserGroupDTO 用户和用户组数据
      * @return 是否添加成功
      */
-    boolean addUserToUserGroups(UserLinkUserGroupDTO userLinkUserGroupDTO);
+    boolean addUserGroupsToUser(UserLinkUserGroupDTO userLinkUserGroupDTO);
 
     /**
      * 添加用户到用户组（多个用户）

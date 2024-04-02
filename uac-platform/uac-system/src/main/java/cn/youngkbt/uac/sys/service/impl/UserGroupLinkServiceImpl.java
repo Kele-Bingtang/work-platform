@@ -38,22 +38,24 @@ import java.util.List;
 public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, UserGroupLink> implements UserGroupLinkService {
 
     @Override
-    public boolean checkUserExistUserGroups(String userId, List<String> userGroupIds) {
+    public boolean checkUserExistUserGroups(UserLinkUserGroupDTO userLinkUserGroupDTO) {
         return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
-                .eq(UserGroupLink::getUserId, userId)
-                .in(UserGroupLink::getUserGroupId, userGroupIds));
+                .eq(UserGroupLink::getUserId, userLinkUserGroupDTO.getUserId())
+                .in(UserGroupLink::getUserGroupId, userLinkUserGroupDTO.getUserGroupIds())
+                .eq(StringUtil.hasText(userLinkUserGroupDTO.getAppId()), UserGroupLink::getAppId, userLinkUserGroupDTO.getAppId()));
     }
 
     @Override
-    public boolean checkUsersExistUserGroup(List<String> userIds, String userGroupId) {
+    public boolean checkUsersExistUserGroup(UserGroupLinkUserDTO userGroupLinkUserDTO) {
         return baseMapper.exists(Wrappers.<UserGroupLink>lambdaQuery()
-                .in(UserGroupLink::getUserId, userIds)
-                .eq(UserGroupLink::getUserGroupId, userGroupId)
+                .in(UserGroupLink::getUserId, userGroupLinkUserDTO.getUserIds())
+                .eq(UserGroupLink::getUserGroupId, userGroupLinkUserDTO.getUserGroupId())
+                .eq(StringUtil.hasText(userGroupLinkUserDTO.getAppId()), UserGroupLink::getAppId, userGroupLinkUserDTO.getAppId())
         );
     }
 
     @Override
-    public boolean addUserToUserGroups(UserLinkUserGroupDTO userLinkUserGroupDTO) {
+    public boolean addUserGroupsToUser(UserLinkUserGroupDTO userLinkUserGroupDTO) {
         List<String> userGroupIds = userLinkUserGroupDTO.getUserGroupIds();
 
         List<UserGroupLink> userGroupLinkList = ListUtil.newArrayList(userGroupIds, userGroupId ->
@@ -93,6 +95,7 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
         wrapper.eq("tugl.is_deleted", ColumnConstant.NON_DELETED)
                 .eq("tsug.app_id", appId)
                 .eq("tugl.user_id", userId);
+
         return baseMapper.listUserGroupByUserId(wrapper);
     }
 
@@ -104,7 +107,7 @@ public class UserGroupLinkServiceImpl extends ServiceImpl<UserGroupLinkMapper, U
                 .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
                 .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
         IPage<UserLinkVO> userLinkVOIPage = baseMapper.listUserLinkByGroupId(pageQuery.buildPage(), queryWrapper);
-        
+
         return TablePage.build(userLinkVOIPage);
     }
 

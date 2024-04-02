@@ -27,7 +27,7 @@
     </sql>
 
     <select id="listUserGroupByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO">
-        select tsug.group_id, tsug.group_name, tsug.app_id, tugl.id as link_id, tugl.valid_from, tugl.expire_on, tugl.create_time
+        select tsug.group_name, tsug.app_id, tugl.id as link_id, tugl.valid_from, tugl.expire_on, tugl.create_time
         from t_sys_user_group tsug
         left join t_user_group_link tugl on tsug.group_id = tugl.user_group_id and tugl.is_deleted = 0
         ${ew.getCustomSqlSegment}

@@ -7,6 +7,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
@@ -67,9 +69,9 @@ public class SysUserController {
     }
 
     @GetMapping("listUserLinkByRoleId/{roleId}")
-    @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表")
-    public Response<List<UserLinkVO>> listUserLinkByRoleId(@PathVariable String roleId) {
-        List<UserLinkVO> userLinkVOList = userRoleLinkService.listUserLinkByRoleId(roleId);
+    @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表（分页）")
+    public Response<TablePage<UserLinkVO>> listUserLinkByRoleId(@PathVariable String roleId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
+        TablePage<UserLinkVO> userLinkVOList = userRoleLinkService.listUserLinkByRoleId(roleId, userLinkInfoDTO, pageQuery);
         return HttpResult.ok(userLinkVOList);
     }
 
@@ -92,6 +94,26 @@ public class SysUserController {
     public Response<List<UserBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
         List<UserBindSelectVO> userBindSelectVOList = userRoleLinkService.listWithDisabledByRoleId(roleId);
         return HttpResult.ok(userBindSelectVOList);
+    }
+
+    @PostMapping("/addUserGroupsToUser")
+    @Operation(summary = "添加用户组到用户", description = "添加用户组到用户（多个用户组）")
+    public Response<Boolean> addUserGroupsToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkUserGroupDTO userLinkUserGroupDTO) {
+        if (userGroupLinkService.checkUserExistUserGroups(userLinkUserGroupDTO)) {
+            return HttpResult.failMessage("添加用户到用户组失败，用户已存在于用户组中");
+        }
+        boolean result = userGroupLinkService.addUserGroupsToUser(userLinkUserGroupDTO);
+        return HttpResult.ok(result);
+    }
+    
+    @PostMapping("/addRolesToUser")
+    @Operation(summary = "添加角色到用户", description = "添加角色到用户（多个角色）")
+    public Response<Boolean> addRolesToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
+        if (userRoleLinkService.checkUserExistRoles(userLinkRoleDTO)) {
+            return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
+        }
+        boolean result = userRoleLinkService.addRolesToUser(userLinkRoleDTO);
+        return HttpResult.ok(result);
     }
 
     @PostMapping

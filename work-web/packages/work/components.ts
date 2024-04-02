@@ -12,6 +12,7 @@ import { Drawer } from "@work/components/drawer";
 import { List } from "@work/components/list";
 import { UserSelect } from "@work/components/userSelect";
 import { TransferSelect } from "@work/components/transferSelect";
+import { Tinymce } from "@work/components/tinymce";
 
 export default [
   Icon,
@@ -28,4 +29,5 @@ export default [
   List,
   UserSelect,
   TransferSelect,
+  Tinymce,
 ];

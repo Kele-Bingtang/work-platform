@@ -181,7 +181,7 @@ const handleClearSelect = () => {
   elTableRef.value?.clearSelection();
 };
 
-defineExpose({ tableElement: elTableRef.value });
+defineExpose({ tableElement: elTableRef.value, getDataList });
 </script>
 
 <style lang="scss" scoped>

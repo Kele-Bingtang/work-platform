@@ -14,11 +14,6 @@ import java.time.LocalDateTime;
 public class UserLinkVO {
 
     /**
-     * 用户 ID
-     */
-    private String userId;
-
-    /**
      * 用户名称
      */
     private String username;

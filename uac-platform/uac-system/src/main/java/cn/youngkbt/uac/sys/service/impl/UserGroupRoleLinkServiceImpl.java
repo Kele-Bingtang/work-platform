@@ -5,13 +5,11 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.UserGroupRoleLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.UserGroupLink;
 import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
-import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkRoleVO;
-import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
+import cn.youngkbt.uac.sys.model.vo.link.*;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -33,21 +31,23 @@ import java.util.List;
 public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkMapper, UserGroupRoleLink> implements UserGroupRoleLinkService {
 
     @Override
-    public boolean checkRolesExistUserGroup(List<String> roleIds, String userGroupId) {
+    public boolean checkRolesExistUserGroup(UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
         return baseMapper.exists(Wrappers.<UserGroupRoleLink>lambdaQuery()
-                .in(UserGroupRoleLink::getRoleId, roleIds)
-                .eq(UserGroupRoleLink::getUserGroupId, userGroupId));
+                .in(UserGroupRoleLink::getRoleId, userGroupLinkRoleDTO.getRoleIds())
+                .eq(UserGroupRoleLink::getUserGroupId, userGroupLinkRoleDTO.getUserGroupId())
+                .eq(StringUtil.hasText(userGroupLinkRoleDTO.getAppId()), UserGroupRoleLink::getAppId, userGroupLinkRoleDTO.getAppId()));
     }
 
     @Override
-    public boolean checkRoleExistUserGroups(String roleId, List<String> userGroupIds) {
+    public boolean checkRoleExistUserGroups(RoleLinkUserGroupDTO roleLinkUserGroupDTO) {
         return baseMapper.exists(Wrappers.<UserGroupRoleLink>lambdaQuery()
-                .eq(UserGroupRoleLink::getRoleId, roleId)
-                .in(UserGroupRoleLink::getUserGroupId, userGroupIds));
+                .eq(UserGroupRoleLink::getRoleId, roleLinkUserGroupDTO.getRoleId())
+                .in(UserGroupRoleLink::getUserGroupId, roleLinkUserGroupDTO.getUserGroupIds())
+                .eq(StringUtil.hasText(roleLinkUserGroupDTO.getAppId()), UserGroupRoleLink::getAppId, roleLinkUserGroupDTO.getAppId()));
     }
 
     @Override
-    public boolean addUserGroupToRoles(UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
+    public boolean addRolesToUserGroup(UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
         List<String> roleIds = userGroupLinkRoleDTO.getRoleIds();
 
         List<UserGroupRoleLink> userGroupLinkList = ListUtil.newArrayList(roleIds, roleId ->
@@ -78,32 +78,35 @@ public class UserGroupRoleLinkServiceImpl extends ServiceImpl<UserGroupRoleLinkM
     }
 
     @Override
-    public TablePage<UserGroupLinkRoleVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
+    public TablePage<RoleLinkVO> listRoleLinkByGroupId(String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
         QueryWrapper<UserGroupLink> queryWrapper = Wrappers.query();
         queryWrapper.eq("tsr.is_deleted", 0)
                 .eq("tugrl.user_group_id", userGroupId)
                 .like(StringUtil.hasText(roleLinkInfoDTO.getRoleCode()), "tsr.role_code", roleLinkInfoDTO.getRoleCode())
                 .like(StringUtil.hasText(roleLinkInfoDTO.getRoleName()), "tsr.role_name", roleLinkInfoDTO.getRoleName());
 
-        IPage<UserGroupLinkRoleVO> userGroupLinkRoleVOIPage = baseMapper.listRoleLinkByGroupId(pageQuery.buildPage(), queryWrapper);
-        
+        IPage<RoleLinkVO> userGroupLinkRoleVOIPage = baseMapper.listRoleLinkByGroupId(pageQuery.buildPage(), queryWrapper);
+
         return TablePage.build(userGroupLinkRoleVOIPage);
     }
 
     @Override
-    public List<UserGroupLinkVO> listUserGroupByRoleId(String roleId) {
+    public TablePage<UserGroupLinkVO> listUserGroupByRoleId(String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
         QueryWrapper<UserGroupLink> queryWrapper = Wrappers.query();
         queryWrapper.eq("tsug.is_deleted", 0)
-                .eq("tugrl.role_id", roleId);
+                .eq("tugrl.role_id", roleId)
+                .like(StringUtil.hasText(userGroupLinkInfoDTO.getUserGroupName()), "tsug.group_name", userGroupLinkInfoDTO.getUserGroupName())
+                .like(StringUtil.hasText(userGroupLinkInfoDTO.getOwner()), "concat(tsug.owner_id, ',', tsug.owner_name)", userGroupLinkInfoDTO.getOwner());
+        IPage<UserGroupLinkVO> userGroupLinkVOIPage = baseMapper.listUserGroupByRoleId(pageQuery.buildPage(), queryWrapper);
 
-        return baseMapper.listUserGroupByRoleId(roleId);
+        return TablePage.build(userGroupLinkVOIPage);
     }
 
     @Override
     public List<RoleBindSelectVO> listWithDisabledByGroupId(String userGroupId) {
         return baseMapper.listWithDisabledByGroupId(userGroupId);
     }
-    
+
     @Override
     public List<UserGroupBindSelectVO> listWithDisabledByRoleId(String roleId) {
         return baseMapper.listWithDisabledByRoleId(roleId);

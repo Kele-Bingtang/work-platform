@@ -1,14 +1,14 @@
 <template>
   <div class="descriptions flx-justify-start">
     <slot name="avatar">
-      <el-avatar v-if="data?.length" class="head-icon" :icon="User" />
+      <el-avatar class="head-icon" :icon="User" />
     </slot>
     <div class="descriptions-box flex1">
       <div class="flx-justify-between">
         <span class="descriptions-title">{{ title }}</span>
         <slot name="extra"></slot>
       </div>
-      <el-row class="descriptions-content flx-align-center">
+      <el-row v-if="data?.length" class="descriptions-content flx-align-center">
         <el-col v-for="(item, index) in data" :key="index" :span="item.span || 3" class="descriptions-item">
           <slot>
             <div class="item-label">{{ item.label }}</div>
@@ -30,8 +30,8 @@ interface DescriptionItem {
 }
 
 export interface DescriptionProps {
-  title?: string;
-  data: DescriptionItem[];
+  title: string;
+  data?: DescriptionItem[];
 }
 
 // 接受父组件参数，配置默认值

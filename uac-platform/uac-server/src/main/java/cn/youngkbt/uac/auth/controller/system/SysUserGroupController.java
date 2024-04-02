@@ -7,8 +7,9 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkInfoDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkUserDTO;
-import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserGroupLinkVO;
@@ -53,15 +54,15 @@ public class SysUserGroupController {
     @GetMapping("/listUserGroupByUserId/{appId}/{userId}")
     @Operation(summary = "用户组列表查询", description = "查询某个用户所在的用户组列表")
     public Response<List<UserGroupLinkVO>> listUserGroupByUserId(@PathVariable String appId, @PathVariable String userId) {
-        List<UserGroupLinkVO> userGroupListVOLink = userGroupLinkService.listUserGroupByUserId(appId, userId);
-        return HttpResult.ok(userGroupListVOLink);
+        List<UserGroupLinkVO> tablePage = userGroupLinkService.listUserGroupByUserId(appId, userId);
+        return HttpResult.ok(tablePage);
     }
 
     @GetMapping("/listUserGroupByRoleId/{roleId}")
     @Operation(summary = "用户组列表查询", description = "查询某个角色绑定的用户组列表")
-    public Response<List<UserGroupLinkVO>> listUserGroupByRoleId(@PathVariable String roleId) {
-        List<UserGroupLinkVO> userGroupListVOLink = userGroupRoleLinkService.listUserGroupByRoleId(roleId);
-        return HttpResult.ok(userGroupListVOLink);
+    public Response<TablePage<UserGroupLinkVO>> listUserGroupByRoleId(@PathVariable String roleId, UserGroupLinkInfoDTO userGroupLinkInfoDTO, PageQuery pageQuery) {
+        TablePage<UserGroupLinkVO> tablePage = userGroupRoleLinkService.listUserGroupByRoleId(roleId, userGroupLinkInfoDTO, pageQuery);
+        return HttpResult.ok(tablePage);
     }
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
@@ -78,20 +79,20 @@ public class SysUserGroupController {
         return HttpResult.ok(sysUserGroupVOList);
     }
 
-    @PostMapping("/addUserToGroups")
-    @Operation(summary = "添加用户到用户组", description = "添加用户到用户组（多个用户组）")
-    public Response<Boolean> addUserToUserGroups(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkUserGroupDTO userLinkUserGroupDTO) {
-        if (userGroupLinkService.checkUserExistUserGroups(userLinkUserGroupDTO.getUserId(), userLinkUserGroupDTO.getUserGroupIds())) {
-            return HttpResult.failMessage("添加用户到用户组失败，用户已存在于用户组中");
+    @PostMapping("/addRolesToUserGroup")
+    @Operation(summary = "添加角色到用户组", description = "添加角色到用户组（多个角色）")
+    public Response<Boolean> addRolesToUserGroup(@Validated(RestGroup.AddGroup.class) @RequestBody UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
+        if (userGroupRoleLinkService.checkRolesExistUserGroup(userGroupLinkRoleDTO)) {
+            return HttpResult.failMessage("添加角色到用户组失败，用户组已存在于角色中");
         }
-        boolean result = userGroupLinkService.addUserToUserGroups(userLinkUserGroupDTO);
+        boolean result = userGroupRoleLinkService.addRolesToUserGroup(userGroupLinkRoleDTO);
         return HttpResult.ok(result);
     }
 
     @PostMapping("/addUsersToGroup")
     @Operation(summary = "添加用户到用户组", description = "添加用户到用户组（多个用户）")
     public Response<Boolean> addUsersToUserGroup(@Validated(RestGroup.AddGroup.class) @RequestBody UserGroupLinkUserDTO userGroupLinkUserDTO) {
-        if (userGroupLinkService.checkUsersExistUserGroup(userGroupLinkUserDTO.getUserIds(), userGroupLinkUserDTO.getUserGroupId())) {
+        if (userGroupLinkService.checkUsersExistUserGroup(userGroupLinkUserDTO)) {
             return HttpResult.failMessage("添加用户到用户组失败，用户已存在于用户组中");
         }
         boolean result = userGroupLinkService.addUsersToUserGroup(userGroupLinkUserDTO);

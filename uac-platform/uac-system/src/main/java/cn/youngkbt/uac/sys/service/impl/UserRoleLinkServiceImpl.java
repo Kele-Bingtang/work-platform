@@ -2,12 +2,14 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.UserRoleLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import cn.youngkbt.uac.sys.model.po.UserRoleLink;
-import cn.youngkbt.uac.sys.model.vo.UserRoleLinkVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
@@ -16,15 +18,14 @@ import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -35,43 +36,23 @@ import java.util.Objects;
 public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, UserRoleLink> implements UserRoleLinkService {
 
     @Override
-    public List<UserRoleLinkVO> queryLinkByAppId(UserRoleLinkDTO userRoleLinkDTO, PageQuery pageQuery) {
-        LambdaQueryWrapper<UserRoleLink> wrapper = Wrappers.<UserRoleLink>lambdaQuery()
-                .eq(UserRoleLink::getAppId, userRoleLinkDTO.getAppId())
-                .eq(StringUtil.hasText(userRoleLinkDTO.getUserId()), UserRoleLink::getUserId, userRoleLinkDTO.getUserId())
-                .eq(StringUtil.hasText(userRoleLinkDTO.getRoleId()), UserRoleLink::getRoleId, userRoleLinkDTO.getRoleId())
-                .orderByAsc(UserRoleLink::getId);
-
-        List<UserRoleLink> userRoleLinkList;
-        if (Objects.isNull(pageQuery)) {
-            userRoleLinkList = baseMapper.selectList(wrapper);
-        } else {
-            userRoleLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        return MapstructUtil.convert(userRoleLinkList, UserRoleLinkVO.class);
-    }
-
-    @Override
-    public boolean checkUserExistRole(String userId) {
+    public boolean checkRoleExistUser(RoleLinkUserDTO roleLinkUserDTO) {
         return baseMapper.exists(Wrappers.<UserRoleLink>lambdaQuery()
-                .eq(UserRoleLink::getUserId, userId));
+                .eq(UserRoleLink::getRoleId, roleLinkUserDTO.getRoleId())
+                .in(UserRoleLink::getUserId, roleLinkUserDTO.getUserIds())
+                .eq(StringUtil.hasText(roleLinkUserDTO.getAppId()), UserRoleLink::getAppId, roleLinkUserDTO.getAppId()));
     }
 
     @Override
-    public boolean checkRoleExistUser(String roleId) {
+    public boolean checkUserExistRoles(UserLinkRoleDTO userLinkRoleDTO) {
         return baseMapper.exists(Wrappers.<UserRoleLink>lambdaQuery()
-                .eq(UserRoleLink::getRoleId, roleId));
+                .eq(UserRoleLink::getUserId, userLinkRoleDTO.getUserId())
+                .in(UserRoleLink::getRoleId, userLinkRoleDTO.getRoleIds())
+                .eq(StringUtil.hasText(userLinkRoleDTO.getAppId()), UserRoleLink::getAppId, userLinkRoleDTO.getAppId()));
     }
 
     @Override
-    public boolean checkUserExistRoles(String userId, List<String> roleIds) {
-        return baseMapper.exists(Wrappers.<UserRoleLink>lambdaQuery()
-                .eq(UserRoleLink::getUserId, userId)
-                .in(UserRoleLink::getRoleId, roleIds));
-    }
-
-    @Override
-    public boolean addUserToRoles(UserLinkRoleDTO userLinkRoleDTO) {
+    public boolean addRolesToUser(UserLinkRoleDTO userLinkRoleDTO) {
         List<String> roleIds = userLinkRoleDTO.getRoleIds();
 
         List<UserRoleLink> userRoleLinkList = ListUtil.newArrayList(roleIds, roleId ->
@@ -80,6 +61,21 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
                                 .setValidFrom(userLinkRoleDTO.getValidFrom())
                                 .setExpireOn(userLinkRoleDTO.getExpireOn())
                                 .setAppId(userLinkRoleDTO.getAppId())
+                , UserRoleLink.class);
+
+        return Db.saveBatch(userRoleLinkList);
+    }
+
+    @Override
+    public boolean addUsersToRole(RoleLinkUserDTO roleLinkUserDTO) {
+        List<String> userIds = roleLinkUserDTO.getUserIds();
+
+        List<UserRoleLink> userRoleLinkList = ListUtil.newArrayList(userIds, userId ->
+                        new UserRoleLink().setUserId(userId)
+                                .setRoleId(roleLinkUserDTO.getRoleId())
+                                .setValidFrom(roleLinkUserDTO.getValidFrom())
+                                .setExpireOn(roleLinkUserDTO.getExpireOn())
+                                .setAppId(roleLinkUserDTO.getAppId())
                 , UserRoleLink.class);
 
         return Db.saveBatch(userRoleLinkList);
@@ -97,12 +93,15 @@ public class UserRoleLinkServiceImpl extends ServiceImpl<UserRoleLinkMapper, Use
     }
 
     @Override
-    public List<UserLinkVO> listUserLinkByRoleId(String roleId) {
+    public TablePage<UserLinkVO> listUserLinkByRoleId(String roleId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
         QueryWrapper<UserRoleLink> queryWrapper = Wrappers.query();
         queryWrapper.eq("tsu.is_deleted", 0)
-                .eq("turl.role_id", roleId);
-        
-        return baseMapper.listUserLinkByRoleId(queryWrapper);
+                .eq("turl.role_id", roleId)
+                .like(StringUtil.hasText(userLinkInfoDTO.getUsername()), "tsu.username", userLinkInfoDTO.getUsername())
+                .like(StringUtil.hasText(userLinkInfoDTO.getNickname()), "tsu.nickname", userLinkInfoDTO.getNickname());
+        IPage<UserLinkVO> userLinkVOIPage = baseMapper.listUserLinkByRoleId(pageQuery.buildPage(), queryWrapper);
+
+        return TablePage.build(userLinkVOIPage);
     }
 
     @Override

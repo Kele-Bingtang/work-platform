@@ -124,71 +124,6 @@ export const rolesRoutes: RouterConfigRaw[] = [
     },
   },
   {
-    path: "/user-manage",
-    name: "UserManage",
-    meta: {
-      title: "用户管理",
-      icon: HomeFilled,
-    },
-    children: [
-      {
-        path: "user-info",
-        name: "UserInfo",
-        component: "/user/userInfo/index",
-        meta: {
-          title: "用户信息",
-          icon: HomeFilled,
-        },
-      },
-      {
-        path: "user-link",
-        name: "UserLink",
-        component: "/user/userLink/index",
-        meta: {
-          title: "用户绑定",
-          icon: HomeFilled,
-        },
-      },
-      {
-        path: "user-group",
-        name: "UserGroup",
-        component: "/user/userGroup/index",
-        meta: {
-          title: "用户组管理",
-          icon: HomeFilled,
-        },
-      },
-    ],
-  },
-  {
-    path: "/role-manage",
-    name: "RoleManage",
-    meta: {
-      title: "角色管理",
-      icon: HomeFilled,
-    },
-    children: [
-      {
-        path: "role-info",
-        name: "RoleInfo",
-        component: "/role/roleInfo/index",
-        meta: {
-          title: "角色信息",
-          icon: HomeFilled,
-        },
-      },
-      {
-        path: "role-link",
-        name: "RoleLink",
-        component: "/role/roleLink/index",
-        meta: {
-          title: "角色绑定",
-          icon: HomeFilled,
-        },
-      },
-    ],
-  },
-  {
     path: "/system-manage",
     name: "SystemManage",
     meta: {
@@ -202,6 +137,15 @@ export const rolesRoutes: RouterConfigRaw[] = [
         component: "/system/tenant/index",
         meta: {
           title: "租户管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "user-manage",
+        name: "UserManage",
+        component: "/system/user/index",
+        meta: {
+          title: "用户信息",
           icon: HomeFilled,
         },
       },
@@ -220,6 +164,33 @@ export const rolesRoutes: RouterConfigRaw[] = [
         component: "/system/post/index",
         meta: {
           title: "岗位管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "role-manage",
+        name: "RoleManage",
+        component: "/system/role/index",
+        meta: {
+          title: "角色管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "menu-manage",
+        name: "MenuManage",
+        component: "/system/menu/index",
+        meta: {
+          title: "菜单管理",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "dict-manage",
+        name: "DictManage",
+        component: "/system/dict/index",
+        meta: {
+          title: "字典管理",
           icon: HomeFilled,
         },
       },
@@ -251,21 +222,40 @@ export const rolesRoutes: RouterConfigRaw[] = [
           icon: HomeFilled,
         },
       },
+    ],
+  },
+  {
+    path: "/config-manage",
+    name: "ConfigManage",
+    meta: {
+      title: "配置管理",
+      icon: HomeFilled,
+    },
+    children: [
       {
-        path: "menu-manage",
-        name: "MenuManage",
-        component: "/application/menu/index",
+        path: "user-link",
+        name: "UserLink",
+        component: "/link/userLink/index",
         meta: {
-          title: "菜单管理",
+          title: "用户配置",
           icon: HomeFilled,
         },
       },
       {
-        path: "dict-manage",
-        name: "DictManage",
-        component: "/application/dict/index",
+        path: "user-group",
+        name: "UserGroup",
+        component: "/link/userGroupLink/index",
         meta: {
-          title: "字典管理",
+          title: "用户组配置",
+          icon: HomeFilled,
+        },
+      },
+      {
+        path: "role-link",
+        name: "RoleLink",
+        component: "/link/roleLink/index",
+        meta: {
+          title: "角色配置",
           icon: HomeFilled,
         },
       },

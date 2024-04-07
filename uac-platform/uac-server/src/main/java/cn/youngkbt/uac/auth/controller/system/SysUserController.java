@@ -56,7 +56,7 @@ public class SysUserController {
 
     @GetMapping("/listPage")
     @Operation(summary = "用户列表查询", description = "通过条件查询用户列表（分页）")
-    public Response<TablePage<SysUserVO>> list(SysUserDTO sysUserDTO, PageQuery pageQuery) {
+    public Response<TablePage<SysUserVO>> listPage(SysUserDTO sysUserDTO, PageQuery pageQuery) {
         TablePage<SysUserVO> tablePage = sysUserService.listPage(sysUserDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }

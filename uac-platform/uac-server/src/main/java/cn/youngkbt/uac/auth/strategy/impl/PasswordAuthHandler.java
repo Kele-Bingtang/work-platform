@@ -11,6 +11,7 @@ import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.strategy.AuthHandler;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
+import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.listen.LoginEventListen;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.security.handler.LoginFailureHandler;
@@ -18,6 +19,7 @@ import cn.youngkbt.uac.sys.security.handler.LoginSuccessHandler;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
 import cn.youngkbt.utils.ValidatorUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -75,7 +77,11 @@ public class PasswordAuthHandler implements AuthHandler {
 
             // 走了自定义认证，则 Spring Security 不会调用自定义的成功处理器，这里需要手动调用
             // 参考 org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter()
-            loginSuccessHandler.onAuthenticationSuccess(null, null, token.getAuthentication());
+            HttpServletRequest request = ServletUtil.getRequest();
+            if (Objects.nonNull(request)) {
+                request.setAttribute(AuthConstant.APP_ID, loginUserBO.getAppId());
+            }
+            loginSuccessHandler.onAuthenticationSuccess(request, ServletUtil.getResponse(), token.getAuthentication());
         } catch (InternalAuthenticationServiceException exception) {
             // 走了自定义认证，则 Spring Security 不会调用自定义的失败处理器，这里需要手动调用
             log.error("An internal error occurred while trying to authenticate the user.", exception);

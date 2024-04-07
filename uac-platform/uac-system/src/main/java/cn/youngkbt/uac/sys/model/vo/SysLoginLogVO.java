@@ -1,39 +1,19 @@
-package cn.youngkbt.uac.sys.model.po;
+package cn.youngkbt.uac.sys.model.vo;
 
-import cn.youngkbt.mp.annotation.FieldValueFill;
-import cn.youngkbt.mp.annotation.ValueStrategy;
-import com.baomidou.mybatisplus.annotation.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author Kele-Bingtang
- * @date 2023-22-12 00:22:36
- * @note 操作日志记
-*/
-@TableName("t_sys_login_log")
+ * 操作日志记录
+ * @TableName t_sys_login_log
+ */
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class SysLoginLog implements Serializable {
-    /**
-     * 主键
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
+public class SysLoginLogVO implements Serializable {
     /**
      * 访问 ID
      */
-    @TableField(fill = FieldFill.INSERT)
-    @FieldValueFill(ValueStrategy.SNOWFLAKE)
     private String loginId;
 
     /**
@@ -86,13 +66,5 @@ public class SysLoginLog implements Serializable {
      */
     private Date loginTime;
 
-    /**
-     * 租户编号
-     */
-    private String tenantId;
-
-    @Serial
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
 }

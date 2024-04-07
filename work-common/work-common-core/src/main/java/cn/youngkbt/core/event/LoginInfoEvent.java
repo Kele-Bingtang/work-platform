@@ -34,6 +34,11 @@ public class LoginInfoEvent implements Serializable {
     private String username;
 
     /**
+     * 应用 ID
+     */
+    private String appId;
+
+    /**
      * 登录状态 0成功 1失败
      */
     private String status;

@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -19,7 +22,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UacHelper {
 
-    public static LoginUser getUserInfo() {
+    public static LoginUser getLoginUser() {
         Object userInfo = RedisUtil.getForValue(AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
         if (Objects.isNull(userInfo)) {
             return null;
@@ -27,12 +30,21 @@ public class UacHelper {
         return (LoginUser) userInfo;
     }
 
+    public static List<LoginUser> getAllLoginUser() {
+        List<LoginUser> loginUserList = new ArrayList<>();
+        Set<String> keys = RedisUtil.keys(AuthRedisConstant.USER_INFO_KEY + "*");
+        for (String key : keys) {
+            loginUserList.add((LoginUser) RedisUtil.getForValue(key));
+        }
+        return loginUserList;
+    }
+
     public static void cacheUserInfo(LoginUser loginUser, Long timeout) {
         RedisUtil.setForValue(AuthRedisConstant.USER_INFO_KEY + loginUser.getUsername(), loginUser, Duration.ofMillis(timeout));
     }
 
     public static String getUsername() {
-        LoginUser userInfo = getUserInfo();
+        LoginUser userInfo = getLoginUser();
         if (Objects.isNull(userInfo)) {
             return null;
         }
@@ -40,7 +52,7 @@ public class UacHelper {
     }
 
     public static String getTenantId() {
-        LoginUser userInfo = getUserInfo();
+        LoginUser userInfo = getLoginUser();
         if (Objects.isNull(userInfo)) {
             return null;
         }

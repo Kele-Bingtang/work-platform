@@ -97,7 +97,7 @@ public class SysUserDTO {
     /**
      * 最后登录时间
      */
-    private Date loginDate;
+    private Date loginTime;
 
     /**
      * 部门 ID

@@ -2,6 +2,7 @@ package cn.youngkbt.security.domain;
 
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  */
 @Data
 @AutoMapper(target = SecurityUser.class, convertGenerate = false)
+@Accessors(chain = true)
 public class LoginUser {
     /**
      * 用户ID
@@ -36,7 +38,7 @@ public class LoginUser {
     /**
      * 用户昵称
      */
-    private String nickName;
+    private String nickname;
 
     /**
      * 用户邮箱
@@ -59,6 +61,11 @@ public class LoginUser {
     private String avatar;
 
     /**
+     * 登录后的 token
+     */
+    private String token;
+    
+    /**
      * 最后登录IP
      */
     private String loginIp;
@@ -66,10 +73,30 @@ public class LoginUser {
     /**
      * 最后登录时间
      */
-    private Date loginDate;
+    private Date loginTime;
 
     /**
      * 注册时间
      */
     private Date registerTime;
+
+    /**
+     * 客户端名
+     */
+    private String clientName;
+
+    /**
+     * 登录地点
+     */
+    private String loginLocation;
+
+    /**
+     * 浏览器类型
+     */
+    private String browser;
+
+    /**
+     * 操作系统
+     */
+    private String os;
 }

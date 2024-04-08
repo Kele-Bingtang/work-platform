@@ -16,7 +16,7 @@ public interface AuthConstant {
     String USERNAME = "username";
     String PASSWORD = "password";
     
-    String APP_ID = "appId";
+    String CLIENT_NAME = "clientName";
     
     /**
      * 用户名长度限制

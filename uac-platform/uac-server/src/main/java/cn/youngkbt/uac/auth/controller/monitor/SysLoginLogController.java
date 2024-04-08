@@ -1,4 +1,4 @@
-package cn.youngkbt.uac.auth.controller.system;
+package cn.youngkbt.uac.auth.controller.monitor;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/system/loginLog")
+@RequestMapping("/monitor/loginLog")
 public class SysLoginLogController {
     
     private final SysLoginLogService sysLoginLogService;

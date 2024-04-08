@@ -50,7 +50,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
             LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
                     .tenantId(loginUserBO.getTenantId())
                     .username(loginUserBO.getUsername())
-                    .appId(loginUserBO.getAppId())
+                    .clientName(loginUserBO.getClientName())
                     .status(AuthConstant.LOGIN_FAIL)
                     .request(ServletUtil.getRequest())
                     .build();

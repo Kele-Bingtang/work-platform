@@ -16,13 +16,13 @@ export const useUserStore = defineStore(
       tenantId: "",
       deptId: "",
       username: "",
-      nickName: "",
+      nickname: "",
       email: "",
       phone: "",
       sex: "",
       avatar: "",
       loginIp: "",
-      loginDate: "",
+      loginTime: "",
       registerTime: "",
     });
     const roles = ref<string[]>([]);

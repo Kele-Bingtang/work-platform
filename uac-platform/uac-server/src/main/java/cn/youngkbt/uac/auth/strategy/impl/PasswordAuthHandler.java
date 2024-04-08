@@ -1,5 +1,7 @@
 package cn.youngkbt.uac.auth.strategy.impl;
 
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import cn.youngkbt.core.validate.AuthGroup;
 import cn.youngkbt.security.JwtAuthenticationToken;
 import cn.youngkbt.security.domain.LoginUser;
@@ -16,6 +18,7 @@ import cn.youngkbt.uac.sys.listen.LoginEventListen;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.security.handler.LoginFailureHandler;
 import cn.youngkbt.uac.sys.security.handler.LoginSuccessHandler;
+import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
 import cn.youngkbt.utils.ValidatorUtil;
@@ -27,6 +30,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -67,9 +71,12 @@ public class PasswordAuthHandler implements AuthHandler {
             timeout = timeout * 1000;
         }
 
+        loginUserBO.setClientName(sysClient.getClientName());
+
         JwtAuthenticationToken token = new JwtAuthenticationToken(null, null);
+        HttpServletRequest request = ServletUtil.getRequest();
         try {
-            token = SecurityUtils.login(ServletUtil.getRequest(),
+            token = SecurityUtils.login(request,
                     TenantHelper.isEnable() ? loginUserBO.getTenantId() + ":" + loginUserBO.getUsername() : loginUserBO.getUsername(),
                     loginUserBO.getPassword(),
                     authenticationManager,
@@ -77,25 +84,55 @@ public class PasswordAuthHandler implements AuthHandler {
 
             // 走了自定义认证，则 Spring Security 不会调用自定义的成功处理器，这里需要手动调用
             // 参考 org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter()
-            HttpServletRequest request = ServletUtil.getRequest();
             if (Objects.nonNull(request)) {
-                request.setAttribute(AuthConstant.APP_ID, loginUserBO.getAppId());
+                request.setAttribute(AuthConstant.CLIENT_NAME, loginUserBO.getClientName());
             }
             loginSuccessHandler.onAuthenticationSuccess(request, ServletUtil.getResponse(), token.getAuthentication());
         } catch (InternalAuthenticationServiceException exception) {
             // 走了自定义认证，则 Spring Security 不会调用自定义的失败处理器，这里需要手动调用
             log.error("An internal error occurred while trying to authenticate the user.", exception);
-            loginFailureHandler.onAuthenticationFailure(ServletUtil.getRequest(), ServletUtil.getResponse(), exception, loginUserBO);
+            loginFailureHandler.onAuthenticationFailure(request, ServletUtil.getResponse(), exception, loginUserBO);
         } catch (AuthenticationException exception) {
-            loginFailureHandler.onAuthenticationFailure(ServletUtil.getRequest(), ServletUtil.getResponse(), exception, loginUserBO);
+            loginFailureHandler.onAuthenticationFailure(request, ServletUtil.getResponse(), exception, loginUserBO);
         }
 
         LoginSuccessBO loginSuccessBO = new LoginSuccessBO();
         loginSuccessBO.setAccessToken(token.getAccessToken());
         loginSuccessBO.setExpireIn(timeout);
+
         // 用户基本信息存入 Redis
-        LoginUser loginUser = MapstructUtil.convert(token.getAuthentication().getPrincipal(), LoginUser.class);
-        UacHelper.cacheUserInfo(loginUser, timeout);
+        cacheLoginUser(token, timeout, sysClient.getClientName(), request);
         return loginSuccessBO;
+    }
+
+    /**
+     * 用户基本信息存入 Redis
+     *
+     * @param token   认证信息令牌
+     * @param timeout 超时时间
+     * @param clientName 客户端名称
+     * @param request 请求
+     */
+    private void cacheLoginUser(JwtAuthenticationToken token, Long timeout, String clientName, HttpServletRequest request) {
+        LoginUser loginUser = MapstructUtil.convert(token.getAuthentication().getPrincipal(), LoginUser.class);
+
+        // 获取 IP
+        String clientIp = ServletUtil.getClientIp(request);
+        String address = AddressUtil.getRealAddressByIp(clientIp);
+        // 获取客户端标识
+        UserAgent userAgent = UserAgentUtil.parse(ServletUtil.getUserAgent(request));
+        // 获取客户端操作系统
+        String os = userAgent.getOs().getName();
+        // 获取客户端浏览器
+        String browser = userAgent.getBrowser().getName();
+        loginUser.setToken(token.getAccessToken())
+                .setLoginIp(clientIp)
+                .setLoginLocation(address)
+                .setOs(os)
+                .setBrowser(browser)
+                .setClientName(clientName)
+                .setLoginTime(new Date());
+
+        UacHelper.cacheUserInfo(loginUser, timeout);
     }
 }

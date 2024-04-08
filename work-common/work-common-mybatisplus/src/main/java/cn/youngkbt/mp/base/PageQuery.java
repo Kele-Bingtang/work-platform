@@ -1,5 +1,6 @@
 package cn.youngkbt.mp.base;
 
+import cn.hutool.core.util.StrUtil;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -35,8 +36,10 @@ public class PageQuery implements Serializable {
     private Integer pageSize;
     /**
      * 排序规则
+     * 1、column：排序的字段，驼峰形式
+     * 2、type：排序的类型：asc 升序，desc 降序
      */
-    private transient List<OrderRule> orderRuleList;
+    private transient List<Map<String, String>> orderRuleList;
 
     /**
      * 当前记录起始索引 默认值
@@ -49,8 +52,16 @@ public class PageQuery implements Serializable {
     public static final int DEFAULT_PAGE_SIZE = Integer.MAX_VALUE;
 
     public <T> Page<T> buildPage() {
-        Integer pageNum = Optional.ofNullable(getPageNum()).orElse(DEFAULT_PAGE_NUM);
-        Integer pageSize = Optional.ofNullable(getPageSize()).orElse(DEFAULT_PAGE_SIZE);
+        int pageNum = Optional.ofNullable(getPageNum()).orElse(DEFAULT_PAGE_NUM);
+        int pageSize = Optional.ofNullable(getPageSize()).orElse(DEFAULT_PAGE_SIZE);
+
+        if (pageNum <= 0) {
+            pageNum = 1;
+        }
+        if (pageSize <= 0) {
+            pageSize = DEFAULT_PAGE_SIZE;
+        }
+
         Page<T> page = new Page<>(pageNum, pageSize);
         List<OrderItem> orderItemList = buildOrderItem();
         if (!orderItemList.isEmpty()) {
@@ -69,9 +80,9 @@ public class PageQuery implements Serializable {
         }
 
         List<OrderItem> orderItemList = new ArrayList<>();
-        for (OrderRule orderRule : orderRuleList) {
-            String column = orderRule.getColumn();
-            String type = orderRule.getType();
+        for (Map<String, String> orderRule : orderRuleList) {
+            String column = StrUtil.toUnderlineCase(orderRule.get("column"));
+            String type = orderRule.get("type");
 
             if (!StringUtil.hasText(column, type)) {
                 break;

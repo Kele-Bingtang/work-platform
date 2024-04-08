@@ -60,13 +60,13 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
 
         SysLoginLog loginLog = SysLoginLog.builder()
                 .tenantId(loginInfoEvent.getTenantId())
-                .userName(loginInfoEvent.getUsername())
-                .appId(loginInfoEvent.getAppId())
+                .username(loginInfoEvent.getUsername())
+                .clientName(loginInfoEvent.getClientName())
                 .loginIp(clientIp)
                 .loginLocation(address)
                 .browser(browser)
                 .os(os)
-                .loginTime(new Date())
+                .loginTime(loginInfoEvent.getLoginTime())
                 .msg(loginInfoEvent.getMessage())
                 .build();
 
@@ -84,7 +84,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         sysUserDTO.setUsername(loginInfoEvent.getUsername())
                 .setUserStatus(1)
                 .setLoginIp(clientIp)
-                .setLoginDate(new Date());
+                .setLoginTime(new Date());
 
         sysUserService.updateOneByUserId(sysUserDTO);
     }
@@ -92,22 +92,29 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
     @Override
     public TablePage<SysLoginLogVO> listPage(SysLoginLogDTO sysLoginLogDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<SysLoginLog> wrapper = buildQueryWrapper(sysLoginLogDTO);
+
+        if (Objects.isNull(pageQuery.getOrderRuleList())) {
+            wrapper.orderByDesc(SysLoginLog::getLoginId);
+        }
+        
         Page<SysLoginLog> sysMenuPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
 
         return TablePage.build(sysMenuPage, SysLoginLogVO.class);
     }
 
     private LambdaQueryWrapper<SysLoginLog> buildQueryWrapper(SysLoginLogDTO sysLoginLogDTO) {
-        return Wrappers.<SysLoginLog>lambdaQuery()
-                .eq(StringUtil.hasText(sysLoginLogDTO.getUserName()), SysLoginLog::getUserName, sysLoginLogDTO.getUserName())
-                .eq(StringUtil.hasText(sysLoginLogDTO.getAppId()), SysLoginLog::getAppId, sysLoginLogDTO.getAppId())
-                .eq(StringUtil.hasText(sysLoginLogDTO.getBrowser()), SysLoginLog::getAppId, sysLoginLogDTO.getBrowser())
-                .eq(Objects.nonNull(sysLoginLogDTO.getDeviceType()), SysLoginLog::getDeviceType, sysLoginLogDTO.getDeviceType())
+        LambdaQueryWrapper<SysLoginLog> wrapper = Wrappers.<SysLoginLog>lambdaQuery()
+                .like(StringUtil.hasText(sysLoginLogDTO.getUsername()), SysLoginLog::getUsername, sysLoginLogDTO.getUsername())
+                .eq(StringUtil.hasText(sysLoginLogDTO.getClientName()), SysLoginLog::getClientName, sysLoginLogDTO.getClientName())
+                .eq(StringUtil.hasText(sysLoginLogDTO.getBrowser()), SysLoginLog::getBrowser, sysLoginLogDTO.getBrowser())
                 .eq(Objects.nonNull(sysLoginLogDTO.getStatus()), SysLoginLog::getStatus, sysLoginLogDTO.getStatus())
-                .eq(Objects.nonNull(sysLoginLogDTO.getDeviceType()), SysLoginLog::getLoginIp, sysLoginLogDTO.getDeviceType())
-                .like(Objects.nonNull(sysLoginLogDTO.getLoginIp()), SysLoginLog::getLoginIp, sysLoginLogDTO.getLoginIp())
-                .like(Objects.nonNull(sysLoginLogDTO.getLoginLocation()), SysLoginLog::getLoginIp, sysLoginLogDTO.getLoginLocation())
-                .orderByAsc(SysLoginLog::getLoginTime);
+                .like(StringUtil.hasText(sysLoginLogDTO.getLoginIp()), SysLoginLog::getLoginIp, sysLoginLogDTO.getLoginIp())
+                .like(StringUtil.hasText(sysLoginLogDTO.getLoginLocation()), SysLoginLog::getLoginLocation, sysLoginLogDTO.getLoginLocation());
+        if (Objects.nonNull(sysLoginLogDTO.getLoginTime())) {
+            wrapper.between(SysLoginLog::getLoginTime, sysLoginLogDTO.getLoginTime().get(0), sysLoginLogDTO.getLoginTime().get(1));
+        }
+
+        return wrapper;
     }
 }
 

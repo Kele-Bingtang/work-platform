@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Kele-Bingtang
@@ -34,9 +35,14 @@ public class LoginInfoEvent implements Serializable {
     private String username;
 
     /**
-     * 应用 ID
+     * 客户端名
      */
-    private String appId;
+    private String clientName;
+
+    /**
+     * 登录时间
+     */
+    private Date loginTime;
 
     /**
      * 登录状态 0成功 1失败

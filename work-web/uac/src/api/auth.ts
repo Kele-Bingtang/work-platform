@@ -38,13 +38,13 @@ export namespace Auth {
     tenantId: string;
     deptId: string;
     username: string;
-    nickName: string;
+    nickname: string;
     email: string;
     phone: string;
     sex: string;
     avatar: string;
     loginIp: string;
-    loginDate: string;
+    loginTime: string;
     registerTime: string;
   }
 }

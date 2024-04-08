@@ -115,7 +115,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
      * @return 当前用户名
      */
     private LoginUser getUser() {
-        LoginUser userInfo = UacHelper.getUserInfo();
+        LoginUser userInfo = UacHelper.getLoginUser();
         Object principal = SecurityUtils.getPrincipal();
 
         if (Objects.isNull(userInfo) && principal instanceof SecurityUser) {

@@ -21,6 +21,8 @@ spring:
 #      password: YoungKbt1234
       database: 0
       timeout: 10s
+  jackson:
+    time-zone: GMT+8
   #  cloud:
 #    nacos:
 #      config: # 配置中心

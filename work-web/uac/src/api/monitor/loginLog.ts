@@ -2,22 +2,20 @@ import http from "@/config/request";
 
 export namespace LoginLog {
   export interface LoginLogInfo {
-    loginId: string; // 部门 ID
-    userName: string; // 父级部门 ID
-    appId: string; // 父级部门名字
-    deviceType: string; // 祖级列表
-    loginIp: string; // 部门名
-    loginLocation: string; // 部门图标
-    browser: string; // 部门显示顺序
-    os: string; // 部门用户数量
-    msg: string; // 部门负责人
-    status: number; // 状态
-    loginTime: string; // 创建时间
+    userName: string; // 用户账号
+    clientName: string; // 客户端名
+    loginIp: string; // 登录 IP 地址
+    loginLocation: string; // 登录地点
+    browser: string; // 浏览器类型
+    os: string; // 操作系统
+    msg: string; // 提示消息
+    status: number; // 状态（0 异常 1 正常 ）
+    loginTime: string; // 访问时间
   }
 }
 
-const baseUri = "/system/loginLog";
+const baseUri = "/monitor/loginLog";
 
-export const list = () => {
-  return http.get<http.Response<LoginLog.LoginLogInfo[]>>(`${baseUri}/listPage`);
+export const listPage = (params: Partial<LoginLog.LoginLogInfo>) => {
+  return http.get<http.Response<LoginLog.LoginLogInfo[]>>(`${baseUri}/listPage`, params);
 };

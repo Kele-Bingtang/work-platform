@@ -12,24 +12,14 @@ import java.util.Date;
 @Data
 public class SysLoginLogVO implements Serializable {
     /**
-     * 访问 ID
-     */
-    private String loginId;
-
-    /**
      * 用户账号
      */
-    private String userName;
+    private String username;
 
     /**
-     * 客户端
+     * 客户端名
      */
-    private String appId;
-
-    /**
-     * 设备类型
-     */
-    private String deviceType;
+    private String clientName;
 
     /**
      * 登录 IP 地址

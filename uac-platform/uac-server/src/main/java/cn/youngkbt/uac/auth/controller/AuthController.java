@@ -118,7 +118,7 @@ public class AuthController {
             return HttpResult.failMessage("您没有登录！");
         }
         // 获取登录的用户信息
-        LoginUser loginUser = UacHelper.getUserInfo();
+        LoginUser loginUser = UacHelper.getLoginUser();
 
         if (Objects.isNull(loginUser)) {
             return HttpResult.fail(AuthErrorCodeEnum.UN_AUTHORIZED);

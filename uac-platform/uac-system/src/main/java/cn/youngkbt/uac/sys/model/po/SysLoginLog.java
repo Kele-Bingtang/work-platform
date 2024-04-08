@@ -2,7 +2,9 @@ package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
+import cn.youngkbt.uac.sys.model.vo.SysLoginLogVO;
 import com.baomidou.mybatisplus.annotation.*;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +24,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AutoMapper(target = SysLoginLogVO.class, reverseConvertGenerate = false)
 public class SysLoginLog implements Serializable {
     /**
      * 主键
@@ -39,17 +42,12 @@ public class SysLoginLog implements Serializable {
     /**
      * 用户账号
      */
-    private String userName;
+    private String username;
 
     /**
-     * 客户端
+     * 客户端名
      */
-    private String appId;
-
-    /**
-     * 设备类型
-     */
-    private String deviceType;
+    private String clientName;
 
     /**
      * 登录 IP 地址

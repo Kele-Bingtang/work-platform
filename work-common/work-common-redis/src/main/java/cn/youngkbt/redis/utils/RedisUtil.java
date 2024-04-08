@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -16,6 +17,10 @@ public class RedisUtil {
 
     public static void init(RedisTemplate<String, Object> redisTemplate) {
         RedisUtil.redisTemplate = redisTemplate;
+    }
+    
+    public static Set<String> keys(String pattern) {
+        return redisTemplate.keys(pattern);
     }
 
     public static Object getForValue(String key) {

@@ -16,7 +16,7 @@ export namespace User {
     avatar: string; // 头像
     registerTime: string; //  注册时间
     loginIp: string; // 最后登录 IP
-    loginDate: string; // 最后登录时间
+    loginTime: string; // 最后登录时间
     deptId: string; // 部门 ID
     status: number; // 状态
   }

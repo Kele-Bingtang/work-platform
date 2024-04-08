@@ -39,4 +39,9 @@ public class LoginUserBO {
      * 应用名
      */
     private String appName;
+    
+    /**
+     * 客户端名
+     */
+    private String clientName;
 }

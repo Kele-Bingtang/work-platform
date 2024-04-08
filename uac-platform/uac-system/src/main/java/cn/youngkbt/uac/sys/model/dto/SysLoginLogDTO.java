@@ -1,32 +1,26 @@
 package cn.youngkbt.uac.sys.model.dto;
 
-import cn.youngkbt.uac.sys.model.po.SysLoginLog;
-import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 操作日志记录
+ *
  * @TableName t_sys_login_log
  */
 @Data
-@AutoMapper(target = SysLoginLog.class, reverseConvertGenerate = false)
 public class SysLoginLogDTO implements Serializable {
     /**
      * 用户账号
      */
-    private String userName;
+    private String username;
 
     /**
-     * 客户端
+     * 客户端名
      */
-    private String appId;
-
-    /**
-     * 设备类型
-     */
-    private String deviceType;
+    private String clientName;
 
     /**
      * 登录 IP 地址
@@ -47,6 +41,11 @@ public class SysLoginLogDTO implements Serializable {
      * 状态（0 异常 1 正常 ）
      */
     private Integer status;
+
+    /**
+     * 登录时间
+     */
+    private List<String> loginTime;
 
     /**
      * 租户编号

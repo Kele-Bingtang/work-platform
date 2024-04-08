@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="Post">
+<script setup lang="tsx" name="LoginLog">
 import { ProTable } from "work";
 import { listPage, addOne, editOne, deleteOne, deleteBatch, type Post } from "@/api/system/post";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";

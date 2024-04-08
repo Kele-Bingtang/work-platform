@@ -18,7 +18,7 @@
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
         <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
         <result property="loginIp" column="login_ip" jdbcType="VARCHAR"/>
-        <result property="loginDate" column="login_date" jdbcType="TIMESTAMP"/>
+        <result property="loginTime" column="login_time" jdbcType="TIMESTAMP"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
         <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -49,7 +49,7 @@
         nickname,password,email,
         sex,birthday,phone,
         user_status,avatar,register_time,
-        login_ip,login_date,create_by,
+        login_ip,login_time,create_by,
         create_by_id,create_time,update_by,
         update_by_id,update_time,status,
         is_deleted,tenant_id,dept_id
@@ -61,7 +61,7 @@
 
     <select id="queryList" resultType="cn.youngkbt.uac.sys.model.vo.SysUserVO">
         select su.id, su.user_id, su.username, su.nickname, su.email, su.sex, su.birthday, su.phone, su.avatar, su.register_time,
-               su.login_ip, su.login_date, su.user_status, su.status, su.dept_id,
+               su.login_ip, su.login_time, su.user_status, su.status, su.dept_id,
                sd.dept_name, sd.leader, su1.user_id as leader_name
         from t_sys_user su
                  left join t_sys_dept sd on su.dept_id = sd.dept_id and sd.is_deleted = 0
@@ -71,7 +71,7 @@
     
     <select id="selectListWithPage" resultMap="BaseResultMapVo">
         select su.id, su.user_id, su.username, su.nickname, su.email, su.sex, su.birthday, su.phone, su.avatar, su.register_time,
-            su.login_ip, su.login_date, su.user_status, su.status, su.dept_id,
+            su.login_ip, su.login_time, su.user_status, su.status, su.dept_id,
             sd.dept_name, sd.leader, su1.user_id as leader_name
         from t_sys_user su
         left join t_sys_dept sd on su.dept_id = sd.dept_id and sd.is_deleted = 0

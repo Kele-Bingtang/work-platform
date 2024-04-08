@@ -39,7 +39,7 @@ public class SecurityUser extends User {
     /**
      * 用户昵称
      */
-    private String nickName;
+    private String nickname;
 
     /**
      * 用户邮箱
@@ -69,7 +69,7 @@ public class SecurityUser extends User {
     /**
      * 最后登录时间
      */
-    private Date loginDate;
+    private Date loginTime;
 
     /**
      * 注册时间

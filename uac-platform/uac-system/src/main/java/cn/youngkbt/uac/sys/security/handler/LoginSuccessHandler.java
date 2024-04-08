@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -26,16 +27,17 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 获取当登录用户信息
         SecurityUser user = (SecurityUser) authentication.getPrincipal();
 
-        String appId = null;
+        String clientName = null;
         if (Objects.nonNull(request)) {
-            appId = (String) request.getAttribute(AuthConstant.APP_ID);
+            clientName = (String) request.getAttribute(AuthConstant.CLIENT_NAME);
         }
 
         LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
                 .tenantId(user.getTenantId())
                 .userId(user.getUserId())
                 .username(user.getUsername())
-                .appId(appId)
+                .clientName(clientName)
+                .loginTime(new Date())
                 .status(AuthConstant.LOGIN_SUCCESS)
                 .request(ServletUtil.getRequest())
                 .message("登录成功")

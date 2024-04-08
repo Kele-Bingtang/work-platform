@@ -188,7 +188,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser user = new SysUser();
         user.setUserId(userId);
         user.setLoginIp(ServletUtil.getClientIp(loginInfoEvent.getRequest()));
-        user.setLoginDate(new Date());
+        user.setLoginTime(new Date());
         user.setUpdateBy(userId);
 
         baseMapper.update(user, Wrappers.<SysUser>lambdaUpdate().eq(SysUser::getUserId, userId));

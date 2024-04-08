@@ -565,7 +565,7 @@ CREATE TABLE `t_sys_user` (
   `avatar` varchar(64) DEFAULT NULL COMMENT '头像',
   `register_time` datetime DEFAULT NULL COMMENT '注册时间',
   `login_ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '最后登录 IP',
-  `login_date` datetime DEFAULT NULL COMMENT '最后登录时间',
+  `login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `create_by` varchar(16) DEFAULT NULL COMMENT '创建人',
   `create_by_id` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '创建人 ID',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',

@@ -88,7 +88,7 @@ public class SysUser extends BaseDO {
     /**
      * 最后登录时间
      */
-    private Date loginDate;
+    private Date loginTime;
 
     /**
      * 租户编号

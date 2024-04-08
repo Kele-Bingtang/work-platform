@@ -51,13 +51,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         securityUser.setUserId(user.getUserId());
         securityUser.setDeptId(user.getDeptId());
         securityUser.setTenantId(user.getTenantId());
-        securityUser.setNickName(user.getNickname());
+        securityUser.setNickname(user.getNickname());
         securityUser.setEmail(user.getEmail());
         securityUser.setPhone(user.getPhone());
         securityUser.setSex(user.getSex());
         securityUser.setAvatar(user.getAvatar());
         securityUser.setRegisterTime(user.getRegisterTime());
-        securityUser.setLoginDate(user.getLoginDate());
+        securityUser.setLoginTime(user.getLoginTime());
         securityUser.setLoginIp(user.getLoginIp());
         
         return securityUser;

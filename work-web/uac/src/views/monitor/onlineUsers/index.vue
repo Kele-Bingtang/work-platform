@@ -30,14 +30,14 @@ const sortChange = (data: { column: any; prop: string; order: any }) => {
 };
 
 const columns: TableColumnProps<OnlineUser.OnlineUserInfo>[] = [
-  { prop: "username", label: "用户账号" },
+  { prop: "username", label: "用户账号", search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称" },
   { prop: "deptId", label: "所属部门", fieldNames: { value: "id", label: "label" }, enum: listDeptTreeList },
-  { prop: "clientName", label: "客户端名称", width: 100 },
+  { prop: "clientName", label: "客户端名称" },
   { prop: "loginIp", label: "登录 IP 地址" },
   { prop: "loginLocation", label: "登录地点" },
   { prop: "browser", label: "浏览器类型" },
-  { prop: "os", label: "操作系统" },
+  { prop: "os", label: "操作系统", width: 280 },
   { prop: "loginTime", label: "登录时间", sortable: "custom" },
 ];
 </script>

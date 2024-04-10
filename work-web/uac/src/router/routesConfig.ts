@@ -312,6 +312,7 @@ export const rolesRoutes: RouterConfigRaw[] = [
         meta: {
           title: "后台监控",
           icon: HomeFilled,
+          frameSrc: "http://localhost:9090/admin",
         },
       },
     ],

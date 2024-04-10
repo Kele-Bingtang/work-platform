@@ -9,7 +9,6 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>cn.youngkbt</groupId>
     <artifactId>uac-platform</artifactId>
     <packaging>pom</packaging>
 
@@ -18,6 +17,7 @@
         <module>uac-system</module>
         <module>uac-server</module>
         <module>uac-core</module>
+        <module>uac-monitor-admin</module>
     </modules>
 
     <properties>

@@ -1,0 +1,18 @@
+package cn.youngkbt.security.properties;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+/**
+ * @author Kele-Bingtang
+ * @date 2024/4/11 上午12:54
+ * @note
+ */
+@Data
+@ConfigurationProperties(prefix = "security")
+public class SecurityProperties {
+    /**
+     * 排除路径
+     */
+    private String[] excludes;
+}

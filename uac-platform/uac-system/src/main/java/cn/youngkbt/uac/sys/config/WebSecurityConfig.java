@@ -1,10 +1,12 @@
 package cn.youngkbt.uac.sys.config;
 
 import cn.youngkbt.helper.SpringHelper;
+import cn.youngkbt.security.properties.SecurityProperties;
 import cn.youngkbt.uac.sys.security.UserDetailsServiceImpl;
 import cn.youngkbt.uac.sys.security.handler.*;
 import cn.youngkbt.uac.sys.security.interceptor.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,12 +29,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+@EnableConfigurationProperties(SecurityProperties.class)
 public class WebSecurityConfig {
 
     public static final String LOGIN_URL = "/auth/login";
 
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final SecurityProperties securityProperties;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,7 +48,7 @@ public class WebSecurityConfig {
         http.csrf(this::checkCsrfEnvironment)
                 // 使用 JWT，所以禁用 session 机制，因此 SecurityContextHolder.getContext().getAuthentication() 始终为 null
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/", LOGIN_URL, "/auth/**", "/uuid", "/ids/**").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers(securityProperties.getExcludes()).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form.successHandler(loginSuccessHandler())

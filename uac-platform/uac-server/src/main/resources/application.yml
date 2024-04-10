@@ -1,7 +1,7 @@
 # 项目相关配置
 uac:
   # 名称
-  name: work-uac
+  name: uac-platform
   # 版本
   version: 1.0.0
   # 版权年份
@@ -17,33 +17,64 @@ spring:
   application:
     name: ${uac.name} # 项目名
   profiles:
-    active: dev # 运行环境
-  # 文件上传
-  servlet:
-    multipart:
-      # 单个文件大小
-      max-file-size: 10MB
-      # 设置总上传的文件大小
-      max-request-size: 20MB
+    active: @profiles.active@ # 运行环境
   mvc:
     format:
-      date-time: yyyy-MM-dd HH:mm:ss    
-  jackson:
-    # 日期格式化
-    date-format: yyyy-MM-dd HH:mm:ss
-    serialization:
-      # 格式化输出
-      indent_output: false
-      # 忽略无法转换的对象
-      fail_on_empty_beans: false
-    deserialization:
-      # 允许对象忽略 json 中不存在的属性
-      fail_on_unknown_properties: false
+      date-time: yyyy-MM-dd HH:mm:ss
       
+---  # 文件上传
+spring.servlet.multipart:
+  # 单个文件大小
+  max-file-size: 10MB
+  # 设置总上传的文件大小
+  max-request-size: 20MB
+
+--- # jackson 配置
+spring.jackson:
+  time-zone: GMT+8
+  # 日期格式化
+  date-format: yyyy-MM-dd HH:mm:ss
+  serialization:
+    # 格式化输出
+    indent_output: false
+    # 忽略无法转换的对象
+    fail_on_empty_beans: false
+  deserialization:
+    # 允许对象忽略 json 中不存在的属性
+    fail_on_unknown_properties: false
       
+# 日志配置
+logging:
+  level:
+    cn.youngkbt: @logging.level@
+    org.springframework: warn
+  config: classpath:logback-plus.xml
+
 mybatis-plus:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
   scanPackage: cn.youngkbt.**.mapper
+
+# security 配置
+security:
+  # 排除路径
+  excludes:
+    # 认证路径
+    - /
+    - /auth/**
+    - /ids/**
+    # 静态资源
+    - /**.html
+    - /**.css
+    - /**.js
+    # 公共路径
+    - /favicon.ico
+    - /error
+    # swagger 文档配置
+    - /*/api-docs
+    - /*/api-docs/**
+    # actuator 监控配置
+    - /actuator
+    - /actuator/**
 
 # springdoc 配置
 springdoc:
@@ -57,6 +88,18 @@ springdoc:
     title: UAC 平台
     description: 提供管理后台、用户 App 的所有功能
     version: ${uac.version}
+
+--- # Actuator 监控端点的配置项
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+    logfile:
+      external-file: ./logs/${uac.name}-error.log # Spring Boot Admin 在线查看日志的路径，与 logback-plus.xml 里生成的文件路径一致，这里取得是 error 的日志
 
 # 用户配置
 login:

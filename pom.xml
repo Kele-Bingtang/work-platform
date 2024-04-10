@@ -38,10 +38,41 @@
         <knife4j.version>3.0.3</knife4j.version>
         <mapstruct-plus.version>1.3.5</mapstruct-plus.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-
+        <spring-boot-admin.version>3.2.2</spring-boot-admin.version>
+        
         <!-- 插件版本 -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
     </properties>
+    
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <!-- 环境标识，需要与配置文件的名称相对应 -->
+                <profiles.active>local</profiles.active>
+                <logging.level>debug</logging.level>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <!-- 环境标识，需要与配置文件的名称相对应 -->
+                <profiles.active>dev</profiles.active>
+                <logging.level>debug</logging.level>
+            </properties>
+            <activation>
+                <!-- 默认环境 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+                <logging.level>warn</logging.level>
+            </properties>
+        </profile>
+    </profiles>
     
     <dependencyManagement>
         <dependencies>
@@ -141,6 +172,16 @@
                 <artifactId>knife4j-springdoc-ui</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
 
             <!--<dependency>-->
             <!--    <groupId>cn.youngkbt</groupId>-->
@@ -185,5 +226,23 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- 关闭过滤 -->
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- 引入所有 匹配文件进行过滤 -->
+                <includes>
+                    <include>application*</include>
+                    <include>bootstrap*</include>
+                    <include>banner*</include>
+                </includes>
+                <!-- 启用过滤 即该资源中的变量将会被过滤器中的值替换 -->
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

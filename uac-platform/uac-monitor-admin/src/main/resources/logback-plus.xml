@@ -20,7 +20,7 @@
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.path}/${logFile.name}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.path}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${log.path}/${logFile.name}.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 日志最大的历史 60 天 -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>

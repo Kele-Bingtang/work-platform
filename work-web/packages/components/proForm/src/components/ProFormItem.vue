@@ -140,7 +140,7 @@ const columnEnum = computed(() => {
   let enumData = enumMap.value.get(props.column.formItem.prop);
 
   if (!enumData) return [];
-  if (props.column.attrs?.el === "el-select-v 2" && props.column.attrs.fieldNames) {
+  if (props.column.attrs?.el === "el-select-v2") {
     enumData = enumData.map((item: { [key: string]: any }) => {
       return { ...item, label: item[fieldNames.value.label], value: item[fieldNames.value.value] };
     });

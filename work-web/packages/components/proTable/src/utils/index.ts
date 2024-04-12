@@ -65,7 +65,7 @@ export function filterEnumLabel(enumData: any, fieldNames?: FieldNamesProps) {
  * */
 export function formatValue(callValue: any) {
   // 如果当前值为数组，使用 / 拼接（根据需求自定义）
-  if (isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
+  if (Array.isArray(callValue)) return callValue.length ? callValue.join(" / ") : "--";
   return callValue ?? "--";
 }
 

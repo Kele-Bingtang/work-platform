@@ -7,10 +7,11 @@
     <!-- 如果是 Windows，则 value="D:/logs" 类似 -->
     <property name="log.path" value="./logs" />
     <!-- 读取 application.yml 内容 -->
+    <springProperty scop="context" name="file.name" source="uac.name"/>
     <!-- 当天日志的文件名 -->
-    <springProperty scop="context" name="logFile.name" source="uac.name"/>
+    <property name="logFile.name" value="${file.name}" />
     <!-- 时间归档日志的文件名 -->
-    <springProperty scop="context" name="logDateFile.name" source="uac.name"/>
+    <property name="logDateFile.name" value="date/${file.name}" />
 
     <!-- 日志格式和颜色渲染 -->
     <!-- 彩色日志依赖的渲染类 -->

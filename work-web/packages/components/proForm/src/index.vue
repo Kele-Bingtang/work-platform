@@ -92,9 +92,10 @@ const cascadeEnum = (column: FormColumnProps) => {
         async (newVal: string) => {
           // 然后执行内置的级联 change 事件
           const { subEnum } = attrs;
-          if (subEnum && !enumMap.value.get(attrs.subProp!)) {
-            if (typeof subEnum === "function") enumMap.value.set(attrs.subProp!, await subEnum(newVal));
-            else if (typeof subEnum === "object") enumMap.value.set(attrs.subProp!, subEnum);
+          if (subEnum && !enumMap.value.get(`${attrs.subProp!}-${newVal}`)) {
+            if (typeof subEnum === "function") {
+              enumMap.value.set(attrs.subProp!, await subEnum(newVal, enumMap.value.get(column.formItem.prop)));
+            } else if (Array.isArray(typeof subEnum)) enumMap.value.set(`${attrs.subProp!}-${newVal}`, subEnum);
           }
           const formEnum = enumMap.value.get(formItem.prop) || [];
           const e = formEnum.filter(item => item.value === newVal);

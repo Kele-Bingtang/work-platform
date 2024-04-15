@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
@@ -74,4 +75,27 @@ public interface SysDictDataService extends IService<SysDictData> {
      */
     boolean removeBatch(List<Long> ids);
 
+    /**
+     * 通过条件查询字典数据树形结构
+     *
+     * @param sysDictDataDTO 查询条件
+     * @return 字典数据树形结构
+     */
+    List<Tree<String>> listDataTreeList(SysDictDataDTO sysDictDataDTO);
+
+    /**
+     * 通过条件查询字典数据树形表格
+     *
+     * @param sysDictDataDTO 查询条件
+     * @return 字典数据树形表格
+     */
+    List<SysDictDataVO> listDataTreeTable(SysDictDataDTO sysDictDataDTO);
+
+    /**
+     * 校验字典数据是否唯一
+     *
+     * @param sysDictDataDTO 字典数据
+     * @return 是否唯一
+     */
+    boolean checkDictDataUnique(SysDictDataDTO sysDictDataDTO);
 }

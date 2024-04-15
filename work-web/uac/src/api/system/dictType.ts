@@ -6,6 +6,7 @@ export namespace DictType {
     dictId: string; // 字典 ID
     dictCode: string; // 字典类型
     dictName: string; // 字典名称
+    isCascade: number; // 是否开启级联（0 不开启，1 开启）
     appId: string; // 应用 ID
   }
 }

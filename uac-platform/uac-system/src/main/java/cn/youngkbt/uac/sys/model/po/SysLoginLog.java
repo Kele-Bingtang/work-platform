@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -82,7 +82,7 @@ public class SysLoginLog implements Serializable {
     /**
      * 访问时间
      */
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     /**
      * 租户编号

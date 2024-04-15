@@ -11,6 +11,7 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -78,7 +79,7 @@ public class SysUser extends BaseDO {
     /**
      * 注册时间
      */
-    private Date registerTime;
+    private LocalDateTime registerTime;
 
     /**
      * 最后登录 IP
@@ -88,7 +89,7 @@ public class SysUser extends BaseDO {
     /**
      * 最后登录时间
      */
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     /**
      * 租户编号

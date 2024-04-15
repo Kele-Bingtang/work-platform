@@ -1,5 +1,8 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -8,7 +11,9 @@ import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictData;
 import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
+import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +45,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     public List<SysDictDataVO> queryList(SysDictDataDTO sysDictDataDTO) {
         LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
         List<SysDictData> sysDictData = baseMapper.selectList(wrapper);
-
+        
+        
         return MapstructUtil.convert(sysDictData, SysDictDataVO.class);
     }
 
@@ -63,6 +70,12 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public boolean insertOne(SysDictDataDTO sysDictDataDTO) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDTO, SysDictData.class);
+        
+        if(StringUtil.hasText(sysDictDataDTO.getParentId())) {
+            return baseMapper.insert(sysDictData) > 0;
+        }
+
+        sysDictDataDTO.setParentId("0");
         return baseMapper.insert(sysDictData) > 0;
     }
 
@@ -84,6 +97,39 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public List<Tree<String>> listDataTreeList(SysDictDataDTO sysDictDataDTO) {
+        LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
+        List<SysDictData> sysDictData = baseMapper.selectList(wrapper);
+
+        if (CollUtil.isEmpty(sysDictData)) {
+            return Collections.emptyList();
+        }
+
+        return TreeBuildUtil.build(sysDictData, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
+                tree.setId(treeNode.getDataId())
+                        .setParentId(treeNode.getParentId())
+                        .setName(treeNode.getDictLabel())
+                        .setWeight(treeNode.getDictSort()));
+    }
+
+    @Override
+    public List<SysDictDataVO> listDataTreeTable(SysDictDataDTO sysDictDataDTO) {
+        LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
+        List<SysDictData> sysDictData = baseMapper.selectList(wrapper);
+        List<SysDictDataVO> sysDictDataVOList = MapstructUtil.convert(sysDictData, SysDictDataVO.class);
+
+        return TreeBuildUtil.build(sysDictDataVOList, SysDictDataVO::getDataId);
+    }
+
+    @Override
+    public boolean checkDictDataUnique(SysDictDataDTO sysDictDataDTO) {
+        return baseMapper.exists(Wrappers.<SysDictData>lambdaQuery()
+                .eq(SysDictData::getDictValue, sysDictDataDTO.getDictValue())
+                .eq(SysDictData::getParentId, sysDictDataDTO.getParentId())
+                .ne(Objects.nonNull(sysDictDataDTO.getDataId()), SysDictData::getDataId, sysDictDataDTO.getDataId()));
     }
 }
 

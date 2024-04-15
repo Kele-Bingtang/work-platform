@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -37,7 +37,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 .userId(user.getUserId())
                 .username(user.getUsername())
                 .clientName(clientName)
-                .loginTime(new Date())
+                .loginTime(LocalDateTime.now())
                 .status(AuthConstant.LOGIN_SUCCESS)
                 .request(ServletUtil.getRequest())
                 .message("登录成功")

@@ -56,10 +56,8 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
           props: {
             placeholder: "请选择 上级",
             filterable: true,
-            checkStrictly: true,
             valueKey: "id",
           },
-          fieldNames: { value: "id", label: "label" },
           enum: listMenuTreeSelectByApp,
           isHidden: form => form.parentId === "0",
         },

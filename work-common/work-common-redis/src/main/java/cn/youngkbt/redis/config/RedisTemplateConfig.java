@@ -1,10 +1,21 @@
 package cn.youngkbt.redis.config;
 
+import cn.youngkbt.core.date.DatePatternPlus;
+import cn.youngkbt.core.serializer.JacksonNumberSerializer;
 import cn.youngkbt.redis.utils.RedisUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.InstantDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -14,6 +25,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Kele-Bingtang
@@ -61,6 +78,26 @@ public class RedisTemplateConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
+        
+        // 解决 Redis 无法存入 LocalDateTime 等 JDK8 的时间类
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        /*
+         * 1. 新增 Long 类型序列化规则，数值超过 2^53-1，在 JS 会出现精度丢失问题，因此 Long 自动序列化为字符串类型
+         * 2. 新增 LocalDateTime 序列化、反序列化规则
+         */
+        javaTimeModule
+                .addSerializer(Long.class, JacksonNumberSerializer.INSTANCE)
+                .addSerializer(Long.TYPE, JacksonNumberSerializer.INSTANCE)
+                .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DatePatternPlus.NORM_DATETIME_FORMATTER)) // yyyy-MM-dd HH:mm:ss
+                .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_LOCAL_DATE))// yyyy-MM-dd
+                .addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ISO_LOCAL_TIME))// HH:mm:ss
+                .addSerializer(Instant.class, InstantSerializer.INSTANCE)// Instant 类型序列化
+                .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DatePatternPlus.NORM_DATETIME_FORMATTER))// yyyy-MM-dd HH:mm:ss
+                .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ISO_LOCAL_DATE))// yyyy-MM-dd
+                .addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ISO_LOCAL_TIME))// HH:mm:ss
+                .addDeserializer(Instant.class, InstantDeserializer.INSTANT);// Instant 反序列化
+
+        objectMapper.registerModules(javaTimeModule);
 
         // 使用 Jackson2JsonRedisSerialize 替换默认序列化
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
@@ -78,4 +115,5 @@ public class RedisTemplateConfig {
 
         return redisTemplate;
     }
+    
 }

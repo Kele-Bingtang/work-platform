@@ -4,6 +4,7 @@ export namespace DictData {
   export interface DictDataInfo {
     id: number; // 主键
     dictId: string; // 字典 ID
+    parentId: string; // 父级字典 ID
     dictLabel: string; // 字典标签
     dictValue: string; // 字典键值
     dictSort: number; // 字典排序
@@ -14,6 +15,7 @@ export namespace DictData {
     isDefault: string; // 是否默认（Y是 N否）
     appId: string; // 应用 ID
     dictCode: string; // 字典类型
+    children: DictDataInfo[]; // 子数据
   }
 }
 
@@ -25,6 +27,14 @@ export const list = (params: Partial<DictData.DictDataInfo>) => {
 
 export const listPage = (params: Partial<DictData.DictDataInfo>) => {
   return http.get<http.Page<DictData.DictDataInfo[]>>(`${baseUri}/listPage`, params);
+};
+
+export const listDataTreeList = (params: Partial<DictData.DictDataInfo>) => {
+  return http.get<http.Response<DictData.DictDataInfo[]>>(`${baseUri}/treeList`, params);
+};
+
+export const listDataTreeTable = (params: Partial<DictData.DictDataInfo>) => {
+  return http.get<http.Response<DictData.DictDataInfo[]>>(`${baseUri}/treeTable`, params);
 };
 
 export const addOne = (data: DictData.DictDataInfo) => {

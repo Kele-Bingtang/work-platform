@@ -28,10 +28,9 @@ export const options: FormOptionsProps<Dept.DeptTreeTable> = {
         props: {
           placeholder: "请选择 上级部门",
           filterable: true,
-          checkStrictly: true,
           valueKey: "id",
+          defaultExpandAll: true,
         },
-        fieldNames: { value: "id", label: "label" },
         enum: listDeptTreeList,
         isHidden: form => form.parentId === "0",
       },

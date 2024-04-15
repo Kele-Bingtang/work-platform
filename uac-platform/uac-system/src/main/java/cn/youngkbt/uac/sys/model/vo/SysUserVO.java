@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -74,7 +75,7 @@ public class SysUserVO implements Serializable {
     /**
      * 注册时间
      */
-    private Date registerTime;
+    private LocalDateTime registerTime;
 
     /**
      * 最后登录 IP
@@ -84,7 +85,7 @@ public class SysUserVO implements Serializable {
     /**
      * 最后登录时间
      */
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     /**
      * 部门 ID

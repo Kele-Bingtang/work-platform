@@ -27,7 +27,11 @@
 
     <Drawer v-model="drawer" size="55%" title="字典数据配置">
       <div class="drawer-content">
-        <DictData :dict-code="dictCode" :app-id="dictDataAppId" />
+        <DictData
+          :dict-code="dictInfo?.dictCode || ''"
+          :app-id="dictInfo?.appId || ''"
+          :is-cascade="dictInfo?.isCascade || 0"
+        />
       </div>
     </Drawer>
   </div>
@@ -41,19 +45,18 @@ import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from 
 import DictData from "./dictData.vue";
 import { ElLink } from "element-plus";
 import { useFormOptions } from "./useFormOptions";
+import { baseEnum } from "@work/constants";
 
 const initRequestParam = reactive({
   appId: "",
 });
 
-const dictCode = ref("");
-const dictDataAppId = ref("");
+const dictInfo = ref<DictType.DictTypeInfo>();
 const drawer = ref(false);
 const treeFilterRef = shallowRef<TreeFilterInstance>();
 
-const clickDictCode = (code: string, appId: string) => {
-  dictCode.value = code;
-  dictDataAppId.value = appId;
+const clickDictCode = (row: DictType.DictTypeInfo) => {
+  dictInfo.value = row;
   drawer.value = true;
 };
 
@@ -70,7 +73,7 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
     render: ({ row }) => {
       return (
         <>
-          <ElLink type="primary" underline={false} onClick={() => clickDictCode(row.dictCode, row.appId)}>
+          <ElLink type="primary" underline={false} onClick={() => clickDictCode(row)}>
             {row.dictCode}
           </ElLink>
         </>
@@ -78,7 +81,9 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
     },
   },
   { prop: "dictName", label: "字典名称", search: { el: "el-input" } },
-  { prop: "createTime", label: "创建时间" },
+  { prop: "isCascade", label: "是否级联", width: 110, enum: baseEnum, search: { el: "el-input" } },
+  { prop: "intro", label: "描述" },
+  { prop: "createTime", label: "创建时间", sortable: true },
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 

@@ -22,6 +22,7 @@ export namespace Menu {
     appId: string; // 应用 ID
     status: number; // 状态
     createTime: string; // 创建时间
+    children: MenuInfo[]; // 子数据
   }
 
   export interface MenuTreeList {

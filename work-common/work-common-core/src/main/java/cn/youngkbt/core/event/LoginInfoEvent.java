@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -42,7 +42,7 @@ public class LoginInfoEvent implements Serializable {
     /**
      * 登录时间
      */
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     /**
      * 登录状态 0成功 1失败

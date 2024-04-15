@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.auth.service;
 
 import cn.youngkbt.core.constants.ColumnConstant;
+import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.convertor.LoginBOToVOConvertor;
 import cn.youngkbt.uac.auth.convertor.LoginDTOToBOConvertor;
 import cn.youngkbt.uac.auth.model.dto.LoginUserDTO;
@@ -9,7 +10,6 @@ import cn.youngkbt.uac.auth.strategy.AuthHandler;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.exception.TenantException;
-import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.model.po.SysTenant;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -78,7 +78,7 @@ public class LoginService {
             throw new TenantException("租户已被停用");
         }
         if (Objects.nonNull(sysTenant.getExpireTime())
-                && new Date().after(sysTenant.getExpireTime())) {
+                && LocalDateTime.now().isAfter(sysTenant.getExpireTime())) {
             log.info("租户 {} 已超过有效期.", tenantId);
             throw new TenantException("租户已超过有效期");
         }

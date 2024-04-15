@@ -18,6 +18,7 @@ export namespace Dept {
     level: string; // 部门层级
     status: number; // 状态
     createTime: string; // 创建时间
+    children: DeptInfo[]; // 子数据
   }
 
   export interface DeptTreeList {

@@ -1,6 +1,8 @@
 package cn.youngkbt.uac.sys.model.vo;
 
+import cn.youngkbt.uac.sys.model.bo.TreeBO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -10,12 +12,13 @@ import java.time.LocalDateTime;
  * @author Kele-Bingtang
  * @date 2023-23-12 00:23:08
  * @note 菜单
-*/
+ */
 @Data
-public class SysMenuVO implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class SysMenuVO extends TreeBO<SysMenuVO> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * id
      */
@@ -69,7 +72,7 @@ public class SysMenuVO implements Serializable {
      * 权限标识
      */
     private String permission;
-    
+
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */

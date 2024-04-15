@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
@@ -69,12 +70,12 @@ public class SecurityUser extends User {
     /**
      * 最后登录时间
      */
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     /**
      * 注册时间
      */
-    private Date registerTime;
+    private LocalDateTime registerTime;
 
     public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);

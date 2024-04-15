@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -87,7 +88,7 @@ public class SysUserDTO {
     /**
      * 注册时间
      */
-    private Date registerTime;
+    private LocalDateTime registerTime;
 
     /**
      * 最后登录 IP
@@ -97,7 +98,7 @@ public class SysUserDTO {
     /**
      * 最后登录时间
      */
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     /**
      * 部门 ID

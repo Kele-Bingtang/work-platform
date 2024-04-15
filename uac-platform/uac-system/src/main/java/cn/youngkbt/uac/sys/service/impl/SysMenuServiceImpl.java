@@ -3,7 +3,6 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
-import cn.hutool.core.lang.tree.TreeUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
@@ -15,9 +14,8 @@ import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
-import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import cn.youngkbt.uac.sys.service.SysMenuService;
-import cn.youngkbt.uac.sys.utils.MenuTreeUtil;
+import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -78,11 +76,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
+    public List<SysMenuVO> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
-        List<MenuTree> menuTreeList = MapstructUtil.convert(sysMenuList, MenuTree.class);
-        return MenuTreeUtil.build(menuTreeList);
+        List<SysMenuVO> menuTreeList = MapstructUtil.convert(sysMenuList, SysMenuVO.class);
+        
+        return TreeBuildUtil.build(menuTreeList, SysMenuVO::getMenuId);
     }
 
     private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuDTO sysMenuDTO) {
@@ -103,7 +102,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             return Collections.emptyList();
         }
 
-        return TreeUtil.build(sysMenuList, "0", TreeNodeConfig.DEFAULT_CONFIG.setNameKey("label"), (treeNode, tree) ->
+        return TreeBuildUtil.build(sysMenuList, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
                 tree.setId(treeNode.getMenuId())
                         .setParentId(treeNode.getParentId())
                         .setName(treeNode.getMenuName())

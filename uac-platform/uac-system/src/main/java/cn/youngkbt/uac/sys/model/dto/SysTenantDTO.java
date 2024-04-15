@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -89,7 +89,7 @@ public class SysTenantDTO {
     /**
      * 租户过期时间（-1 无限期）
      */
-    private Date expireTime;
+    private LocalDateTime expireTime;
 
     /**
      * 状态（0 异用 1 正常）

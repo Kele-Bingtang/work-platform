@@ -1,7 +1,8 @@
-import type { DictData } from "@/api/system/dictData";
+import { listDataTreeList, type DictData } from "@/api/system/dictData";
 import type { DictType } from "@/api/system/dictType";
 import { useLayoutStore } from "@/stores";
 import type { FormOptionsProps } from "@work/components";
+import { baseEnum } from "@work/constants";
 import type { FormRules } from "element-plus";
 
 const dictTypeRules = reactive<FormRules>({
@@ -15,7 +16,11 @@ const dictDataRules = reactive<FormRules>({
   dictLabel: [{ required: true, message: "请输入字典标签", trigger: "blur" }],
 });
 
-export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: ComputedRef<string>) => {
+export const useFormOptions = (
+  enumData: ComputedRef<any>,
+  defaultValue: ComputedRef<string>,
+  isCascade?: ComputedRef<number>
+) => {
   const { getDictData } = useLayoutStore();
 
   const dictTypeOptions: FormOptionsProps<DictType.DictTypeInfo> = {
@@ -47,6 +52,19 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
         formItem: { label: "字典名称", prop: "dictName" },
         attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 字典名称" } },
       },
+      {
+        formItem: { label: "开启级联", prop: "isCascade" },
+        attrs: {
+          el: "el-radio-group",
+          enum: baseEnum,
+          defaultValue: 0,
+          props: { clearable: true, placeholder: "请选择 是否开启级联" },
+        },
+      },
+      {
+        formItem: { label: "描述", prop: "intro", br: true },
+        attrs: { el: "el-input", props: { type: "textarea", clearable: true, placeholder: "请输入 描述" } },
+      },
     ],
   };
 
@@ -59,6 +77,20 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       rules: dictDataRules,
     },
     columns: [
+      {
+        formItem: { label: "上级字典", prop: "parentId", br: true },
+        attrs: {
+          el: "el-tree-select",
+          props: {
+            placeholder: "请选择 上级字典",
+            filterable: true,
+            valueKey: "id",
+          },
+          enum: () => listDataTreeList({ dictCode: defaultValue.value }),
+          isHidden: form => form.parentId === "0",
+          isDestroy: () => !isCascade?.value,
+        },
+      },
       {
         formItem: { prop: "dictCode", label: "字典编码" },
         attrs: { el: "el-input", defaultValue: defaultValue, props: { disabled: true } },

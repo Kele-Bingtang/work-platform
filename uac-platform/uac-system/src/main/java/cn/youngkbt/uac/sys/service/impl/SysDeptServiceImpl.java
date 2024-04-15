@@ -3,7 +3,6 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
-import cn.hutool.core.lang.tree.TreeUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
@@ -13,9 +12,8 @@ import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
-import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import cn.youngkbt.uac.sys.service.SysDeptService;
-import cn.youngkbt.uac.sys.utils.DeptTreeUtil;
+import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -71,15 +69,17 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         sysDeptDTO.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
+        
         return buildDeptTree(sysDeptList);
     }
 
     @Override
-    public List<DeptTree> listDeptTreeTable(SysDeptDTO sysDeptDTO) {
+    public List<SysDeptVO> listDeptTreeTable(SysDeptDTO sysDeptDTO) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
-        List<DeptTree> sysDeptVoList = MapstructUtil.convert(sysDeptList, DeptTree.class);
-        return DeptTreeUtil.build(sysDeptVoList);
+        List<SysDeptVO> sysDeptVoList = MapstructUtil.convert(sysDeptList, SysDeptVO.class);
+        
+        return TreeBuildUtil.build(sysDeptVoList, SysDeptVO::getDeptId);
     }
 
     private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptDTO sysDeptDTO) {
@@ -98,7 +98,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             return Collections.emptyList();
         }
 
-        return TreeUtil.build(sysDeptList, "0", TreeNodeConfig.DEFAULT_CONFIG.setNameKey("label"), (treeNode, tree) ->
+        return TreeBuildUtil.build(sysDeptList, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
                 tree.setId(treeNode.getDeptId())
                         .setParentId(treeNode.getParentId())
                         .setName(treeNode.getDeptName())

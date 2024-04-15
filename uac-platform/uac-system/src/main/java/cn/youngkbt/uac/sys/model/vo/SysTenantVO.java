@@ -85,7 +85,7 @@ public class SysTenantVO implements Serializable {
     /**
      * 租户过期时间（-1 无限期）
      */
-    private Date expireTime;
+    private LocalDateTime expireTime;
 
     /**
      * 状态

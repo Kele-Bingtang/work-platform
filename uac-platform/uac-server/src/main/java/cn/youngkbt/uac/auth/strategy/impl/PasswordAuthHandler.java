@@ -30,7 +30,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -131,7 +131,7 @@ public class PasswordAuthHandler implements AuthHandler {
                 .setOs(os)
                 .setBrowser(browser)
                 .setClientName(clientName)
-                .setLoginTime(new Date());
+                .setLoginTime(LocalDateTime.now());
 
         UacHelper.cacheUserInfo(loginUser, timeout);
     }

@@ -1,7 +1,11 @@
 package cn.youngkbt.uac.sys.model.po;
 
+import cn.youngkbt.mp.annotation.FieldValueFill;
+import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
 import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
@@ -17,6 +21,18 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysDictDataVO.class, reverseConvertGenerate = false)
 public class SysDictData extends BaseDO {
+    /**
+     * 字典数据 ID
+     */
+    @TableField(fill = FieldFill.INSERT)
+    @FieldValueFill(ValueStrategy.SNOWFLAKE)
+    private String dataId;
+
+    /**
+     * 父级字典数据 ID
+     */
+    private String parentId;
+
     /**
      * 字典标签
      */
@@ -56,16 +72,6 @@ public class SysDictData extends BaseDO {
      * 是否默认（Y是 N否）
      */
     private String isDefault;
-
-    /**
-     * 父级字典编码
-     */
-    private String parentDictCode;
-
-    /**
-     * 父级字典键值
-     */
-    private String parentCodeValue;
 
     /**
      * 租户编号

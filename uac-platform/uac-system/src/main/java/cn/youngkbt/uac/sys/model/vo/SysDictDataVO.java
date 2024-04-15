@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.model.vo;
 
+import cn.youngkbt.uac.sys.model.bo.TreeBO;
 import lombok.Data;
 
 import java.io.Serial;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
  * @note 字典数据
 */
 @Data
-public class SysDictDataVO implements Serializable {
+public class SysDictDataVO extends TreeBO<SysDictDataVO> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     
@@ -20,6 +21,17 @@ public class SysDictDataVO implements Serializable {
      * id
      */
     private Long id;
+
+    /**
+     * 字典数据 ID
+     */
+    private String dataId;
+
+    /**
+     * 父级字典数据 ID
+     */
+    private String parentId;
+    
     /**
      * 字典标签
      */
@@ -59,16 +71,6 @@ public class SysDictDataVO implements Serializable {
      * 是否默认（Y是 N否）
      */
     private String isDefault;
-
-    /**
-     * 父级字典编码
-     */
-    private String parentDictCode;
-
-    /**
-     * 父级字典键值
-     */
-    private String parentCodeValue;
 
     /**
      * 应用 ID

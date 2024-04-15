@@ -1,6 +1,6 @@
 <template>
   <div class="user-container">
-    <TreeFilter :requestApi="listDeptTreeList" @change="handleTreeChange">
+    <TreeFilter :requestApi="listDeptTreeList" @change="handleTreeChange" id="value">
       <template #default="{ node }">
         <Icon v-if="node.data.icon" :icon="node.data.icon"></Icon>
         <span>{{ node.label }}</span>
@@ -25,7 +25,7 @@
 import { TreeFilter, ProTable, type TableColumnProps } from "work";
 import { listDeptTreeList } from "@/api/system/dept";
 import { addOne, editOne, deleteOne, deleteBatch, listPage, type User } from "@/api/user/user";
-import { options } from "./formOptions";
+import { useFormOptions } from "./useFormOptions";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
@@ -77,7 +77,7 @@ const columns: TableColumnProps<User.UserInfo>[] = [
 ];
 
 const detailForm: DialogForm = {
-  options: options,
+  options: useFormOptions(computed(() => initRequestParam.deptId)).options,
   addApi: addOne,
   editApi: editOne,
   deleteApi: deleteOne,
@@ -124,3 +124,4 @@ const handleTreeChange = (nodeId: number) => {
   }
 }
 </style>
+./useFormOptions

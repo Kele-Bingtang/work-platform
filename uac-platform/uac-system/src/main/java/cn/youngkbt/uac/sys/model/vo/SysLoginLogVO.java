@@ -3,7 +3,7 @@ package cn.youngkbt.uac.sys.model.vo;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 操作日志记录
@@ -54,7 +54,7 @@ public class SysLoginLogVO implements Serializable {
     /**
      * 访问时间
      */
-    private Date loginTime;
+    private LocalDateTime loginTime;
 
     private static final long serialVersionUID = 1L;
 }

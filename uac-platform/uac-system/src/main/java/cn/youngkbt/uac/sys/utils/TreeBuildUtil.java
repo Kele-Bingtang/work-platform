@@ -1,6 +1,6 @@
 package cn.youngkbt.uac.sys.utils;
 
-import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
+import cn.youngkbt.uac.sys.model.bo.TreeBO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -8,32 +8,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Kele-Bingtang
- * @date 2024-08-22 22:08:35
- * @note 菜单树结构构建工具类
-*/
+ * @date 2024/4/15 下午9:05
+ * @note
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MenuTreeUtil {
+public class TreeBuildUtil extends cn.hutool.core.lang.tree.TreeUtil {
 
-    public static List<MenuTree> build(List<MenuTree> nodes) {
-        Map<String, MenuTree> nodeMap = new HashMap<>();
-        for (MenuTree tree : nodes) {
-            nodeMap.put(tree.getMenuId(), tree);
+    public static <T extends TreeBO<T>> List<T> build(List<T> nodes, Function<T, String> function) {
+        Map<String, T> nodeMap = new HashMap<>();
+        for (T tree : nodes) {
+            nodeMap.put(function.apply(tree), tree);
         }
 
-        for (MenuTree tree : nodes) {
+        for (T tree : nodes) {
             if (!"0".equals(tree.getParentId())) { // 非根节点
-                MenuTree parentNode = nodeMap.get(tree.getParentId());
+                T parentNode = nodeMap.get(tree.getParentId());
                 if (parentNode != null) {
                     parentNode.getChildren().add(tree);
                 }
             }
         }
 
-        List<MenuTree> roots = new ArrayList<>();
-        for (MenuTree tree : nodes) {
+        List<T> roots = new ArrayList<>();
+        for (T tree : nodes) {
             if ("0".equals(tree.getParentId())) {
                 roots.add(tree);
             }
@@ -41,6 +42,4 @@ public class MenuTreeUtil {
 
         return roots;
     }
-
 }
-

@@ -1,6 +1,8 @@
 package cn.youngkbt.uac.sys.model.vo;
 
+import cn.youngkbt.uac.sys.model.bo.TreeBO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,7 +14,8 @@ import java.time.LocalDateTime;
  * @note 部门信息
 */
 @Data
-public class SysDeptVO implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class SysDeptVO extends TreeBO<SysDeptVO> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

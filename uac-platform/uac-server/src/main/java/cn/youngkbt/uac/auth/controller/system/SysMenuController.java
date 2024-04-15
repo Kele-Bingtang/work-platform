@@ -8,7 +8,6 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
-import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
@@ -59,8 +58,8 @@ public class SysMenuController {
 
     @GetMapping("/treeTable")
     @Operation(summary = "菜单树表查询", description = "通过查询条件查询菜单树表")
-    public Response<List<MenuTree>> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
-        List<MenuTree> treeTable = sysMenuService.listMenuTreeTable(sysMenuDTO);
+    public Response<List<SysMenuVO>> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
+        List<SysMenuVO> treeTable = sysMenuService.listMenuTreeTable(sysMenuDTO);
         return HttpResult.ok(treeTable);
     }
 

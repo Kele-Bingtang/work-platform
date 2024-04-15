@@ -87,7 +87,8 @@ export function handleRowAccordingToProp(row: { [key: string]: any }, prop: stri
 export function findItemNested(enumData: any, callValue: any, value: string, children: string) {
   return enumData.reduce((accumulator: any, current: any) => {
     if (accumulator) return accumulator;
-    if (current[value] === callValue + "") return current;
+    // 兼容数字和字符串数字匹配，如值为数字 0，字典是 '0'，依然满足条件
+    if (current[value] === callValue || current[value] === callValue + "") return current;
     if (current[children]) return findItemNested(current[children], callValue, value, children);
   }, null);
 }

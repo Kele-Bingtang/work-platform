@@ -22,6 +22,16 @@ public class SysDictDataDTO {
     @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
     public Long id;
     /**
+     * 字典数据 ID
+     */
+    private String dataId;
+
+    /**
+     * 父级字典数据 ID
+     */
+    private String parentId;
+    
+    /**
      * 字典标签
      */
     @NotBlank(message = "字典标签不能为空")
@@ -64,16 +74,6 @@ public class SysDictDataDTO {
      * 是否默认（Y是 N否）
      */
     private String isDefault;
-
-    /**
-     * 父级字典编码
-     */
-    private String parentDictCode;
-
-    /**
-     * 父级字典键值
-     */
-    private String parentCodeValue;
 
     /**
      * 应用 ID

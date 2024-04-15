@@ -9,7 +9,6 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
-import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import cn.youngkbt.uac.sys.service.SysDeptService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
@@ -61,8 +60,8 @@ public class SysDeptController {
 
     @GetMapping("/treeTable")
     @Operation(summary = "部门树形表格查询", description = "通过部门条件查询部门树形表格")
-    public Response<List<DeptTree>> listDeptTreeTable(SysDeptDTO sysDeptDTO) {
-        List<DeptTree> treeTable = sysDeptService.listDeptTreeTable(sysDeptDTO);
+    public Response<List<SysDeptVO>> listDeptTreeTable(SysDeptDTO sysDeptDTO) {
+        List<SysDeptVO> treeTable = sysDeptService.listDeptTreeTable(sysDeptDTO);
         return HttpResult.ok(treeTable);
     }
 

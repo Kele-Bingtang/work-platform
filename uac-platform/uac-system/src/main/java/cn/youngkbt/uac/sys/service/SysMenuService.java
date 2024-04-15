@@ -6,7 +6,6 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
-import cn.youngkbt.uac.sys.model.vo.extra.MenuTree;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -57,7 +56,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param sysMenuDTO 查询条件
      * @return 菜单树形表格列表
      */
-    List<MenuTree> listMenuTreeTable(SysMenuDTO sysMenuDTO);
+    List<SysMenuVO> listMenuTreeTable(SysMenuDTO sysMenuDTO);
 
     /**
      * 检查菜单名称是否唯一

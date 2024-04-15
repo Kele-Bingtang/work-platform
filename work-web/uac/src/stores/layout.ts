@@ -4,7 +4,7 @@ import { DeviceType, type LanguageType, type LayoutSizeType, type TabProp, type 
 import { useSettingsStore } from "./settings";
 import defaultSettings from "@/config/settings";
 import type { Frame } from "@/layout/components/FrameLayout/useFrame";
-import { list } from "@/api/system/dictData";
+import { list, listDataTreeList } from "@/api/system/dictData";
 import { uacAppSecret } from "work";
 
 export const useLayoutStore = defineStore(
@@ -127,9 +127,15 @@ export const useLayoutStore = defineStore(
       }
     };
 
-    const getDictData = async (dictCode: string) => {
+    /**
+     * 查询字典数据，isCascade为 true 时，代表开启级联查询，返回树形数据
+     */
+    const getDictData = async (dictCode: string, isCascade = false) => {
       if (dictList.value[dictCode]) return { data: dictList.value[dictCode] };
-      const res = await list({ dictCode, appId: uacAppSecret });
+      const res = isCascade
+        ? await listDataTreeList({ dictCode, appId: uacAppSecret })
+        : await list({ dictCode, appId: uacAppSecret });
+
       dictList.value[dictCode] = res.data;
       return res;
     };

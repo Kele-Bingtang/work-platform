@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -84,7 +84,7 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         sysUserDTO.setUsername(loginInfoEvent.getUsername())
                 .setUserStatus(1)
                 .setLoginIp(clientIp)
-                .setLoginTime(new Date());
+                .setLoginTime(LocalDateTime.now());
 
         sysUserService.updateOneByUserId(sysUserDTO);
     }

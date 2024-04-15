@@ -7,7 +7,7 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -83,5 +83,5 @@ public class SysTenant extends BaseDO {
     /**
      * 租户过期时间（-1 无限期）
      */
-    private Date expireTime;
+    private LocalDateTime expireTime;
 }

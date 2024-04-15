@@ -36,7 +36,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -149,7 +149,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean insertOne(SysUserDTO sysUserDTO) {
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
-        sysUser.setRegisterTime(new Date());
+        sysUser.setRegisterTime(LocalDateTime.now());
         if (Objects.isNull(sysUser.getPassword())) {
             sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
         }
@@ -188,7 +188,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser user = new SysUser();
         user.setUserId(userId);
         user.setLoginIp(ServletUtil.getClientIp(loginInfoEvent.getRequest()));
-        user.setLoginTime(new Date());
+        user.setLoginTime(LocalDateTime.now());
         user.setUpdateBy(userId);
 
         baseMapper.update(user, Wrappers.<SysUser>lambdaUpdate().eq(SysUser::getUserId, userId));

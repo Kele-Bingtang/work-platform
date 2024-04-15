@@ -6,7 +6,6 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
-import cn.youngkbt.uac.sys.model.vo.extra.DeptTree;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -57,7 +56,7 @@ public interface SysDeptService extends IService<SysDept> {
      * @param sysDeptDTO 查询条件
      * @return 部门树结构列表
      */
-    List<DeptTree> listDeptTreeTable(SysDeptDTO sysDeptDTO);
+    List<SysDeptVO> listDeptTreeTable(SysDeptDTO sysDeptDTO);
 
     /**
      * 根据部门 ID 查询父部门

@@ -42,6 +42,16 @@ public class SysDictTypeDTO {
     private String dictName;
 
     /**
+     * 是否开启级联（0 不开启，1 开启）
+     */
+    private Integer isCascade;
+
+    /**
+     * 介绍
+     */
+    private String intro;
+
+    /**
      * 应用 ID
      */
     private String appId;

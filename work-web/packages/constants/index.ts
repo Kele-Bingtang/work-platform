@@ -17,3 +17,8 @@ export const uacAppGrantType = "password";
 
 export const httpPrefix = "http://";
 export const httpsPrefix = "https://";
+
+export const baseEnum = [
+  { label: "是", value: 1 },
+  { label: "否", value: 0 },
+];

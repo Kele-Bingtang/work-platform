@@ -1,5 +1,7 @@
+import { ElMessageBox } from "element-plus";
 import type { FieldNamesProps } from "../interface";
-import { isArray } from "@work/utils";
+import { exportJsonToExcel, formatJsonToArray } from "@work/utils";
+import { unref } from "vue";
 
 /**
  * @description 处理 prop，当 prop 为多级嵌套时 ==> 返回最后一级 prop
@@ -92,3 +94,54 @@ export function findItemNested(enumData: any, callValue: any, value: string, chi
     if (current[children]) return findItemNested(current[children], callValue, value, children);
   }, null);
 }
+
+// 导出
+export const downloadFile = async (
+  columns: any,
+  data: any[],
+  fileName: string,
+  msg: string,
+  exportKey: "props" | "label" | "dataKey"
+) => {
+  ElMessageBox.confirm(msg, "温馨提示", { type: "warning" }).then(() => {
+    const tHeader = [] as string[];
+    const propName = [] as string[];
+
+    const flatData = filterFlatData(data);
+    if (exportKey === "dataKey") {
+      Object.keys(flatData[0]).forEach((item: any) => {
+        propName.push(item);
+        tHeader.push(item);
+      });
+    } else {
+      columns.forEach((item: any) => {
+        if (!item.type && item.prop !== "operation") {
+          propName.push(item.prop!);
+          if (exportKey === "props") tHeader.push(item.prop!);
+          else tHeader.push(item.label!);
+        }
+      });
+    }
+
+    const filterVal = propName;
+    // filterFlatData：扁平化 data，data 可能有 children 属性和 _enum 属性
+    const d = formatJsonToArray(flatData, filterVal);
+    exportJsonToExcel(tHeader, d, fileName, undefined, undefined, true, "xlsx");
+  });
+};
+
+/**
+ * @description 扁平化 data，data 可能有 children 属性和 _enum 属性
+ */
+const filterFlatData = (data: any[]) => {
+  return data.reduce((pre: any[], current: any) => {
+    // 针对枚举类的导出
+    if (current._enum) {
+      Object.keys(current._enum).forEach(key => (current[key] = unref(current._enum[key])));
+      delete current._enum;
+    }
+    let flatArr = [...pre, current];
+    if (current.children) flatArr = [...flatArr, ...filterFlatData(current.children)];
+    return flatArr;
+  }, []);
+};

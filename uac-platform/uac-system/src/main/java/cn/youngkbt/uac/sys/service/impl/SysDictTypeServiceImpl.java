@@ -43,7 +43,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     public List<SysDictTypeVO> queryList(SysDictTypeDTO sysDictTypeDTO) {
         LambdaQueryWrapper<SysDictType> wrapper = buildQueryWrapper(sysDictTypeDTO);
         List<SysDictType> sysDictTypeList = baseMapper.selectList(wrapper);
-        
+
         return MapstructUtil.convert(sysDictTypeList, SysDictTypeVO.class);
     }
 
@@ -51,7 +51,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     public TablePage<SysDictTypeVO> listPage(SysDictTypeDTO sysDictTypeDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictType> wrapper = buildQueryWrapper(sysDictTypeDTO);
         Page<SysDictType> sysDictTypePage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
-        
+
         return TablePage.build(sysDictTypePage, SysDictTypeVO.class);
     }
 
@@ -73,7 +73,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Transactional(rollbackFor = Exception.class)
     public boolean updateOne(SysDictTypeDTO sysDictTypeDTO) {
         SysDictType newSysDictType = MapstructUtil.convert(sysDictTypeDTO, SysDictType.class);
-        // 同步更新 dictData d的 dictCode
+        // 同步更新 dictData 的 dictCode
         SysDictType oldDictType = baseMapper.selectById(sysDictTypeDTO.getId());
         sysDictDataService.updateDictCode(oldDictType.getDictCode(), newSysDictType.getDictCode());
         return baseMapper.updateById(newSysDictType) > 0;
@@ -82,6 +82,12 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Override
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public boolean checkAppExitDictType(List<String> appIds) {
+        return baseMapper.exists(Wrappers.<SysDictType>lambdaQuery()
+                .in(SysDictType::getAppId, appIds));
     }
 }
 

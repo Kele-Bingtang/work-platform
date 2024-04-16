@@ -86,8 +86,8 @@ public class SysRoleController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "角色列表删除", description = "通过主键批量删除角色列表")
-    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(sysRoleService.removeBatch(List.of(ids)));
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> roleIds) {
+        return HttpResult.ok(sysRoleService.removeBatch(List.of(ids), roleIds));
     }
 
     @GetMapping("/listRoleLinkByUserId/{appId}/{userId}")

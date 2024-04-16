@@ -32,9 +32,21 @@ export const editOne = (data: RequiredKeyPartialOther<Post.PostInfo, "id">) => {
 };
 
 export const deleteOne = (data: Post.PostInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+  return http.delete<http.Response<string>>(
+    `${baseUri}/${data.id}`,
+    {},
+    {
+      data: [data.postId],
+    }
+  );
 };
 
-export const deleteBatch = (ids: string[]) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
+export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Post.PostInfo[] }) => {
+  return http.delete<http.Response<string>>(
+    `${baseUri}/${idList.join(",")}`,
+    {},
+    {
+      data: dataList.map(item => item.postId),
+    }
+  );
 };

@@ -20,6 +20,9 @@ export const options: FormOptionsProps<Tenant.TenantInfo> = {
     fixWidth: true,
     rules: rules,
   },
+  row: {
+    col: { span: 12 },
+  },
   columns: [
     {
       formItem: { label: "企业名称", prop: "tenantName" },

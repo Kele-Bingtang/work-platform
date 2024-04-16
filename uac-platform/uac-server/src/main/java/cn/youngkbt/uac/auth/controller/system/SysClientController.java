@@ -8,6 +8,7 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.vo.SysClientVO;
 import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
+import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,7 +31,8 @@ import java.util.List;
 public class SysClientController {
 
     private final SysClientService clientService;
-
+    private final SysAppService sysAppService;
+    
     @GetMapping("/{id}")
     @Operation(summary = "客户端列表查询", description = "通过主键查询客户端列表")
     public Response<SysClientVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
@@ -82,8 +84,11 @@ public class SysClientController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "客户端删除", description = "通过主键批量删除客户端")
-    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        // TODO：如果有 APP 绑定，则无法删除
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> clientIds) {
+        if(sysAppService.checkExitApp(clientIds)) {
+            return HttpResult.failMessage("存在 APP 绑定，不允许删除");
+        }
+        
         return HttpResult.ok(clientService.removeBatch(List.of(ids)));
     }
 }

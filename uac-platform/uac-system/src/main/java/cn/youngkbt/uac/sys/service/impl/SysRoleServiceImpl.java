@@ -5,10 +5,9 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
-import cn.youngkbt.uac.sys.model.po.SysRole;
+import cn.youngkbt.uac.sys.model.po.*;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
-import cn.youngkbt.uac.sys.service.SysRoleService;
-import cn.youngkbt.uac.sys.service.UserRoleLinkService;
+import cn.youngkbt.uac.sys.service.*;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -16,6 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -30,7 +30,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements SysRoleService {
 
+    private final RoleMenuLinkService roleMenuLinkService;
+    private final RoleDeptLinkService roleDeptLinkService;
     private final UserRoleLinkService userRoleLinkService;
+    private final UserGroupRoleLinkService userGroupRoleLinkService;
 
     @Override
     public SysRoleVO listById(Long id) {
@@ -92,10 +95,24 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public boolean removeBatch(List<Long> ids) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeBatch(List<Long> ids, List<String> roleIds) {
+        // 删除角色与菜单关联
+        roleMenuLinkService.remove(Wrappers.<RoleMenuLink>lambdaQuery().in(RoleMenuLink::getRoleId, roleIds));
+        // 删除角色与部门关联
+        roleDeptLinkService.remove(Wrappers.<RoleDeptLink>lambdaQuery().in(RoleDeptLink::getRoleId, roleIds));
+        // 删除角色与用户绑定
+        userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery().in(UserRoleLink::getRoleId, roleIds));
+        // 删除角色与用户组绑定
+        userGroupRoleLinkService.remove(Wrappers.<UserGroupRoleLink>lambdaQuery().in(UserGroupRoleLink::getRoleId, roleIds));
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 
+    @Override
+    public boolean checkAppExitRole(List<String> appIds) {
+        return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
+                .in(SysRole::getAppId, appIds));
+    }
 }
 
 

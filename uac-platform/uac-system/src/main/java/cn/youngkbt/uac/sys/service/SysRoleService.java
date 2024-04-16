@@ -79,6 +79,13 @@ public interface SysRoleService extends IService<SysRole> {
      * @param ids 主键列表
      * @return 是否成功
      */
-    boolean removeBatch(List<Long> ids);
+    boolean removeBatch(List<Long> ids, List<String> roleIds);
 
+    /**
+     * 校验 App 下是否存在角色
+     *
+     * @param appIds 应用 ID 列表
+     * @return 是否存在
+     */
+    boolean checkAppExitRole(List<String> appIds);
 }

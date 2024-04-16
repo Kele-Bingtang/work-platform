@@ -65,4 +65,10 @@ public interface SysDictTypeService extends IService<SysDictType> {
      */
     boolean removeBatch(List<Long> ids);
 
+    /**
+     * 校验 App 下是否存在字典类型
+     * @param appIds 应用 Id 列表
+     * @return 是否存在
+     */
+    boolean checkAppExitDictType(List<String> appIds);
 }

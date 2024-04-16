@@ -29,4 +29,6 @@ public interface AuthConstant {
      */
     int PASSWORD_MIN_LENGTH = 5;
     int PASSWORD_MAX_LENGTH = 20;
+    
+    String ADMIN_TENANT_ID = "000000";
 }

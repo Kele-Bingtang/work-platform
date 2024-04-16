@@ -5,6 +5,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictData;
+import cn.youngkbt.uac.sys.model.po.SysDictType;
 import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -98,4 +99,12 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @return 是否唯一
      */
     boolean checkDictDataUnique(SysDictDataDTO sysDictDataDTO);
+
+    /**
+     * 校验字典数据是否存在，并获取对应数据
+     *
+     * @param ids 主键列表
+     * @return 是否存在
+     */
+    List<SysDictType> checkDictTypeExitDataAndGet(List<Long> ids);
 }

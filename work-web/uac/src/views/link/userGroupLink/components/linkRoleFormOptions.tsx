@@ -20,7 +20,7 @@ export const useFormOptions = (requestParams: { userGroupId: string }) => {
     },
     columns: [
       {
-        formItem: { label: "角色选择", prop: "roleIds", br: true },
+        formItem: { label: "角色选择", prop: "roleIds" },
         attrs: {
           render: ({ scope }) => {
             return (

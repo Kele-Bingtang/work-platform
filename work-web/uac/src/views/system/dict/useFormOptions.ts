@@ -30,11 +30,12 @@ export const useFormOptions = (
       labelWidth: 80,
       size: "default",
       fixWidth: true,
+      width: "100%",
       rules: dictTypeRules,
     },
     columns: [
       {
-        formItem: { label: "所属 App", prop: "appId", br: true },
+        formItem: { label: "所属 App", prop: "appId" },
         attrs: {
           el: "el-select",
           enum: enumData,

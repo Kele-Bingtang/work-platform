@@ -17,6 +17,9 @@ export const options: FormOptionsProps = {
     fixWidth: true,
     rules: rules,
   },
+  row: {
+    col: { span: 12 },
+  },
   columns: [
     {
       formItem: { label: "客户端 Key", prop: "clientKey" },

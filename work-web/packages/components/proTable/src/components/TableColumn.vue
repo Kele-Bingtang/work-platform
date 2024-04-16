@@ -29,35 +29,27 @@ const renderCellData = (item: TableColumnProps, scope: RenderScope<any>, enumDat
 };
 
 // 获取 tag 标签
-const renderTag = (item: any, data: any, last?: boolean, index?: number) => {
+const renderTag = (item: any, data: any, last = true, index?: number) => {
   const { tagType = "primary", tagEffect = "light" } = item;
 
   if (item.tagEl === "el-check-tag") {
     // 直接 index ? : 是不行的，因为这样 index = 0 是 false
-    return index !== undefined ? (
+    return (
       <>
         <ElCheckTag key={index} checked type={tagType}>
           {data}
         </ElCheckTag>
         {last ? "" : " "}
       </>
-    ) : (
-      <ElCheckTag checked type={tagType}>
-        {data}
-      </ElCheckTag>
     );
   }
-  return index !== undefined ? (
+  return (
     <>
       <ElTag key={index} type={tagType} effect={tagEffect}>
         {data}
       </ElTag>
       {last ? "" : " "}
     </>
-  ) : (
-    <ElTag type={tagType} effect={tagEffect}>
-      {data}
-    </ElTag>
   );
 };
 

@@ -133,7 +133,7 @@ public class SysUserGroupController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "用户组列表删除", description = "通过主键批量删除用户组列表")
-    public Response<Boolean> removeBatch(@PathVariable Long[] ids) {
-        return HttpResult.ok(sysUserGroupService.removeBatch(List.of(ids)));
+    public Response<Boolean> removeBatch(@PathVariable Long[] ids, @RequestBody List<String> userGroupIds) {
+        return HttpResult.ok(sysUserGroupService.removeBatch(List.of(ids), userGroupIds));
     }
 }

@@ -18,6 +18,9 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       fixWidth: true,
       rules: rules,
     },
+    row: {
+      col: { span: 12 },
+    },
     columns: [
       {
         formItem: { label: "所属客户端", prop: "clientId", br: true },

@@ -59,7 +59,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public TablePage<SysMenuVO> listPage(SysMenuDTO sysMenuDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         Page<SysMenu> sysMenuPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
-        
+
         return TablePage.build(sysMenuPage, SysMenuVO.class);
     }
 
@@ -80,7 +80,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
         List<SysMenuVO> menuTreeList = MapstructUtil.convert(sysMenuList, SysMenuVO.class);
-        
+
         return TreeBuildUtil.build(menuTreeList, SysMenuVO::getMenuId);
     }
 
@@ -163,6 +163,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return baseMapper.deleteById(id) > 0;
     }
 
+    @Override
+    public boolean checkAppExitMenu(List<String> appIds) {
+        return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
+                .in(SysMenu::getAppId, appIds));
+    }
 }
 
 

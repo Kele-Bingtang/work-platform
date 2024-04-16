@@ -5,6 +5,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
@@ -25,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -39,6 +42,7 @@ public class SysUserController {
     private final SysUserService sysUserService;
     private final UserGroupLinkService userGroupLinkService;
     private final UserRoleLinkService userRoleLinkService;
+    private final UacHelper uacHelper;
 
     @GetMapping("/{id}")
     @Operation(summary = "用户列表查询", description = "通过主键查询用户列表")
@@ -105,7 +109,7 @@ public class SysUserController {
         boolean result = userGroupLinkService.addUserGroupsToUser(userLinkUserGroupDTO);
         return HttpResult.ok(result);
     }
-    
+
     @PostMapping("/addRolesToUser")
     @Operation(summary = "添加角色到用户", description = "添加角色到用户（多个角色）")
     public Response<Boolean> addRolesToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
@@ -146,7 +150,11 @@ public class SysUserController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "用户列表删除", description = "通过主键批量删除用户列表")
-    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(sysUserService.removeBatch(List.of(ids)));
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> userIds) {
+        LoginUser loginUser = UacHelper.getLoginUser();
+        if (Objects.nonNull(loginUser) && userIds.contains(loginUser.getUserId())) {
+            return HttpResult.failMessage("当前用户不能删除");
+        }
+        return HttpResult.ok(sysUserService.removeBatch(List.of(ids), userIds));
     }
 }

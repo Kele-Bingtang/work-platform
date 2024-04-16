@@ -48,9 +48,21 @@ export const editOne = (data: RequiredKeyPartialOther<Client.ClientInfo, "id">) 
 };
 
 export const deleteOne = (data: Client.ClientInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+  return http.delete<http.Response<string>>(
+    `${baseUri}/${data.id}`,
+    {},
+    {
+      data: [data.clientId],
+    }
+  );
 };
 
-export const deleteBatch = (ids: string[]) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
+export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Client.ClientInfo[] }) => {
+  return http.delete<http.Response<string>>(
+    `${baseUri}/${idList.join(",")}`,
+    {},
+    {
+      data: dataList.map(item => item.clientId),
+    }
+  );
 };

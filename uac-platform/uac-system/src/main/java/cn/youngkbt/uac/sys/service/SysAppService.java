@@ -80,4 +80,11 @@ public interface SysAppService extends IService<SysApp> {
      */
     List<AppTreeVO> listTreeList();
 
+    /**
+     * 检查应用是否存在
+     *
+     * @param clientIds 客户端 ID 清单
+     * @return 是否存在
+     */
+    boolean checkExitApp(List<String> clientIds);
 }

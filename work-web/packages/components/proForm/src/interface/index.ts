@@ -1,12 +1,14 @@
-import type { FormProps } from "element-plus/es/components/form/src/form";
-import type { FormItemProps } from "element-plus/es/components/form/src/form-item";
-import type { VNode, ComputedRef } from "vue";
+import type { FormProps, FormItemProps, RowProps, ColProps } from "element-plus";
+import type { VNode, ComputedRef, ComponentPublicInstance } from "vue";
 import ProForm, { type ProFormProps } from "../index.vue";
 
 type ValueType = string | number | boolean | any[];
 
 export interface FormOptionsProps<T = any> {
   form?: Partial<FormProps> & { fixWidth?: boolean; width?: number | string };
+  row?: Partial<RowProps> & {
+    col?: Partial<ColProps>;
+  };
   columns: FormColumnProps<T>[];
 }
 
@@ -58,7 +60,9 @@ export type FormRenderScope = {
 };
 
 export interface FormColumnProps<T = any> {
-  formItem: FormItem<T>;
+  formItem: FormItem<T> & {
+    col?: Partial<ColProps>;
+  };
   attrs: {
     el?: FormType;
     enum?: FormEnumProps[] | ((enumMap?: any) => Promise<any>) | ComputedRef<FormEnumProps[]>;

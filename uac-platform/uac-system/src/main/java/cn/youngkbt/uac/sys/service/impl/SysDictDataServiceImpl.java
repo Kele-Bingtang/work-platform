@@ -9,12 +9,14 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysDictDataMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictData;
+import cn.youngkbt.uac.sys.model.po.SysDictType;
 import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
 import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -130,6 +132,15 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
                 .eq(SysDictData::getDictValue, sysDictDataDTO.getDictValue())
                 .eq(SysDictData::getParentId, sysDictDataDTO.getParentId())
                 .ne(Objects.nonNull(sysDictDataDTO.getDataId()), SysDictData::getDataId, sysDictDataDTO.getDataId()));
+    }
+
+    @Override
+    public List<SysDictType> checkDictTypeExitDataAndGet(List<Long> ids) {
+        QueryWrapper<SysDictData> wrapper = Wrappers.query();
+        wrapper.eq("tsdt.is_deleted", 0)
+                .in("tsdt.id", ids);
+
+        return baseMapper.checkExitDictData(wrapper);
     }
 }
 

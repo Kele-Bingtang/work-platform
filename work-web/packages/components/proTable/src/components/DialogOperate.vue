@@ -2,11 +2,11 @@
   <el-dialog v-model="dialogFormVisible" v-bind="dialog" :title="dialogTitle" destroy-on-close>
     <slot name="form">
       <ProForm v-if="options" ref="formElementRef" :options="formOptions" v-model="form">
-        <template #footer>
+        <template #footer v-if="$slots.formFooter">
           <slot name="formFooter" v-bind="form"></slot>
         </template>
 
-        <template #operation>
+        <template #operation v-if="$slots.formOperation">
           <slot name="formOperation" v-bind="form"></slot>
         </template>
       </ProForm>
@@ -212,7 +212,7 @@ const handleDelete = async ({ row }: any) => {
   }
 };
 
-const handleDeleteBatch = async (selectedListIds: string[], fallback: () => {}) => {
+const handleDeleteBatch = async (selectedListIds: string[], selectedList: any, fallback: () => {}) => {
   ElMessageBox.confirm(`删除所选信息?`, "温馨提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -220,7 +220,7 @@ const handleDeleteBatch = async (selectedListIds: string[], fallback: () => {}) 
     draggable: true,
   }).then(async () => {
     if (props) {
-      let data = selectedListIds;
+      let data = { idList: selectedListIds, dataList: selectedList };
 
       props.beforeConfirm && props.beforeConfirm("deleteBatch");
       data = (props.beforeDeleteBatch && (await props.beforeDeleteBatch(data))) || data;
@@ -252,6 +252,7 @@ const executeApi = (
   if (!api) return ElMessage.warning(failure + "没有提供对应接口");
   api(params)
     .then(res => {
+      console.log(res);
       ElMessage.success(success);
       return successCallBack && successCallBack(res);
     })

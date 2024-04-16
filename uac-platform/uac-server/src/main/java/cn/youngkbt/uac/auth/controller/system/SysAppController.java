@@ -8,8 +8,7 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysAppDTO;
 import cn.youngkbt.uac.sys.model.vo.SysAppVO;
 import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
-import cn.youngkbt.uac.sys.service.SysAppService;
-import cn.youngkbt.uac.sys.service.SysClientService;
+import cn.youngkbt.uac.sys.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +31,9 @@ public class SysAppController {
 
     private final SysAppService sysAppService;
     private final SysClientService sysClientService;
+    private final SysRoleService sysRoleService;
+    private final SysMenuService sysMenuService;
+    private final SysDictTypeService sysDictTypeService;
 
     @GetMapping("/{id}")
     @Operation(summary = "应用列表查询", description = "通过主键查询应用")
@@ -86,7 +88,19 @@ public class SysAppController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "应用删除", description = "通过主键批量删除应用")
-    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> appIds) {
+        if (sysRoleService.checkAppExitRole(appIds)) {
+            return HttpResult.failMessage("存在角色绑定，不允许删除");
+        }
+
+        if (sysMenuService.checkAppExitMenu(appIds)) {
+            return HttpResult.failMessage("存在菜单绑定，不允许删除");
+        }
+
+        if (sysDictTypeService.checkAppExitDictType(appIds)) {
+            return HttpResult.failMessage("存在字典类型绑定，不允许删除");
+        }
+        
         return HttpResult.ok(sysAppService.removeBatch(List.of(ids)));
     }
 

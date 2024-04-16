@@ -18,7 +18,7 @@ public interface UserPostLinkService extends IService<UserPostLink> {
 
     boolean checkUserExistPost(String userId);
 
-    boolean checkPostGroupExistUser(String postId);
+    boolean checkPostExistUser(List<String> postIds);
 
     boolean addOneLink(UserPostLinkDTO userPostLinkDTO);
 

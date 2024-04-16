@@ -51,7 +51,7 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     public TablePage<SysAppVO> listPage(SysAppDTO sysAppDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<SysApp> wrapper = buildQueryWrapper(sysAppDTO);
         IPage<SysApp> sysClientList = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
-        
+
         return TablePage.build(sysClientList, SysAppVO.class);
     }
 
@@ -91,6 +91,12 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     @Override
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public boolean checkExitApp(List<String> clientIds) {
+        return baseMapper.exists(Wrappers.<SysApp>lambdaQuery()
+                .in(SysApp::getClientId, clientIds));
     }
 }
 

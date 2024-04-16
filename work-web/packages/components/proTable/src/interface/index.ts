@@ -1,6 +1,6 @@
-import type { VNode, ComponentPublicInstance } from "vue";
+import type { VNode, ComponentPublicInstance, ComputedRef, Ref } from "vue";
 import type { BreakPoint, Responsive, FormColumnProps } from "@work/components";
-import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
+import type { TableColumnCtx } from "element-plus";
 import ProTable, { type ProTableProps } from "../index.vue";
 
 type ValueType = string | number | boolean | any[];
@@ -77,6 +77,8 @@ export interface TableColumnProps<T = any>
   render?: (scope: RenderScope<T>) => VNode | string; // 自定义单元格内容渲染（tsx 语法）
   _children?: TableColumnProps<T>[]; // 多级表头
   form?: PartialKey<FormColumnProps, "formItem">;
+  handleEdit: (scope: any, expose: any) => void;
+  handleDelete: (scope: any, expose: any) => void;
 }
 
 export type ProTableInstance = Omit<InstanceType<typeof ProTable>, keyof ComponentPublicInstance | keyof ProTableProps>;

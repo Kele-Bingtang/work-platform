@@ -40,7 +40,7 @@
 <script setup lang="tsx" name="DictType">
 import { ProTable, TreeFilter, Drawer } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { listPage, addOne, editOne, removeOne, type DictType } from "@/api/system/dictType";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type DictType } from "@/api/system/dictType";
 import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
 import DictData from "./dictData.vue";
 import { ElLink } from "element-plus";
@@ -94,7 +94,7 @@ const detailForm: DialogForm = {
   ).dictTypeOptions,
   addApi: addOne,
   editApi: editOne,
-  deleteApi: removeOne,
+  deleteApi: deleteOne,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "30%",

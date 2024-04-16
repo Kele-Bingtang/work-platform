@@ -62,6 +62,6 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      * @param ids 主键列表
      * @return 是否删除成功
      */
-    boolean removeBatch(List<Long> ids);
+    boolean removeBatch(List<Long> ids, List<String> userGroupIds);
 
 }

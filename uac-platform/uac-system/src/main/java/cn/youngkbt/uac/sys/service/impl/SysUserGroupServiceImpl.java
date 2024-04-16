@@ -5,8 +5,12 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysUserGroupMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
+import cn.youngkbt.uac.sys.model.po.UserGroupLink;
+import cn.youngkbt.uac.sys.model.po.UserGroupRoleLink;
 import cn.youngkbt.uac.sys.model.vo.SysUserGroupVO;
 import cn.youngkbt.uac.sys.service.SysUserGroupService;
+import cn.youngkbt.uac.sys.service.UserGroupLinkService;
+import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -14,6 +18,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -28,6 +33,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, SysUserGroup> implements SysUserGroupService {
 
+    private final UserGroupLinkService userGroupLinkService;
+    private final UserGroupRoleLinkService userGroupRoleLinkService;
+    
     @Override
     public List<SysUserGroupVO> queryList(SysUserGroupDTO sysUserGroupDTO) {
         LambdaQueryWrapper<SysUserGroup> wrapper = buildQueryWrapper(sysUserGroupDTO);
@@ -71,7 +79,12 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
     }
 
     @Override
-    public boolean removeBatch(List<Long> ids) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeBatch(List<Long> ids, List<String> userGroupIds) {
+        // 删除用户组与用户绑定
+        userGroupLinkService.remove(Wrappers.<UserGroupLink>lambdaQuery().in(UserGroupLink::getUserGroupId, userGroupIds));
+        // 删除用户组与角色绑定
+        userGroupRoleLinkService.remove(Wrappers.<UserGroupRoleLink>lambdaQuery().in(UserGroupRoleLink::getUserGroupId, userGroupIds));
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 

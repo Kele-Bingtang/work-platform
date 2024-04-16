@@ -9,11 +9,7 @@
             <result property="dictLabel" column="dict_label" jdbcType="VARCHAR"/>
             <result property="dictValue" column="dict_value" jdbcType="VARCHAR"/>
             <result property="dictSort" column="dict_sort" jdbcType="INTEGER"/>
-            <result property="cssClass" column="css_class" jdbcType="VARCHAR"/>
-            <result property="listClass" column="list_class" jdbcType="VARCHAR"/>
             <result property="isDefault" column="is_default" jdbcType="CHAR"/>
-            <result property="parentDictCode" column="parent_dict_code" jdbcType="VARCHAR"/>
-            <result property="parentCodeValue" column="parent_code_value" jdbcType="VARCHAR"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -36,4 +32,11 @@
         status,is_deleted,tenant_id,
         app_id,dict_code
     </sql>
+    
+    <select id="checkExitDictData" resultType="cn.youngkbt.uac.sys.model.po.SysDictType">
+        select tsdt.id, tsdt.dict_name
+        from t_sys_dict_type tsdt
+        left join t_sys_dict_data tsdd on tsdt.dict_code = tsdd.dict_code and tsdd.is_deleted = 0
+        ${ew.getCustomSqlSegment}
+    </select>
 </mapper>

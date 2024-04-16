@@ -29,6 +29,10 @@ export const editOne = (data: DictType.DictTypeInfo) => {
   return http.put<http.Response<string>>(baseUri, data);
 };
 
-export const removeOne = (data: DictType.DictTypeInfo) => {
+export const deleteOne = (data: DictType.DictTypeInfo) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+};
+
+export const deleteBatch = ({ idList }: { idList: string[] }) => {
+  return http.delete<http.Response<string>>(`${baseUri}/${idList.join(",")}`);
 };

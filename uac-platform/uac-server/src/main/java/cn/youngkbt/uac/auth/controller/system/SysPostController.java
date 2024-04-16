@@ -9,6 +9,7 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
 import cn.youngkbt.uac.sys.service.SysPostService;
+import cn.youngkbt.uac.sys.service.UserPostLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequestMapping("/system/post")
 public class SysPostController {
     private final SysPostService sysPostService;
+    private final UserPostLinkService userPostLinkService;
 
     @GetMapping("/{id}")
     @Operation(summary = "岗位列表查询", description = "通过主键查询岗位列表")
@@ -79,7 +81,10 @@ public class SysPostController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "删除岗位", description = "通过主键批量删除岗位")
-    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+    public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> postIds) {
+        if(userPostLinkService.checkPostExistUser(postIds)) {
+            return HttpResult.failMessage("该岗位已绑定用户，不允许删除");
+        }
         return HttpResult.ok(sysPostService.removeBatch(List.of(ids)));
     }
 }

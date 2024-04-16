@@ -114,7 +114,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param ids 主键列表
      * @return 是否成功
      */
-    boolean removeBatch(List<Long> ids);
+    boolean removeBatch(List<Long> ids, List<String> userIds);
 
     /**
      * 获取角色列表和岗位列表

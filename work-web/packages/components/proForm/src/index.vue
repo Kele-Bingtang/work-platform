@@ -1,23 +1,30 @@
 <template>
   <component :is="'el-form'" v-bind="options.form" ref="formRef" :model="form">
-    <template v-for="item in options.columns">
-      <component
-        :key="item.formItem.prop"
-        v-if="!isDestroy(item)"
-        v-show="!isHidden(item)"
-        :is="'el-form-item'"
-        v-bind="item.formItem"
-        :label="parseLabel(item.formItem.label)"
-        :style="{
-          display: item.formItem.br && options.form!.labelPosition !== 'top' ? 'flex' : '',
-          width: item.formItem.br && options.form!.labelPosition === 'top' ? '100%' : '',
-        }"
-      >
-        <ProFormItem :column="item" :form="form" :style="formWidth(item)" />
-      </component>
-    </template>
-    <el-form-item class="form-footer"><slot name="footer"></slot></el-form-item>
-    <el-form-item class="form-operation"><slot name="operation"></slot></el-form-item>
+    <component :is="`el-row`" v-bind="options.row" style="width: 100%">
+      <template v-for="item in options.columns" :key="item.formItem.prop">
+        <component
+          :is="`el-col`"
+          v-bind="item.formItem.col || options.row?.col"
+          :span="item.formItem.br ? 24 : item.formItem.col?.span || options.row?.col?.span || 24"
+        >
+          <component
+            v-if="!isDestroy(item)"
+            v-show="!isHidden(item)"
+            :is="'el-form-item'"
+            v-bind="item.formItem"
+            :label="parseLabel(item.formItem.label)"
+            :style="{
+              display: item.formItem.br && options.form!.labelPosition !== 'top' ? 'flex' : '',
+            }"
+          >
+            <ProFormItem :column="item" :form="form" :style="formWidth(item)" />
+          </component>
+        </component>
+      </template>
+    </component>
+
+    <el-form-item class="form-footer" v-if="$slots.footer"><slot name="footer"></slot></el-form-item>
+    <el-form-item class="form-operation" v-if="$slots.operation"><slot name="operation"></slot></el-form-item>
   </component>
 </template>
 
@@ -154,7 +161,7 @@ const formWidth = (column: FormColumnProps) => {
   const style = attrs.style || {};
   if (column.formItem.br) return { ...style, width: "100%" };
   if (attrs.width) return { ...style, width: getPx(attrs.width) };
-  if (form?.fixWidth) return { ...style, width: getPx(attrs.width || "220px") };
+  if (form?.fixWidth) return { ...style, width: getPx(form.width || "220px") };
   return style;
 };
 

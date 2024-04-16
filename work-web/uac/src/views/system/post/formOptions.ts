@@ -16,6 +16,9 @@ export const options: FormOptionsProps<Post.PostInfo> = {
     fixWidth: true,
     rules: rules,
   },
+  row: {
+    col: { span: 12 },
+  },
   columns: [
     {
       formItem: { label: "岗位编码", prop: "postCode" },

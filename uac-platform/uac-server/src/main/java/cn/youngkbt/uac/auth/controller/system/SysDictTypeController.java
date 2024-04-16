@@ -6,7 +6,9 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysDictTypeDTO;
+import cn.youngkbt.uac.sys.model.po.SysDictType;
 import cn.youngkbt.uac.sys.model.vo.SysDictTypeVO;
+import cn.youngkbt.uac.sys.service.SysDictDataService;
 import cn.youngkbt.uac.sys.service.SysDictTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Kele-Bingtang
@@ -28,6 +31,7 @@ import java.util.List;
 public class SysDictTypeController {
 
     private final SysDictTypeService sysDictTypeService;
+    private final SysDictDataService sysDictDataService;
 
     @GetMapping("/{id}")
     @Operation(summary = "字典类型列表查询", description = "通过主键查询字典类型列表")
@@ -49,7 +53,7 @@ public class SysDictTypeController {
         TablePage<SysDictTypeVO> tablePage = sysDictTypeService.listPage(sysDictTypeDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }
-    
+
     @PostMapping
     @Operation(summary = "字典类型列表新增", description = "新增字典类型列表")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictTypeDTO sysDictTypeDTO) {
@@ -68,6 +72,17 @@ public class SysDictTypeController {
     @DeleteMapping("/{ids}")
     @Operation(summary = "字典类型列表删除", description = "通过主键批量删除字典类型列表")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
-        return HttpResult.ok(sysDictTypeService.removeBatch(List.of(ids)));
+        List<Long> idList = List.of(ids);
+        List<SysDictType> sysDictTypes = sysDictDataService.checkDictTypeExitDataAndGet(idList);
+
+        if (!sysDictTypes.isEmpty()) {
+            String dictNames = sysDictTypes.stream()
+                    .map(SysDictType::getDictName)
+                    .distinct()
+                    .collect(Collectors.joining(","));
+
+            return HttpResult.failMessage("存在字典数据「" + dictNames + "」，不允许删除");
+        }
+        return HttpResult.ok(sysDictTypeService.removeBatch(idList));
     }
 }

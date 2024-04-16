@@ -20,6 +20,9 @@ export const options: FormOptionsProps<Dept.DeptTreeTable> = {
     fixWidth: true,
     rules: rules,
   },
+  row: {
+    col: { span: 12 },
+  },
   columns: [
     {
       formItem: { label: "上级部门", prop: "parentId", br: true },

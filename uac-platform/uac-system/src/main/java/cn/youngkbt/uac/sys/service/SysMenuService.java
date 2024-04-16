@@ -106,4 +106,11 @@ public interface SysMenuService extends IService<SysMenu> {
      */
     boolean removeOne(Long id);
 
+    /**
+     * 校验 App 下是否存在菜单
+     *
+     * @param appIds 应用 ID 列表
+     * @return 是否存在
+     */
+    boolean checkAppExitMenu(List<String> appIds);
 }

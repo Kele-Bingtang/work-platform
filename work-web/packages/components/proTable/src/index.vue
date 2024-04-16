@@ -130,7 +130,7 @@
                   type="primary"
                   size="small"
                   :icon="Edit"
-                  @click="dialogOperateRef?.handleEdit(scope)"
+                  @click="handleEdit(scope, item)"
                   :disabled="scope.row.disableEdit || detailForm?.disableEdit"
                   v-if="visibleButton(detailForm?.editApi, detailForm?.useEdit)"
                 >
@@ -138,7 +138,7 @@
                 </el-button>
                 <el-popconfirm
                   title="你确定删除吗?"
-                  @confirm="dialogOperateRef?.handleDelete(scope)"
+                  @confirm="handleDelete(scope, item)"
                   v-if="visibleButton(detailForm?.deleteApi, detailForm?.useDelete)"
                 >
                   <template #reference>
@@ -182,7 +182,7 @@
           <slot name="form" />
         </template>
 
-        <template #formFooter>
+        <template #formFooter v-if="$slots.formFooter">
           <slot name="formFooter" />
         </template>
 
@@ -207,19 +207,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, provide, onMounted, computed, nextTick, isRef, unref, type ComputedRef } from "vue";
-import { ElMessageBox, ElTable } from "element-plus";
+import { ref, watch, provide, onMounted, computed, nextTick, isRef, type ComputedRef } from "vue";
+import { ElTable } from "element-plus";
 import { useTable, type Table } from "./hooks/useTable";
 import { useSelection } from "./hooks/useSelection";
 import { SearchForm, Pagination, type BreakPoint } from "@work/components";
 import type { TableColumnProps } from "./interface";
 import { Refresh, Plus, Operation, Search, Edit, Delete, Coin, Download } from "@element-plus/icons-vue";
-import { lastProp, filterEnum, filterEnumLabel, handleRowAccordingToProp } from "./utils";
+import { lastProp, filterEnum, filterEnumLabel, handleRowAccordingToProp, downloadFile } from "./utils";
 import ColSetting from "./components/ColSetting.vue";
 import TableColumn from "./components/TableColumn.vue";
 import DialogOperate from "./components/DialogOperate.vue";
 import type { DialogFormProps } from "./components/DialogOperate.vue";
-import { exportJsonToExcel, formatJsonToArray } from "@work/utils";
 
 defineOptions({ name: "ProTable" });
 
@@ -406,6 +405,19 @@ const openColSetting = () => colRef.value.openColSetting();
 
 // 操作框
 const dialogOperateRef = ref();
+
+// 编辑回调
+const handleEdit = (scope: any, item: TableColumnProps) => {
+  if (item.handleEdit) item.handleEdit(scope, expose);
+  else dialogOperateRef.value?.handleEdit(scope);
+};
+
+// 删除回调
+const handleDelete = (scope: any, item: TableColumnProps) => {
+  if (item.handleDelete) item.handleDelete(scope, expose);
+  dialogOperateRef.value?.handleDelete(scope);
+};
+
 // 表格大小样式
 type ElTableSize = "" | "default" | "small" | "large";
 type CustomTableSize = "" | "default" | "small" | "large" | "mini";
@@ -476,64 +488,14 @@ const visibleButton = (api: any, flag: boolean | undefined) => {
 };
 
 const handleDeleteBatch = () => {
-  dialogOperateRef.value?.handleDeleteBatch(selectedListIds.value, () => {
+  dialogOperateRef.value?.handleDeleteBatch(selectedListIds.value, selectedList.value, () => {
     clearSelection();
     getTableList();
   });
 };
 
-// 导出
-const downloadFile = async (
-  columns: any,
-  data: any[],
-  fileName: string,
-  msg: string,
-  exportKey: "props" | "label" | "dataKey"
-) => {
-  ElMessageBox.confirm(msg, "温馨提示", { type: "warning" }).then(() => {
-    const tHeader = [] as string[];
-    const propName = [] as string[];
-
-    const flatData = filterFlatData(data);
-    if (exportKey === "dataKey") {
-      Object.keys(flatData[0]).forEach((item: any) => {
-        propName.push(item);
-        tHeader.push(item);
-      });
-    } else {
-      columns.forEach((item: any) => {
-        if (!item.type && item.prop !== "operation") {
-          propName.push(item.prop!);
-          if (exportKey === "props") tHeader.push(item.prop!);
-          else tHeader.push(item.label!);
-        }
-      });
-    }
-
-    const filterVal = propName;
-    // filterFlatData：扁平化 data，data 可能有 children 属性和 _enum 属性
-    const d = formatJsonToArray(flatData, filterVal);
-    exportJsonToExcel(tHeader, d, fileName, undefined, undefined, true, "xlsx");
-  });
-};
-
-/**
- * @description 扁平化 data，data 可能有 children 属性和 _enum 属性
- */
-const filterFlatData = (data: any[]) => {
-  return data.reduce((pre: any[], current: any) => {
-    // 针对枚举类的导出
-    if (current._enum) {
-      Object.keys(current._enum).forEach(key => (current[key] = unref(current._enum[key])));
-      delete current._enum;
-    }
-    let flatArr = [...pre, current];
-    if (current.children) flatArr = [...flatArr, ...filterFlatData(current.children)];
-    return flatArr;
-  }, []);
-};
 // 暴露给父组件的参数和方法(外部需要什么，都可以从这里暴露出去)
-defineExpose({
+const expose = {
   element: tableRef,
   dialogOperateRef,
   tableData,
@@ -549,7 +511,9 @@ defineExpose({
   isSelected,
   selectedList,
   selectedListIds,
-});
+};
+
+defineExpose(expose);
 </script>
 
 <style lang="scss">

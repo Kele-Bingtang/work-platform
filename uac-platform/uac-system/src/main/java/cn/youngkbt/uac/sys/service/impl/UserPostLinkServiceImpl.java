@@ -47,9 +47,9 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
     }
 
     @Override
-    public boolean checkPostGroupExistUser(String postId) {
+    public boolean checkPostExistUser(List<String> postIds) {
         return baseMapper.exists(Wrappers.<UserPostLink>lambdaQuery()
-                .eq(UserPostLink::getPostId, postId));
+                .in(UserPostLink::getPostId, postIds));
     }
 
     @Override

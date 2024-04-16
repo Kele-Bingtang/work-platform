@@ -25,6 +25,9 @@ export const useFormOptions = (defaultValue: ComputedRef<string>) => {
       fixWidth: true,
       rules: rules,
     },
+    row: {
+      col: { span: 8 },
+    },
     columns: [
       {
         formItem: { label: "用户名称", prop: "username" },

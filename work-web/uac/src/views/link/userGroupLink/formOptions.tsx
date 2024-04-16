@@ -17,6 +17,9 @@ export const useFormOptions = () => {
       fixWidth: true,
       rules: rules,
     },
+    row: {
+      col: { span: 12 },
+    },
     columns: [
       {
         formItem: { label: "用户组名", prop: "groupName" },

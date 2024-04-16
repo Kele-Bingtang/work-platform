@@ -7,20 +7,16 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
-import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
-import cn.youngkbt.uac.sys.mapper.SysUserMapper;
+import cn.youngkbt.uac.sys.mapper.*;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
-import cn.youngkbt.uac.sys.model.po.SysDept;
-import cn.youngkbt.uac.sys.model.po.SysUser;
+import cn.youngkbt.uac.sys.model.po.*;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
-import cn.youngkbt.uac.sys.service.SysPostService;
-import cn.youngkbt.uac.sys.service.SysRoleService;
-import cn.youngkbt.uac.sys.service.SysUserService;
+import cn.youngkbt.uac.sys.service.*;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -34,6 +30,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
@@ -54,9 +51,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Value("${default.password}")
     private String password;
 
-    private final SysDeptMapper sysDeptMapper;
     private final SysPostService sysPostService;
     private final SysRoleService sysRoleService;
+    private final SysDeptService sysDeptService;
+    private final UserRoleLinkService userRoleLinkService;
+    private final UserPostLinkService userPostLinkService;
+    private final UserGroupLinkService userGroupLinkService;
 
     @Override
     public SecurityUser selectTenantUserByUsername(String tenantId, String username) {
@@ -99,7 +99,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .eq(Objects.nonNull(sysUserDTO.getStatus()), "su.status", sysUserDTO.getStatus())
                 .and(StringUtils.hasText(sysUserDTO.getDeptId()), c -> {
                     // 查出 deptId 所对应的部门及其子部门 ID 信息
-                    List<SysDept> sysDeptList = sysDeptMapper.selectList(Wrappers.<SysDept>lambdaQuery()
+                    List<SysDept> sysDeptList = sysDeptService.list(Wrappers.<SysDept>lambdaQuery()
                             .select(SysDept::getDeptId)
                             .apply("FIND_IN_SET({0}, ancestors) > 0", sysUserDTO.getDeptId()));
                     // 获取所有子部门 ID
@@ -170,7 +170,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean removeBatch(List<Long> ids) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeBatch(List<Long> ids, List<String> userIds) {
+
+        // 删除用户与角色关联
+        userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery().in(UserRoleLink::getUserId, userIds));
+        // 删除用户与岗位表
+        userPostLinkService.remove(Wrappers.<UserPostLink>lambdaQuery().in(UserPostLink::getUserId, userIds));
+        // 删除用户与用户组表
+        userGroupLinkService.remove(Wrappers.<UserGroupLink>lambdaQuery().in(UserGroupLink::getUserId, userIds));
+
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 

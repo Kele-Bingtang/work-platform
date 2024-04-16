@@ -154,14 +154,26 @@ export const editUserRoleLinkInfo = (data: RequiredKeyPartialOther<Role.RoleLink
  * 删除一个角色
  */
 export const deleteOne = (data: Role.RoleInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+  return http.delete<http.Response<string>>(
+    `${baseUri}/${data.id}`,
+    {},
+    {
+      data: [data.roleId],
+    }
+  );
 };
 
 /**
  * 通过主键批量删除角色列表
  */
-export const deleteBatch = (ids: string[]) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${ids.join(",")}`);
+export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Role.RoleLinkInfo[] }) => {
+  return http.delete<http.Response<string>>(
+    `${baseUri}/${idList.join(",")}`,
+    {},
+    {
+      data: dataList.map(item => item.roleId),
+    }
+  );
 };
 
 /**

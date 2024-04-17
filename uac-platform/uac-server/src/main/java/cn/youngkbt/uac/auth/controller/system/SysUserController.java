@@ -125,10 +125,12 @@ public class SysUserController {
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
             return HttpResult.failMessage("新增用户「" + sysUserDTO.getUsername() + "」失败，登录账号已存在");
-        } else if (StringUtil.hasText(sysUserDTO.getPhone()) && sysUserService.checkPhoneUnique(sysUserDTO)) {
-            return HttpResult.failMessage("新增用户「" + sysUserDTO.getUsername() + "」失败，手机号码已存在");
-        } else if (StringUtil.hasText(sysUserDTO.getEmail()) && sysUserService.checkEmailUnique(sysUserDTO)) {
-            return HttpResult.failMessage("新增用户「" + sysUserDTO.getUsername() + "」失败，邮箱账号已存在");
+        }
+        if (StringUtil.hasText(sysUserDTO.getPhone()) && sysUserService.checkPhoneUnique(sysUserDTO)) {
+            return HttpResult.failMessage("新增用户「" + sysUserDTO.getUsername() + "」失败，手机号「" + sysUserDTO.getPhone() + "」已存在");
+        }
+        if (StringUtil.hasText(sysUserDTO.getEmail()) && sysUserService.checkEmailUnique(sysUserDTO)) {
+            return HttpResult.failMessage("新增用户「" + sysUserDTO.getUsername() + "」失败，邮箱账号「" + sysUserDTO.getEmail() + "」已存在");
         }
 
         return HttpResult.ok(sysUserService.insertOne(sysUserDTO));
@@ -139,10 +141,12 @@ public class SysUserController {
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
             return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，登录账号已存在");
-        } else if (StringUtil.hasText(sysUserDTO.getPhone()) && sysUserService.checkPhoneUnique(sysUserDTO)) {
-            return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，手机号码已存在");
-        } else if (StringUtil.hasText(sysUserDTO.getEmail()) && sysUserService.checkEmailUnique(sysUserDTO)) {
-            return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，邮箱账号已存在");
+        }
+        if (StringUtil.hasText(sysUserDTO.getPhone()) && sysUserService.checkPhoneUnique(sysUserDTO)) {
+            return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，手机号「" + sysUserDTO.getPhone() + "」已存在");
+        }
+        if (StringUtil.hasText(sysUserDTO.getEmail()) && sysUserService.checkEmailUnique(sysUserDTO)) {
+            return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，邮箱账号「" + sysUserDTO.getEmail() + "」已存在");
         }
 
         return HttpResult.ok(sysUserService.updateOne(sysUserDTO));

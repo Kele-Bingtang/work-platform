@@ -47,8 +47,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     public List<SysDictDataVO> queryList(SysDictDataDTO sysDictDataDTO) {
         LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
         List<SysDictData> sysDictData = baseMapper.selectList(wrapper);
-        
-        
+
+
         return MapstructUtil.convert(sysDictData, SysDictDataVO.class);
     }
 
@@ -56,10 +56,10 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     public TablePage<SysDictDataVO> listPage(SysDictDataDTO sysDictDataDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
         Page<SysDictData> sysDictDataPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
-        
+
         return TablePage.build(sysDictDataPage, SysDictDataVO.class);
     }
-    
+
     private LambdaQueryWrapper<SysDictData> buildQueryWrapper(SysDictDataDTO sysDictDataDTO) {
         return Wrappers.<SysDictData>lambdaQuery()
                 .eq(Objects.nonNull(sysDictDataDTO.getDictSort()), SysDictData::getDictSort, sysDictDataDTO.getDictSort())
@@ -72,8 +72,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public boolean insertOne(SysDictDataDTO sysDictDataDTO) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDTO, SysDictData.class);
-        
-        if(StringUtil.hasText(sysDictDataDTO.getParentId())) {
+
+        if (StringUtil.hasText(sysDictDataDTO.getParentId())) {
             return baseMapper.insert(sysDictData) > 0;
         }
 
@@ -127,11 +127,12 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     }
 
     @Override
-    public boolean checkDictDataUnique(SysDictDataDTO sysDictDataDTO) {
+    public boolean checkDictDataValueUnique(SysDictDataDTO sysDictDataDTO) {
         return baseMapper.exists(Wrappers.<SysDictData>lambdaQuery()
                 .eq(SysDictData::getDictValue, sysDictDataDTO.getDictValue())
-                .eq(SysDictData::getParentId, sysDictDataDTO.getParentId())
-                .ne(Objects.nonNull(sysDictDataDTO.getDataId()), SysDictData::getDataId, sysDictDataDTO.getDataId()));
+                .eq(SysDictData::getDictCode, sysDictDataDTO.getDictCode())
+                .eq(StringUtils.hasText(sysDictDataDTO.getParentId()), SysDictData::getParentId, sysDictDataDTO.getParentId())
+                .ne(StringUtils.hasText(sysDictDataDTO.getDataId()), SysDictData::getDataId, sysDictDataDTO.getDataId()));
     }
 
     @Override

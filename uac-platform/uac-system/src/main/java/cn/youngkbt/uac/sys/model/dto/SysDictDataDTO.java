@@ -12,14 +12,14 @@ import lombok.Data;
  * @author Kele-Bingtang
  * @date 2023-21-12 00:21:40
  * @note 字典数据
-*/
+ */
 @Data
 @AutoMapper(target = SysDictData.class, reverseConvertGenerate = false)
 public class SysDictDataDTO {
     /**
      * id
      */
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     public Long id;
     /**
      * 字典数据 ID
@@ -30,24 +30,25 @@ public class SysDictDataDTO {
      * 父级字典数据 ID
      */
     private String parentId;
-    
+
     /**
      * 字典标签
      */
-    @NotBlank(message = "字典标签不能为空")
-    @Size(min = 0, max = 100, message = "字典标签长度不能超过 {max} 个字符")
+    @NotBlank(message = "字典标签不能为空", groups = {RestGroup.AddGroup.class})
+    @Size(min = 0, max = 100, message = "字典标签长度不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String dictLabel;
 
     /**
      * 字典键值
      */
-    @NotBlank(message = "字典键值不能为空")
-    @Size(min = 0, max = 100, message = "字典键值长度不能超过 {max} 个字符")
+    @NotBlank(message = "字典键值不能为空", groups = {RestGroup.AddGroup.class})
+    @Size(min = 0, max = 100, message = "字典键值长度不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String dictValue;
 
     /**
      * 字典排序
      */
+    @NotNull(message = "字典排序不能为空")
     private Integer dictSort;
 
     /**
@@ -78,13 +79,13 @@ public class SysDictDataDTO {
     /**
      * 应用 ID
      */
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
 
     /**
      * 字典编码
      */
-    @NotBlank(message = "字典编码不能为空")
-    @Size(min = 0, max = 100, message = "字典类型长度不能超过 {max} 个字符")
+    @NotBlank(message = "字典编码不能为空", groups = {RestGroup.AddGroup.class})
     private String dictCode;
-    
+
 }

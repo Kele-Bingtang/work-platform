@@ -1,6 +1,8 @@
 package cn.youngkbt.uac.sys.model.dto.link;
 
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.uac.sys.model.po.UserRoleLink;
+import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -14,6 +16,7 @@ import java.util.List;
  * @note
  */
 @Data
+@AutoMapper(target = UserRoleLink.class, reverseConvertGenerate = false)
 public class RoleLinkUserDTO {
     /**
      * 主键 ID
@@ -36,13 +39,13 @@ public class RoleLinkUserDTO {
     /**
      * 生效时间
      */
-    @NotNull(message = "生效时间不能为空", groups = {RestGroup.AddGroup.class})
+    @NotNull(message = "生效时间不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private LocalDate validFrom;
 
     /**
      * 过期时间
      */
-    @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class})
+    @NotNull(message = "过期时间不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private LocalDate expireOn;
 
     /**

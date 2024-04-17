@@ -13,14 +13,14 @@ import lombok.Data;
  * @author Kele-Bingtang
  * @date 2023-21-12 00:21:11
  * @note 部门信息
-*/
+ */
 @Data
 @AutoMapper(target = SysDept.class, reverseConvertGenerate = false)
 public class SysDeptDTO {
     /**
      * id
      */
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     public Long id;
     /**
      * 部门 ID
@@ -40,8 +40,8 @@ public class SysDeptDTO {
     /**
      * 部门名
      */
-    @NotBlank(message = "部门名称不能为空")
-    @Size(min = 0, max = 30, message = "部门名称长度不能超过 {max} 个字符")
+    @NotBlank(message = "部门名称不能为空", groups = {RestGroup.AddGroup.class})
+    @Size(min = 0, max = 30, message = "部门名称长度不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class})
     private String deptName;
 
     /**
@@ -52,7 +52,7 @@ public class SysDeptDTO {
     /**
      * 部门显示顺序
      */
-    @NotNull(message = "显示顺序不能为空")
+    @NotNull(message = "显示顺序不能为空", groups = {RestGroup.AddGroup.class})
     private Integer orderNum;
 
     /**
@@ -68,14 +68,14 @@ public class SysDeptDTO {
     /**
      * 负责人电话
      */
-    @Size(min = 0, max = 11, message = "联系电话长度不能超过 {max} 个字符")
+    @Size(min = 0, max = 11, message = "联系电话长度不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String phone;
 
     /**
      * 邮箱
      */
-    @Email(message = "邮箱格式不正确")
-    @Size(min = 0, max = 50, message = "邮箱长度不能超过 {max} 个字符")
+    @Email(message = "邮箱格式不正确", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @Size(min = 0, max = 50, message = "邮箱长度不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String email;
 
     /**

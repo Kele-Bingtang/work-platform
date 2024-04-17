@@ -56,7 +56,7 @@ public class SysTenantController {
     @Operation(summary = "租户列表新增", description = "新增租户")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
         if (sysTenantService.checkCompanyNameUnique(sysTenantDTO)) {
-            return HttpResult.failMessage("新增租户'" + sysTenantDTO.getTenantName() + "'失败，企业名称已存在");
+            return HttpResult.failMessage("新增租户'" + sysTenantDTO.getTenantName() + "'失败，租户已存在");
         }
         return HttpResult.ok(sysTenantService.insertOne(sysTenantDTO));
     }
@@ -64,6 +64,9 @@ public class SysTenantController {
     @PutMapping
     @Operation(summary = "租户列表修改", description = "修改租户")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
+        if (sysTenantService.checkCompanyNameUnique(sysTenantDTO)) {
+            return HttpResult.failMessage("修改租户'" + sysTenantDTO.getTenantName() + "'失败，租户已存在");
+        }
         return HttpResult.ok(sysTenantService.updateOne(sysTenantDTO));
     }
 

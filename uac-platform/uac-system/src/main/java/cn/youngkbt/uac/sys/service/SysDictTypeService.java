@@ -71,4 +71,12 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @return 是否存在
      */
     boolean checkAppExitDictType(List<String> appIds);
+
+    /**
+     * 校验字典类型编码是否唯一
+     *
+     * @param sysDictTypeDTO 字典类型信息
+     * @return 是否唯一
+     */
+    boolean checkDictCodeUnique(SysDictTypeDTO sysDictTypeDTO);
 }

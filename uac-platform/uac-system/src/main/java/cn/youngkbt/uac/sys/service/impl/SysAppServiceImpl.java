@@ -98,6 +98,13 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
         return baseMapper.exists(Wrappers.<SysApp>lambdaQuery()
                 .in(SysApp::getClientId, clientIds));
     }
+
+    @Override
+    public boolean checkAppCodeUnique(SysAppDTO sysAppDTO) {
+        return baseMapper.exists(Wrappers.<SysApp>lambdaQuery()
+                .eq(SysApp::getAppCode, sysAppDTO.getAppCode())
+                .ne(Objects.nonNull(sysAppDTO.getAppId()), SysApp::getAppId, sysAppDTO.getAppId()));
+    }
 }
 
 

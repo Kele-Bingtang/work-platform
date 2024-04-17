@@ -63,10 +63,11 @@ public class SysRoleController {
     @PostMapping
     @Operation(summary = "角色列表新增", description = "新增角色")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
+        if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
+            return HttpResult.failMessage("新增角色「" + sysRoleDTO.getRoleName() + "」失败，角色编码「" + sysRoleDTO.getRoleCode() + "」已存在");
+        }
         if (sysRoleService.checkRoleNameUnique(sysRoleDTO)) {
             return HttpResult.failMessage("新增角色「" + sysRoleDTO.getRoleName() + "」失败，角色名称已存在");
-        } else if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
-            return HttpResult.failMessage("新增角色「" + sysRoleDTO.getRoleName() + "」失败，角色权限已存在");
         }
 
         return HttpResult.ok(sysRoleService.insertOne(sysRoleDTO));
@@ -75,10 +76,11 @@ public class SysRoleController {
     @PutMapping
     @Operation(summary = "角色列表修改", description = "修改角色")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
+        if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
+            return HttpResult.failMessage("修改角色「" + sysRoleDTO.getRoleName() + "」失败，角色编码「" + sysRoleDTO.getRoleCode() + "」已存在");
+        }
         if (sysRoleService.checkRoleNameUnique(sysRoleDTO)) {
             return HttpResult.failMessage("修改角色「" + sysRoleDTO.getRoleName() + "」失败，角色名称已存在");
-        } else if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
-            return HttpResult.failMessage("修改角色「" + sysRoleDTO.getRoleName() + "」失败，角色权限已存在");
         }
 
         return HttpResult.ok(sysRoleService.updateOne(sysRoleDTO));

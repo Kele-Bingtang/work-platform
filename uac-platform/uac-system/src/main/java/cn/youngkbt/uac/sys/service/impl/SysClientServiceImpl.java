@@ -117,6 +117,19 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 
+    @Override
+    public boolean checkClientKeyUnique(SysClientDTO sysClientDTO) {
+        return baseMapper.exists(Wrappers.<SysClient>lambdaQuery()
+                .eq(SysClient::getClientKey, sysClientDTO.getClientKey())
+                .ne(Objects.nonNull(sysClientDTO.getClientId()), SysClient::getClientId, sysClientDTO.getClientId()));
+    }
+
+    @Override
+    public boolean checkClientSecretUnique(SysClientDTO sysClientDTO) {
+        return baseMapper.exists(Wrappers.<SysClient>lambdaQuery()
+                .eq(SysClient::getClientSecret, sysClientDTO.getClientSecret())
+                .ne(Objects.nonNull(sysClientDTO.getClientId()), SysClient::getClientId, sysClientDTO.getClientId()));
+    }
 }
 
 

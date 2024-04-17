@@ -111,13 +111,19 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
+    public boolean checkMenuCodeUnique(SysMenuDTO sysMenuDTO) {
+        return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
+                .eq(SysMenu::getMenuCode, sysMenuDTO.getMenuCode())
+                .eq(SysMenu::getParentId, sysMenuDTO.getParentId())
+                .ne(Objects.nonNull(sysMenuDTO.getMenuId()), SysMenu::getMenuId, sysMenuDTO.getMenuId()));
+    }
+    
+    @Override
     public boolean checkMenuNameUnique(SysMenuDTO sysMenuDTO) {
-        boolean exist = baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
+        return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
                 .eq(SysMenu::getMenuName, sysMenuDTO.getMenuName())
                 .eq(SysMenu::getParentId, sysMenuDTO.getParentId())
                 .ne(Objects.nonNull(sysMenuDTO.getMenuId()), SysMenu::getMenuId, sysMenuDTO.getMenuId()));
-
-        return !exist;
     }
 
     @Override
@@ -125,6 +131,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
                 .eq(SysMenu::getParentId, menuId));
     }
+
 
     @Override
     public boolean checkMenuExistRole(String menuId) {

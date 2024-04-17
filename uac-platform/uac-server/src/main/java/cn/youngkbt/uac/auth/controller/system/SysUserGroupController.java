@@ -116,7 +116,7 @@ public class SysUserGroupController {
     @Operation(summary = "用户组列表新增", description = "新增用户组")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDTO) {
         if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDTO)) {
-            return HttpResult.failMessage("修改用户组「" + sysUserGroupDTO.getGroupName() + "」失败，用户组名称已存在");
+            return HttpResult.failMessage("新增用户组「" + sysUserGroupDTO.getGroupName() + "」失败，用户组名称已存在");
         }
 
         return HttpResult.ok(sysUserGroupService.insertOne(sysUserGroupDTO));

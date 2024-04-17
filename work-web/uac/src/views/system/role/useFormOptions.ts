@@ -1,3 +1,4 @@
+import { listMenuTreeSelectByApp } from "@/api/system/menu";
 import type { Role } from "@/api/system/role";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
@@ -44,6 +45,14 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       {
         formItem: { label: "显示顺序", prop: "orderNum" },
         attrs: { el: "el-input-number", defaultValue: 0 },
+      },
+      {
+        formItem: { label: "菜单分配", prop: "selectedMenuIds", br: true },
+        attrs: {
+          el: "el-tree",
+          enum: listMenuTreeSelectByApp,
+          props: { nodeKey: "value", search: true, checkbox: true },
+        },
       },
       {
         formItem: { label: "介绍", prop: "intro", br: true },

@@ -20,7 +20,7 @@ public class SysTenantDTO {
     /**
      * id
      */
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class, RestGroup.DeleteGroup.class })
     public Long id;
 
     /**
@@ -36,7 +36,7 @@ public class SysTenantDTO {
     /**
      * 企业名
      */
-    @NotBlank(message = "企业名称不能为空", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
+    @NotBlank(message = "企业名称不能为空", groups = { RestGroup.AddGroup.class })
     private String tenantName;
 
     /**
@@ -72,13 +72,13 @@ public class SysTenantDTO {
     /**
      * 联系人
      */
-    @NotBlank(message = "联系人不能为空", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
+    @NotBlank(message = "联系人不能为空", groups = { RestGroup.AddGroup.class })
     private String contactUserName;
 
     /**
      * 联系电话
      */
-    @NotBlank(message = "联系电话不能为空", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
+    @NotBlank(message = "联系电话不能为空", groups = { RestGroup.AddGroup.class })
     private String contactPhone;
 
     /**

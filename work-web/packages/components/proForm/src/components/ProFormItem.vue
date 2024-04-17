@@ -9,6 +9,18 @@
     }"
   ></WangEditor>
 
+  <Tree
+    v-else-if="!column.attrs?.render && column.attrs?.el === 'el-tree'"
+    :data="columnEnum"
+    v-model="_form[column.formItem.prop]"
+    v-bind="{
+      ...handleFormProps,
+      ...placeholder,
+      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
+      clearable,
+    }"
+  ></Tree>
+
   <component
     v-else
     :is="column.attrs?.render ?? column.attrs?.el ?? ''"
@@ -100,6 +112,7 @@
 import { computed, inject, ref } from "vue";
 import type { FormColumnProps } from "../interface";
 import { WangEditor } from "@work/components";
+import Tree from "./Tree.vue";
 
 defineOptions({ name: "ProFormItem" });
 

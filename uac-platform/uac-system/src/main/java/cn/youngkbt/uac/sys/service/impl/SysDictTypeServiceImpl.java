@@ -89,6 +89,13 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
         return baseMapper.exists(Wrappers.<SysDictType>lambdaQuery()
                 .in(SysDictType::getAppId, appIds));
     }
+
+    @Override
+    public boolean checkDictCodeUnique(SysDictTypeDTO sysDictTypeDTO) {
+        return baseMapper.exists(Wrappers.<SysDictType>lambdaQuery()
+                .eq(SysDictType::getDictCode, sysDictTypeDTO.getDictCode())
+                .ne(StringUtils.hasText(sysDictTypeDTO.getDictId()), SysDictType::getDictId, sysDictTypeDTO.getDictId()));
+    }
 }
 
 

@@ -24,7 +24,7 @@ public class SysAppDTO {
     /**
      * id
      */
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     public Long id;
     /**
      * 应用 ID
@@ -51,6 +51,7 @@ public class SysAppDTO {
     /**
      * 显示顺序
      */
+    @NotNull(message = "显示顺序不能为空")
     private Integer orderNum;
 
     /**

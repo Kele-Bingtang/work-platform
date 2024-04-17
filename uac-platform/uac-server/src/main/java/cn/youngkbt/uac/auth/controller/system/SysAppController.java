@@ -77,12 +77,19 @@ public class SysAppController {
     @PostMapping
     @Operation(summary = "应用新增", description = "新增应用")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysAppDTO sysAppDTO) {
+        if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
+            return HttpResult.failMessage("新增应用「" + sysAppDTO.getAppName() + "」失败，应用编码「" + sysAppDTO.getAppCode() + "」已存在");
+        }
+        
         return HttpResult.ok(sysAppService.insertOne(sysAppDTO));
     }
 
     @PutMapping
     @Operation(summary = "应用修改", description = "修改应用")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysAppDTO sysAppDTO) {
+        if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
+            return HttpResult.failMessage("修改应用「" + sysAppDTO.getAppName() + "」失败，应用编码「" + sysAppDTO.getAppCode() + "」已存在");
+        }
         return HttpResult.ok(sysAppService.updateOne(sysAppDTO));
     }
 
@@ -100,7 +107,7 @@ public class SysAppController {
         if (sysDictTypeService.checkAppExitDictType(appIds)) {
             return HttpResult.failMessage("存在字典类型绑定，不允许删除");
         }
-        
+
         return HttpResult.ok(sysAppService.removeBatch(List.of(ids)));
     }
 

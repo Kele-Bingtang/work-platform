@@ -66,7 +66,11 @@ public class SysMenuController {
     @PostMapping
     @Operation(summary = "菜单新增", description = "新增菜单")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
-        if (!sysMenuService.checkMenuNameUnique(sysMenuDTO)) {
+        if (sysMenuService.checkMenuCodeUnique(sysMenuDTO)) {
+            return HttpResult.failMessage("新增菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称「" + sysMenuDTO.getMenuCode() + "」已存在");
+        }
+
+        if (sysMenuService.checkMenuNameUnique(sysMenuDTO)) {
             return HttpResult.failMessage("新增菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称已存在");
         }
 
@@ -81,9 +85,14 @@ public class SysMenuController {
             return HttpResult.failMessage("修改菜单「" + sysMenuDTO.getMenuName() + "」失败，上级菜单不能是自己");
         }
 
-        if (!sysMenuService.checkMenuNameUnique(sysMenuDTO)) {
+        if (sysMenuService.checkMenuCodeUnique(sysMenuDTO)) {
+            return HttpResult.failMessage("修改菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称「" + sysMenuDTO.getMenuCode() + "」已存在");
+        }
+        
+        if (sysMenuService.checkMenuNameUnique(sysMenuDTO)) {
             return HttpResult.failMessage("修改菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称已存在");
         }
+
         return HttpResult.ok(sysMenuService.updateOne(sysMenuDTO));
     }
 

@@ -77,8 +77,8 @@ export interface TableColumnProps<T = any>
   render?: (scope: RenderScope<T>) => VNode | string; // 自定义单元格内容渲染（tsx 语法）
   _children?: TableColumnProps<T>[]; // 多级表头
   form?: PartialKey<FormColumnProps, "formItem">;
-  handleEdit: (scope: any, expose: any) => void;
-  handleDelete: (scope: any, expose: any) => void;
+  handleEdit?: (scope: any, expose: any) => void;
+  handleDelete?: (scope: any, expose: any) => void;
 }
 
 export type ProTableInstance = Omit<InstanceType<typeof ProTable>, keyof ComponentPublicInstance | keyof ProTableProps>;

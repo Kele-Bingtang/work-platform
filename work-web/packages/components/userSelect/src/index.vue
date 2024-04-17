@@ -4,7 +4,7 @@
       v-model="selectValue"
       :options="userData"
       placeholder="请选择用户"
-      :props="{ value: value, label: 'nickname' }"
+      :props="{ value: id, label: 'nickname' }"
       v-bind="$attrs"
       :multiple="multiple"
       clearable
@@ -23,7 +23,7 @@
         :data="userData"
         :list-icon="User"
         :multiple="multiple"
-        :id="value"
+        :id="id"
       >
         <template #name="item">{{ item.username }} {{ item.nickname }}</template>
       </TransferSelect>
@@ -51,11 +51,13 @@ export interface UserSelectProps {
   requestApi?: (data?: any) => Promise<any>; // 请求数据的 api ==> 非必传
   requestParams?: Record<string, any>;
   multiple?: boolean;
+  id?: string;
 }
 
 // 接受父组件参数，配置默认值
 const props = withDefaults(defineProps<UserSelectProps>(), {
   multiple: false,
+  id: "userId",
 });
 
 type EmitProps = {
@@ -69,7 +71,6 @@ const userData = ref<Record<string, any>[]>([]);
 const dialogVisible = ref(false);
 const selectedIds = ref<string | string[]>([]);
 const selectedUserList = ref<Record<string, any> | Record<string, any>[]>([]);
-const value = "userId";
 
 /**
  * @description 初始化选中项
@@ -80,11 +81,9 @@ const selectValue = computed({
     return props.modelValue || "";
   },
   set(val) {
-    const { multiple } = props;
     emits("update:modelValue", val);
 
-    const r = userData.value.filter(item => (multiple ? val?.includes(item[value]) : val === item[value]));
-    emits("update:user", props.multiple ? r : r[0]);
+    updateUser(val);
   },
 });
 
@@ -92,10 +91,18 @@ onBeforeMount(async () => {
   // 有数据就直接赋值，没有数据就执行请求函数
   if (props.data?.length) {
     userData.value = props.data;
+    props.modelValue && updateUser(props.modelValue);
     return;
   }
-  getDataList();
+  await getDataList();
+
+  props.modelValue && updateUser(props.modelValue);
 });
+
+const updateUser = (val: any) => {
+  const r = userData.value.filter(item => (props.multiple ? val?.includes(item[props.id]) : val === item[props.id]));
+  emits("update:user", props.multiple ? r : r[0]);
+};
 
 const getDataList = async () => {
   if (props.requestApi) {

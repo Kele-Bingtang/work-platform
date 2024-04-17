@@ -87,4 +87,11 @@ public interface SysAppService extends IService<SysApp> {
      * @return 是否存在
      */
     boolean checkExitApp(List<String> clientIds);
+
+    /**
+     * 检查应用编码是否唯一
+     * @param sysAppDTO 应用信息
+     * @return 是否唯一
+     */
+    boolean checkAppCodeUnique(SysAppDTO sysAppDTO);
 }

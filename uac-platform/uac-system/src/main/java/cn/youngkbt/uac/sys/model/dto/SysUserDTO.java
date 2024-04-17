@@ -11,7 +11,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author Kele-Bingtang
@@ -26,7 +25,7 @@ public class SysUserDTO {
     /**
      * ID
      */
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class, RestGroup.DeleteGroup.class })
     private String id;
 
     /**
@@ -37,15 +36,15 @@ public class SysUserDTO {
     /**
      * 用户名
      */
-    @NotBlank(message = "用户账号不能为空")
-    @Size(min = 0, max = 30, message = "用户账号长度不能超过 {max} 个字符")
+    @NotBlank(message = "用户账号不能为空", groups = { RestGroup.AddGroup.class })
+    @Size(min = 0, max = 30, message = "用户账号长度不能超过 {max} 个字符", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
     private String username;
 
     /**
      * 用户昵称
      */
-    @NotBlank(message = "用户昵称不能为空")
-    @Size(min = 0, max = 30, message = "用户昵称长度不能超过 {max} 个字符")
+    @NotBlank(message = "用户昵称不能为空", groups = { RestGroup.AddGroup.class })
+    @Size(min = 0, max = 30, message = "用户昵称长度不能超过 {max} 个字符", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
     private String nickname;
 
     /**
@@ -56,8 +55,8 @@ public class SysUserDTO {
     /**
      * 邮箱
      */
-    @Email(message = "邮箱格式不正确")
-    @Size(min = 0, max = 50, message = "邮箱长度不能超过 {max} 个字符")
+    @Email(message = "邮箱格式不正确", groups = { RestGroup.AddGroup.class })
+    @Size(min = 0, max = 50, message = "邮箱长度不能超过 {max} 个字符", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
     private String email;
 
     /**

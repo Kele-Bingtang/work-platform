@@ -3,10 +3,9 @@ package cn.youngkbt.uac.sys.model.dto;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.uac.sys.model.po.SysUserGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 @AutoMapper(target = SysUserGroup.class, reverseConvertGenerate = false)
 public class SysUserGroupDTO {
 
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class, RestGroup.DeleteGroup.class })
     private Long id;
     
     /**
@@ -28,6 +27,7 @@ public class SysUserGroupDTO {
     /**
      * 用户组名
      */
+    @NotBlank(message = "用户组名不能为空", groups = {RestGroup.AddGroup.class})
     private String groupName;
 
     /**
@@ -48,10 +48,6 @@ public class SysUserGroupDTO {
     /**
      * 应用 ID
      */
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
 }

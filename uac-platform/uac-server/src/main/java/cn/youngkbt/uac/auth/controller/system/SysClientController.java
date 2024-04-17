@@ -32,7 +32,7 @@ public class SysClientController {
 
     private final SysClientService clientService;
     private final SysAppService sysAppService;
-    
+
     @GetMapping("/{id}")
     @Operation(summary = "客户端列表查询", description = "通过主键查询客户端列表")
     public Response<SysClientVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
@@ -64,6 +64,12 @@ public class SysClientController {
     @PostMapping
     @Operation(summary = "客户端新增", description = "新增客户端")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDTO) {
+        if (clientService.checkClientKeyUnique(sysClientDTO)) {
+            return HttpResult.failMessage("新增客户端「" + sysClientDTO.getClientName() + "」失败，客户端 Key「" + sysClientDTO.getClientKey() + "」已存在");
+        } else if (clientService.checkClientSecretUnique(sysClientDTO)) {
+            return HttpResult.failMessage("新增客户端「" + sysClientDTO.getClientName() + "」失败，客户端密钥「" + sysClientDTO.getClientSecret() + "」已存在");
+        }
+
         return HttpResult.ok(clientService.insertOne(sysClientDTO));
     }
 
@@ -73,6 +79,13 @@ public class SysClientController {
     @PutMapping
     @Operation(summary = "客户端修改", description = "修改客户端")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDTO) {
+        if (clientService.checkClientKeyUnique(sysClientDTO)) {
+            return HttpResult.failMessage("修改客户端「" + sysClientDTO.getClientName() + "」失败，客户端 Key「" + sysClientDTO.getClientKey() + "」已存在");
+        }
+        if (clientService.checkClientSecretUnique(sysClientDTO)) {
+            return HttpResult.failMessage("修改客户端「" + sysClientDTO.getClientName() + "」失败，客户端密钥「" + sysClientDTO.getClientSecret() + "」已存在");
+        }
+
         return HttpResult.ok(clientService.updateOne(sysClientDTO));
     }
 
@@ -85,10 +98,10 @@ public class SysClientController {
     @DeleteMapping("/{ids}")
     @Operation(summary = "客户端删除", description = "通过主键批量删除客户端")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> clientIds) {
-        if(sysAppService.checkExitApp(clientIds)) {
+        if (sysAppService.checkExitApp(clientIds)) {
             return HttpResult.failMessage("存在 APP 绑定，不允许删除");
         }
-        
+
         return HttpResult.ok(clientService.removeBatch(List.of(ids)));
     }
 }

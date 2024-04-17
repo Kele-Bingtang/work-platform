@@ -67,10 +67,10 @@ public class SysDictDataController {
     @PostMapping
     @Operation(summary = "字典数据新增", description = "新增字典数据")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
-        if(sysDictDataService.checkDictDataUnique(sysDictDataDTO)) {
-            return HttpResult.failMessage("新增字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，字典数据值已存在");
+        if (sysDictDataService.checkDictDataValueUnique(sysDictDataDTO)) {
+            return HttpResult.failMessage("新增字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，字典数据值「" + sysDictDataDTO.getDictValue() + "」已存在");
         }
-        
+
         return HttpResult.ok(sysDictDataService.insertOne(sysDictDataDTO));
     }
 
@@ -78,9 +78,12 @@ public class SysDictDataController {
     @Operation(summary = "字典数据修改", description = "修改字典数据")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
         if (sysDictDataDTO.getParentId().equals(sysDictDataDTO.getDataId())) {
-            return HttpResult.failMessage("修改菜单「" + sysDictDataDTO.getDictLabel() + "」失败，上级字典数据不能是自己");
+            return HttpResult.failMessage("修改字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，上级字典数据不能是自己");
         }
-        
+        if (sysDictDataService.checkDictDataValueUnique(sysDictDataDTO)) {
+            return HttpResult.failMessage("修改字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，字典数据值「" + sysDictDataDTO.getDictValue() + "」已存在");
+        }
+
         return HttpResult.ok(sysDictDataService.updateOne(sysDictDataDTO));
     }
 

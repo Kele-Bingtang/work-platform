@@ -12,14 +12,14 @@ import lombok.Data;
  * @author Kele-Bingtang
  * @date 2023-23-12 00:23:08
  * @note 菜单
-*/
+ */
 @Data
 @AutoMapper(target = SysMenu.class, reverseConvertGenerate = false)
 public class SysMenuDTO {
     /**
      * 主键
      */
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     private String id;
     /**
      * 菜单 ID
@@ -34,19 +34,20 @@ public class SysMenuDTO {
     /**
      * 菜单编码
      */
+    @NotBlank(message = "菜单编码不能为空", groups = {RestGroup.AddGroup.class})
     private String menuCode;
 
     /**
      * 菜单名
      */
-    @NotBlank(message = "菜单名称不能为空")
-    @Size(min = 0, max = 50, message = "菜单名称长度不能超过 {max} 个字符")
+    @NotBlank(message = "菜单名称不能为空", groups = {RestGroup.AddGroup.class})
+    @Size(min = 0, max = 50, message = "菜单名称长度不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String menuName;
 
     /**
      * 菜单地址
      */
-    @Size(min = 0, max = 200, message = "路由地址不能超过 {max} 个字符")
+    @Size(min = 0, max = 200, message = "路由地址不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String path;
 
     /**
@@ -62,7 +63,7 @@ public class SysMenuDTO {
     /**
      * 显示顺序
      */
-    @NotNull(message = "显示顺序不能为空")
+    @NotNull(message = "显示顺序不能为空", groups = {RestGroup.AddGroup.class})
     private Integer orderNum;
 
     /**
@@ -73,7 +74,7 @@ public class SysMenuDTO {
     /**
      * 组件路径
      */
-    @Size(min = 0, max = 200, message = "组件路径不能超过 {max} 个字符")
+    @Size(min = 0, max = 200, message = "组件路径不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String component;
 
     /**
@@ -104,6 +105,7 @@ public class SysMenuDTO {
     /**
      * 应用 ID
      */
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
 
     /**

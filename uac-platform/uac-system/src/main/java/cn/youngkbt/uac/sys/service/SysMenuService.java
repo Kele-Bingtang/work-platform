@@ -75,6 +75,14 @@ public interface SysMenuService extends IService<SysMenu> {
     boolean hasChild(String menuId);
 
     /**
+     * 校验菜单编码是否唯一
+     *
+     * @param sysMenuDTO 查询条件
+     * @return 是否唯一
+     */
+    boolean checkMenuCodeUnique(SysMenuDTO sysMenuDTO);
+    
+    /**
      * 检查菜单是否存在角色关联
      *
      * @param menuId 菜单 ID
@@ -113,4 +121,5 @@ public interface SysMenuService extends IService<SysMenu> {
      * @return 是否存在
      */
     boolean checkAppExitMenu(List<String> appIds);
+
 }

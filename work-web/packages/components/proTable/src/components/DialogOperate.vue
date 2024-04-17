@@ -252,7 +252,6 @@ const executeApi = (
   if (!api) return ElMessage.warning(failure + "没有提供对应接口");
   api(params)
     .then(res => {
-      console.log(res);
       ElMessage.success(success);
       return successCallBack && successCallBack(res);
     })

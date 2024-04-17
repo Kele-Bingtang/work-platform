@@ -98,7 +98,7 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param sysDictDataDTO 字典数据
      * @return 是否唯一
      */
-    boolean checkDictDataUnique(SysDictDataDTO sysDictDataDTO);
+    boolean checkDictDataValueUnique(SysDictDataDTO sysDictDataDTO);
 
     /**
      * 校验字典数据是否存在，并获取对应数据

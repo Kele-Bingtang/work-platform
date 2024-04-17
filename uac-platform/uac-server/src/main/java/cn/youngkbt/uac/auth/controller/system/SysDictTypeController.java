@@ -57,12 +57,20 @@ public class SysDictTypeController {
     @PostMapping
     @Operation(summary = "字典类型列表新增", description = "新增字典类型列表")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictTypeDTO sysDictTypeDTO) {
+        if (sysDictTypeService.checkDictCodeUnique(sysDictTypeDTO)) {
+            return HttpResult.failMessage("新增字典类型编码「" + sysDictTypeDTO.getDictCode() + "」失败，字典字典类型编码已存在");
+        }
+
         return HttpResult.ok(sysDictTypeService.insertOne(sysDictTypeDTO));
     }
 
     @PutMapping
     @Operation(summary = "字典类型列表修改", description = "修改字典类型列表")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictTypeDTO sysDictTypeDTO) {
+        if (sysDictTypeService.checkDictCodeUnique(sysDictTypeDTO)) {
+            return HttpResult.failMessage("修改字典类型编码「" + sysDictTypeDTO.getDictCode() + "」失败，字典字典类型编码已存在");
+        }
+        
         return HttpResult.ok(sysDictTypeService.updateOne(sysDictTypeDTO));
     }
 

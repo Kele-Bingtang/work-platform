@@ -19,8 +19,9 @@ public class SysRoleDTO {
     /**
      * id
      */
-    @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class })
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     public Long id;
+    
     /**
      * 角色 ID
      */
@@ -29,15 +30,15 @@ public class SysRoleDTO {
     /**
      * 角色码
      */
-    @NotBlank(message = "角色码不能为空")
-    @Size(min = 0, max = 30, message = "角色码长度不能超过 {max} 个字符")
+    @NotBlank(message = "角色码不能为空", groups = {RestGroup.AddGroup.class})
+    @Size(min = 0, max = 30, message = "角色码长度不能超过 {max} 个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String roleCode;
 
     /**
      * 角色名
      */
-    @NotBlank(message = "角色名称不能为空")
-    @Size(min = 0, max = 30, message = "角色名称长度不能超过{max}个字符")
+    @NotBlank(message = "角色名称不能为空", groups = {RestGroup.AddGroup.class})
+    @Size(min = 0, max = 30, message = "角色名称长度不能超过{max}个字符", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String roleName;
 
     /**
@@ -48,17 +49,18 @@ public class SysRoleDTO {
     /**
      * 显示顺序
      */
-    @NotNull(message = "显示顺序不能为空")
+    @NotNull(message = "显示顺序不能为空", groups = {RestGroup.AddGroup.class})
     private Integer orderNum;
 
     /**
      * 应用 ID
      */
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
-    
+
     /**
      * 状态（0 异用 1 正常）
      */
     private Integer status;
-    
+
 }

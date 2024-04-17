@@ -30,7 +30,12 @@ export const useFormOptions = () => {
         attrs: {
           render: ({ scope }) => {
             return (
-              <UserSelect v-model={scope.form.ownerId} v-model:user={scope.form.user} requestApi={list}></UserSelect>
+              <UserSelect
+                v-model={scope.form.ownerId}
+                v-model:user={scope.form.user}
+                requestApi={list}
+                id="username"
+              ></UserSelect>
             );
           },
         },

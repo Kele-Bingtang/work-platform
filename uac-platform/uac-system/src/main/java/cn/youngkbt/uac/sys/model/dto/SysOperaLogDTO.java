@@ -1,9 +1,13 @@
 package cn.youngkbt.uac.sys.model.dto;
 
+import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.uac.sys.model.po.SysOperaLog;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -17,6 +21,7 @@ public class SysOperaLogDTO implements Serializable {
     /**
      * 主键
      */
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     private Long id;
 
     /**
@@ -107,6 +112,7 @@ public class SysOperaLogDTO implements Serializable {
     /**
      * 应用 ID
      */
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String appId;
 
     /**
@@ -114,5 +120,6 @@ public class SysOperaLogDTO implements Serializable {
      */
     private String menuId;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 }

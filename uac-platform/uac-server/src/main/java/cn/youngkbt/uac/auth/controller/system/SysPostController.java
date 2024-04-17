@@ -55,23 +55,26 @@ public class SysPostController {
     @PostMapping
     @Operation(summary = "新增岗位", description = "新增岗位")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysPostDTO sysPostDTO) {
+        if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
+            return HttpResult.failMessage("新增岗位「" + sysPostDTO.getPostName() + "」失败，岗位编码「" + sysPostDTO.getPostCode() + "」已存在");
+        }
         if (sysPostService.checkPostNameUnique(sysPostDTO)) {
             return HttpResult.failMessage("新增岗位「" + sysPostDTO.getPostName() + "」失败，岗位名称已存在");
-        } else if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
-            return HttpResult.failMessage("新增岗位「" + sysPostDTO.getPostName() + "」失败，岗位编码已存在");
         }
-        
+
         return HttpResult.ok(sysPostService.insertOne(sysPostDTO));
     }
 
     @PutMapping
     @Operation(summary = "修改岗位", description = "修改岗位")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysPostDTO sysPostDTO) {
+        if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
+            return HttpResult.failMessage("修改岗位「" + sysPostDTO.getPostName() + "」失败，岗位编码「" + sysPostDTO.getPostCode() + "」已存在");
+        }
         if (sysPostService.checkPostNameUnique(sysPostDTO)) {
             return HttpResult.failMessage("修改岗位「" + sysPostDTO.getPostName() + "」失败，岗位名称已存在");
-        } else if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
-            return HttpResult.failMessage("修改岗位「" + sysPostDTO.getPostName() + "」失败，岗位编码已存在");
-        } else if (ColumnConstant.STATUS_EXCEPTION.equals(sysPostDTO.getStatus())
+        }
+        if (ColumnConstant.STATUS_EXCEPTION.equals(sysPostDTO.getStatus())
                 && sysPostService.checkPostExitUser(sysPostDTO)) {
             return HttpResult.failMessage("该岗位下存在已分配用户，不能禁用!");
         }
@@ -82,7 +85,7 @@ public class SysPostController {
     @DeleteMapping("/{ids}")
     @Operation(summary = "删除岗位", description = "通过主键批量删除岗位")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> postIds) {
-        if(userPostLinkService.checkPostExistUser(postIds)) {
+        if (userPostLinkService.checkPostExistUser(postIds)) {
             return HttpResult.failMessage("该岗位已绑定用户，不允许删除");
         }
         return HttpResult.ok(sysPostService.removeBatch(List.of(ids)));

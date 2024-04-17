@@ -118,22 +118,22 @@ const selectedList = computed({
       return selectedData || [];
     }
 
-    const selectedData: CommonObjType[] = tableData.value?.filter(item => {
-      if (!multiple && Array.isArray(modelValue)) return modelValue.includes(item[id ?? props.columns[0]?.prop!]);
-      else return tableData.value?.filter(item => modelValue === item[id ?? props.columns[0]?.prop!]).length;
-    });
+    let selectedData: CommonObjType[] = [];
+
+    if (!multiple && Array.isArray(modelValue)) {
+      selectedData = tableData.value?.filter(item => modelValue.includes(item[id ?? props.columns[0]?.prop!]));
+    } else {
+      selectedData = tableData.value?.filter(item => modelValue === item[id ?? props.columns[0]?.prop!]);
+    }
 
     selectedData[0] && elTableRef.value?.toggleRowSelection(selectedData[0], true);
-
     return selectedData[0] ? [selectedData[0]] : [];
   },
   set(value) {
     const { multiple, id } = props;
-
     const selectedIds: string[] = [];
-    value.forEach(item => selectedIds.push(item[id ?? props.columns[0]?.prop!]));
-
-    emits("update:modelValue", multiple ? selectedIds : value[0][id ?? props.columns[0]?.prop!]);
+    value.forEach(item => item && selectedIds.push(item[id ?? props.columns[0]?.prop!]));
+    emits("update:modelValue", multiple ? selectedIds : value?.length ? value[0][id ?? props.columns[0]?.prop!] : "");
     emits("update:rows", value);
   },
 });
@@ -170,6 +170,7 @@ const handleCancelSelect = (row: CommonObjType) => {
   selectedList.value = selectedList.value?.filter(
     (item: any) => item[props.id ?? props.columns[0].prop!] !== row[props.id ?? props.columns[0]?.prop!]
   );
+
   props.multiple && elTableRef.value?.toggleRowSelection(row, false);
 };
 

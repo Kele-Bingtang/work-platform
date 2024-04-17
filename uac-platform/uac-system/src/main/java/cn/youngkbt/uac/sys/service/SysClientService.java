@@ -91,4 +91,19 @@ public interface SysClientService extends IService<SysClient> {
      */
     boolean removeBatch(Collection<Long> ids);
 
+    /**
+     * 检查客户端 key 是否唯一
+     *
+     * @param sysClientDTO 客户端信息
+     * @return 是否唯一
+     */
+    boolean checkClientKeyUnique(SysClientDTO sysClientDTO);
+
+    /**
+     * 检查客户端 secret 是否唯一
+     *
+     * @param sysClientDTO 客户端信息
+     * @return 是否唯一
+     */
+    boolean checkClientSecretUnique(SysClientDTO sysClientDTO);
 }

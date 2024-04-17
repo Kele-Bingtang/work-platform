@@ -21,7 +21,7 @@ public class SysClientDTO {
     /**
      * id
      */
-    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class})
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     public Long id;
 
     /**
@@ -32,13 +32,13 @@ public class SysClientDTO {
     /**
      * 客户端 Key
      */
-    @NotBlank(message = "客户端 key 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "客户端 key 不能为空", groups = {RestGroup.AddGroup.class})
     private String clientKey;
 
     /**
      * 客户端名称
      */
-    @NotBlank(message = "客户端名称 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "客户端名称 不能为空", groups = {RestGroup.AddGroup.class})
     private String clientName;
 
     /**
@@ -49,7 +49,7 @@ public class SysClientDTO {
     /**
      * 授权类型
      */
-    @NotNull(message = "授权类型不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotNull(message = "授权类型不能为空", groups = {RestGroup.AddGroup.class})
     private List<String> grantTypeList;
 
     /**

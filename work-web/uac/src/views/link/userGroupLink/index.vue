@@ -36,13 +36,11 @@
       <Description :title="clickRowInfo?.groupName" :data="descriptionData"></Description>
 
       <el-tabs v-model="activeName" style="height: calc(100% - 70px)">
-        <el-tab-pane label="关联用户" name="User" style="height: 100%">
-          <LinkUser :appId="requestParam.appId" :userGroupId="clickRowInfo.groupId"></LinkUser>
-        </el-tab-pane>
-
-        <el-tab-pane lazy label="关联角色" name="Role" style="height: 100%">
-          <LinkRole :appId="requestParam.appId" :userGroupId="clickRowInfo.groupId"></LinkRole>
-        </el-tab-pane>
+        <template v-for="item in tabEnums" :key="item.name">
+          <el-tab-pane lazy :label="item.label" :name="item.name" style="height: 100%">
+            <component :is="item.components" v-bind="item.props.value"></component>
+          </el-tab-pane>
+        </template>
       </el-tabs>
     </div>
   </div>
@@ -129,6 +127,41 @@ const detailForm: DialogForm = {
 const handleTreeChange = (_: number, data: App.AppTree) => {
   requestParam.appId = data.appId;
 };
+
+type TabEnum = {
+  name: string;
+  label: string;
+  components: any;
+  props: ComputedRef<{
+    appId?: string;
+    groupId?: string;
+  }>;
+};
+
+const tabEnums: TabEnum[] = [
+  {
+    name: "User",
+    label: "关联用户",
+    components: LinkUser,
+    props: computed(() => {
+      return {
+        appId: requestParam.appId,
+        userGroupId: clickRowInfo.value?.groupId,
+      };
+    }),
+  },
+  {
+    name: "Role",
+    label: "关联角色",
+    components: LinkRole,
+    props: computed(() => {
+      return {
+        appId: requestParam.appId,
+        userGroupId: clickRowInfo.value?.groupId,
+      };
+    }),
+  },
+];
 </script>
 
 <style lang="scss" scoped>

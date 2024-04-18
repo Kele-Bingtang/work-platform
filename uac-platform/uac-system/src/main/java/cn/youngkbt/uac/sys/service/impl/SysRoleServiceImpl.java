@@ -83,15 +83,24 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean insertOne(SysRoleDTO sysRoleDTO) {
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
-        return baseMapper.insert(sysRole) > 0;
+        baseMapper.insert(sysRole);
+        
+        sysRoleDTO.setRoleId(sysRole.getRoleId());
+        return roleMenuLinkService.addMenusToRole(sysRoleDTO);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean updateOne(SysRoleDTO sysRoleDTO) {
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
-        return baseMapper.updateById(sysRole) > 0;
+        baseMapper.updateById(sysRole);
+        // 删除角色与菜单关联
+        roleMenuLinkService.remove(Wrappers.<RoleMenuLink>lambdaQuery()
+                .eq(RoleMenuLink::getRoleId, sysRoleDTO.getRoleId()));
+        return roleMenuLinkService.addMenusToRole(sysRoleDTO);
     }
 
     @Override

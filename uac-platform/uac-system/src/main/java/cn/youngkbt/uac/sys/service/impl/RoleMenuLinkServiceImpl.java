@@ -1,20 +1,26 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.mp.base.PageQuery;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.RoleMenuLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
-import cn.youngkbt.uac.sys.model.vo.RoleMenuLinkVO;
+import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
+import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -24,21 +30,47 @@ import java.util.Objects;
 @Service
 public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, RoleMenuLink> implements RoleMenuLinkService {
 
-    @Override
-    public List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDTO roleMenuLinkDTO, PageQuery pageQuery) {
-        LambdaQueryWrapper<RoleMenuLink> wrapper = Wrappers.<RoleMenuLink>lambdaQuery()
-                .eq(RoleMenuLink::getAppId, roleMenuLinkDTO.getAppId())
-                .eq(StringUtil.hasText(roleMenuLinkDTO.getRoleId()), RoleMenuLink::getRoleId, roleMenuLinkDTO.getRoleId())
-                .eq(StringUtil.hasText(roleMenuLinkDTO.getMenuId()), RoleMenuLink::getMenuId, roleMenuLinkDTO.getMenuId())
-                .orderByAsc(RoleMenuLink::getId);
 
-        List<RoleMenuLink> roleMenuLinkList;
-        if (Objects.isNull(pageQuery)) {
-            roleMenuLinkList = baseMapper.selectList(wrapper);
-        } else {
-            roleMenuLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
+    @Override
+    public List<String> listMenuIdsByRoleId(String roleId, String appId) {
+
+        List<RoleMenuLink> roleMenuLinks = baseMapper.selectList(Wrappers.<RoleMenuLink>lambdaQuery()
+                .eq(RoleMenuLink::getRoleId, roleId)
+                .eq(StringUtil.hasText(appId), RoleMenuLink::getAppId, appId)
+        );
+        
+        if (ListUtil.isNotEmpty(roleMenuLinks)) {
+            return roleMenuLinks.stream().map(RoleMenuLink::getMenuId).toList();
         }
-        return MapstructUtil.convert(roleMenuLinkList, RoleMenuLinkVO.class);
+
+        return List.of();
+    }
+
+    @Override
+    public List<Tree<String>> listMenuListByRoleId(String roleId, String appId) {
+        QueryWrapper<RoleMenuLink> wrapper = Wrappers.query();
+        wrapper.eq("trml.is_deleted", 0)
+                .eq("trml.role_id", roleId)
+                .eq(StringUtil.hasText(appId), "trml.app_id", appId);
+
+        List<SysMenu> sysMenu = baseMapper.listMenuListByRoleId(wrapper);
+        return buildDeptTree(sysMenu);
+    }
+
+    /**
+     * 构建前端所需要下拉树结构
+     */
+    private List<Tree<String>> buildDeptTree(List<SysMenu> sysMenuList) {
+        if (CollUtil.isEmpty(sysMenuList)) {
+            return Collections.emptyList();
+        }
+
+        return TreeBuildUtil.build(sysMenuList, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
+                tree.setId(treeNode.getMenuId())
+                        .setParentId(treeNode.getParentId())
+                        .setName(treeNode.getMenuName())
+                        .setWeight(treeNode.getOrderNum())
+                        .putExtra("icon", treeNode.getIcon()));
     }
 
     @Override
@@ -68,6 +100,19 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
     @Override
     public boolean removeOneLink(Long id) {
         return baseMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public boolean addMenusToRole(SysRoleDTO sysRoleDTO) {
+        List<String> selectedMenuIds = sysRoleDTO.getSelectedMenuIds();
+
+        List<RoleMenuLink> userGroupLinkList = ListUtil.newArrayList(selectedMenuIds, menuId ->
+                        new RoleMenuLink().setMenuId(menuId)
+                                .setRoleId(sysRoleDTO.getRoleId())
+                                .setAppId(sysRoleDTO.getAppId())
+                , RoleMenuLink.class);
+
+        return Db.saveBatch(userGroupLinkList);
     }
 }
 

@@ -1,4 +1,14 @@
 <template>
+  <Tinymce
+    v-if="column.attrs?.el === 'tinymce'"
+    v-model="_form[column.formItem.prop]"
+    v-bind="{
+      ...handleFormProps,
+      ...placeholder,
+      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
+    }"
+  ></Tinymce>
+
   <WangEditor
     v-if="column.attrs?.el === 'wang-editor'"
     v-model="_form[column.formItem.prop]"
@@ -13,6 +23,7 @@
     v-else-if="!column.attrs?.render && column.attrs?.el === 'el-tree'"
     :data="columnEnum"
     v-model="_form[column.formItem.prop]"
+    select
     v-bind="{
       ...handleFormProps,
       ...placeholder,
@@ -34,6 +45,7 @@
     v-model="_form[column.formItem.prop]"
     :data="column.attrs?.el === 'el-tree-select' ? columnEnum : []"
     :options="['el-cascader', 'el-select-v 2'].includes(column.attrs?.el!) ? columnEnum : []"
+    :style="style"
   >
     <template v-if="column.attrs?.el === 'el-cascader'" #default="{ data }">
       <span>{{ data[fieldNames.label] }}</span>
@@ -111,7 +123,7 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue";
 import type { FormColumnProps } from "../interface";
-import { WangEditor } from "@work/components";
+import { WangEditor, Tinymce } from "@work/components";
 import Tree from "./Tree.vue";
 
 defineOptions({ name: "ProFormItem" });
@@ -119,6 +131,7 @@ defineOptions({ name: "ProFormItem" });
 interface ProFormItemProps {
   column: FormColumnProps;
   form: { [key: string]: any };
+  style: CSSStyleDeclaration;
 }
 
 const props = defineProps<ProFormItemProps>();

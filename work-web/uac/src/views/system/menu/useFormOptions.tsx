@@ -31,7 +31,7 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
           enum: enumData,
           fieldNames: { value: "appId", label: "appName" },
           defaultValue: defaultValue,
-          isDisabled: form => !!form.appId,
+          disabled: ["edit"],
           props: { clearable: true, placeholder: "请选择 App" },
         },
       },

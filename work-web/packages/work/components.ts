@@ -3,7 +3,7 @@ import { ImageVerify } from "@work/components/imageVerify";
 import { Pagination } from "@work/components/pagination";
 import { Tooltip } from "@work/components/tooltip";
 import { TreeFilter } from "@work/components/treeFilter";
-import { ProForm } from "@work/components/proForm";
+import { ProForm, Tree } from "@work/components/proForm";
 import { ProTable } from "@work/components/proTable";
 import { SearchForm } from "@work/components/searchForm";
 import { Grid } from "@work/components/grid";
@@ -20,6 +20,7 @@ export default [
   Pagination,
   Tooltip,
   TreeFilter,
+  Tree,
   ProForm,
   ProTable,
   SearchForm,

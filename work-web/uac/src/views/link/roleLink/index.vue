@@ -36,13 +36,11 @@
       <Description :title="clickRowInfo?.roleName"></Description>
 
       <el-tabs v-model="activeName" style="height: calc(100% - 70px)">
-        <el-tab-pane label="关联用户" name="User" style="height: 100%">
-          <LinkUser :appId="requestParam.appId" :roleId="clickRowInfo.roleId"></LinkUser>
-        </el-tab-pane>
-
-        <el-tab-pane lazy label="关联用户组" name="UserGroup" style="height: 100%">
-          <LinkUserGroup :appId="requestParam.appId" :roleId="clickRowInfo.roleId"></LinkUserGroup>
-        </el-tab-pane>
+        <template v-for="item in tabEnums" :key="item.name">
+          <el-tab-pane lazy :label="item.label" :name="item.name" style="height: 100%">
+            <component :is="item.components" v-bind="item.props.value"></component>
+          </el-tab-pane>
+        </template>
       </el-tabs>
     </div>
   </div>
@@ -64,6 +62,7 @@ import { ElSwitch } from "element-plus";
 import Description from "@/components/Description/index.vue";
 import LinkUser from "./components/linkUser.vue";
 import LinkUserGroup from "./components/linkUserGroup.vue";
+import LinkMenu from "./components/linkMenu.vue";
 
 const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
@@ -138,9 +137,58 @@ const detailForm: DialogForm = {
     closeOnClickModal: false,
   },
 };
+
 const handleTreeChange = (nodeId: number) => {
   requestParam.appId = nodeId + "";
 };
+
+type TabEnum = {
+  name: string;
+  label: string;
+  components: any;
+  props: ComputedRef<{
+    appId?: string;
+    id?: number;
+    roleId?: string;
+  }>;
+};
+
+const tabEnums: TabEnum[] = [
+  {
+    name: "User",
+    label: "关联用户",
+    components: LinkUser,
+    props: computed(() => {
+      return {
+        appId: requestParam.appId,
+        roleId: clickRowInfo.value?.roleId,
+      };
+    }),
+  },
+  {
+    name: "UserGroup",
+    label: "关联用户组",
+    components: LinkUserGroup,
+    props: computed(() => {
+      return {
+        appId: requestParam.appId,
+        roleId: clickRowInfo.value?.roleId,
+      };
+    }),
+  },
+  {
+    name: "Menu",
+    label: "关联菜单",
+    components: LinkMenu,
+    props: computed(() => {
+      return {
+        appId: requestParam.appId,
+        id: clickRowInfo.value?.id,
+        roleId: clickRowInfo.value?.roleId,
+      };
+    }),
+  },
+];
 </script>
 
 <style lang="scss" scoped>

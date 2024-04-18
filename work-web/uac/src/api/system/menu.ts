@@ -70,6 +70,14 @@ export const listMenuTreeSelectByApp = (params: http.Page<{ appId: number }>) =>
   return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/treeSelect`, params);
 };
 
+export const listMenuIdsByRoleId = (appId: string, roleId: string) => {
+  return http.get<http.Response<string[]>>(`${baseUri}/listMenuIdsByRoleId/${appId}/${roleId}`);
+};
+
+export const listMenuListByRoleId = (appId: string, roleId: string) => {
+  return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/listMenuListByRoleId/${appId}/${roleId}`);
+};
+
 export const addOne = (data: Menu.MenuInfo) => {
   return http.post<http.Response<string>>(baseUri, data);
 };

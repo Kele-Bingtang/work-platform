@@ -1,9 +1,9 @@
 package cn.youngkbt.uac.sys.service;
 
-import cn.youngkbt.mp.base.PageQuery;
+import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.uac.sys.model.dto.RoleMenuLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
-import cn.youngkbt.uac.sys.model.vo.RoleMenuLinkVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -15,7 +15,9 @@ import java.util.List;
  */
 public interface RoleMenuLinkService extends IService<RoleMenuLink> {
 
-    List<RoleMenuLinkVO> queryLinkByAppId(RoleMenuLinkDTO roleMenuLinkDTO, PageQuery pageQuery);
+    List<String>  listMenuIdsByRoleId(String roleId, String appId);
+
+    List<Tree<String>> listMenuListByRoleId(String roleId, String appId);
 
     boolean checkMenuExistRole(String menuId);
 
@@ -26,5 +28,7 @@ public interface RoleMenuLinkService extends IService<RoleMenuLink> {
     boolean updateOneLink(RoleMenuLinkDTO roleMenuLinkDTO);
     
     boolean removeOneLink(Long id);
-    
+
+    boolean addMenusToRole(SysRoleDTO sysRoleDTO);
+
 }

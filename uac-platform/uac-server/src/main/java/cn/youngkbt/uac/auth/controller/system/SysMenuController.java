@@ -8,6 +8,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
+import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
@@ -26,7 +27,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/system/menu")
 public class SysMenuController {
+    
     private final SysMenuService sysMenuService;
+    private final RoleMenuLinkService roleMenuLinkService;
 
     @GetMapping("/{id}")
     @Operation(summary = "菜单列表查询", description = "通过主键查询菜单列表")
@@ -61,6 +64,20 @@ public class SysMenuController {
     public Response<List<SysMenuVO>> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
         List<SysMenuVO> treeTable = sysMenuService.listMenuTreeTable(sysMenuDTO);
         return HttpResult.ok(treeTable);
+    }
+    
+    @GetMapping("/listMenuIdsByRoleId/{appId}/{roleId}")
+    @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
+    public Response<List<String>> listMenuIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
+        List<String> menuIds = roleMenuLinkService.listMenuIdsByRoleId(roleId, appId);
+        return HttpResult.ok(menuIds);
+    }
+
+    @GetMapping("/listMenuListByRoleId/{appId}/{roleId}")
+    @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
+    public Response<List<Tree<String>>> listMenuListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
+        List<Tree<String>> sysMenuVOList = roleMenuLinkService.listMenuListByRoleId(roleId, appId);
+        return HttpResult.ok(sysMenuVOList);
     }
 
     @PostMapping

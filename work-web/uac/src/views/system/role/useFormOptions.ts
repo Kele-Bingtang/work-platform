@@ -1,4 +1,4 @@
-import { listMenuTreeSelectByApp } from "@/api/system/menu";
+import { listMenuIdsByRoleId, listMenuTreeSelectByApp } from "@/api/system/menu";
 import type { Role } from "@/api/system/role";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
@@ -30,7 +30,7 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
           enum: enumData,
           fieldNames: { value: "appId", label: "appName" },
           defaultValue: defaultValue,
-          isDisabled: form => !!form.appId,
+          disabled: ["edit"],
           props: { clearable: true, placeholder: "请选择 App" },
         },
       },
@@ -50,6 +50,11 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
         formItem: { label: "菜单分配", prop: "selectedMenuIds", br: true },
         attrs: {
           el: "el-tree",
+          defaultValue: async (form: Record<string, any>) => {
+            if (!form.appId) return [];
+            const res = await listMenuIdsByRoleId(form.appId, form.roleId);
+            return res.data || [];
+          },
           enum: listMenuTreeSelectByApp,
           props: { nodeKey: "value", search: true, checkbox: true },
         },

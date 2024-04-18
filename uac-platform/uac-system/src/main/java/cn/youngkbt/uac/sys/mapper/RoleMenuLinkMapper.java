@@ -1,7 +1,13 @@
 package cn.youngkbt.uac.sys.mapper;
 
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
+import cn.youngkbt.uac.sys.model.po.SysMenu;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,6 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface RoleMenuLinkMapper extends BaseMapper<RoleMenuLink> {
 
+    List<SysMenu> listMenuListByRoleId(@Param(Constants.WRAPPER) Wrapper<RoleMenuLink> queryWrapper);
 }
 
 

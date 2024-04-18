@@ -9,6 +9,7 @@ import TinymceEditor from "@tinymce/tinymce-vue";
 import "tinymce/tinymce";
 import "tinymce/icons/default";
 import "tinymce/themes/silver";
+import "tinymce/plugins/accordion"; // 手提琴，https://www.tiny.cloud/docs/tinymce/6/accordion/
 import "tinymce/plugins/advlist"; // 高级列表，https://www.tiny.cloud/docs/tinymce/6/advlist/
 import "tinymce/plugins/anchor"; // 在工具栏中添加了一个锚点/书签按钮，https://www.tiny.cloud/docs/tinymce/6/advlist/anchor/
 import "tinymce/plugins/autolink"; // 当用户键入有效的完整 URL 时，自动链接插件会自动创建超链接，https://www.tiny.cloud/docs/tinymce/6/advlist/autolink/
@@ -48,7 +49,7 @@ export type UITheme = "default" | "dark" | "tinymce-5" | "tinymce-5-dark";
 export type ContentTheme = "" | "default" | "dark" | "document" | "tinymce-5" | "tinymce-5-dark";
 
 interface TinymceProps {
-  modelValue: string; // 内容
+  modelValue: string | undefined; // 内容
   disabled?: boolean; // 编辑器是否禁用
   theme?: UITheme; // UI 主题
   contentTheme?: ContentTheme; // 内容区主题，如果不传，默认等于 UI 主题
@@ -69,7 +70,7 @@ const props = withDefaults(defineProps<TinymceProps>(), {
   menubar: "file edit view insert format tools table help",
   toolbar: () => [],
   toolbarMode: "sliding",
-  height: "360px",
+  height: 360,
   width: "auto",
   lang: "zh-CN",
   move: true,
@@ -92,7 +93,7 @@ const emits = defineEmits<TinymceEmitProps>();
 const fullscreen = ref(false);
 
 const languageTypeList = reactive<{ [key: string]: string }>({
-  "zh-CN": "zh-Hans",
+  "zh-CN": "zh_CN",
 });
 
 const language = computed(() => languageTypeList[props.lang]);
@@ -101,7 +102,7 @@ const tinymceContent = computed({
     return props.modelValue;
   },
   set(value) {
-    emits("update:modelValue", value);
+    emits("update:modelValue", value || "");
   },
 });
 
@@ -116,37 +117,34 @@ const skinTheme = computed(() => {
 
 const initOptions = computed(() => ({
   selector: `#${props.id}`,
-  deprecation_warnings: false,
-  width: props.width,
-  min_width: 60,
-  height: props.height,
-  min_height: 60,
-  body_class: "panel-body",
-  resize: props.move,
-  plugins: plugins,
-  toolbar: props.toolbar.length > 0 ? props.toolbar : toolbarConfig,
-  toolbar_mode: props.toolbarMode,
-  menubar: props.menubar,
-  language: language.value,
+  deprecation_warnings: false, // 去除再控制台展示的废弃 API 提示
+  width: props.width, // 编辑器宽度
+  height: props.height, // 编辑器高度
+  min_height: 160, // 编辑器最小高度
+  body_class: "editor-body", // 编辑器自定义 class
+  resize: props.move, // 自动控制大小
+  plugins: plugins, // 插件
+  toolbar: props.toolbar.length > 0 ? props.toolbar : toolbarConfig, // 工具栏
+  toolbar_mode: props.toolbarMode, // 工具栏溢出展示模式
+  menubar: props.menubar, // 菜单栏
+  language: language.value, // 语言
   promotion: false, // 去除右上角的 ⚡️Upgrade
   branding: false, // 去除左下角的 Tiny
-  base_url: import.meta.env.VITE_PUBLIC_PATH === "/" ? "/tinymce" : `${import.meta.env.VITE_PUBLIC_PATH}/tinymce`,
-  skin: skinTheme.value,
-  content_css: props.contentTheme ? props.contentTheme : props.theme,
-  end_container_on_empty_block: true,
-  draggable_modal: true,
-  autosave_restore_when_empty: true,
-  code_dialog_height: 450,
-  code_dialog_width: 1000,
+  base_url: import.meta.env.VITE_PUBLIC_PATH === "/" ? "/tinymce" : `${import.meta.env.VITE_PUBLIC_PATH}/tinymce`, // 静态资源根路径
+  skin: skinTheme.value, // 皮肤
+  content_css: props.contentTheme ? props.contentTheme : props.theme, // 内容 CSS 文件
+  end_container_on_empty_block: true, // 在空的内部块元素内按下 Enter 键时如何拆分当前容器块元素
+  draggable_modal: true, // 对话框拖拽
+  autosave_restore_when_empty: true, // 当编辑器在初始化时为空时，TinyMCE 是否应自动恢复存储在本地存储中的内容
   default_link_target: "_blank", // 新窗口打开链接
-  link_title: false,
-  fullscreen_native: true, // 测试
-  nonbreaking_force_tab: true,
-  insertdatetime_formats: ["%H:%M:%S", "%Y-%m-%d", "%I:%M:%S %p", "%D"], // 插入的日期格式
-  convert_urls: false,
-  paste_data_images: true, // https://www.tiny.cloud/docs/tinymce/6/upload-images/ // 允许复制图片
-  images_file_types: "jpeg,jpg,jpe,jfi,jif,jfif,png,gif,bmp,webp", // 支持的上传图片类型
-  template_mdate_format: "%Y-%m-%d : %H:%M:%S",
+  link_title: false, // 链接插件配置项：禁用对话框中的链接输入字段
+  fullscreen_native: true, // 全屏插件配置项：编辑器使用浏览器全屏模式，而不是仅在启用全屏模式时填充浏览器窗口
+  nonbreaking_force_tab: true, // nonbreaking 插件配置项：按下键盘 tab 键时插入三个空格符
+  insertdatetime_formats: ["%H:%M:%S", "%Y-%m-%d", "%I:%M:%S %p", "%D"], // 插入日期/时间插件配置项：插入的日期格式
+  convert_urls: false, // URL 处理选项插件配置项：自动转换 URL
+  paste_data_images: true, // 复制和粘贴插件配置项：允许复制图片
+  images_file_types: "jpeg,jpg,jpe,jfi,jif,jfif,png,gif,bmp,webp", // 图片和文件选项插件：支持的上传图片类型
+  template_mdate_format: "%Y-%m-%d %H:%M:%S", // 模板插件配置项：模板中插入当前日期的格式
   templates: [
     {
       title: "当前时间",
@@ -169,8 +167,8 @@ const initOptions = computed(() => ({
     employeeNo: "100338",
   },
   template_preview_replace_values: {
-    preview_username: "Kobe Liu",
-    preview_employeeNo: "100338",
+    username: "Kobe Liu",
+    employeeNo: "100338",
   },
   // 图片上传回调
   images_upload_handler: (blobInfo: Function, progress: Function) =>
@@ -195,6 +193,7 @@ const initOptions = computed(() => ({
     console.log(args.content);
     // args.content += "水印";
   },
+  ...useAttrs(), // 其他透传的属性
 }));
 
 onMounted(() => {
@@ -245,9 +244,9 @@ watch(
 .tinymce-component {
   position: relative;
   line-height: normal;
+}
 
-  .tox-fullscreen {
-    z-index: 1010 !important;
-  }
+.tox {
+  z-index: 3000 !important;
 }
 </style>

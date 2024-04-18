@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 */
 @TableName("t_role_menu_link")
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = RoleMenuLinkVO.class, reverseConvertGenerate = false)
 public class RoleMenuLink extends BaseDO {

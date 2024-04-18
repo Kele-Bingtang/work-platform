@@ -31,7 +31,7 @@ const props = defineProps<LinkUserProps>();
 
 const requestParam = reactive({ roleId: props.roleId });
 
-// 监听 userGroupId，变化后修改关联的表格查询默认值
+// 监听 roleId，变化后修改关联的表格查询默认值
 watchEffect(() => (requestParam.roleId = props.roleId));
 
 const proTableRef = shallowRef<ProTableInstance>();

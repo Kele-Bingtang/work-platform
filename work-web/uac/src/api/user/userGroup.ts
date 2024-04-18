@@ -34,6 +34,8 @@ export namespace UserGroup {
     validFrom: string; // 过期时间
     appId: string; // 应用 ID
     createTime: string; // 创建时间
+    ownerName: string; // 负责人 nickname
+    ownerId: string; // 负责人 username
   }
 
   // 用户组关联角色信息（多个角色）

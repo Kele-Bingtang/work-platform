@@ -44,6 +44,7 @@ export type FormType =
   | "el-radio-group"
   | "el-checkbox"
   | "el-checkbox-group"
+  | "tinymce"
   | "wang-editor";
 
 export type FormFieldNamesProps = { label: string; value: string; children?: string };
@@ -73,7 +74,7 @@ export interface FormColumnProps<T = any> {
     fieldNames?: FormFieldNamesProps; // 字典指定 label && value && children 的 key 值
     props?: any; // 搜索项参数，根据 element plus 官方文档来传递，该属性所有值会透传到组件
     order?: number; // 表单排序（从大到小）
-    defaultValue?: ValueType | (() => ValueType | any) | ComputedRef<ValueType>; // 默认值
+    defaultValue?: ValueType | ((form: Record<string, any>) => ValueType | any) | ComputedRef<ValueType>; // 默认值
     width?: string | number;
     subProp?: string; // 级联表单的 prop
     subEnum?: FormEnumProps[] | ((params?: any, enumData?: any) => Promise<any>); // 级联表单的 enum

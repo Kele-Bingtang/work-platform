@@ -1,7 +1,13 @@
 <template>
-  <div></div>
+  <div>
+    <Tinymce v-model="value" />
+  </div>
 </template>
 
-<script setup lang="ts" name="Home"></script>
+<script setup lang="ts" name="Home">
+import { Tinymce } from "work";
+
+const value = ref("");
+</script>
 
 <style lang="scss" scoped></style>

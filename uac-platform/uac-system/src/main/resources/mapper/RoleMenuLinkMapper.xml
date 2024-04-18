@@ -25,4 +25,10 @@
         update_by,update_by_id,update_time,
         status,is_deleted,app_id
     </sql>
+    
+    <select id="listMenuListByRoleId" resultType="cn.youngkbt.uac.sys.model.po.SysMenu">
+        select tsm.* from t_role_menu_link trml
+        left join t_sys_menu tsm on trml.menu_id = tsm.menu_id and tsm.is_deleted = 0
+        ${ew.getCustomSqlSegment}
+    </select>
 </mapper>

@@ -1,18 +1,18 @@
 <template>
-  <div v-if="$attrs.checkbox">
+  <div v-if="checkbox">
     <el-checkbox v-model="defaultExpandAll" label="展开/折叠" />
-    <el-checkbox v-model="isSelectAll" :indeterminate="indeterminate" label="全选/全不选" />
-    <el-checkbox v-model="checkStrictly" label="父子联动" />
+    <el-checkbox v-if="select" v-model="isSelectAll" :indeterminate="indeterminate" label="全选/全不选" />
+    <el-checkbox v-if="select" v-model="checkStrictly" label="父子联动" />
   </div>
   <el-input
-    v-if="$attrs.search"
+    v-if="search"
     v-model="filterText"
-    :style="{ width: $attrs.searchWidth || '100%' }"
+    :style="{ width: $attrs.searchWidth || '98.5%' }"
     :placeholder="$attrs.searchPlaceholder || '请输入关键词进行筛选'"
   />
   <el-tree
     ref="treeRef"
-    show-checkbox
+    :show-checkbox="select"
     @check="handleCheck"
     :filter-node-method="filterNode"
     :check-strictly="!checkStrictly"
@@ -29,11 +29,14 @@ import { nextTick, ref, watch } from "vue";
 defineOptions({ name: "Tree" });
 
 export interface TreeProps {
-  modelValue: any[];
+  modelValue?: any[];
   data: any[]; // 树数据
   nodeKey?: string; // 每一个树节点 id
   checkValueType?: "keys" | "nodes"; // v-model 返回的格式，keys 返回选中的节点 nodeKey，nodes 为返回选中的节点
   expandSelected?: boolean; // 初始化就有默认选中的节点时，是否展开选中节点的所有父节点
+  checkbox?: boolean;
+  search?: boolean;
+  select?: boolean;
 }
 
 const props = withDefaults(defineProps<TreeProps>(), {
@@ -41,6 +44,9 @@ const props = withDefaults(defineProps<TreeProps>(), {
   nodeKey: " id",
   checkValueType: "keys",
   expandSelected: true,
+  checkbox: false,
+  search: false,
+  select: true,
 });
 
 type EmitProps = { (e: "update:modelValue", value: string[]): void };
@@ -55,7 +61,7 @@ const treeRef = ref<InstanceType<typeof ElTree>>();
 
 watch(defaultExpandAll, val => {
   const nodes = treeRef.value?.store._getAllNodes();
-
+  console.log(treeRef.value);
   // true 全展开，false 全折叠
   if (val) nodes?.forEach(item => (item.expanded = true));
   else nodes?.forEach(item => (item.expanded = false));
@@ -108,5 +114,9 @@ const setChecked = (val: any[]) => {
   });
 };
 
-watch(props.modelValue, val => val && setChecked(val), { immediate: true });
+watch(
+  () => props.modelValue,
+  val => val && setChecked(val),
+  { immediate: true }
+);
 </script>

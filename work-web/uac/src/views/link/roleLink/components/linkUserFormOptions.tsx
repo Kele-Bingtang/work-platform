@@ -11,7 +11,7 @@ const rules = reactive<FormRules>({
   expireOn: [{ required: true, message: "请选择过期时间", trigger: "blur" }],
 });
 
-export const useFormOptions = (requestParams: { userGroupId: string }) => {
+export const useFormOptions = (requestParams: { roleId: string }) => {
   const { getDictData } = useLayoutStore();
 
   // 选择时长后，计算出过期时间

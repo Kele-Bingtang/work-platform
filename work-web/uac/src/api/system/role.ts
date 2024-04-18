@@ -12,6 +12,7 @@ export namespace Role {
     intro: string; // 角色介绍
     appId: string; // 应用 ID
     createTime: string; // 创建时间
+    selectedMenuIds: string[]; // 选中的菜单 ID
   }
 
   // 角色关联用户组信息（多个用户组）

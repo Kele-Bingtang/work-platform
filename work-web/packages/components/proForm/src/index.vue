@@ -6,10 +6,10 @@
           :is="`el-col`"
           v-bind="item.formItem.col || options.row?.col"
           :span="item.formItem.br ? 24 : item.formItem.col?.span || options.row?.col?.span || 24"
+          v-if="!isDestroy(item)"
+          v-show="!isHidden(item)"
         >
           <component
-            v-if="!isDestroy(item)"
-            v-show="!isHidden(item)"
             :is="'el-form-item'"
             v-bind="item.formItem"
             :label="parseLabel(item.formItem.label)"
@@ -67,7 +67,7 @@ const setEnumMap = async (column: FormColumnProps) => {
 };
 
 // 初始化默认值
-const initDefaultValue = (column: FormColumnProps) => {
+const initDefaultValue = async (column: FormColumnProps) => {
   const { attrs, formItem } = column;
 
   if (form.value[formItem.prop] || form.value[formItem.prop] === false || form.value[formItem.prop] === 0) return;
@@ -76,7 +76,9 @@ const initDefaultValue = (column: FormColumnProps) => {
   if (attrs?.defaultValue !== undefined && attrs?.defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
     if (isResponsive(attrs.defaultValue)) return (form.value[formItem.prop] = (attrs?.defaultValue as Ref).value);
-    if (typeof attrs?.defaultValue === "function") return (form.value[formItem.prop] = attrs?.defaultValue());
+    if (typeof attrs?.defaultValue === "function") {
+      return (form.value[formItem.prop] = await attrs?.defaultValue(form.value));
+    }
     return (form.value[formItem.prop] = attrs?.defaultValue);
   }
 

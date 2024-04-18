@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2023-24-12 00:24:45
@@ -62,5 +64,10 @@ public class SysRoleDTO {
      * 状态（0 异用 1 正常）
      */
     private Integer status;
+
+    /**
+     * 绑定的菜单 ID
+     */
+    private List<String> selectedMenuIds;
 
 }

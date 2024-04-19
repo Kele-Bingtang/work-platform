@@ -1,19 +1,11 @@
 <template>
   <el-button type="primary" @click="handleEdit" style="margin-bottom: 10px">编辑</el-button>
   <Tree :data="data" node-key="value" checkbox search :select="false" />
-
-  <el-dialog v-model="dialogVisible" title="编辑菜单" width="500" @close="handleCancel">
-    <ProForm v-if="dialogVisible" v-model="form" :options="options" />
-    <template #footer>
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleConfirm">确定</el-button>
-    </template>
-  </el-dialog>
 </template>
 
-<script setup lang="ts" name="LinkMenu">
+<script setup lang="tsx" name="LinkMenu">
 import { listMenuListByRoleId, listMenuIdsByRoleId, listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
-import { ProForm, Tree } from "work";
+import { ProForm, Tree, useDialog } from "work";
 import type { FormOptionsProps } from "@work/components";
 import { editOne } from "@/api/system/role";
 
@@ -26,7 +18,6 @@ export interface LinkUserProps {
 const props = defineProps<LinkUserProps>();
 
 const data = ref<Menu.MenuInfo[]>([]);
-const dialogVisible = ref(false);
 const form = ref<{ selectedMenuIds?: string[] }>({ selectedMenuIds: [] });
 const selectedMenuIds = ref<string[]>([]);
 
@@ -42,17 +33,24 @@ const initTreeData = async (appId: string, roleId: string) => {
 
 watchEffect(() => initTreeData(props.appId, props.roleId));
 
+const { open } = useDialog();
+
 const handleEdit = () => {
-  dialogVisible.value = true;
+  open({
+    title: "编辑菜单",
+    onClose: handleCancel,
+    onConfirm: handleConfirm,
+    render: () => {
+      return <ProForm v-model={form.value} options={options} />;
+    },
+  });
 };
 
 const handleCancel = () => {
-  dialogVisible.value = false;
   form.value = { selectedMenuIds: undefined };
 };
 
 const handleConfirm = async () => {
-  dialogVisible.value = false;
   await editOne({
     id: props.id,
     roleId: props.roleId,

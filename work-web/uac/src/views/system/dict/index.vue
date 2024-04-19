@@ -25,7 +25,7 @@
       ></ProTable>
     </div>
 
-    <Drawer v-model="drawer" size="55%" title="字典数据配置">
+    <BasicDrawer v-model="drawer" size="55%" title="字典数据配置">
       <div class="drawer-content">
         <DictData
           :dict-code="dictInfo?.dictCode || ''"
@@ -33,14 +33,14 @@
           :is-cascade="dictInfo?.isCascade || 0"
         />
       </div>
-    </Drawer>
+    </BasicDrawer>
   </div>
 </template>
 
 <script setup lang="tsx" name="DictType">
-import { ProTable, TreeFilter, Drawer } from "work";
+import { ProTable, TreeFilter, BasicDrawer } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type DictType } from "@/api/system/dictType";
+import { listPage, addOne, editOne, deleteOne, type DictType } from "@/api/system/dictType";
 import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
 import DictData from "./dictData.vue";
 import { ElLink } from "element-plus";

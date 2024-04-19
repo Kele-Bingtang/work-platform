@@ -8,7 +8,7 @@ import { ProTable } from "@work/components/proTable";
 import { SearchForm } from "@work/components/searchForm";
 import { Grid } from "@work/components/grid";
 import { WangEditor } from "@work/components/wangEditor";
-import { Drawer } from "@work/components/drawer";
+import { BasicDrawer } from "@work/components/basicDrawer";
 import { List } from "@work/components/list";
 import { UserSelect } from "@work/components/userSelect";
 import { TransferSelect } from "@work/components/transferSelect";
@@ -26,7 +26,7 @@ export default [
   SearchForm,
   Grid,
   WangEditor,
-  Drawer,
+  BasicDrawer,
   List,
   UserSelect,
   TransferSelect,

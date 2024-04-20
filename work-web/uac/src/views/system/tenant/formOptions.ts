@@ -3,10 +3,12 @@ import type { FormRules } from "element-plus";
 import { useFormRules } from "@/hooks/useFormRules";
 import type { Tenant } from "@/api/system/tenant";
 
-const { validatePhone } = useFormRules();
+const { validatePassword, validatePhone } = useFormRules();
 
 const rules = reactive<FormRules>({
   tenantName: [{ required: true, message: "请输入企业名称", trigger: "blur" }],
+  username: [{ required: true, message: "请输入用户名称", trigger: "blur" }],
+  password: [{ required: true, validator: validatePassword, trigger: "blur" }],
   contactUserName: [{ required: true, message: "请输入联系人", trigger: "blur" }],
   contactPhone: [{ required: true, validator: validatePhone, trigger: "blur" }],
 });
@@ -41,6 +43,18 @@ export const options: FormOptionsProps<Tenant.TenantInfo> = {
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 联系电话" } },
     },
     {
+      formItem: { label: "系统用户名", prop: "username" },
+      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 系统用户名" } },
+    },
+    {
+      formItem: { label: "系统密码", prop: "password" },
+      attrs: {
+        el: "el-input",
+        hidden: ["edit"],
+        props: { clearable: true, placeholder: "请输入 系统密码", type: "password", showPassword: true },
+      },
+    },
+    {
       formItem: { label: "企业域名", prop: "domain" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 企业域名" } },
     },
@@ -56,15 +70,15 @@ export const options: FormOptionsProps<Tenant.TenantInfo> = {
       attrs: { el: "el-input-number", defaultValue: 0 },
     },
     {
-      formItem: { label: "企业所在地", prop: "address" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 企业所在地" } },
-    },
-    {
       formItem: { label: "企业图标", prop: "icon" },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 企业图标" } },
     },
     {
-      formItem: { label: "社会信用代码", prop: "licenseNumber" },
+      formItem: { label: "企业所在地", prop: "address", br: true },
+      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 企业所在地" } },
+    },
+    {
+      formItem: { label: "社会信用代码", prop: "licenseNumber", br: true },
       attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 社会信用代码" } },
     },
     {

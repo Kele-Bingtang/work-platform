@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogFormVisible" v-bind="dialog" :title="dialogTitle" destroy-on-close>
+  <el-dialog v-model="dialogFormVisible" destroy-on-close draggable v-bind="dialog" :title="dialogTitle">
     <slot name="form">
       <ProForm v-if="options" ref="formElementRef" :options="formOptions" v-model="form">
         <template #footer v-if="$slots.formFooter">

@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -50,6 +51,7 @@ public class SysUserDTO {
     /**
      * 密码
      */
+    @NotBlank(message = "密码不能为空", groups = { RestGroup.AddGroup.class })
     private String password;
 
     /**
@@ -108,4 +110,14 @@ public class SysUserDTO {
      * 状态（0 异用 1 正常）
      */
     private Integer status;
+
+    /**
+     * 岗位
+     */
+    private List<String> postId;
+
+    /**
+     * 角色
+     */
+    private List<String> roleId;
 }

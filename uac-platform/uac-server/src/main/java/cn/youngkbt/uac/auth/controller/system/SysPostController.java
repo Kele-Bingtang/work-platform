@@ -8,6 +8,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
+import cn.youngkbt.uac.sys.model.vo.extra.UserSelectPostVo;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.uac.sys.service.UserPostLinkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,6 +51,13 @@ public class SysPostController {
     public Response<TablePage<SysPostVO>> listPage(SysPostDTO sysPostDTO, PageQuery pageQuery) {
         TablePage<SysPostVO> tablePage = sysPostService.listPage(sysPostDTO, pageQuery);
         return HttpResult.ok(tablePage);
+    }
+
+    @GetMapping("/userSelectPostList/{userId}")
+    @Operation(summary = "角色岗位列表查询", description = "查询岗位列表和已选择的岗位列表")
+    public Response<UserSelectPostVo> userSelectPostList(@PathVariable String userId) {
+        UserSelectPostVo userSelectPostVo = sysPostService.userSelectPostList(userId);
+        return HttpResult.ok(userSelectPostVo);
     }
 
     @PostMapping

@@ -11,6 +11,11 @@ export namespace Post {
     status: number; // 状态
     createTime: string; // 创建时间
   }
+
+  export interface UserSelectPost {
+    postIds: string[];
+    postList: PostInfo[];
+  }
 }
 
 const baseUri = "/system/post";
@@ -21,6 +26,13 @@ export const list = () => {
 
 export const listPage = () => {
   return http.get<http.Page<Post.PostInfo[]>>(`${baseUri}/listPage`);
+};
+
+/**
+ * 查询岗位列表和已选择的岗位列表
+ */
+export const userSelectPostList = (userId: string) => {
+  return http.get<http.Response<Post.UserSelectPost[]>>(`${baseUri}/userSelectPostList/${userId}`);
 };
 
 export const addOne = (data: Post.PostInfo) => {

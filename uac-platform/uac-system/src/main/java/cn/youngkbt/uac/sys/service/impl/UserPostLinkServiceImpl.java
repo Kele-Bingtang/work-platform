@@ -1,20 +1,18 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.UserPostLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.UserPostLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkPostDTO;
+import cn.youngkbt.uac.sys.model.po.SysPost;
 import cn.youngkbt.uac.sys.model.po.UserPostLink;
-import cn.youngkbt.uac.sys.model.vo.UserPostLinkVO;
 import cn.youngkbt.uac.sys.service.UserPostLinkService;
-import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import cn.youngkbt.utils.ListUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -25,25 +23,13 @@ import java.util.Objects;
 public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, UserPostLink> implements UserPostLinkService {
 
     @Override
-    public List<UserPostLinkVO> queryLinkByTenantId(UserPostLinkDTO userPostLinkDTO, PageQuery pageQuery) {
-        LambdaQueryWrapper<UserPostLink> wrapper = Wrappers.<UserPostLink>lambdaQuery()
-                .eq(StringUtil.hasText(userPostLinkDTO.getUserId()), UserPostLink::getUserId, userPostLinkDTO.getUserId())
-                .eq(StringUtil.hasText(userPostLinkDTO.getPostId()), UserPostLink::getPostId, userPostLinkDTO.getPostId())
-                .orderByAsc(UserPostLink::getId);
+    public List<SysPost> listPostByUserId(String userId) {
 
-        List<UserPostLink> userPostLinkList;
-        if (Objects.isNull(pageQuery)) {
-            userPostLinkList = baseMapper.selectList(wrapper);
-        } else {
-            userPostLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        return MapstructUtil.convert(userPostLinkList, UserPostLinkVO.class);
-    }
-
-    @Override
-    public boolean checkUserExistPost(String userId) {
-        return baseMapper.exists(Wrappers.<UserPostLink>lambdaQuery()
-                .eq(UserPostLink::getUserId, userId));
+        QueryWrapper<UserPostLink> wrapper = Wrappers.query();
+        wrapper.eq("tupl.is_deleted", 0)
+                .eq("tupl.user_id", userId);
+        
+        return baseMapper.listPostByUserId(wrapper);
     }
 
     @Override
@@ -53,21 +39,17 @@ public class UserPostLinkServiceImpl extends ServiceImpl<UserPostLinkMapper, Use
     }
 
     @Override
-    public boolean addOneLink(UserPostLinkDTO userPostLinkDTO) {
-        UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDTO, UserPostLink.class);
-        return baseMapper.insert(userPostLink) > 0;
+    public boolean addPostsToUser(UserLinkPostDTO userLinkPostDTO) {
+        List<String> postIds = userLinkPostDTO.getPostIds();
+
+        List<UserPostLink> userRoleLinkList = ListUtil.newArrayList(postIds, postId ->
+                        new UserPostLink().setPostId(postId)
+                                .setUserId(userLinkPostDTO.getUserId())
+                , UserPostLink.class);
+
+        return Db.saveBatch(userRoleLinkList);
     }
 
-    @Override
-    public boolean updateOneLink(UserPostLinkDTO userPostLinkDTO) {
-        UserPostLink userPostLink = MapstructUtil.convert(userPostLinkDTO, UserPostLink.class);
-        return baseMapper.updateById(userPostLink) > 0;
-    }
-
-    @Override
-    public boolean removeOneLink(Long id) {
-        return baseMapper.deleteById(id) > 0;
-    }
 }
 
 

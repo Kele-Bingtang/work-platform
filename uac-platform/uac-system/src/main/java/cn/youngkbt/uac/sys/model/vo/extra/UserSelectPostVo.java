@@ -1,7 +1,6 @@
 package cn.youngkbt.uac.sys.model.vo.extra;
 
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
-import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -14,7 +13,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class RolePostVo {
+public class UserSelectPostVo {
     private List<SysPostVO> postList;
-    private List<SysRoleVO> roleList;
+    private List<String> postIds;
 }

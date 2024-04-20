@@ -6,7 +6,6 @@ import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
-import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -116,11 +115,5 @@ public interface SysUserService extends IService<SysUser> {
      */
     boolean removeBatch(List<Long> ids, List<String> userIds);
 
-    /**
-     * 获取角色列表和岗位列表
-     *
-     * @return 角色列表和岗位列表
-     */
-    RolePostVo rolePostList();
 
 }

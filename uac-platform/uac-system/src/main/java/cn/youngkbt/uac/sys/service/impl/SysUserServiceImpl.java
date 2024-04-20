@@ -7,15 +7,12 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
-import cn.youngkbt.uac.sys.mapper.*;
-import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
-import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
+import cn.youngkbt.uac.sys.mapper.SysUserMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkPostDTO;
+import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.*;
-import cn.youngkbt.uac.sys.model.vo.SysPostVO;
-import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
-import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import cn.youngkbt.uac.sys.service.*;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
@@ -52,7 +49,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private String password;
 
     private final SysPostService sysPostService;
-    private final SysRoleService sysRoleService;
     private final SysDeptService sysDeptService;
     private final UserRoleLinkService userRoleLinkService;
     private final UserPostLinkService userPostLinkService;
@@ -135,36 +131,63 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public RolePostVo rolePostList() {
-        List<SysPostVO> sysPostVOList = sysPostService.queryList(new SysPostDTO());
-        List<SysRoleVO> sysRoleVOList = sysRoleService.queryList(new SysRoleDTO());
-
-        RolePostVo rolePostVo = new RolePostVo();
-        rolePostVo.setPostList(sysPostVOList)
-                .setRoleList(sysRoleVOList);
-
-        return rolePostVo;
-    }
-
-    @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean insertOne(SysUserDTO sysUserDTO) {
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setRegisterTime(LocalDateTime.now());
         if (Objects.isNull(sysUser.getPassword())) {
             sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
         }
-        return baseMapper.insert(sysUser) > 0;
+        int insert = baseMapper.insert(sysUser);
+
+        addOrUpdatePostAndRole(sysUserDTO, sysUser.getUserId());
+
+        return insert > 0;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean updateOne(SysUserDTO sysUserDTO) {
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
-        return baseMapper.updateById(sysUser) > 0;
+        sysUser.setPassword(null);
+        int insert = baseMapper.updateById(sysUser);
+
+        // 删除用户与角色关联
+        userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery().eq(UserRoleLink::getUserId, sysUserDTO.getUserId()));
+        // 删除用户与岗位表
+        userPostLinkService.remove(Wrappers.<UserPostLink>lambdaQuery().eq(UserPostLink::getUserId, sysUserDTO.getUserId()));
+
+        addOrUpdatePostAndRole(sysUserDTO, sysUserDTO.getUserId());
+
+        return insert > 0;
+    }
+
+    /**
+     * 添加或更新用户与岗位、角色关联
+     *
+     * @param sysUserDTO 用户信息
+     * @param userId     用户 ID
+     */
+    private void addOrUpdatePostAndRole(SysUserDTO sysUserDTO, String userId) {
+        List<String> postId = sysUserDTO.getPostId();
+        if (Objects.nonNull(postId)) {
+            UserLinkPostDTO userLinkPostDTO = new UserLinkPostDTO().setUserId(userId)
+                    .setPostIds(postId);
+            userPostLinkService.addPostsToUser(userLinkPostDTO);
+        }
+        List<String> roleId = sysUserDTO.getRoleId();
+
+        if (Objects.nonNull(roleId)) {
+            UserLinkRoleDTO userLinkPostDTO = new UserLinkRoleDTO().setUserId(userId)
+                    .setRoleIds(roleId);
+            userRoleLinkService.addRolesToUser(userLinkPostDTO);
+        }
     }
 
     @Override
     public boolean updateOneByUserId(SysUserDTO sysUserDTO) {
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
+        sysUser.setPassword(null);
         return baseMapper.update(sysUser, Wrappers.<SysUser>lambdaUpdate()
                 .eq(SysUser::getUsername, sysUserDTO.getUsername())) > 0;
     }

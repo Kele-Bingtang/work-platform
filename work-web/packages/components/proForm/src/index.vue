@@ -62,7 +62,7 @@ const setEnumMap = async (column: FormColumnProps) => {
   // 如果当前 enum 为后台数据需要请求数据，则调用该请求接口，并存储到 enumMap
   if (isResponsive(attrs.enum)) return enumMap.value.set(formItem.prop!, (attrs.enum as Ref).value!);
   if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop!, (attrs.enum as FormEnumProps[])!);
-  const { data } = await attrs.enum(enumMap.value);
+  const { data } = await attrs.enum(form.value);
   enumMap.value.set(formItem.prop!, data);
 };
 
@@ -77,7 +77,7 @@ const initDefaultValue = async (column: FormColumnProps) => {
     // 如果存在值，则不需要赋默认值
     if (isResponsive(attrs.defaultValue)) return (form.value[formItem.prop] = (attrs?.defaultValue as Ref).value);
     if (typeof attrs?.defaultValue === "function") {
-      return (form.value[formItem.prop] = await attrs?.defaultValue(form.value));
+      return (form.value[formItem.prop] = await attrs?.defaultValue(form.value, enumMap.value));
     }
     return (form.value[formItem.prop] = attrs?.defaultValue);
   }

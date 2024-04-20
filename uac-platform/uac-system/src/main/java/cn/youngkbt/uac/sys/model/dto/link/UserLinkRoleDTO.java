@@ -4,6 +4,7 @@ import cn.youngkbt.core.validate.RestGroup;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @note
  */
 @Data
+@Accessors(chain = true)
 public class UserLinkRoleDTO {
     /**
      * 主键 ID

@@ -4,12 +4,13 @@ import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysPostMapper;
-import cn.youngkbt.uac.sys.mapper.UserPostLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.po.SysPost;
 import cn.youngkbt.uac.sys.model.po.UserPostLink;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
+import cn.youngkbt.uac.sys.model.vo.extra.UserSelectPostVo;
 import cn.youngkbt.uac.sys.service.SysPostService;
+import cn.youngkbt.uac.sys.service.UserPostLinkService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -31,7 +32,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements SysPostService {
 
-    private final UserPostLinkMapper userPostLinkMapper;
+    private final UserPostLinkService userPostLinkService;
 
     @Override
     public SysPostVO listById(Long id) {
@@ -80,7 +81,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     @Override
     public boolean checkPostExitUser(SysPostDTO sysPostDTO) {
-        return userPostLinkMapper.exists(new LambdaQueryWrapper<UserPostLink>()
+        return userPostLinkService.exists(new LambdaQueryWrapper<UserPostLink>()
                 .eq(UserPostLink::getPostId, sysPostDTO.getPostId()));
     }
 
@@ -99,6 +100,18 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public UserSelectPostVo userSelectPostList(String userId) {
+        List<SysPostVO> sysPostVOList = queryList(new SysPostDTO());
+        List<SysPost> sysPosts = userPostLinkService.listPostByUserId(userId);
+
+        UserSelectPostVo userSelectPostVo = new UserSelectPostVo()
+                .setPostList(sysPostVOList)
+                .setPostIds(sysPosts.stream().map(SysPost::getPostId).toList());
+
+        return userSelectPostVo;
     }
 }
 

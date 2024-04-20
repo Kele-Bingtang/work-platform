@@ -5,6 +5,7 @@ import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -12,7 +13,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author Kele-Bingtang
@@ -27,8 +27,9 @@ public class SysUser extends BaseDO {
     /**
      * 用户 ID
      */
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT, updateStrategy = FieldStrategy.NEVER)
     @FieldValueFill(ValueStrategy.SNOWFLAKE)
+    
     private String userId;
 
     /**
@@ -44,6 +45,7 @@ public class SysUser extends BaseDO {
     /**
      * 密码
      */
+    @TableField(updateStrategy = FieldStrategy.NOT_NULL)
     private String password;
 
     /**

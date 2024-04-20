@@ -7,14 +7,17 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysTenantMapper;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
+import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysTenant;
 import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysTenantService;
+import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -29,9 +32,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * @note 针对表【t_sys_tenant(租户表)】的数据库操作Service实现
  */
 @Service
+@RequiredArgsConstructor
 public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements SysTenantService {
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
+    private final SysUserService sysUserService;
 
     @Override
     public SysTenant queryByTenantId(String tenantId) {
@@ -98,14 +103,17 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             throw new ServiceException("创建租户失败");
         }
 
-        // TODO
+        // 创建系统用户
+        SysUserDTO sysUserDTO = new SysUserDTO().setUsername(sysTenant.getTenantName())
+                .setPassword(sysTenantDTO.getTenantName());
+        sysUserService.insertOne(sysUserDTO);
+
         // 创建角色
+        
 
         // 创建菜单
 
         // 创建部门: 企业名称是部门名称
-
-        // 创建系统用户
 
         // 创建字典数据
 
@@ -121,6 +129,16 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
         return numbers;
     }
+    
+    // private String createSysRoleAndMenuThenGet(String tenantId) {
+        // 创建角色
+        // SysRole role = new SysRole();
+        // role.setTenantId(tenantId);
+        // role.setRoleName(TenantConstants.TENANT_ADMIN_ROLE_NAME);
+        // role.setRoleKey(TenantConstants.TENANT_ADMIN_ROLE_KEY);
+        // role.setRoleSort(1);
+        // role.setStatus(TenantConstants.NORMAL);
+    // }
 
     @Override
     public boolean updateOne(SysTenantDTO sysTenantDTO) {

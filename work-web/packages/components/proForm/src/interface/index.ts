@@ -67,14 +67,14 @@ export interface FormColumnProps<T = any> {
   };
   attrs: {
     el?: FormType;
-    enum?: FormEnumProps[] | ((enumMap?: any) => Promise<any>) | ComputedRef<FormEnumProps[]>;
+    enum?: FormEnumProps[] | ((form: any) => Promise<any>) | ComputedRef<FormEnumProps[]>;
     enumKey?: string; // 如果 enum 是接口调用，那么可以指定哪个 key 获取 enum 数据，默认返回的数据作为 enum
-    useEnumMap?: string | ((enumMap?: any) => any); // 从 enumMap 中获取其他的 enum 数据
+    useEnumMap?: string | ((enumMap: any) => any); // 从 enumMap 中获取其他的 enum 数据
     // 枚举类型（字典）
     fieldNames?: FormFieldNamesProps; // 字典指定 label && value && children 的 key 值
     props?: any; // 搜索项参数，根据 element plus 官方文档来传递，该属性所有值会透传到组件
     order?: number; // 表单排序（从大到小）
-    defaultValue?: ValueType | ((form: Record<string, any>) => ValueType | any) | ComputedRef<ValueType>; // 默认值
+    defaultValue?: ValueType | ((form: Record<string, any>, enumMap: any) => ValueType | any) | ComputedRef<ValueType>; // 默认值
     width?: string | number;
     subProp?: string; // 级联表单的 prop
     subEnum?: FormEnumProps[] | ((params?: any, enumData?: any) => Promise<any>); // 级联表单的 enum

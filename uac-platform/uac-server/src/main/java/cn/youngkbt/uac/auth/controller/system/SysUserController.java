@@ -12,7 +12,6 @@ import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
-import cn.youngkbt.uac.sys.model.vo.extra.RolePostVo;
 import cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.UserLinkVO;
 import cn.youngkbt.uac.sys.service.SysUserService;
@@ -42,7 +41,6 @@ public class SysUserController {
     private final SysUserService sysUserService;
     private final UserGroupLinkService userGroupLinkService;
     private final UserRoleLinkService userRoleLinkService;
-    private final UacHelper uacHelper;
 
     @GetMapping("/{id}")
     @Operation(summary = "用户列表查询", description = "通过主键查询用户列表")
@@ -65,12 +63,6 @@ public class SysUserController {
         return HttpResult.ok(tablePage);
     }
 
-    @GetMapping("/rolePostList")
-    @Operation(summary = "角色岗位列表查询", description = "查询角色列表和岗位列表")
-    public Response<RolePostVo> rolePostList() {
-        RolePostVo rolePostVo = sysUserService.rolePostList();
-        return HttpResult.ok(rolePostVo);
-    }
 
     @GetMapping("listUserLinkByRoleId/{roleId}")
     @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表（分页）")

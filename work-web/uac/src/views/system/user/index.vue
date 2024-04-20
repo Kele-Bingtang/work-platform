@@ -80,6 +80,7 @@ const detailForm: DialogForm = {
   options: useFormOptions(computed(() => initRequestParam.deptId)).options,
   addApi: addOne,
   editApi: editOne,
+  editFilterParams: ["dept", "disabled", "loginIp", "loginTime", "registerTime"],
   deleteApi: deleteOne,
   deleteBatchApi: deleteBatch,
   dialog: {

@@ -5,6 +5,7 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.po.SysPost;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
+import cn.youngkbt.uac.sys.model.vo.extra.UserSelectPostVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -89,4 +90,10 @@ public interface SysPostService extends IService<SysPost> {
      */
     boolean removeBatch(List<Long> ids);
 
+    /**
+     * 获取岗位列表和已选择的岗位列表
+     *
+     * @return 岗位列表和已选择的岗位列表
+     */
+    UserSelectPostVo userSelectPostList(String userId);
 }

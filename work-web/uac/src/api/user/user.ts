@@ -63,13 +63,6 @@ export namespace User {
 
 const baseUri = "/system/user";
 
-/**
- * 查询角色列表和岗位列表
- */
-export const getRolePostList = () => {
-  return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/rolePostList`);
-};
-
 export const list = (params: Partial<User.UserInfo>) => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
 };

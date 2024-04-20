@@ -1,7 +1,13 @@
 package cn.youngkbt.uac.sys.mapper;
 
+import cn.youngkbt.uac.sys.model.po.SysPost;
 import cn.youngkbt.uac.sys.model.po.UserPostLink;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,6 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface UserPostLinkMapper extends BaseMapper<UserPostLink> {
 
+    List<SysPost> listPostByUserId(@Param(Constants.WRAPPER) Wrapper<UserPostLink> queryWrapper);
 }
 
 

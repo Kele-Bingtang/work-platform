@@ -1,7 +1,8 @@
 import { useLayoutStore } from "@/stores";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { getRolePostList, type User } from "@/api/user/user";
+import { type User } from "@/api/user/user";
+import { userSelectPostList } from "@/api/system/post";
 import { listDeptTreeList } from "@/api/system/dept";
 import { useFormRules } from "@/hooks/useFormRules";
 
@@ -35,7 +36,7 @@ export const useFormOptions = (defaultValue: ComputedRef<string>) => {
       },
       {
         formItem: { label: "用户昵称", prop: "nickname" },
-        attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 用户昵称" } },
+        attrs: { el: "el-input", hidden: ["edit"], props: { clearable: true, placeholder: "请输入 用户昵称" } },
       },
       {
         formItem: { label: "密码", prop: "password" },
@@ -43,7 +44,7 @@ export const useFormOptions = (defaultValue: ComputedRef<string>) => {
           el: "el-input",
           hidden: ["edit"],
           defaultValue: "123456",
-          props: { clearable: true, placeholder: "请输入 邮箱", type: "password", showPassword: true },
+          props: { clearable: true, placeholder: "请输入 密码", type: "password", showPassword: true },
         },
       },
       {
@@ -80,19 +81,18 @@ export const useFormOptions = (defaultValue: ComputedRef<string>) => {
         formItem: { label: "岗位", prop: "postId" },
         attrs: {
           el: "el-select",
-          enum: () => getRolePostList(),
+          defaultValue: (_, enumMap) => enumMap.get("postId")?.postIds,
+          enum: form => userSelectPostList(form.userId),
           enumKey: "postList",
           fieldNames: { value: "postId", label: "postName" },
-          props: { clearable: true, placeholder: "请选择 岗位" },
-        },
-      },
-      {
-        formItem: { label: "角色", prop: "roleId" },
-        attrs: {
-          el: "el-select",
-          useEnumMap: enumMap => enumMap.get("postId")?.roleList,
-          fieldNames: { value: "roleId", label: "roleName" },
-          props: { clearable: true, placeholder: "请选择 角色" },
+          props: {
+            clearable: true,
+            multiple: true,
+            collapseTags: true,
+            collapseTagsTooltip: true,
+            maxCollapseTags: 1,
+            placeholder: "请选择 岗位",
+          },
         },
       },
     ],

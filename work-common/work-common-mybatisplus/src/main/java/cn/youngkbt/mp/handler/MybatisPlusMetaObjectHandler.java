@@ -41,10 +41,10 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         LoginUser user = getUser();
 
         if (Objects.nonNull(user)) {
-            fillValIfNullByName("createBy", user.getUsername(), metaObject, false);
-            fillValIfNullByName("updateBy", user.getUsername(), metaObject, false);
-            fillValIfNullByName("createById", user.getUserId(), metaObject, false);
-            fillValIfNullByName("updateById", user.getUserId(), metaObject, false);
+            fillValIfNullByName("createBy", user.getNickname(), metaObject, false);
+            fillValIfNullByName("updateBy", user.getNickname(), metaObject, false);
+            fillValIfNullByName("createById", user.getUsername(), metaObject, false);
+            fillValIfNullByName("updateById", user.getUsername(), metaObject, false);
         }
 
         fillValIfNullByName("createTime", now, metaObject, false);
@@ -62,8 +62,8 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         LoginUser user = getUser();
 
         if (Objects.nonNull(user)) {
-            fillValIfNullByName("updateBy", user.getUsername(), metaObject, true);
-            fillValIfNullByName("updateById", user.getUserId(), metaObject, true);
+            fillValIfNullByName("updateBy", user.getNickname(), metaObject, true);
+            fillValIfNullByName("updateById", user.getUsername(), metaObject, true);
         }
         
         fillValIfNullByName("updateTime", LocalDateTime.now(), metaObject, true);

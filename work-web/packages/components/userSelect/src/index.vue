@@ -5,9 +5,10 @@
       :options="userData"
       placeholder="请选择用户"
       :props="{ value: id, label: 'nickname' }"
-      v-bind="$attrs"
       :multiple="multiple"
       clearable
+      filterable
+      v-bind="$attrs"
       @change="handleSelectChange"
     >
       <template #default="{ item }">{{ item.nickname }} {{ item.username }}</template>
@@ -38,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, computed } from "vue";
+import { ref, onBeforeMount, computed, unref } from "vue";
 import { User } from "@element-plus/icons-vue";
 import { TransferSelect } from "work";
 import type { TransferTableColumn } from "@work/components";
@@ -47,7 +48,7 @@ defineOptions({ name: "UserSelect" });
 
 export interface UserSelectProps {
   modelValue: string | string[] | any;
-  data?: Record<string, any>[];
+  data?: any;
   requestApi?: (data?: any) => Promise<any>; // 请求数据的 api ==> 非必传
   requestParams?: Record<string, any>;
   multiple?: boolean;
@@ -56,6 +57,7 @@ export interface UserSelectProps {
 
 // 接受父组件参数，配置默认值
 const props = withDefaults(defineProps<UserSelectProps>(), {
+  data: () => [],
   multiple: false,
   id: "userId",
 });
@@ -88,6 +90,8 @@ const selectValue = computed({
 });
 
 onBeforeMount(async () => {
+  if (userData.value.length) return;
+
   // 有数据就直接赋值，没有数据就执行请求函数
   if (props.data?.length) {
     userData.value = props.data;
@@ -110,6 +114,15 @@ const getDataList = async () => {
     userData.value = data;
   }
 };
+
+watch(
+  () => props.data,
+  val => {
+    if (props.requestApi) return;
+    userData.value = unref(val) || [];
+  },
+  { immediate: true }
+);
 
 /**
  * @description 下拉框选择某个元素回调

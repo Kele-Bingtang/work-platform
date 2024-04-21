@@ -5,7 +5,7 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
-import cn.youngkbt.uac.core.constant.AuthConstant;
+import cn.youngkbt.uac.core.constant.TenantConstant;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysTenantService;
@@ -73,7 +73,7 @@ public class SysTenantController {
     @DeleteMapping("/{ids}")
     @Operation(summary = "租户列表删除", description = "通过主键批量删除租户")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> tenantIds) {
-        if (tenantIds.contains(AuthConstant.ADMIN_TENANT_ID)) {
+        if (tenantIds.contains(TenantConstant.DEFAULT_TENANT_ID)) {
             return HttpResult.failMessage("初始租户不允许删除");
         }
         return HttpResult.ok(sysTenantService.removeBatch(List.of(ids)));

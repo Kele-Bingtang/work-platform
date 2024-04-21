@@ -44,13 +44,17 @@ export const options: FormOptionsProps<Tenant.TenantInfo> = {
     },
     {
       formItem: { label: "系统用户名", prop: "username" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 系统用户名" } },
+      attrs: {
+        el: "el-input",
+        destroy: ["edit"],
+        props: { clearable: true, placeholder: "请输入 系统用户名" },
+      },
     },
     {
       formItem: { label: "系统密码", prop: "password" },
       attrs: {
         el: "el-input",
-        hidden: ["edit"],
+        destroy: ["edit"],
         props: { clearable: true, placeholder: "请输入 系统密码", type: "password", showPassword: true },
       },
     },

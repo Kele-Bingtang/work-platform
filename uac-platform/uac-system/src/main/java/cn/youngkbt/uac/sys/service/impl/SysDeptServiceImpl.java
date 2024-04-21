@@ -98,7 +98,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             return Collections.emptyList();
         }
 
-        return TreeBuildUtil.build(sysDeptList, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
+        return TreeBuildUtil.build(sysDeptList, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
                 tree.setId(treeNode.getDeptId())
                         .setParentId(treeNode.getParentId())
                         .setName(treeNode.getDeptName())
@@ -210,7 +210,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             return baseMapper.insert(sysDept) > 0;
         }
 
-        sysDept.setParentId("0");
+        sysDept.setParentId(ColumnConstant.PARENT_ID);
         return baseMapper.insert(sysDept) > 0;
     }
 
@@ -220,7 +220,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         SysDept sysDept = MapstructUtil.convert(sysDeptDTO, SysDept.class);
 
         // 如果更新为启用状态，则上级上级所有部门都启用
-        if (ColumnConstant.STATUS_NORMAL.equals(sysDept.getStatus()) && StringUtil.hasText(sysDept.getAncestors()) && !"0".equals(sysDept.getAncestors())) {
+        if (ColumnConstant.STATUS_NORMAL.equals(sysDept.getStatus()) && StringUtil.hasText(sysDept.getAncestors()) && !ColumnConstant.PARENT_ID.equals(sysDept.getAncestors())) {
             updateParentDeptStatusNormal(sysDept);
         }
 

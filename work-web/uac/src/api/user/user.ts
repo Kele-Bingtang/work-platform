@@ -63,7 +63,7 @@ export namespace User {
 
 const baseUri = "/system/user";
 
-export const list = (params: Partial<User.UserInfo>) => {
+export const list = (params?: Partial<User.UserInfo>) => {
   return http.get<http.Response<User.UserInfo[]>>(`${baseUri}/list`, params);
 };
 

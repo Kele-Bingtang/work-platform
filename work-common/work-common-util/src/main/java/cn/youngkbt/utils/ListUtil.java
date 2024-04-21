@@ -3,6 +3,7 @@ package cn.youngkbt.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -15,7 +16,7 @@ public class ListUtil {
     public static <T> boolean isEmpty(List<T> list) {
         return list == null || list.isEmpty();
     }
-    
+
     public static <T> boolean isNotEmpty(List<T> list) {
         return !isEmpty(list);
     }
@@ -30,7 +31,12 @@ public class ListUtil {
 
     public static <T> List<T> newArrayList(List<T> useList, Function<T, T> function) {
         List<T> list = newArrayList();
-        useList.forEach(l -> list.add(function.apply(l)));
+        useList.forEach(l -> {
+            T apply = function.apply(l);
+            if (Objects.nonNull(apply)) {
+                list.add(apply);
+            }
+        });
         return list;
     }
 

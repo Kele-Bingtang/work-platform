@@ -1,27 +1,31 @@
 package cn.youngkbt.uac.sys.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.constant.TenantConstant;
 import cn.youngkbt.uac.sys.mapper.SysTenantMapper;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
-import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
-import cn.youngkbt.uac.sys.model.po.SysTenant;
+import cn.youngkbt.uac.sys.model.po.*;
 import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
-import cn.youngkbt.uac.sys.service.SysTenantService;
-import cn.youngkbt.uac.sys.service.SysUserService;
+import cn.youngkbt.uac.sys.service.*;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,6 +41,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final SysUserService sysUserService;
+    private final SysRoleService sysRoleService;
+    private final SysDeptService sysDeptService;
+    private final SysMenuService sysMenuService;
+    private final RoleMenuLinkService roleMenuLinkService;
+    private final RoleDeptLinkService roleDeptLinkService;
+    private final UserRoleLinkService userRoleLinkService;
+    private final SysAppService sysAppService;
+    private final SysDictTypeService sysDictTypeService;
+    private final SysDictDataService sysDictDataService;
 
     @Override
     public SysTenant queryByTenantId(String tenantId) {
@@ -54,7 +67,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public List<SysTenantVO> queryList(SysTenantDTO sysTenantDTO) {
         LambdaQueryWrapper<SysTenant> wrapper = buildQueryWrapper(sysTenantDTO);
         List<SysTenant> sysTenantList = baseMapper.selectList(wrapper);
-        
+
         return MapstructUtil.convert(sysTenantList, SysTenantVO.class);
     }
 
@@ -62,7 +75,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public TablePage<SysTenantVO> listPage(SysTenantDTO sysTenantDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<SysTenant> wrapper = buildQueryWrapper(sysTenantDTO);
         Page<SysTenant> sysTenantPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
-        
+
         return TablePage.build(sysTenantPage, SysTenantVO.class);
     }
 
@@ -90,10 +103,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         reentrantLock.lock();
         boolean result;
+        String tenantId;
         try {
             List<String> tenantIds = sysTenantList.stream().filter(Objects::nonNull).map(t -> String.valueOf(t.getTenantId())).toList();
             // 生成新的租户 ID
-            String tenantId = generateTenantId(tenantIds);
+            tenantId = generateTenantId(tenantIds);
             sysTenant.setTenantId(tenantId);
             result = baseMapper.insert(sysTenant) > 0;
         } finally {
@@ -103,19 +117,32 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             throw new ServiceException("创建租户失败");
         }
 
-        // 创建系统用户
-        SysUserDTO sysUserDTO = new SysUserDTO().setUsername(sysTenant.getTenantName())
-                .setPassword(sysTenantDTO.getTenantName());
-        sysUserService.insertOne(sysUserDTO);
+        // 创建应用
+        String appId = createApp(tenantId);
 
         // 创建角色
-        
+        String roleId = createRole(tenantId, appId);
 
-        // 创建菜单
+        // 创建菜单和角色菜单关联，取默认租户的菜单
+        createMenuAndRoleMenuLink(tenantId, appId, roleId);
 
-        // 创建部门: 企业名称是部门名称
+        // 创建部门: 企业名称是部门名称，创建角色和部门关联
+        SysDept sysDept = createDeptAndRoleDeptLink(tenantId, appId, sysTenantDTO.getTenantName(), roleId);
+
+        // 创建系统用户，创建用户角色关联
+        SysUser sysUser = createUserAndUserRoleLink(sysTenantDTO, tenantId, appId, sysDept.getDeptId(), roleId);
+
+        // 新增系统用户后，默认当前用户为部门的负责人
+        SysDept dept = new SysDept();
+        dept.setId(sysDept.getId());
+        dept.setLeader(sysUser.getUserId());
+        sysDeptService.updateById(dept);
+
+        // 创建字典类型
+        createDictType(tenantId, appId);
 
         // 创建字典数据
+        createDictData(tenantId, appId);
 
         return true;
     }
@@ -129,16 +156,211 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
         return numbers;
     }
-    
-    // private String createSysRoleAndMenuThenGet(String tenantId) {
+
+    /**
+     * 创建应用
+     *
+     * @param tenantId 租户 ID
+     * @return 应用 ID
+     */
+    private String createApp(String tenantId) {
+        SysApp sysApp = sysAppService.getOne(Wrappers.<SysApp>lambdaQuery()
+                .eq(SysApp::getAppId, TenantConstant.DEFAULT_UAC_APP_ID)
+                .eq(SysApp::getTenantId, TenantConstant.DEFAULT_TENANT_ID));
+
+        SysApp app = new SysApp()
+                .setAppId(TenantConstant.DEFAULT_UAC_APP_ID)
+                .setAppName(sysApp.getAppName())
+                .setAppCode(sysApp.getAppCode())
+                .setIntro(sysApp.getIntro())
+                .setOrderNum(sysApp.getOrderNum())
+                .setOwnerId(sysApp.getOwnerId())
+                .setOwnerName(sysApp.getOwnerName())
+                .setDeptId(sysApp.getDeptId())
+                .setClientId(sysApp.getClientId())
+                .setTenantId(tenantId);
+
+        sysAppService.save(app);
+
+        return app.getAppId();
+    }
+
+    /**
+     * 创建角色，创建角色菜单，取默认租户的菜单
+     *
+     * @param tenantId 租户ID
+     * @return 角色 ID
+     */
+    private String createRole(String tenantId, String appId) {
         // 创建角色
-        // SysRole role = new SysRole();
-        // role.setTenantId(tenantId);
-        // role.setRoleName(TenantConstants.TENANT_ADMIN_ROLE_NAME);
-        // role.setRoleKey(TenantConstants.TENANT_ADMIN_ROLE_KEY);
-        // role.setRoleSort(1);
-        // role.setStatus(TenantConstants.NORMAL);
-    // }
+        SysRole sysRole = new SysRole();
+        sysRole.setTenantId(tenantId);
+        sysRole.setAppId(appId);
+        sysRole.setRoleCode(TenantConstant.DEFAULT_ROLE_ID);
+        sysRole.setRoleCode(TenantConstant.TENANT_ADMIN_ROLE_KEY);
+        sysRole.setRoleName(TenantConstant.TENANT_ADMIN_ROLE_NAME);
+        sysRole.setOrderNum(1);
+        sysRole.setStatus(ColumnConstant.STATUS_NORMAL);
+        sysRoleService.save(sysRole);
+
+        return sysRole.getRoleId();
+    }
+
+    /**
+     * 创建菜单和角色菜单关联，取默认租户的菜单
+     *
+     * @param tenantId 租户 ID
+     * @param appId    应用 ID
+     * @param roleId   角色 ID
+     */
+    private void createMenuAndRoleMenuLink(String tenantId, String appId, String roleId) {
+        List<SysMenu> sysMenuList = sysMenuService.list(Wrappers.<SysMenu>lambdaQuery()
+                .eq(SysMenu::getAppId, TenantConstant.DEFAULT_UAC_APP_ID)
+                .eq(SysMenu::getTenantId, TenantConstant.DEFAULT_TENANT_ID)
+        );
+
+        List<SysMenu> menuList = ListUtil.newArrayList(sysMenuList, sysMenu -> {
+                    sysMenu.setId(null);
+                    sysMenu.setCreateTime(null);
+                    sysMenu.setUpdateTime(null);
+                    sysMenu.setTenantId(tenantId);
+                    sysMenu.setAppId(appId);
+                    return sysMenu;
+                }
+        );
+
+        Db.saveBatch(menuList);
+
+        // 创建角色菜单，取默认租户的菜单
+        List<String> menuIds = roleMenuLinkService.listMenuIdsByRoleId(TenantConstant.DEFAULT_ROLE_ID, TenantConstant.DEFAULT_UAC_APP_ID, TenantConstant.DEFAULT_TENANT_ID);
+
+        List<RoleMenuLink> userGroupLinkList = ListUtil.newArrayList(menuIds, menuId ->
+                        new RoleMenuLink().setMenuId(menuId)
+                                .setRoleId(roleId)
+                                .setTenantId(tenantId)
+                                .setAppId(appId)
+                , RoleMenuLink.class);
+
+        Db.saveBatch(userGroupLinkList);
+    }
+
+    /**
+     * 创建部门: 企业名称是部门名称，创建角色和部门关联
+     *
+     * @param tenantId 租户ID
+     * @param deptName 部门名称
+     * @param roleId   角色 ID
+     * @return 创建的部门信息
+     */
+    private SysDept createDeptAndRoleDeptLink(String tenantId, String appId, String deptName, String roleId) {
+        // 创建部门: 企业名称是部门名称
+        SysDept sysDept = new SysDept()
+                .setTenantId(tenantId)
+                .setDeptName(deptName)
+                .setParentId(ColumnConstant.PARENT_ID)
+                .setAncestors(ColumnConstant.PARENT_ID);
+
+        sysDeptService.save(sysDept);
+
+        RoleDeptLink roleDeptLink = new RoleDeptLink()
+                .setRoleId(roleId)
+                .setDeptId(sysDept.getDeptId())
+                .setAppId(appId)
+                .setTenantId(tenantId);
+
+        roleDeptLinkService.save(roleDeptLink);
+
+        return sysDept;
+    }
+
+    /**
+     * 创建系统用户，创建用户角色关联
+     *
+     * @param sysTenantDTO 租户创建信息
+     * @param tenantId     租户 ID
+     * @param deptId       部门 ID
+     * @param roleId       角色 ID
+     * @return 创建的用户信息
+     */
+    private SysUser createUserAndUserRoleLink(SysTenantDTO sysTenantDTO, String tenantId, String appId, String deptId, String roleId) {
+        SysUser sysUser = new SysUser()
+                .setUsername(sysTenantDTO.getUsername())
+                .setNickname(sysTenantDTO.getUsername())
+                .setPassword(new BCryptPasswordEncoder().encode(sysTenantDTO.getPassword()))
+                .setTenantId(tenantId)
+                .setDeptId(deptId);
+
+        sysUserService.save(sysUser);
+
+        // 用户和角色关联
+        UserRoleLink userRoleLink = new UserRoleLink()
+                .setUserId(sysUser.getUserId())
+                .setRoleId(roleId)
+                .setValidFrom(LocalDate.now())
+                .setExpireOn(LocalDate.now().plusYears(99))
+                .setAppId(appId)
+                .setTenantId(tenantId);
+        userRoleLinkService.save(userRoleLink);
+
+        return sysUser;
+    }
+
+    /**
+     * 创建字典类型
+     *
+     * @param tenantId 租户 ID
+     */
+    private void createDictType(String tenantId, String appId) {
+        List<SysDictType> sysDictTypeList = sysDictTypeService.list(Wrappers.<SysDictType>lambdaQuery()
+                .eq(SysDictType::getAppId, TenantConstant.DEFAULT_UAC_APP_ID)
+                .eq(SysDictType::getTenantId, TenantConstant.DEFAULT_TENANT_ID)
+        );
+
+        List<SysDictType> dictTypeList = ListUtil.newArrayList(sysDictTypeList, sysDictType ->
+                new SysDictType()
+                        .setDictName(sysDictType.getDictName())
+                        .setDictCode(sysDictType.getDictCode())
+                        .setIsCascade(sysDictType.getIsCascade())
+                        .setIntro(sysDictType.getIntro())
+                        .setTenantId(tenantId)
+                        .setAppId(appId)
+
+        );
+
+        sysDictTypeService.saveBatch(dictTypeList);
+    }
+
+    /**
+     * 创建字典数据
+     *
+     * @param tenantId 租户 ID
+     */
+    private void createDictData(String tenantId, String appId) {
+        List<SysDictData> sysDictDataList = sysDictDataService.list(Wrappers.<SysDictData>lambdaQuery()
+                .eq(SysDictData::getAppId, TenantConstant.DEFAULT_UAC_APP_ID)
+                .eq(SysDictData::getTenantId, TenantConstant.DEFAULT_TENANT_ID)
+        );
+
+        List<SysDictData> dictDataList = ListUtil.newArrayList(sysDictDataList, sysDictData ->
+                new SysDictData()
+                        .setDataId(sysDictData.getDataId())
+                        .setDictCode(sysDictData.getDictCode())
+                        .setParentId(sysDictData.getParentId())
+                        .setDictValue(sysDictData.getDictValue())
+                        .setDictLabel(sysDictData.getDictLabel())
+                        .setDictSort(sysDictData.getDictSort())
+                        .setTagEl(sysDictData.getTagEl())
+                        .setTagType(sysDictData.getTagType())
+                        .setTagEffect(sysDictData.getTagEffect())
+                        .setTagAttributes(sysDictData.getTagAttributes())
+                        .setIsDefault(sysDictData.getIsDefault())
+                        .setTenantId(tenantId)
+                        .setAppId(appId)
+
+        );
+
+        sysDictDataService.saveBatch(dictDataList);
+    }
 
     @Override
     public boolean updateOne(SysTenantDTO sysTenantDTO) {

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -77,7 +78,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
             return baseMapper.insert(sysDictData) > 0;
         }
 
-        sysDictDataDTO.setParentId("0");
+        sysDictDataDTO.setParentId(ColumnConstant.PARENT_ID);
         return baseMapper.insert(sysDictData) > 0;
     }
 
@@ -110,7 +111,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
             return Collections.emptyList();
         }
 
-        return TreeBuildUtil.build(sysDictData, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
+        return TreeBuildUtil.build(sysDictData, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
                 tree.setId(treeNode.getDataId())
                         .setParentId(treeNode.getParentId())
                         .setName(treeNode.getDictLabel())

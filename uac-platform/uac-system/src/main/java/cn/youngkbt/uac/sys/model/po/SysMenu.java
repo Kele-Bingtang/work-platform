@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @author Kele-Bingtang
@@ -16,6 +17,7 @@ import lombok.EqualsAndHashCode;
  */
 @TableName("t_sys_menu")
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysMenuVO.class, reverseConvertGenerate = false)
 public class SysMenu extends BaseDO {
@@ -100,6 +102,11 @@ public class SysMenu extends BaseDO {
      * 菜单介绍
      */
     private String intro;
+
+    /**
+     * 租户 ID
+     */
+    private String tenantId;
 
     /**
      * 应用 ID

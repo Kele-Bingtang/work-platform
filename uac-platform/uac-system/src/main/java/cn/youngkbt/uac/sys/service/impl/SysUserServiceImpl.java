@@ -135,6 +135,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public boolean insertOne(SysUserDTO sysUserDTO) {
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setRegisterTime(LocalDateTime.now());
+        sysUser.setPassword(new BCryptPasswordEncoder().encode(sysUser.getPassword()));
         if (Objects.isNull(sysUser.getPassword())) {
             sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
         }

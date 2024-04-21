@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @author Kele-Bingtang
@@ -18,6 +19,7 @@ import lombok.EqualsAndHashCode;
 */
 @TableName("t_sys_role")
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysRoleVO.class, reverseConvertGenerate = false)
 public class SysRole extends BaseDO {

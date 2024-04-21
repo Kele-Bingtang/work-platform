@@ -38,18 +38,13 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       {
         formItem: { label: "菜单类型", prop: "menuType", br: true },
         attrs: {
+          el: "el-radio-group",
+          enum: [
+            { value: "M", label: "目录" },
+            { value: "C", label: "菜单" },
+            { value: "F", label: "按钮" },
+          ],
           defaultValue: "C",
-          render: ({ scope }) => {
-            return (
-              <>
-                <ElRadioGroup v-model={scope.form.menuType}>
-                  <ElRadio value="M">目录</ElRadio>
-                  <ElRadio value="C">菜单</ElRadio>
-                  <ElRadio value="F">按钮</ElRadio>
-                </ElRadioGroup>
-              </>
-            );
-          },
         },
       },
       {
@@ -127,51 +122,36 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       {
         formItem: { label: "显示状态", prop: "visible" },
         attrs: {
+          el: "el-radio-group",
+          enum: [
+            { value: 1, label: "显示" },
+            { value: 0, label: "隐藏" },
+          ],
           defaultValue: 1,
-          render: ({ scope }) => {
-            return (
-              <>
-                <ElRadioGroup v-model={scope.form.visible}>
-                  <ElRadio value={1}>显示</ElRadio>
-                  <ElRadio value={0}>隐藏</ElRadio>
-                </ElRadioGroup>
-              </>
-            );
-          },
         },
       },
       {
         formItem: { label: "是否缓存", prop: "isCache" },
         attrs: {
+          el: "el-radio-group",
+          enum: [
+            { value: 1, label: "是" },
+            { value: 0, label: "否" },
+          ],
           defaultValue: 0,
           isDestroy: form => form.menuType !== "C",
-          render: ({ scope }) => {
-            return (
-              <>
-                <ElRadioGroup v-model={scope.form.isCache}>
-                  <ElRadio value={1}>是</ElRadio>
-                  <ElRadio value={0}>否</ElRadio>
-                </ElRadioGroup>
-              </>
-            );
-          },
         },
       },
       {
         formItem: { label: "是否嵌入", prop: "isFrame" },
         attrs: {
+          el: "el-radio-group",
+          enum: [
+            { value: 1, label: "是" },
+            { value: 0, label: "否" },
+          ],
           defaultValue: 0,
           isDestroy: form => form.menuType !== "C",
-          render: ({ scope }) => {
-            return (
-              <>
-                <ElRadioGroup v-model={scope.form.isFrame}>
-                  <ElRadio value={1}>是</ElRadio>
-                  <ElRadio value={0}>否</ElRadio>
-                </ElRadioGroup>
-              </>
-            );
-          },
         },
       },
       {

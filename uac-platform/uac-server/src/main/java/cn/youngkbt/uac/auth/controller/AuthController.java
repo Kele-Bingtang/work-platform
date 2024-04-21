@@ -62,7 +62,7 @@ public class AuthController {
 
         String appId = loginUserDTO.getAppId();
         // 校验 App ID
-        SysApp sysApp = appService.checkAppIdThenGet(appId);
+        SysApp sysApp = appService.checkAppIdThenGet(loginUserDTO.getTenantId(), appId);
         if (Objects.isNull(sysApp)) {
             log.info("应用[{}]不存在", appId);
             return HttpResult.failMessage("应用[" + appId + "]不存在");

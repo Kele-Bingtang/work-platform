@@ -22,7 +22,7 @@ public interface SysAppService extends IService<SysApp> {
      * @param appId 应用 ID
      * @return 应用信息
      */
-    SysApp checkAppIdThenGet(String appId);
+    SysApp checkAppIdThenGet(String tenantId,String appId);
 
     /**
      * 根据主键获取应用信息

@@ -19,6 +19,17 @@
     }"
   ></WangEditor>
 
+  <UserSelect
+    v-if="column.attrs?.el === 'user-select'"
+    v-model="_form[column.formItem.prop]"
+    v-bind="{
+      ...handleFormProps,
+      ...placeholder,
+      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
+    }"
+    :style="style"
+  ></UserSelect>
+
   <Tree
     v-else-if="!column.attrs?.render && column.attrs?.el === 'el-tree'"
     :data="columnEnum"
@@ -123,7 +134,7 @@
 <script setup lang="ts">
 import { computed, inject, ref } from "vue";
 import type { FormColumnProps } from "../interface";
-import { WangEditor, Tinymce } from "@work/components";
+import { WangEditor, Tinymce, UserSelect } from "@work/components";
 import Tree from "./Tree.vue";
 
 defineOptions({ name: "ProFormItem" });

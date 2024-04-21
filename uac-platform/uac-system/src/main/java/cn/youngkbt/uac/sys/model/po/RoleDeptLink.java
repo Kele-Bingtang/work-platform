@@ -6,8 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDate;
+import lombok.experimental.Accessors;
 
 /**
  * @author Kele-Bingtang
@@ -16,6 +15,7 @@ import java.time.LocalDate;
 */
 @TableName("t_role_dept_link")
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = RoleDeptLinkVO.class, reverseConvertGenerate = false)
 public class RoleDeptLink extends BaseDO {
@@ -29,16 +29,6 @@ public class RoleDeptLink extends BaseDO {
      * 部门 ID
      */
     private String deptId;
-
-    /**
-     * 生效时间
-     */
-    private LocalDate validFrom;
-
-    /**
-     * 失效时间
-     */
-    private LocalDate expireOn;
 
     /**
      * 租户编号

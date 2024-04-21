@@ -45,7 +45,8 @@ export type FormType =
   | "el-checkbox"
   | "el-checkbox-group"
   | "tinymce"
-  | "wang-editor";
+  | "wang-editor"
+  | "user-select";
 
 export type FormFieldNamesProps = { label: string; value: string; children?: string };
 

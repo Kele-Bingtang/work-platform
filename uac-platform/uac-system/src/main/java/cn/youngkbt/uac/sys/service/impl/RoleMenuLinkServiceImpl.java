@@ -3,6 +3,7 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
 import cn.youngkbt.uac.sys.model.dto.RoleMenuLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
@@ -32,13 +33,14 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
 
 
     @Override
-    public List<String> listMenuIdsByRoleId(String roleId, String appId) {
+    public List<String> listMenuIdsByRoleId(String roleId, String appId, String tenantId) {
 
         List<RoleMenuLink> roleMenuLinks = baseMapper.selectList(Wrappers.<RoleMenuLink>lambdaQuery()
                 .eq(RoleMenuLink::getRoleId, roleId)
                 .eq(StringUtil.hasText(appId), RoleMenuLink::getAppId, appId)
+                .eq(StringUtil.hasText(tenantId), RoleMenuLink::getTenantId, tenantId)
         );
-        
+
         if (ListUtil.isNotEmpty(roleMenuLinks)) {
             return roleMenuLinks.stream().map(RoleMenuLink::getMenuId).toList();
         }
@@ -65,7 +67,7 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
             return Collections.emptyList();
         }
 
-        return TreeBuildUtil.build(sysMenuList, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
+        return TreeBuildUtil.build(sysMenuList, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
                 tree.setId(treeNode.getMenuId())
                         .setParentId(treeNode.getParentId())
                         .setName(treeNode.getMenuName())

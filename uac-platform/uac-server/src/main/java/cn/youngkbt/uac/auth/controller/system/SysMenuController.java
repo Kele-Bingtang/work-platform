@@ -69,7 +69,7 @@ public class SysMenuController {
     @GetMapping("/listMenuIdsByRoleId/{appId}/{roleId}")
     @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
     public Response<List<String>> listMenuIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<String> menuIds = roleMenuLinkService.listMenuIdsByRoleId(roleId, appId);
+        List<String> menuIds = roleMenuLinkService.listMenuIdsByRoleId(roleId, appId, null);
         return HttpResult.ok(menuIds);
     }
 

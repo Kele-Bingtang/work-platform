@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface RoleMenuLinkService extends IService<RoleMenuLink> {
 
-    List<String>  listMenuIdsByRoleId(String roleId, String appId);
+    List<String>  listMenuIdsByRoleId(String roleId, String appId, String tenantId);
 
     List<Tree<String>> listMenuListByRoleId(String roleId, String appId);
 

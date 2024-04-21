@@ -102,7 +102,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             return Collections.emptyList();
         }
 
-        return TreeBuildUtil.build(sysMenuList, "0", TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
+        return TreeBuildUtil.build(sysMenuList, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
                 tree.setId(treeNode.getMenuId())
                         .setParentId(treeNode.getParentId())
                         .setName(treeNode.getMenuName())
@@ -155,7 +155,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             return baseMapper.insert(sysMenu) > 0;
         }
 
-        sysMenu.setParentId("0");
+        sysMenu.setParentId(ColumnConstant.PARENT_ID);
         return baseMapper.insert(sysMenu) > 0;
     }
 

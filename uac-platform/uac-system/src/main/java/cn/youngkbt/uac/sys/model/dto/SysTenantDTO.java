@@ -110,4 +110,6 @@ public class SysTenantDTO {
      */
     private Integer status;
 
+    private String appId;
+
 }

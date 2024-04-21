@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDate;
-
 /**
  * @author Kele-Bingtang
  * @date 2023-19-12 00:19:27
@@ -30,16 +28,6 @@ public class RoleMenuLink extends BaseDO {
      * 菜单 ID
      */
     private String menuId;
-
-    /**
-     * 生效时间
-     */
-    private LocalDate validFrom;
-
-    /**
-     * 失效时间
-     */
-    private LocalDate expireOn;
 
     /**
      * 租户编号

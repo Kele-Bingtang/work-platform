@@ -3,7 +3,6 @@ import type { UserGroup } from "@/api/user/userGroup";
 import { useLayoutStore } from "@/stores";
 import type { FormOptionsProps } from "@work/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, type FormRules, dayjs } from "element-plus";
-import { UserSelect } from "work";
 
 const rules = reactive<FormRules>({
   userIds: [{ required: true, message: "请选择用户", trigger: "blur" }],
@@ -27,17 +26,9 @@ export const useFormOptions = (requestParams: { userGroupId: string }) => {
       {
         formItem: { label: "用户选择", prop: "userIds", br: true },
         attrs: {
+          el: "user-select",
+          props: { requestApi: listWithDisabledByGroupId, requestParams: requestParams, multiple: true },
           destroy: ["edit"],
-          render: ({ scope }) => {
-            return (
-              <UserSelect
-                v-model={scope.form.userIds}
-                request-api={listWithDisabledByGroupId}
-                request-params={requestParams}
-                multiple
-              ></UserSelect>
-            );
-          },
         },
       },
       {

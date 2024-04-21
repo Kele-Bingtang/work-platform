@@ -2,6 +2,7 @@ import { listDeptTreeList, type Dept } from "@/api/system/dept";
 import type { FormOptionsProps } from "@work/components";
 import type { FormRules } from "element-plus";
 import { useFormRules } from "@/hooks/useFormRules";
+import { list } from "@/api/user/user";
 
 const { validatePhone } = useFormRules();
 
@@ -44,7 +45,7 @@ export const options: FormOptionsProps<Dept.DeptTreeTable> = {
     },
     {
       formItem: { label: "领导", prop: "leader" },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 领导" } },
+      attrs: { el: "user-select", props: { requestApi: list, placeholder: "请输入 领导" } },
     },
     {
       formItem: { label: "电话", prop: "phone" },

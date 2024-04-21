@@ -29,8 +29,11 @@ import java.util.Objects;
 public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> implements SysAppService {
 
     @Override
-    public SysApp checkAppIdThenGet(String appId) {
-        return baseMapper.selectOne(Wrappers.<SysApp>lambdaQuery().eq(SysApp::getAppId, appId));
+    public SysApp checkAppIdThenGet(String tenantId, String appId) {
+        return baseMapper.selectOne(Wrappers.<SysApp>lambdaQuery()
+                .eq(SysApp::getTenantId, tenantId)
+                .eq(SysApp::getAppId, appId)
+        );
     }
 
     @Override

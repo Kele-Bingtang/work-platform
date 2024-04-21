@@ -5,14 +5,12 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.RoleMenuLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
 import cn.youngkbt.utils.ListUtil;
-import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -73,35 +71,6 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
                         .setName(treeNode.getMenuName())
                         .setWeight(treeNode.getOrderNum())
                         .putExtra("icon", treeNode.getIcon()));
-    }
-
-    @Override
-    public boolean checkMenuExistRole(String menuId) {
-        return baseMapper.exists(Wrappers.<RoleMenuLink>lambdaQuery()
-                .eq(RoleMenuLink::getMenuId, menuId));
-    }
-
-    @Override
-    public boolean checkRoleExistMenu(String roleId) {
-        return baseMapper.exists(Wrappers.<RoleMenuLink>lambdaQuery()
-                .eq(RoleMenuLink::getRoleId, roleId));
-    }
-
-    @Override
-    public boolean addOneLink(RoleMenuLinkDTO roleMenuLinkDTO) {
-        RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDTO, RoleMenuLink.class);
-        return baseMapper.insert(menuLink) > 0;
-    }
-
-    @Override
-    public boolean updateOneLink(RoleMenuLinkDTO roleMenuLinkDTO) {
-        RoleMenuLink menuLink = MapstructUtil.convert(roleMenuLinkDTO, RoleMenuLink.class);
-        return baseMapper.updateById(menuLink) > 0;
-    }
-
-    @Override
-    public boolean removeOneLink(Long id) {
-        return baseMapper.deleteById(id) > 0;
     }
 
     @Override

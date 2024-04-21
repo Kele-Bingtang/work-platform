@@ -1,20 +1,11 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.uac.sys.mapper.RoleDeptLinkMapper;
-import cn.youngkbt.uac.sys.model.dto.RoleDeptLinkDTO;
 import cn.youngkbt.uac.sys.model.po.RoleDeptLink;
-import cn.youngkbt.uac.sys.model.vo.RoleDeptLinkVO;
 import cn.youngkbt.uac.sys.service.RoleDeptLinkService;
-import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -23,23 +14,6 @@ import java.util.Objects;
  */
 @Service
 public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, RoleDeptLink> implements RoleDeptLinkService {
-
-    @Override
-    public List<RoleDeptLinkVO> queryLinkByAppId(RoleDeptLinkDTO roleDeptLinkDTO, PageQuery pageQuery) {
-        LambdaQueryWrapper<RoleDeptLink> wrapper = Wrappers.<RoleDeptLink>lambdaQuery()
-                .eq(RoleDeptLink::getAppId, roleDeptLinkDTO.getAppId())
-                .eq(StringUtil.hasText(roleDeptLinkDTO.getRoleId()), RoleDeptLink::getRoleId, roleDeptLinkDTO.getRoleId())
-                .eq(StringUtil.hasText(roleDeptLinkDTO.getDeptId()), RoleDeptLink::getDeptId, roleDeptLinkDTO.getDeptId())
-                .orderByAsc(RoleDeptLink::getId);
-
-        List<RoleDeptLink> roleDeptLinkList;
-        if (Objects.isNull(pageQuery)) {
-            roleDeptLinkList = baseMapper.selectList(wrapper);
-        } else {
-            roleDeptLinkList = baseMapper.selectPage(pageQuery.buildPage(), wrapper).getRecords();
-        }
-        return MapstructUtil.convert(roleDeptLinkList, RoleDeptLinkVO.class);
-    }
 
     @Override
     public boolean checkDeptExistRole(String deptId) {
@@ -51,23 +25,6 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
     public boolean checkRoleExistDept(String roleId) {
         return baseMapper.exists(Wrappers.<RoleDeptLink>lambdaQuery()
                 .eq(RoleDeptLink::getRoleId, roleId));
-    }
-
-    @Override
-    public boolean addOneLink(RoleDeptLinkDTO roleDeptLinkDTO) {
-        RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDTO, RoleDeptLink.class);
-        return baseMapper.insert(roleDeptLink) > 0;
-    }
-
-    @Override
-    public boolean updateOneLink(RoleDeptLinkDTO roleDeptLinkDTO) {
-        RoleDeptLink roleDeptLink = MapstructUtil.convert(roleDeptLinkDTO, RoleDeptLink.class);
-        return baseMapper.updateById(roleDeptLink) > 0;
-    }
-
-    @Override
-    public boolean removeOneLink(Long id) {
-        return baseMapper.deleteById(id) > 0;
     }
 }
 

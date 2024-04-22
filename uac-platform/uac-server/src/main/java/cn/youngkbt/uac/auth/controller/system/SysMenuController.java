@@ -11,8 +11,8 @@ import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,15 +31,9 @@ public class SysMenuController {
     private final SysMenuService sysMenuService;
     private final RoleMenuLinkService roleMenuLinkService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "菜单列表查询", description = "通过主键查询菜单列表")
-    public Response<SysMenuVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysMenuVO sysMenuVo = sysMenuService.listById(id);
-        return HttpResult.ok(sysMenuVo);
-    }
-
     @GetMapping("/list")
     @Operation(summary = "菜单列表查询", description = "通过查询条件查询菜单列表")
+    @PreAuthorize("hasAuthority('system:menu:list')")
     public Response<List<SysMenuVO>> list(SysMenuDTO sysMenuDTO) {
         List<SysMenuVO> sysMenuVOList = sysMenuService.queryList(sysMenuDTO);
         return HttpResult.ok(sysMenuVOList);
@@ -47,6 +41,7 @@ public class SysMenuController {
 
     @GetMapping("/listPage")
     @Operation(summary = "菜单列表查询", description = "通过查询条件查询菜单列表（支持分页）")
+    @PreAuthorize("hasAuthority('system:menu:list')")
     public Response<TablePage<SysMenuVO>> listPage(SysMenuDTO sysMenuDTO, PageQuery pageQuery) {
         TablePage<SysMenuVO> tablePage = sysMenuService.listPage(sysMenuDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -54,6 +49,7 @@ public class SysMenuController {
 
     @GetMapping("/treeSelect")
     @Operation(summary = "菜单下拉值查询", description = "通过查询条件查询菜单下拉值（下拉框查询使用）")
+    @PreAuthorize("hasAuthority('system:menu:query')")
     public Response<List<Tree<String>>> listMenuTreeSelect(SysMenuDTO sysMenuDTO) {
         List<Tree<String>> menuTreeList = sysMenuService.listMenuTreeSelect(sysMenuDTO);
         return HttpResult.ok(menuTreeList);
@@ -61,6 +57,7 @@ public class SysMenuController {
 
     @GetMapping("/treeTable")
     @Operation(summary = "菜单树表查询", description = "通过查询条件查询菜单树表")
+    @PreAuthorize("hasAuthority('system:menu:list')")
     public Response<List<SysMenuVO>> listMenuTreeTable(SysMenuDTO sysMenuDTO) {
         List<SysMenuVO> treeTable = sysMenuService.listMenuTreeTable(sysMenuDTO);
         return HttpResult.ok(treeTable);
@@ -68,6 +65,7 @@ public class SysMenuController {
     
     @GetMapping("/listMenuIdsByRoleId/{appId}/{roleId}")
     @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
+    @PreAuthorize("hasAuthority('system:menu:query')")
     public Response<List<String>> listMenuIdsByRoleId(@PathVariable String appId, @PathVariable String roleId) {
         List<String> menuIds = roleMenuLinkService.listMenuIdsByRoleId(roleId, appId, null);
         return HttpResult.ok(menuIds);
@@ -75,6 +73,7 @@ public class SysMenuController {
 
     @GetMapping("/listMenuListByRoleId/{appId}/{roleId}")
     @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
+    @PreAuthorize("hasAuthority('system:menu:query')")
     public Response<List<Tree<String>>> listMenuListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
         List<Tree<String>> sysMenuVOList = roleMenuLinkService.listMenuListByRoleId(roleId, appId);
         return HttpResult.ok(sysMenuVOList);
@@ -82,6 +81,7 @@ public class SysMenuController {
 
     @PostMapping
     @Operation(summary = "菜单新增", description = "新增菜单")
+    @PreAuthorize("hasAuthority('system:menu:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
         if (sysMenuService.checkMenuCodeUnique(sysMenuDTO)) {
             return HttpResult.failMessage("新增菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称「" + sysMenuDTO.getMenuCode() + "」已存在");
@@ -96,6 +96,7 @@ public class SysMenuController {
 
     @PutMapping
     @Operation(summary = "菜单修改", description = "修改菜单")
+    @PreAuthorize("hasAuthority('system:menu:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
 
         if (sysMenuDTO.getParentId().equals(sysMenuDTO.getMenuId())) {
@@ -115,6 +116,7 @@ public class SysMenuController {
 
     @DeleteMapping("/{id}/{menuId}")
     @Operation(summary = "菜单删除", description = "通过主键删除菜单")
+    @PreAuthorize("hasAuthority('system:menu:remove')")
     public Response<Boolean> removeOne(@PathVariable Long id, @PathVariable String menuId) {
         if (sysMenuService.hasChild(menuId)) {
             return HttpResult.failMessage("存在下级菜单，不允许删除");

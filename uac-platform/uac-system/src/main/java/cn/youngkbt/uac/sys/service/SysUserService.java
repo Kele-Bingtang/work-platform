@@ -2,7 +2,6 @@ package cn.youngkbt.uac.sys.service;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
-import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
@@ -16,31 +15,6 @@ import java.util.List;
  * @note 针对表【t_sys_user(用户信息表)】的数据库操作Service
  */
 public interface SysUserService extends IService<SysUser> {
-
-    /**
-     * 根据租户 ID 和用户名查询用户信息
-     *
-     * @param tenantId 租户 ID
-     * @param username 用户名
-     * @return
-     */
-    SecurityUser selectTenantUserByUsername(String tenantId, String username);
-
-    /**
-     * 根据用户名查询用户信息
-     *
-     * @param username 用户名
-     * @return 用户信息
-     */
-    SecurityUser selectUserByUsername(String username);
-
-    /**
-     * 通过主键获取用户信息
-     *
-     * @param id 主键
-     * @return 用户信息
-     */
-    SysUserVO listById(Long id);
 
     /**
      * 通过条件查询用户列表
@@ -114,6 +88,5 @@ public interface SysUserService extends IService<SysUser> {
      * @return 是否成功
      */
     boolean removeBatch(List<Long> ids, List<String> userIds);
-
 
 }

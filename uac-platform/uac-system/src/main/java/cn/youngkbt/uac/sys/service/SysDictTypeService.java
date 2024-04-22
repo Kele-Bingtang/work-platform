@@ -17,14 +17,6 @@ import java.util.List;
 public interface SysDictTypeService extends IService<SysDictType> {
 
     /**
-     * 根据主键查询字典类型信息
-     *
-     * @param id 主键
-     * @return 字典类型信息
-     */
-    SysDictTypeVO listById(Long id);
-
-    /**
      * 通过条件查询字典类型列表
      *
      * @param sysDictTypeDTO 查询条件

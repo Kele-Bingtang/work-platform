@@ -35,13 +35,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private final UserPostLinkService userPostLinkService;
 
     @Override
-    public SysPostVO listById(Long id) {
-        SysPost sysPost = baseMapper.selectById(id);
-        Assert.nonNull(sysPost, "岗位不存在");
-        return MapstructUtil.convert(sysPost, SysPostVO.class);
-    }
-
-    @Override
     public List<SysPostVO> queryList(SysPostDTO sysPostDTO) {
         LambdaQueryWrapper<SysPost> wrapper = buildQueryWrapper(sysPostDTO);
         List<SysPost> sysPostList = baseMapper.selectList(wrapper);

@@ -18,14 +18,6 @@ import java.util.List;
 public interface SysDeptService extends IService<SysDept> {
 
     /**
-     * 根据主键查询部门
-     *
-     * @param id 主键
-     * @return 部门
-     */
-    SysDeptVO listById(Long id);
-
-    /**
      * 根据条件查询部门列表
      *
      * @param sysDeptDTO 查询条件

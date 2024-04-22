@@ -41,4 +41,31 @@
         update_by,update_by_id,update_time,
         status,is_deleted,app_id
     </sql>
+    
+    <select id="listMenuListByUserId" resultType="cn.youngkbt.uac.sys.model.vo.SysMenuVO">
+        SELECT DISTINCT tsm.*
+        FROM t_sys_menu tsm
+        JOIN t_role_menu_link trml ON tsm.menu_id = trml.menu_id AND trml.is_deleted = 0 AND trml.status = 1
+        JOIN (
+            -- 查询用户和角色关联的角色 ID
+            SELECT turl.role_id FROM t_user_role_link turl
+            JOIN t_sys_role tsr ON turl.role_id = tsr.role_id AND tsr.is_deleted = 0 AND tsr.status = 1
+            WHERE turl.is_deleted = 0 AND turl.status = 1 AND turl.user_id = #{userId}}
+            UNION
+            -- 查询用户所在用户组关联角色的角色 ID
+            SELECT tugrl.role_id FROM t_user_group_role_link tugrl
+            JOIN t_user_group_link tugl ON tugrl.user_group_id = tugl.user_group_id AND tugrl.is_deleted = 0 AND tugrl.status = 1 AND tugl.is_deleted = 0 AND tugl.status = 1
+            JOIN t_sys_role tsr ON tugrl.role_id = tsr.role_id AND tsr.is_deleted = 0 AND tsr.status = 1
+            JOIN t_sys_user_group tsug ON tugl.user_group_id = tsug.group_id AND tsug.is_deleted = 0 AND tsug.status = 1
+            WHERE tugl.user_id = #{userId}}
+            UNION
+            -- 查询用户所在部门关联角色的角色 ID
+            SELECT trdl.role_id FROM t_role_dept_link trdl
+            JOIN t_sys_role tsr ON trdl.role_id = tsr.role_id AND trdl.is_deleted = 0 AND trdl.status = 1 AND tsr.is_deleted = 0 AND tsr.status = 1
+            WHERE EXISTS (SELECT 1 FROM t_sys_user tsu WHERE trdl.dept_id = tsu.dept_id AND tsu.is_deleted = 0 AND tsu.status = 1
+            AND tsu.user_id = #{userId})
+        ) AS all_roles ON trml.role_id = all_roles.role_id
+        WHERE tsm.is_deleted = 0 AND tsm.status = 1
+        AND tsm.app_id = #{appId};
+    </select>
 </mapper>

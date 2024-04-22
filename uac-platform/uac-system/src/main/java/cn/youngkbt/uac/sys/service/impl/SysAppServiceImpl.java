@@ -37,13 +37,6 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public SysAppVO listById(Long id) {
-        SysApp sysApp = baseMapper.selectById(id);
-        Assert.nonNull(sysApp, "应用不存在");
-        return MapstructUtil.convert(sysApp, SysAppVO.class);
-    }
-
-    @Override
     public List<SysAppVO> queryList(SysAppDTO sysAppDTO) {
         LambdaQueryWrapper<SysApp> wrapper = buildQueryWrapper(sysAppDTO);
         List<SysApp> sysAppList = baseMapper.selectList(wrapper);

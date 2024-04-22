@@ -3,18 +3,22 @@ package cn.youngkbt.uac.sys.security;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.tenant.helper.TenantHelper;
+import cn.youngkbt.uac.core.constant.TenantConstant;
 import cn.youngkbt.uac.core.exception.AuthException;
 import cn.youngkbt.uac.sys.model.po.SysUser;
+import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
+import cn.youngkbt.uac.sys.service.SysMenuService;
 import cn.youngkbt.uac.sys.service.SysUserService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,6 +32,7 @@ import java.util.Objects;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final SysUserService sysUserService;
+    private final SysMenuService sysMenuService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -47,7 +52,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new AuthException("用户已被停用");
         }
 
-        SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(), AuthorityUtils.NO_AUTHORITIES);
+        // 查询用户的菜单权限
+        List<SysMenuVO> sysMenuVOList = sysMenuService.listMenuListByUserId(TenantConstant.DEFAULT_UAC_APP_ID, user.getUserId());
+
+        List<SimpleGrantedAuthority> authorities = sysMenuVOList.stream()
+                .map(SysMenuVO::getPermission)
+                .filter(Objects::nonNull)
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+        
+        SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(), authorities);
         securityUser.setUserId(user.getUserId());
         securityUser.setDeptId(user.getDeptId());
         securityUser.setTenantId(user.getTenantId());
@@ -59,7 +73,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         securityUser.setRegisterTime(user.getRegisterTime());
         securityUser.setLoginTime(user.getLoginTime());
         securityUser.setLoginIp(user.getLoginIp());
-        
+
         return securityUser;
 
         // 用户权限列表，根据用户拥有的权限标识与如 @PreAuthorize("hasAuthority('sys:menu:view')") 标注的接口对比，决定是否可以调用接口

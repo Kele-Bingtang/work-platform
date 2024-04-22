@@ -17,14 +17,6 @@ import java.util.List;
 public interface SysRoleService extends IService<SysRole> {
 
     /**
-     * 根据主键查询角色信息
-     *
-     * @param id 主键
-     * @return 角色信息
-     */
-    SysRoleVO listById(Long id);
-
-    /**
      * 通过条件查询角色列表
      *
      * @param sysRoleDTO 查询条件

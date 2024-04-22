@@ -38,13 +38,6 @@ import java.util.Objects;
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements SysDictDataService {
 
     @Override
-    public SysDictDataVO listById(Long id) {
-        SysDictData sysDictData = baseMapper.selectById(id);
-        Assert.nonNull(sysDictData, "数据不存在");
-        return MapstructUtil.convert(sysDictData, SysDictDataVO.class);
-    }
-
-    @Override
     public List<SysDictDataVO> queryList(SysDictDataDTO sysDictDataDTO) {
         LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
         List<SysDictData> sysDictData = baseMapper.selectList(wrapper);

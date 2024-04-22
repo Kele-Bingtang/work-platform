@@ -12,8 +12,8 @@ import cn.youngkbt.uac.sys.service.SysDictDataService;
 import cn.youngkbt.uac.sys.service.SysDictTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,15 +33,9 @@ public class SysDictTypeController {
     private final SysDictTypeService sysDictTypeService;
     private final SysDictDataService sysDictDataService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "字典类型列表查询", description = "通过主键查询字典类型列表")
-    public Response<SysDictTypeVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysDictTypeVO sysDictTypeVo = sysDictTypeService.listById(id);
-        return HttpResult.ok(sysDictTypeVo);
-    }
-
     @GetMapping("/list")
     @Operation(summary = "字典类型列表查询", description = "通过应用条件查询字典类型列表")
+    @PreAuthorize("hasAuthority('system:dictType:list')")
     public Response<List<SysDictTypeVO>> list(SysDictTypeDTO sysDictTypeDTO) {
         List<SysDictTypeVO> sysDictTypeVOList = sysDictTypeService.queryList(sysDictTypeDTO);
         return HttpResult.ok(sysDictTypeVOList);
@@ -49,6 +43,7 @@ public class SysDictTypeController {
 
     @GetMapping("/listPage")
     @Operation(summary = "字典类型列表查询", description = "通过应用条件查询字典类型列表（支持分页）")
+    @PreAuthorize("hasAuthority('system:dictType:list')")
     public Response<TablePage<SysDictTypeVO>> listPage(SysDictTypeDTO sysDictTypeDTO, PageQuery pageQuery) {
         TablePage<SysDictTypeVO> tablePage = sysDictTypeService.listPage(sysDictTypeDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -56,6 +51,7 @@ public class SysDictTypeController {
 
     @PostMapping
     @Operation(summary = "字典类型列表新增", description = "新增字典类型列表")
+    @PreAuthorize("hasAuthority('system:dictType:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictTypeDTO sysDictTypeDTO) {
         if (sysDictTypeService.checkDictCodeUnique(sysDictTypeDTO)) {
             return HttpResult.failMessage("新增字典类型编码「" + sysDictTypeDTO.getDictCode() + "」失败，字典字典类型编码已存在");
@@ -66,6 +62,7 @@ public class SysDictTypeController {
 
     @PutMapping
     @Operation(summary = "字典类型列表修改", description = "修改字典类型列表")
+    @PreAuthorize("hasAuthority('system:dictType:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictTypeDTO sysDictTypeDTO) {
         if (sysDictTypeService.checkDictCodeUnique(sysDictTypeDTO)) {
             return HttpResult.failMessage("修改字典类型编码「" + sysDictTypeDTO.getDictCode() + "」失败，字典字典类型编码已存在");
@@ -79,6 +76,7 @@ public class SysDictTypeController {
      */
     @DeleteMapping("/{ids}")
     @Operation(summary = "字典类型列表删除", description = "通过主键批量删除字典类型列表")
+    @PreAuthorize("hasAuthority('system:dictType:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         List<Long> idList = List.of(ids);
         List<SysDictType> sysDictTypes = sysDictDataService.checkDictTypeExitDataAndGet(idList);

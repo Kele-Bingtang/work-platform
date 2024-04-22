@@ -37,15 +37,6 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public SysClientVO listById(Long id) {
-        SysClient sysClient = baseMapper.selectById(id);
-        Assert.nonNull(sysClient, "客户端不存在");
-        SysClientVO result = MapstructUtil.convert(sysClient, SysClientVO.class);
-        result.setGrantTypeList(List.of(result.getGrantTypes().split(",")));
-        return result;
-    }
-
-    @Override
     public List<SysClientVO> queryList(SysClientDTO sysClientDTO) {
         LambdaQueryWrapper<SysClient> wrapper = buildQueryWrapper(sysClientDTO);
         List<SysClient> sysAppList = baseMapper.selectList(wrapper);

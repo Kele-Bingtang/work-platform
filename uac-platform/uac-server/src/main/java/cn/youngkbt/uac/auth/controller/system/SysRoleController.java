@@ -18,8 +18,8 @@ import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,15 +39,9 @@ public class SysRoleController {
     private final UserRoleLinkService userRoleLinkService;
     private final UserGroupRoleLinkService userGroupRoleLinkService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "角色列表查询", description = "通过主键查询角色列表")
-    public Response<SysRoleVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysRoleVO sysRoleVo = sysRoleService.listById(id);
-        return HttpResult.ok(sysRoleVo);
-    }
-
     @GetMapping("/list")
     @Operation(summary = "角色列表查询", description = "通过条件查询角色列表")
+    @PreAuthorize("hasAuthority('system:role:list')")
     public Response<List<SysRoleVO>> list(SysRoleDTO sysRoleDTO) {
         List<SysRoleVO> sysRoleVOList = sysRoleService.queryList(sysRoleDTO);
         return HttpResult.ok(sysRoleVOList);
@@ -55,6 +49,7 @@ public class SysRoleController {
 
     @GetMapping("/listPage")
     @Operation(summary = "角色列表查询", description = "通过条件查询角色列表（支持分页）")
+    @PreAuthorize("hasAuthority('system:role:list')")
     public Response<TablePage<SysRoleVO>> listPage(SysRoleDTO sysRoleDTO, PageQuery pageQuery) {
         TablePage<SysRoleVO> tablePage = sysRoleService.listPage(sysRoleDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -62,6 +57,7 @@ public class SysRoleController {
 
     @PostMapping
     @Operation(summary = "角色列表新增", description = "新增角色")
+    @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
         if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
             return HttpResult.failMessage("新增角色「" + sysRoleDTO.getRoleName() + "」失败，角色编码「" + sysRoleDTO.getRoleCode() + "」已存在");
@@ -75,6 +71,7 @@ public class SysRoleController {
 
     @PutMapping
     @Operation(summary = "角色列表修改", description = "修改角色")
+    @PreAuthorize("hasAuthority('system:role:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
         if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
             return HttpResult.failMessage("修改角色「" + sysRoleDTO.getRoleName() + "」失败，角色编码「" + sysRoleDTO.getRoleCode() + "」已存在");
@@ -88,12 +85,14 @@ public class SysRoleController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "角色列表删除", description = "通过主键批量删除角色列表")
+    @PreAuthorize("hasAuthority('system:role:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> roleIds) {
         return HttpResult.ok(sysRoleService.removeBatch(List.of(ids), roleIds));
     }
 
     @GetMapping("/listRoleLinkByUserId/{appId}/{userId}")
     @Operation(summary = "角色列表查询", description = "查询某个用户所在的角色列表")
+    @PreAuthorize("hasAuthority('system:role:query')")
     public Response<List<RoleLinkVO>> listRoleListByUserId(@PathVariable String appId, @PathVariable String userId) {
         List<RoleLinkVO> roleLinkVOS = userRoleLinkService.listRoleLinkByUserId(appId, userId);
         return HttpResult.ok(roleLinkVOS);
@@ -101,6 +100,7 @@ public class SysRoleController {
 
     @GetMapping("listRoleLinkByGroupId/{userGroupId}")
     @Operation(summary = "角色列表查询", description = "通过用户组 ID 查询角色列表")
+    @PreAuthorize("hasAuthority('system:role:query')")
     public Response<TablePage<RoleLinkVO>> listRoleLinkByGroupId(@PathVariable String userGroupId, RoleLinkInfoDTO roleLinkInfoDTO, PageQuery pageQuery) {
         TablePage<RoleLinkVO> tablePage = userGroupRoleLinkService.listRoleLinkByGroupId(userGroupId, roleLinkInfoDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -108,6 +108,7 @@ public class SysRoleController {
 
     @GetMapping("listWithDisabledByUserId/{appId}/{userId}")
     @Operation(summary = "角色列表查询", description = "查询所有角色列表，如果角色绑定了用户，则 disabled 属性为 true")
+    @PreAuthorize("hasAuthority('system:role:query')")
     public Response<List<RoleBindSelectVO>> listWithDisabledByUserId(@PathVariable String appId, @PathVariable String userId) {
         List<RoleBindSelectVO> roleBindSelectVOList = userRoleLinkService.listWithDisabledByUserId(appId, userId);
         return HttpResult.ok(roleBindSelectVOList);
@@ -115,6 +116,7 @@ public class SysRoleController {
 
     @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
     @Operation(summary = "角色列表查询", description = "查询所有角色列表（查询所有角色列表，如果角色绑定了用户组，则 disabled 属性为 true）")
+    @PreAuthorize("hasAuthority('system:role:query')")
     public Response<List<RoleBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
         List<RoleBindSelectVO> roleBindSelectVOList = userGroupRoleLinkService.listWithDisabledByGroupId(userGroupId);
         return HttpResult.ok(roleBindSelectVOList);
@@ -122,6 +124,7 @@ public class SysRoleController {
 
     @PostMapping("/addUserGroupsToRole")
     @Operation(summary = "添加角色到用户组", description = "添加角色到用户组（多个用户组）")
+    @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> addUserGroupsToRole(@Validated(RestGroup.AddGroup.class) @RequestBody RoleLinkUserGroupDTO roleLinkUserGroupDTO) {
         if (userGroupRoleLinkService.checkRoleExistUserGroups(roleLinkUserGroupDTO)) {
             return HttpResult.failMessage("添加角色到用户组失败，用户组已存在于角色中");
@@ -132,6 +135,7 @@ public class SysRoleController {
 
     @PostMapping("/addUsersToRole")
     @Operation(summary = "添加用户到角色", description = "添加用户到角色（多个用户）")
+    @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> addUsersToRole(@Validated(RestGroup.AddGroup.class) @RequestBody RoleLinkUserDTO roleLinkUserDTO) {
         if (userRoleLinkService.checkRoleExistUser(roleLinkUserDTO)) {
             return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
@@ -142,6 +146,7 @@ public class SysRoleController {
 
     @DeleteMapping("/removeUserFromRole/{ids}")
     @Operation(summary = "移出角色", description = "将用户移出角色")
+    @PreAuthorize("hasAuthority('system:role:remove')")
     public Response<Boolean> removeUserFromRole(@PathVariable Long[] ids) {
         boolean result = userRoleLinkService.removeUserFromRole(List.of(ids));
         return HttpResult.ok(result);
@@ -149,6 +154,7 @@ public class SysRoleController {
 
     @DeleteMapping("/removeUserGroupFromRole/{ids}")
     @Operation(summary = "移出角色", description = "将用户组移出角色")
+    @PreAuthorize("hasAuthority('system:role:remove')")
     public Response<Boolean> removeUserGroupFromRole(@PathVariable Long[] ids) {
         boolean result = userGroupRoleLinkService.removeUserGroupFromRole(List.of(ids));
         return HttpResult.ok(result);
@@ -156,6 +162,7 @@ public class SysRoleController {
 
     @PutMapping("/updateLinkInfo")
     @Operation(summary = "用户关联角色信息修改", description = "修改用户组和角色关联信息")
+    @PreAuthorize("hasAuthority('system:role:edit')")
     public Response<Boolean> updateLinkInfo(@Validated(RestGroup.EditGroup.class) @RequestBody UserRoleLinkDTO userRoleLinkDTO) {
         return HttpResult.ok(userRoleLinkService.updateOne(userRoleLinkDTO));
     }

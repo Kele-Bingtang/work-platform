@@ -12,8 +12,8 @@ import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,15 +33,9 @@ public class SysClientController {
     private final SysClientService clientService;
     private final SysAppService sysAppService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "客户端列表查询", description = "通过主键查询客户端列表")
-    public Response<SysClientVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysClientVO sysClientVo = clientService.listById(id);
-        return HttpResult.ok(sysClientVo);
-    }
-
     @GetMapping("/list")
     @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表）")
+    @PreAuthorize("hasAuthority('system:client:list')")
     public Response<List<SysClientVO>> list(SysClientDTO sysClientDTO) {
         List<SysClientVO> sysClientVOList = clientService.queryList(sysClientDTO);
         return HttpResult.ok(sysClientVOList);
@@ -49,6 +43,7 @@ public class SysClientController {
 
     @GetMapping("/listPage")
     @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表（支持分页）")
+    @PreAuthorize("hasAuthority('system:client:list')")
     public Response<TablePage<SysClientVO>> listPage(SysClientDTO sysClientDTO, PageQuery pageQuery) {
         TablePage<SysClientVO> tablePage = clientService.listPage(sysClientDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -56,6 +51,7 @@ public class SysClientController {
 
     @GetMapping("/treeList")
     @Operation(summary = "客户端树形列表查询", description = "查询客户端树形列表")
+    @PreAuthorize("hasAuthority('system:client:query')")
     public Response<List<ClientTreeVO>> listTreeList() {
         List<ClientTreeVO> sysClientVoList = clientService.listTreeList();
         return HttpResult.ok(sysClientVoList);
@@ -63,6 +59,7 @@ public class SysClientController {
 
     @PostMapping
     @Operation(summary = "客户端新增", description = "新增客户端")
+    @PreAuthorize("hasAuthority('system:client:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDTO) {
         if (clientService.checkClientKeyUnique(sysClientDTO)) {
             return HttpResult.failMessage("新增客户端「" + sysClientDTO.getClientName() + "」失败，客户端 Key「" + sysClientDTO.getClientKey() + "」已存在");
@@ -78,6 +75,7 @@ public class SysClientController {
      */
     @PutMapping
     @Operation(summary = "客户端修改", description = "修改客户端")
+    @PreAuthorize("hasAuthority('system:client:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDTO) {
         if (clientService.checkClientKeyUnique(sysClientDTO)) {
             return HttpResult.failMessage("修改客户端「" + sysClientDTO.getClientName() + "」失败，客户端 Key「" + sysClientDTO.getClientKey() + "」已存在");
@@ -91,12 +89,14 @@ public class SysClientController {
 
     @PutMapping("/updateStatus")
     @Operation(summary = "客户端状态修改", description = "修改客户端状态")
+    @PreAuthorize("hasAuthority('system:client:edit')")
     public Response<Boolean> updateStatus(@RequestBody SysClientDTO sysClientDTO) {
         return HttpResult.ok(clientService.updateStatus(sysClientDTO.getId(), sysClientDTO.getStatus()));
     }
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "客户端删除", description = "通过主键批量删除客户端")
+    @PreAuthorize("hasAuthority('system:client:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> clientIds) {
         if (sysAppService.checkExitApp(clientIds)) {
             return HttpResult.failMessage("存在 APP 绑定，不允许删除");

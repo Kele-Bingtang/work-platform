@@ -5,6 +5,7 @@ import cn.youngkbt.security.properties.SecurityProperties;
 import cn.youngkbt.uac.sys.security.UserDetailsServiceImpl;
 import cn.youngkbt.uac.sys.security.handler.*;
 import cn.youngkbt.uac.sys.security.interceptor.JwtAuthenticationFilter;
+import cn.youngkbt.uac.sys.service.SysMenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -30,6 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(SecurityProperties.class)
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
     public static final String LOGIN_URL = "/auth/login";
@@ -37,6 +40,7 @@ public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final SecurityProperties securityProperties;
+    private final SysMenuService sysMenuService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,10 +61,51 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.accessDeniedHandler(workAccessDeniedHandler())
                         .authenticationEntryPoint(workAuthenticationEntryPoint()));
 
+        // 动态权限判断，请求的 URL 和数据库中的权限进行匹配
+        // checkAuthorize(http);
+
         http.addFilterBefore(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         http.userDetailsService(userDetailsService);
         return http.build();
     }
+
+    /**
+     * 动态权限判断，请求的 URL 和数据库中的权限进行匹配
+     */
+    // private void checkAuthorize(HttpSecurity http) {
+    //     http.authorizeHttpRequests(register -> register.anyRequest().access((authentication, requestContext) -> {
+    //         // 表示请求的 URL 地址和数据库的地址是否匹配上了
+    //         boolean isMatch = false;
+    //         // 获取当前请求的 URL 地址
+    //         String requestURI = requestContext.getRequest().getRequestURI();
+    //         List<SysMenu> sysMenuList = sysMenuService.list();
+    //
+    //         for (SysMenu sysMenu : sysMenuList) {
+    //             if (sysMenu.getInterfaceUrl().equals(requestURI)) {
+    //                 isMatch = true;
+    //                 // 获取当前登录用户的权限
+    //                 Collection<? extends GrantedAuthority> authorities = authentication.get().getAuthorities();
+    //                 for (GrantedAuthority authority : authorities) {
+    //                     if (authority.getAuthority().equals(sysMenu.getPermission())) {
+    //                         // 说明当前登录用户具备当前请求所需要的权限
+    //                         return new AuthorizationDecision(true);
+    //                     }
+    //                 }
+    //
+    //             }
+    //         }
+    //         if (!isMatch) {
+    //             // 说明请求的 URL 地址和数据库的地址没有匹配上，对于这种请求，统一只要登录就能访问
+    //             if (authentication.get() instanceof AnonymousAuthenticationToken) {
+    //                 return new AuthorizationDecision(false);
+    //             } else {
+    //                 // 说明用户已经认证了
+    //                 return new AuthorizationDecision(true);
+    //             }
+    //         }
+    //         return new AuthorizationDecision(false);
+    //     }));
+    // }
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {

@@ -41,13 +41,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private final RoleMenuLinkMapper roleMenuLinkMapper;
 
     @Override
-    public SysMenuVO listById(Long id) {
-        SysMenu sysMenu = baseMapper.selectById(id);
-        Assert.nonNull(sysMenu, "菜单不存在");
-        return MapstructUtil.convert(sysMenu, SysMenuVO.class);
-    }
-
-    @Override
     public List<SysMenuVO> queryList(SysMenuDTO sysMenuDTO) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
@@ -108,6 +101,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                         .setName(treeNode.getMenuName())
                         .setWeight(treeNode.getOrderNum())
                         .putExtra("icon", treeNode.getIcon()));
+    }
+
+    @Override
+    public List<SysMenuVO> listMenuListByUserId(String appId,  String userId) {
+        return baseMapper.listMenuListByUserId(appId, userId);
     }
 
     @Override

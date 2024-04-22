@@ -25,14 +25,6 @@ public interface SysAppService extends IService<SysApp> {
     SysApp checkAppIdThenGet(String tenantId,String appId);
 
     /**
-     * 根据主键获取应用信息
-     *
-     * @param id 主键
-     * @return 应用信息
-     */
-    SysAppVO listById(Long id);
-
-    /**
      * 通过条件查询 App 清单列表
      *
      * @param sysAppDTO 应用信息查询条件

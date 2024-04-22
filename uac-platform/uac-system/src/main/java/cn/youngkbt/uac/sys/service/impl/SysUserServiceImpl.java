@@ -1,11 +1,9 @@
 package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.core.constants.ColumnConstant;
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
-import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
@@ -53,23 +51,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private final UserRoleLinkService userRoleLinkService;
     private final UserPostLinkService userPostLinkService;
     private final UserGroupLinkService userGroupLinkService;
-
-    @Override
-    public SecurityUser selectTenantUserByUsername(String tenantId, String username) {
-        return baseMapper.selectTenantUserByUsername(tenantId, username);
-    }
-
-    @Override
-    public SecurityUser selectUserByUsername(String username) {
-        return baseMapper.selectUserByUsername(username);
-    }
-
-    @Override
-    public SysUserVO listById(Long id) {
-        SysUser sysUser = baseMapper.selectById(id);
-        Assert.nonNull(sysUser, "用户不存在");
-        return MapstructUtil.convert(sysUser, SysUserVO.class);
-    }
 
     @Override
     public List<SysUserVO> queryList(SysUserDTO sysUserDTO) {
@@ -226,6 +207,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         baseMapper.update(user, Wrappers.<SysUser>lambdaUpdate().eq(SysUser::getUserId, userId));
     }
+
 }
 
 

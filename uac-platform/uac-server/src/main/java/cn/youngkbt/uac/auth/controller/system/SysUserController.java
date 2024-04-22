@@ -20,8 +20,8 @@ import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,15 +42,9 @@ public class SysUserController {
     private final UserGroupLinkService userGroupLinkService;
     private final UserRoleLinkService userRoleLinkService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "用户列表查询", description = "通过主键查询用户列表")
-    public Response<SysUserVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysUserVO sysUserVo = sysUserService.listById(id);
-        return HttpResult.ok(sysUserVo);
-    }
-
     @GetMapping("/list")
     @Operation(summary = "用户列表查询", description = "通过条件查询用户列表）")
+    @PreAuthorize("hasAuthority('system:user:list')")
     public Response<List<SysUserVO>> list(SysUserDTO sysUserDTO) {
         List<SysUserVO> sysUserVOList = sysUserService.queryList(sysUserDTO);
         return HttpResult.ok(sysUserVOList);
@@ -58,6 +52,7 @@ public class SysUserController {
 
     @GetMapping("/listPage")
     @Operation(summary = "用户列表查询", description = "通过条件查询用户列表（分页）")
+    @PreAuthorize("hasAuthority('system:user:list')")
     public Response<TablePage<SysUserVO>> listPage(SysUserDTO sysUserDTO, PageQuery pageQuery) {
         TablePage<SysUserVO> tablePage = sysUserService.listPage(sysUserDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -66,6 +61,7 @@ public class SysUserController {
 
     @GetMapping("listUserLinkByRoleId/{roleId}")
     @Operation(summary = "用户列表查询", description = "通过角色 ID 查询用户列表（分页）")
+    @PreAuthorize("hasAuthority('system:user:query')")
     public Response<TablePage<UserLinkVO>> listUserLinkByRoleId(@PathVariable String roleId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
         TablePage<UserLinkVO> userLinkVOList = userRoleLinkService.listUserLinkByRoleId(roleId, userLinkInfoDTO, pageQuery);
         return HttpResult.ok(userLinkVOList);
@@ -73,6 +69,7 @@ public class SysUserController {
 
     @GetMapping("listUserLinkByGroupId/{userGroupId}")
     @Operation(summary = "用户列表查询", description = "通过用户组 ID 查询用户列表（分页）")
+    @PreAuthorize("hasAuthority('system:user:query')")
     public Response<TablePage<UserLinkVO>> listUserLinkByGroupId(@PathVariable String userGroupId, UserLinkInfoDTO userLinkInfoDTO, PageQuery pageQuery) {
         TablePage<UserLinkVO> tablePage = userGroupLinkService.listUserLinkByGroupId(userGroupId, userLinkInfoDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -80,6 +77,7 @@ public class SysUserController {
 
     @GetMapping("/listWithDisabledByGroupId/{userGroupId}")
     @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了用户组，则 disabled 属性为 true")
+    @PreAuthorize("hasAuthority('system:user:query')")
     public Response<List<UserBindSelectVO>> listWithDisabledByGroupId(@PathVariable String userGroupId) {
         List<UserBindSelectVO> userBindSelectVOList = userGroupLinkService.listWithDisabledByGroupId(userGroupId);
         return HttpResult.ok(userBindSelectVOList);
@@ -87,6 +85,7 @@ public class SysUserController {
 
     @GetMapping("/listWithDisabledByRoleId/{roleId}")
     @Operation(summary = "用户列表查询", description = "下拉查询用户列表，如果用户绑定了角色，则 disabled 属性为 true")
+    @PreAuthorize("hasAuthority('system:user:query')")
     public Response<List<UserBindSelectVO>> listWithDisabledByRoleId(@PathVariable String roleId) {
         List<UserBindSelectVO> userBindSelectVOList = userRoleLinkService.listWithDisabledByRoleId(roleId);
         return HttpResult.ok(userBindSelectVOList);
@@ -94,6 +93,7 @@ public class SysUserController {
 
     @PostMapping("/addUserGroupsToUser")
     @Operation(summary = "添加用户组到用户", description = "添加用户组到用户（多个用户组）")
+    @PreAuthorize("hasAuthority('system:user:add')")
     public Response<Boolean> addUserGroupsToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkUserGroupDTO userLinkUserGroupDTO) {
         if (userGroupLinkService.checkUserExistUserGroups(userLinkUserGroupDTO)) {
             return HttpResult.failMessage("添加用户到用户组失败，用户已存在于用户组中");
@@ -104,6 +104,7 @@ public class SysUserController {
 
     @PostMapping("/addRolesToUser")
     @Operation(summary = "添加角色到用户", description = "添加角色到用户（多个角色）")
+    @PreAuthorize("hasAuthority('system:user:add')")
     public Response<Boolean> addRolesToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
         if (userRoleLinkService.checkUserExistRoles(userLinkRoleDTO)) {
             return HttpResult.failMessage("添加用户到角色失败，用户已存在于角色中");
@@ -114,6 +115,7 @@ public class SysUserController {
 
     @PostMapping
     @Operation(summary = "用户列表新增", description = "新增用户列表")
+    @PreAuthorize("hasAuthority('system:user:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
             return HttpResult.failMessage("新增用户「" + sysUserDTO.getUsername() + "」失败，登录账号已存在");
@@ -130,6 +132,7 @@ public class SysUserController {
 
     @PutMapping
     @Operation(summary = "用户列表修改", description = "修改用户列表")
+    @PreAuthorize("hasAuthority('system:user:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
             return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，登录账号已存在");
@@ -146,6 +149,7 @@ public class SysUserController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "用户列表删除", description = "通过主键批量删除用户列表")
+    @PreAuthorize("hasAuthority('system:user:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> userIds) {
         LoginUser loginUser = UacHelper.getLoginUser();
         if (Objects.nonNull(loginUser) && userIds.contains(loginUser.getUserId())) {

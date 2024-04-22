@@ -25,14 +25,6 @@ public interface SysTenantService extends IService<SysTenant> {
     SysTenant queryByTenantId(String tenantId);
 
     /**
-     * 根据主键查询租户信息
-     *
-     * @param id 主键
-     * @return 租户信息
-     */
-    SysTenantVO listById(Long id);
-
-    /**
      * 通过条件查询租户列表
      *
      * @param sysTenantDTO 查询条件

@@ -19,14 +19,6 @@ import java.util.List;
 public interface SysDictDataService extends IService<SysDictData> {
 
     /**
-     * 根据主键查询字典数据信息
-     *
-     * @param id 主键
-     * @return 字典数据信息
-     */
-    SysDictDataVO listById(Long id);
-
-    /**
      * 通过条件查询字典数据列表
      *
      * @param sysDictDataDTO 查询条件

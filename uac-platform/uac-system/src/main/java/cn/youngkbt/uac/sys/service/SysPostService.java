@@ -18,14 +18,6 @@ import java.util.List;
 public interface SysPostService extends IService<SysPost> {
 
     /**
-     * 根据主键查询岗位信息
-     *
-     * @param id 主键
-     * @return 岗位信息
-     */
-    SysPostVO listById(Long id);
-
-    /**
      * 通过条件查询岗位列表
      *
      * @param sysPostDTO 岗位列表查询参数

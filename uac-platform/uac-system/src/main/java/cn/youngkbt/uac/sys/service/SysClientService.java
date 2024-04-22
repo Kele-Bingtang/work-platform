@@ -27,14 +27,6 @@ public interface SysClientService extends IService<SysClient> {
     SysClient checkClientIdThenGet(String clientId);
 
     /**
-     * 根据主键查询客户端信息
-     *
-     * @param id 主键
-     * @return 客户端信息
-     */
-    SysClientVO listById(Long id);
-
-    /**
      * 通过条件查询客户端信息
      *
      * @param sysClientDTO 客户端信息

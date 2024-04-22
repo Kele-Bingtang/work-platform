@@ -33,13 +33,6 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     private final SysDictDataService sysDictDataService;
 
     @Override
-    public SysDictTypeVO listById(Long id) {
-        SysDictType sysDictType = baseMapper.selectById(id);
-        Assert.nonNull(sysDictType, "字典不存在");
-        return MapstructUtil.convert(sysDictType, SysDictTypeVO.class);
-    }
-
-    @Override
     public List<SysDictTypeVO> queryList(SysDictTypeDTO sysDictTypeDTO) {
         LambdaQueryWrapper<SysDictType> wrapper = buildQueryWrapper(sysDictTypeDTO);
         List<SysDictType> sysDictTypeList = baseMapper.selectList(wrapper);

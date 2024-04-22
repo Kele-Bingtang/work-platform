@@ -36,13 +36,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private final UserGroupRoleLinkService userGroupRoleLinkService;
 
     @Override
-    public SysRoleVO listById(Long id) {
-        SysRole sysRole = baseMapper.selectById(id);
-        Assert.nonNull(sysRole, "角色不存在");
-        return MapstructUtil.convert(sysRole, SysRoleVO.class);
-    }
-
-    @Override
     public List<SysRoleVO> queryList(SysRoleDTO sysRoleDTO) {
         LambdaQueryWrapper<SysRole> wrapper = buildQueryWrapper(sysRoleDTO);
         List<SysRole> sysRoleList = baseMapper.selectList(wrapper);

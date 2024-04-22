@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,15 +36,9 @@ public class SysAppController {
     private final SysMenuService sysMenuService;
     private final SysDictTypeService sysDictTypeService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "应用列表查询", description = "通过主键查询应用")
-    public Response<SysAppVO> listById(@NotNull(message = "主键不能为空") @PathVariable Long id) {
-        SysAppVO sysClientVo = sysAppService.listById(id);
-        return HttpResult.ok(sysClientVo);
-    }
-
     @GetMapping("/list")
     @Operation(summary = "应用列表查询", description = "通过应用条件查询应用列表")
+    @PreAuthorize("hasAuthority('system:app:list')")
     public Response<List<SysAppVO>> list(SysAppDTO sysAppDTO) {
         List<SysAppVO> sysAppVOList = sysAppService.queryList(sysAppDTO);
         return HttpResult.ok(sysAppVOList);
@@ -51,6 +46,7 @@ public class SysAppController {
 
     @GetMapping("/listPage")
     @Operation(summary = "应用列表查询", description = "通过应用条件查询应用列表（支持分页）")
+    @PreAuthorize("hasAuthority('system:app:list')")
     public Response<TablePage<SysAppVO>> listPage(SysAppDTO sysAppDTO, PageQuery pageQuery) {
         TablePage<SysAppVO> tablePage = sysAppService.listPage(sysAppDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -58,6 +54,7 @@ public class SysAppController {
 
     @GetMapping("/list/{clientId}")
     @Operation(summary = "应用列表查询", description = "通过客户端 ID 查询 App 清单列表")
+    @PreAuthorize("hasAuthority('system:app:list')")
     public Response<TablePage<SysAppVO>> listByClientId(@NotNull(message = "客户端 ID 不能为空") @PathVariable String clientId, PageQuery pageQuery) {
         if (Objects.isNull(sysClientService.checkClientIdThenGet(clientId))) {
             return HttpResult.errorMessage("客户端 ID 不存在");
@@ -68,6 +65,7 @@ public class SysAppController {
     }
 
     @GetMapping("/treeList")
+    @PreAuthorize("hasAuthority('system:app:query')")
     @Operation(summary = "应用树形列表查询", description = "查询应用树形列表")
     public Response<List<AppTreeVO>> listTreeList() {
         List<AppTreeVO> appTreeVOList = sysAppService.listTreeList();
@@ -76,6 +74,7 @@ public class SysAppController {
 
     @PostMapping
     @Operation(summary = "应用新增", description = "新增应用")
+    @PreAuthorize("hasAuthority('system:app:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysAppDTO sysAppDTO) {
         if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
             return HttpResult.failMessage("新增应用「" + sysAppDTO.getAppName() + "」失败，应用编码「" + sysAppDTO.getAppCode() + "」已存在");
@@ -86,6 +85,7 @@ public class SysAppController {
 
     @PutMapping
     @Operation(summary = "应用修改", description = "修改应用")
+    @PreAuthorize("hasAuthority('system:app:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysAppDTO sysAppDTO) {
         if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
             return HttpResult.failMessage("修改应用「" + sysAppDTO.getAppName() + "」失败，应用编码「" + sysAppDTO.getAppCode() + "」已存在");
@@ -95,6 +95,7 @@ public class SysAppController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "应用删除", description = "通过主键批量删除应用")
+    @PreAuthorize("hasAuthority('system:app:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> appIds) {
         if (sysRoleService.checkAppExitRole(appIds)) {
             return HttpResult.failMessage("存在角色绑定，不允许删除");

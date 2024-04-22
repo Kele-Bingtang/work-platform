@@ -2,7 +2,6 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.youngkbt.core.constants.ColumnConstant;
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -54,13 +53,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public SysTenant queryByTenantId(String tenantId) {
         return baseMapper.selectOne(Wrappers.<SysTenant>lambdaQuery().eq(SysTenant::getTenantId, tenantId));
-    }
-
-    @Override
-    public SysTenantVO listById(Long id) {
-        SysTenant sysTenant = baseMapper.selectById(id);
-        Assert.nonNull(sysTenant, "租户不存在");
-        return MapstructUtil.convert(sysTenant, SysTenantVO.class);
     }
 
     @Override

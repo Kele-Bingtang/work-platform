@@ -18,14 +18,6 @@ import java.util.List;
 public interface SysMenuService extends IService<SysMenu> {
 
     /**
-     * 根据主键查询菜单信息
-     *
-     * @param id 主键
-     * @return 菜单信息
-     */
-    SysMenuVO listById(Long id);
-
-    /**
      * 通过条件查询菜单列表
      *
      * @param sysMenuDTO 查询条件
@@ -57,6 +49,15 @@ public interface SysMenuService extends IService<SysMenu> {
      * @return 菜单树形表格列表
      */
     List<SysMenuVO> listMenuTreeTable(SysMenuDTO sysMenuDTO);
+    
+    /**
+     * 获取用户的菜单权限
+     *
+     * @param appId 应用 ID
+     * @param userId 用户 ID
+     * @return 权限列表
+     */
+    List<SysMenuVO> listMenuListByUserId(String appId,  String userId);
 
     /**
      * 检查菜单名称是否唯一

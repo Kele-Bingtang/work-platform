@@ -41,13 +41,6 @@ import java.util.Objects;
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
     @Override
-    public SysDeptVO listById(Long id) {
-        SysDept sysDept = baseMapper.selectById(id);
-        Assert.nonNull(sysDept, "部门不存在");
-        return MapstructUtil.convert(sysDept, SysDeptVO.class);
-    }
-
-    @Override
     public List<SysDeptVO> queryList(SysDeptDTO sysDeptDTO) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);

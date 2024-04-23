@@ -19,7 +19,7 @@ export namespace DictData {
   }
 }
 
-const baseUri = "/system/dictData";
+const baseUri = "/system/dict/data";
 
 export const list = (params: Partial<DictData.DictDataInfo>) => {
   return http.get<http.Response<DictData.DictDataInfo[]>>(`${baseUri}/list`, params);

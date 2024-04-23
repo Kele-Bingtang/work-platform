@@ -1,6 +1,6 @@
 import { listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
 import type { FormOptionsProps } from "@work/components";
-import { ElInput, ElOption, ElRadio, ElRadioGroup, ElSelect, type FormRules } from "element-plus";
+import { ElInput, ElOption, ElSelect, type FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 
 const rules = reactive<FormRules>({
@@ -9,6 +9,12 @@ const rules = reactive<FormRules>({
   menuName: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   path: [{ required: true, message: "请输入菜单/路由地址", trigger: "blur" }],
 });
+
+export const menuTypeEnum = [
+  { value: "M", label: "目录" },
+  { value: "C", label: "菜单" },
+  { value: "F", label: "按钮" },
+];
 
 export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: ComputedRef<string>) => {
   const options: FormOptionsProps<Menu.MenuInfo> = {
@@ -39,11 +45,7 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
         formItem: { label: "菜单类型", prop: "menuType", br: true },
         attrs: {
           el: "el-radio-group",
-          enum: [
-            { value: "M", label: "目录" },
-            { value: "C", label: "菜单" },
-            { value: "F", label: "按钮" },
-          ],
+          enum: menuTypeEnum,
           defaultValue: "C",
         },
       },
@@ -55,29 +57,30 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
             placeholder: "请选择 上级",
             filterable: true,
             valueKey: "id",
+            checkStrictly: true,
           },
-          enum: listMenuTreeSelectByApp,
+          enum: () => listMenuTreeSelectByApp({ appId: defaultValue.value }),
           isHidden: form => form.parentId === "0",
         },
       },
       {
         formItem: { label: form => `${getLabel(form)}编码`, prop: "menuCode" },
-        attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 编码" } },
+        attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 编码(如 UserManage)" } },
       },
       {
         formItem: { label: form => `${getLabel(form)}名称`, prop: "menuName" },
-        attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 名称" } },
+        attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 名称（如用户管理）" } },
       },
       {
         formItem: { label: "路由地址", prop: "path", br: true },
         attrs: {
-          isHidden: (form: any) => form.menuType !== "C",
+          isDestroy: (form: any) => form.menuType === "F",
           render: ({ scope }) => {
             return (
               <>
                 <ElInput
                   vModel={scope.form.path}
-                  placeholder="请输入 路由地址"
+                  placeholder="请输入 路由地址(如 user-manage)"
                   v-slots={{
                     prepend: () => {
                       return (
@@ -96,8 +99,12 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
         },
       },
       {
-        formItem: { label: form => `${getLabel(form)}图标`, prop: "icon" },
-        attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 图标" } },
+        formItem: { label: "权限标识", prop: "permission", br: true },
+        attrs: {
+          el: "el-input",
+          props: { clearable: true, placeholder: "请输入 权限标识（system:user:list）" },
+          isHidden: form => form.menuType === "M",
+        },
       },
       {
         formItem: { label: "组件路径", prop: "component" },
@@ -106,6 +113,10 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
           props: { clearable: true, placeholder: "请输入 组件路径" },
           isHidden: form => form.menuType !== "C",
         },
+      },
+      {
+        formItem: { label: form => `${getLabel(form)}图标`, prop: "icon" },
+        attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 图标" } },
       },
       {
         formItem: { label: "路由参数", prop: "param" },

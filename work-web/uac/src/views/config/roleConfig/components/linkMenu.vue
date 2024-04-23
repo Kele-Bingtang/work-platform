@@ -71,7 +71,7 @@ const options: FormOptionsProps = {
           if (!props.appId) return [];
           return selectedMenuIds.value;
         },
-        enum: listMenuTreeSelectByApp,
+        enum: () => listMenuTreeSelectByApp({ appId: props.appId }),
         props: { nodeKey: "value", search: true, checkbox: true },
       },
     },

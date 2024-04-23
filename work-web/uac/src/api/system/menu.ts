@@ -62,11 +62,11 @@ export const getMenuList = () => {
 
 const baseUri = "/system/menu";
 
-export const listMenuTreeTableByApp = (params: http.Page<{ appId: number }>) => {
+export const listMenuTreeTableByApp = (params: { appId: string }) => {
   return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/treeTable`, params);
 };
 
-export const listMenuTreeSelectByApp = (params: http.Page<{ appId: number }>) => {
+export const listMenuTreeSelectByApp = (params: { appId: string }) => {
   return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/treeSelect`, params);
 };
 

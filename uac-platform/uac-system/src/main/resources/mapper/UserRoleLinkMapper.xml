@@ -29,28 +29,28 @@
     <select id="listUserLinkByRoleId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserLinkVO">
         select tsu.username, tsu.nickname, turl.id as link_id, turl.valid_from, turl.expire_on, turl.create_time, turl.app_id
         from t_sys_user tsu
-        left join t_user_role_link turl on tsu.user_id = turl.user_id and turl.is_deleted = 0
+        join t_user_role_link turl on tsu.user_id = turl.user_id and turl.is_deleted = 0
         ${ew.getCustomSqlSegment}
     </select>
 
     <select id="listRoleLinkByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO">
         select tsr.role_id, tsr.role_code, tsr.role_name, turl.id as link_id, turl.valid_from, turl.expire_on, turl.create_time, turl.app_id
         from t_sys_role tsr
-        left join t_user_role_link turl on tsr.role_id = turl.role_id and turl.is_deleted = 0
+        join t_user_role_link turl on tsr.role_id = turl.role_id and turl.is_deleted = 0
         ${ew.getCustomSqlSegment}
     </select>
 
     <select id="selectWithDisabledByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO">
         select tsr.role_id, tsr.role_code, tsr.role_name, case when turl.user_id is not null then 1 else 0 end as disabled
         from t_sys_role tsr
-        left join t_user_role_link turl on tsr.role_id = turl.role_id and turl.user_id = #{userId} and turl.is_deleted = 0
+        join t_user_role_link turl on tsr.role_id = turl.role_id and turl.user_id = #{userId} and turl.is_deleted = 0
         where tsr.app_id = #{appId} and tsr.is_deleted = 0
     </select>
     
     <select id="listWithDisabledByRoleId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO">
         select tsu.user_id, tsu.username, tsu.nickname, case when turl.role_id is not null then 1 else 0 end as disabled
         from t_sys_user tsu
-        left join t_user_role_link turl on tsu.user_id = turl.user_id and turl.role_id = #{roleId} and turl.is_deleted = 0
+        join t_user_role_link turl on tsu.user_id = turl.user_id and turl.role_id = #{roleId} and turl.is_deleted = 0
         where tsu.is_deleted = 0
     </select>
 </mapper>

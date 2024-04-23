@@ -25,13 +25,12 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/system/dictData")
+@RequestMapping("/system/dict/data")
 public class SysDictDataController {
     private final SysDictDataService sysDictDataService;
 
     @GetMapping("/list")
     @Operation(summary = "字典数据列表查询", description = "通过条件查询字典数据列表")
-    @PreAuthorize("hasAuthority('system:dictData:list')")
     public Response<List<SysDictDataVO>> list(SysDictDataDTO sysDictDataDTO) {
         List<SysDictDataVO> sysDictDataVOList = sysDictDataService.queryList(sysDictDataDTO);
         return HttpResult.ok(sysDictDataVOList);
@@ -39,7 +38,7 @@ public class SysDictDataController {
 
     @GetMapping("/listPage")
     @Operation(summary = "字典数据列表查询", description = "通过条件查询字典数据列表（支持分页）")
-    @PreAuthorize("hasAuthority('system:dictData:list')")
+    @PreAuthorize("hasAuthority('system:dict:list')")
     public Response<TablePage<SysDictDataVO>> listPage(SysDictDataDTO sysDictDataDTO, PageQuery pageQuery) {
         TablePage<SysDictDataVO> tablePage = sysDictDataService.listPage(sysDictDataDTO, pageQuery);
         return HttpResult.ok(tablePage);
@@ -55,7 +54,7 @@ public class SysDictDataController {
 
     @GetMapping("/treeTable")
     @Operation(summary = "字典数据树形表格查询", description = "通过条件查询字典数据树形表格")
-    @PreAuthorize("hasAuthority('system:dictData:list')")
+    @PreAuthorize("hasAuthority('system:dict:list')")
     public Response<List<SysDictDataVO>> listDataTreeTable(SysDictDataDTO sysDictDataDTO) {
         List<SysDictDataVO> dataTreeTable = sysDictDataService.listDataTreeTable(sysDictDataDTO);
         return HttpResult.ok(dataTreeTable);
@@ -63,7 +62,7 @@ public class SysDictDataController {
 
     @PostMapping
     @Operation(summary = "字典数据新增", description = "新增字典数据")
-    @PreAuthorize("hasAuthority('system:dictData:add')")
+    @PreAuthorize("hasAuthority('system:dict:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
         if (sysDictDataService.checkDictDataValueUnique(sysDictDataDTO)) {
             return HttpResult.failMessage("新增字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，字典数据值「" + sysDictDataDTO.getDictValue() + "」已存在");
@@ -74,7 +73,7 @@ public class SysDictDataController {
 
     @PutMapping
     @Operation(summary = "字典数据修改", description = "修改字典数据")
-    @PreAuthorize("hasAuthority('system:dictData:edit')")
+    @PreAuthorize("hasAuthority('system:dict:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
         if (sysDictDataDTO.getParentId().equals(sysDictDataDTO.getDataId())) {
             return HttpResult.failMessage("修改字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，上级字典数据不能是自己");
@@ -88,7 +87,7 @@ public class SysDictDataController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "字典数据删除", description = "通过主键批量删除字典数据")
-    @PreAuthorize("hasAuthority('system:dictData:remove')")
+    @PreAuthorize("hasAuthority('system:dict:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return HttpResult.ok(sysDictDataService.removeBatch(List.of(ids)));
     }

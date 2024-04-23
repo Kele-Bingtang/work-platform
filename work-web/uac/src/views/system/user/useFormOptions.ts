@@ -74,7 +74,7 @@ export const useFormOptions = (defaultValue: ComputedRef<string>) => {
           el: "el-tree-select",
           defaultValue: defaultValue,
           props: { clearable: true, defaultExpandAll: true, placeholder: "请选择 部门" },
-          enum: listDeptTreeList,
+          enum: () => listDeptTreeList(),
         },
       },
       {

@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
         log.error("媒体类型异常：{}", e.getMessage());
         return HttpResult.error(ResponseStatusEnum.MEDIA_TYPE_NOT_SUPPORTED, e.getMessage());
     }
-
+    
     @ExceptionHandler(ServiceException.class)
     public Response<Object> handleError(ServiceException e) {
         log.error("业务异常：{}", e.getMessage());

@@ -59,6 +59,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(SysMenuVO::getPermission)
                 .filter(Objects::nonNull)
                 .map(SimpleGrantedAuthority::new)
+                .distinct()
                 .toList();
         
         SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(), authorities);

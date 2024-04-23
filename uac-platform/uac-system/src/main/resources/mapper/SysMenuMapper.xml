@@ -50,14 +50,14 @@
             -- 查询用户和角色关联的角色 ID
             SELECT turl.role_id FROM t_user_role_link turl
             JOIN t_sys_role tsr ON turl.role_id = tsr.role_id AND tsr.is_deleted = 0 AND tsr.status = 1
-            WHERE turl.is_deleted = 0 AND turl.status = 1 AND turl.user_id = #{userId}}
+            WHERE turl.is_deleted = 0 AND turl.status = 1 AND turl.user_id = #{userId}
             UNION
             -- 查询用户所在用户组关联角色的角色 ID
             SELECT tugrl.role_id FROM t_user_group_role_link tugrl
             JOIN t_user_group_link tugl ON tugrl.user_group_id = tugl.user_group_id AND tugrl.is_deleted = 0 AND tugrl.status = 1 AND tugl.is_deleted = 0 AND tugl.status = 1
             JOIN t_sys_role tsr ON tugrl.role_id = tsr.role_id AND tsr.is_deleted = 0 AND tsr.status = 1
             JOIN t_sys_user_group tsug ON tugl.user_group_id = tsug.group_id AND tsug.is_deleted = 0 AND tsug.status = 1
-            WHERE tugl.user_id = #{userId}}
+            WHERE tugl.user_id = #{userId}
             UNION
             -- 查询用户所在部门关联角色的角色 ID
             SELECT trdl.role_id FROM t_role_dept_link trdl

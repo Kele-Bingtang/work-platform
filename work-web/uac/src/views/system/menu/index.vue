@@ -34,7 +34,7 @@
             link
             size="small"
             :icon="Plus"
-            @click="proTableRef?.dialogOperateRef?.handleAdd({ parentId: row.id })"
+            @click="proTableRef?.dialogOperateRef?.handleAdd({ parentId: row.menuId })"
           >
             新增
           </el-button>
@@ -55,7 +55,7 @@ import {
   type ProTableInstance,
   type TreeFilterInstance,
 } from "@work/components";
-import { useFormOptions } from "./useFormOptions";
+import { menuTypeEnum, useFormOptions } from "./useFormOptions";
 import { useLayoutStore } from "@/stores";
 import { Plus } from "@element-plus/icons-vue";
 import { useChange } from "@/hooks/useChange";
@@ -80,9 +80,11 @@ const columns: TableColumnProps<Menu.MenuInfo>[] = [
   { prop: "icon", label: "图标", width: 100 },
   { prop: "orderNum", label: "排序", width: 80 },
   { prop: "component", label: "组件路径", width: 200 },
+  { prop: "permission", label: "权限标识", width: 180 },
   {
     prop: "status",
     label: "状态",
+    width: 80,
     fieldNames: { value: "dictValue", label: "dictLabel" },
     enum: () => useLayoutStore().getDictData("sys_normal_status"),
     search: { el: "el-select" },
@@ -104,7 +106,8 @@ const columns: TableColumnProps<Menu.MenuInfo>[] = [
       );
     },
   },
-  { prop: "intro", label: "介绍", width: 200 },
+  { prop: "menuType", label: "类型", width: 80, enum: menuTypeEnum },
+  { prop: "intro", label: "介绍", width: 180 },
   { prop: "createTime", label: "创建时间", width: 160 },
   { prop: "operation", label: "操作", width: 200, fixed: "right" },
 ];

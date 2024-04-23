@@ -11,7 +11,7 @@ export namespace DictType {
   }
 }
 
-const baseUri = "/system/dictType";
+const baseUri = "/system/dict/type";
 
 export const list = (params: Partial<DictType.DictTypeInfo>) => {
   return http.get<http.Response<DictType.DictTypeInfo[]>>(`${baseUri}/list`, params);

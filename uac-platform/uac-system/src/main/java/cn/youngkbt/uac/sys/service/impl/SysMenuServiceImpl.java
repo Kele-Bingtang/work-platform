@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.youngkbt.core.constants.ColumnConstant;
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -57,7 +56,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     /**
-     * 构建前端需要的路由菜单
+     * 构建前端需要的菜单树形结构
      */
     @Override
     public List<Tree<String>> listMenuTreeSelect(SysMenuDTO sysMenuDTO) {

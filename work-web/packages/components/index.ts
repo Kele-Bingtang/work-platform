@@ -14,3 +14,4 @@ export * from "./userSelect";
 export * from "./transferSelect";
 export * from "./tinymce";
 export * from "./basicDialog";
+export * from "./point";

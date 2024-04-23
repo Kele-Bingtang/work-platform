@@ -233,27 +233,27 @@ export const rolesRoutes: RouterConfigRaw[] = [
     },
     children: [
       {
-        path: "user-link",
-        name: "UserLink",
-        component: "/link/userLink/index",
+        path: "user-config",
+        name: "UserConfig",
+        component: "/config/userConfig/index",
         meta: {
           title: "用户配置",
           icon: HomeFilled,
         },
       },
       {
-        path: "user-group",
-        name: "UserGroup",
-        component: "/link/userGroupLink/index",
+        path: "user-group-config",
+        name: "UserGroupConfig",
+        component: "/config/userGroupConfig/index",
         meta: {
           title: "用户组配置",
           icon: HomeFilled,
         },
       },
       {
-        path: "role-link",
-        name: "RoleLink",
-        component: "/link/roleLink/index",
+        path: "role-config",
+        name: "RoleConfig",
+        component: "/config/roleConfig/index",
         meta: {
           title: "角色配置",
           icon: HomeFilled,

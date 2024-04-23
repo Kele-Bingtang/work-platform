@@ -48,7 +48,7 @@ public class SysClient extends BaseDO {
     private Long activeTimeout;
 
     /**
-     * token 有效期，超出则 token 失效，默认 30 天（单位秒）
+     * token 有效期，超出则 token 失效，默认 12 小时（单位秒）
      */
     private Long timeout;
 }

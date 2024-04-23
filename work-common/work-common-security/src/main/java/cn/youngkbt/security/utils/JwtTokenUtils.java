@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -163,15 +164,15 @@ public class JwtTokenUtils {
                 return null;
             }
             // 获取用户的权限列表
-            List<GrantedAuthority> authors = (List<GrantedAuthority>) claims.get(AUTHORITIES);
-            // List<GrantedAuthority> authorities = new ArrayList<>();
-            // // 如果用户权限是集合，则存入新的集合里
-            // if (authors instanceof List authorList) {
-            //     for (Object object : authorList) {
-            //         authorities.add(new SimpleGrantedAuthority((String) ((Map) object).get("authority")));
-            //     }
-            // }
-            authentication = new JwtAuthenticationToken(subject, new WebAuthenticationDetailsSource().buildDetails(ServletUtil.getRequest()), authors, token, null);
+            Object authors = claims.get(AUTHORITIES);
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            // 如果用户权限是集合，则存入新的集合里
+            if (authors instanceof List authorList) {
+                for (Object object : authorList) {
+                    authorities.add(new SimpleGrantedAuthority((String) ((Map) object).get("authority")));
+                }
+            }
+            authentication = new JwtAuthenticationToken(subject, new WebAuthenticationDetailsSource().buildDetails(ServletUtil.getRequest()), authorities, token, null);
         } else {
             // 如果上下文有用户登录过，则检查是否是当前用户
             if (validateToken(token, SecurityUtils.getUsername())) {

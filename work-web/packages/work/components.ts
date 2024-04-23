@@ -13,6 +13,7 @@ import { List } from "@work/components/list";
 import { UserSelect } from "@work/components/userSelect";
 import { TransferSelect } from "@work/components/transferSelect";
 import { Tinymce } from "@work/components/tinymce";
+import { Point } from "@work/components/point";
 
 export default [
   Icon,
@@ -31,4 +32,5 @@ export default [
   UserSelect,
   TransferSelect,
   Tinymce,
+  Point,
 ];

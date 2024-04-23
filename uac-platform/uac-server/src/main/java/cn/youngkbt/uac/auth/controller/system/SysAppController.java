@@ -65,8 +65,8 @@ public class SysAppController {
     }
 
     @GetMapping("/treeList")
-    @PreAuthorize("hasAuthority('system:app:query')")
     @Operation(summary = "应用树形列表查询", description = "查询应用树形列表")
+    @PreAuthorize("hasAuthority('system:app:query')")
     public Response<List<AppTreeVO>> listTreeList() {
         List<AppTreeVO> appTreeVOList = sysAppService.listTreeList();
         return HttpResult.ok(appTreeVOList);

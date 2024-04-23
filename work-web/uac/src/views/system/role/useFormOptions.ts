@@ -55,7 +55,7 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
             const res = await listMenuIdsByRoleId(form.appId, form.roleId);
             return res.data || [];
           },
-          enum: listMenuTreeSelectByApp,
+          enum: () => listMenuTreeSelectByApp({ appId: defaultValue.value }),
           props: { nodeKey: "value", search: true, checkbox: true },
         },
       },

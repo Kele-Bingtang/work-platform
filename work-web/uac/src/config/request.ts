@@ -86,7 +86,7 @@ class RequestHttp {
         else axiosCanceler.removePendingRequest(response.config);
         const userStore = useUserStore();
         //  登陆失效（code == 401）
-        if (data.code && data.code > 400 && data.code < 404) {
+        if (data.code && data.code === ResultEnum.LOGIN) {
           message.error(data.message);
           userStore.tryLogout();
           router.replace(LOGIN_URL);

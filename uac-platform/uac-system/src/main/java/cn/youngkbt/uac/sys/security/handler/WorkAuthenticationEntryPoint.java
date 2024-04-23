@@ -14,7 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 /**
  * @author Kele-Bingtang
  * @date 2023/11/27 23:42
- * @note 匿名访问时，返回 401（捕获认证过程中出现的异常）
+ * @note 匿名访问时，返回错误提示（捕获认证过程中出现的异常）
  */
 public class WorkAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override

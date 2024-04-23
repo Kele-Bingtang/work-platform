@@ -247,6 +247,6 @@ watch(
 }
 
 .tox {
-  z-index: 3000 !important;
+  z-index: 2000 !important;
 }
 </style>

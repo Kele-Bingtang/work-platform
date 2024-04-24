@@ -40,15 +40,15 @@ export const listClientGrantTypeList = (clientId: string) => {
 };
 
 export const addOne = (data: Client.ClientInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 export const editOne = (data: RequiredKeyPartialOther<Client.ClientInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 export const deleteOne = (data: Client.ClientInfo) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
     {
@@ -58,7 +58,7 @@ export const deleteOne = (data: Client.ClientInfo) => {
 };
 
 export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Client.ClientInfo[] }) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
     {

@@ -1,7 +1,11 @@
 package cn.youngkbt.uac.sys.service;
 
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkDeptDTO;
 import cn.youngkbt.uac.sys.model.po.RoleDeptLink;
+import cn.youngkbt.uac.sys.model.po.SysDept;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,7 +14,20 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RoleDeptLinkService extends IService<RoleDeptLink> {
 
-    boolean checkDeptExistRole(String deptId);
+    /**
+     * 根据角色 ID 获取部门列表
+     * @param roleId 角色 ID
+     * @param appId 应用 ID
+     * @return 部门列表
+     */
+    List<SysDept> listDeptListByRoleId(String roleId, String appId);
 
-    boolean checkRoleExistDept(String roleId);
+    /**
+     * 添加部门到角色
+     *
+     * @param roleLinkDeptDTO 部门关联角色信息
+     * @param removeLink 是否移除角色关联的部门
+     * @return 是否添加成功部门关联角色信息
+     */
+    Boolean addDeptsToRole(RoleLinkDeptDTO roleLinkDeptDTO, boolean removeLink);
 }

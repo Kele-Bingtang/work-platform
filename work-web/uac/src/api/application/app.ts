@@ -33,15 +33,15 @@ export const listPage = (params: Partial<App.AppInfo>) => {
 };
 
 export const addOne = (data: App.AppInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 export const editOne = (data: RequiredKeyPartialOther<App.AppInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 export const deleteOne = (data: App.AppInfo) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
     {
@@ -51,7 +51,7 @@ export const deleteOne = (data: App.AppInfo) => {
 };
 
 export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: App.AppInfo[] }) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
     {

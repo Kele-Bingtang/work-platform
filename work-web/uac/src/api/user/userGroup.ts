@@ -102,14 +102,14 @@ export const listWithDisabledByRoleId = (params: { roleId: string }) => {
 };
 
 export const addOne = (data: UserGroup.UserGroupInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 /**
  * 添加角色到用户组（多个角色）
  */
 export const addRolesToUserGroup = (data: UserGroup.UserGroupLinkRole) => {
-  return http.post<http.Response<string>>(`${baseUri}/addRolesToUserGroup`, data);
+  return http.post<http.Response<boolean>>(`${baseUri}/addRolesToUserGroup`, data);
 };
 
 /**
@@ -120,18 +120,18 @@ export const addUsersToGroup = (data: UserGroup.UserGroupLinkUser) => {
 };
 
 export const editOne = (data: RequiredKeyPartialOther<UserGroup.UserGroupInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 /**
  * 修改用户组和用户䣌关联信息
  */
 export const editUserGroupLinkInfo = (data: RequiredKeyPartialOther<UserGroup.UserGroupLinkInfo, "id">) => {
-  return http.put<http.Response<string>>(`${baseUri}/updateLinkInfo`, data);
+  return http.put<http.Response<boolean>>(`${baseUri}/updateLinkInfo`, data);
 };
 
 export const deleteOne = (data: UserGroup.UserGroupInfo) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
     {
@@ -141,7 +141,7 @@ export const deleteOne = (data: UserGroup.UserGroupInfo) => {
 };
 
 export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: UserGroup.UserGroupInfo[] }) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
     {
@@ -154,5 +154,5 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
  * 将用户移出项目组
  */
 export const removeUserFromUserGroup = (ids: string[]) => {
-  return http.delete<http.Response<string>>(`${baseUri}/removeUserFromUserGroup/${ids.join(",")}`);
+  return http.delete<http.Response<boolean>>(`${baseUri}/removeUserFromUserGroup/${ids.join(",")}`);
 };

@@ -1,6 +1,5 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
@@ -8,6 +7,7 @@ import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.*;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.service.*;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -79,21 +79,23 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Transactional(rollbackFor = Exception.class)
     public boolean insertOne(SysRoleDTO sysRoleDTO) {
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
-        baseMapper.insert(sysRole);
-        
-        sysRoleDTO.setRoleId(sysRole.getRoleId());
-        return roleMenuLinkService.addMenusToRole(sysRoleDTO);
+        int result = baseMapper.insert(sysRole);
+        if (ListUtil.isNotEmpty(sysRoleDTO.getSelectedMenuIds())) {
+            sysRoleDTO.setRoleId(sysRole.getRoleId());
+            return roleMenuLinkService.addMenusToRole(sysRoleDTO, false);
+        }
+        return result > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateOne(SysRoleDTO sysRoleDTO) {
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
-        baseMapper.updateById(sysRole);
-        // 删除角色与菜单关联
-        roleMenuLinkService.remove(Wrappers.<RoleMenuLink>lambdaQuery()
-                .eq(RoleMenuLink::getRoleId, sysRoleDTO.getRoleId()));
-        return roleMenuLinkService.addMenusToRole(sysRoleDTO);
+        int result = baseMapper.updateById(sysRole);
+        if (ListUtil.isNotEmpty(sysRoleDTO.getSelectedMenuIds())) {
+            return roleMenuLinkService.addMenusToRole(sysRoleDTO, true);
+        }
+        return result > 0;
     }
 
     @Override

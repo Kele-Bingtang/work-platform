@@ -130,4 +130,12 @@ public interface SysDeptService extends IService<SysDept> {
      */
     boolean removeOne(Long id);
 
+    /**
+     * 根据角色 ID 查询部门列表
+     *
+     * @param roleId 角色 ID
+     * @param appId  应用 ID
+     * @return 部门列表
+     */
+    List<Tree<String>> listDeptListByRoleId(String roleId, String appId);
 }

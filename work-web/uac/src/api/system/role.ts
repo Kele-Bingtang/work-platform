@@ -56,6 +56,13 @@ export namespace Role {
     appId: string; // 应用 ID
   }
 
+  // 添加部门到角色（多个部门）
+  export interface RoleLinkDept {
+    roleId: string; // 角色 ID
+    appId: string; // 应用 ID
+    selectedDeptIds: string[]; // 部门 ID
+  }
+
   // 角色穿梭框数据，如果 disabled 为 true，则禁选
   export interface RoleBindSelect {
     roleId: string; // 角色 ID
@@ -120,42 +127,56 @@ export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
  * 新增一个角色
  */
 export const addOne = (data: Role.RoleInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 /**
  * 添加角色到用户组（多个用户组）
  */
 export const addUserGroupsToRole = (data: Role.RoleLinkUserGroup) => {
-  return http.post<http.Response<string>>(`${baseUri}/addUserGroupsToRole`, data);
+  return http.post<http.Response<boolean>>(`${baseUri}/addUserGroupsToRole`, data);
 };
 
 /**
  * 添加用户到角色（多个用户）
  */
-export const addUsersToRole = (data: Role.RoleLinkUserGroup) => {
-  return http.post<http.Response<string>>(`${baseUri}/addUsersToRole`, data);
+export const addUsersToRole = (data: Role.RoleLinkUser) => {
+  return http.post<http.Response<boolean>>(`${baseUri}/addUsersToRole`, data);
+};
+
+/**
+ * 添加菜单到角色（多个菜单）
+ */
+export const addMenusToRole = (data: RequiredKeyPartialOther<Role.RoleInfo, "selectedMenuIds">) => {
+  return http.post<http.Response<boolean>>(`${baseUri}/addMenusToRole`, data);
+};
+
+/**
+ * 添加部门到角色（多个部门）
+ */
+export const addDeptsToRole = (data: Role.RoleLinkDept) => {
+  return http.post<http.Response<boolean>>(`${baseUri}/addDeptsToRole`, data);
 };
 
 /**
  * 修改一个角色
  */
 export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 /**
  * 修改用户和角色关联信息
  */
 export const editUserRoleLinkInfo = (data: RequiredKeyPartialOther<Role.RoleLinkInfo, "id">) => {
-  return http.put<http.Response<string>>(`${baseUri}/updateLinkInfo`, data);
+  return http.put<http.Response<boolean>>(`${baseUri}/updateLinkInfo`, data);
 };
 
 /**
  * 删除一个角色
  */
 export const deleteOne = (data: Role.RoleInfo) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
     {
@@ -168,7 +189,7 @@ export const deleteOne = (data: Role.RoleInfo) => {
  * 通过主键批量删除角色列表
  */
 export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Role.RoleLinkInfo[] }) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
     {
@@ -181,12 +202,12 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
  * 将用户移出角色
  */
 export const removeUserFromRole = (ids: string[]) => {
-  return http.delete<http.Response<string>>(`${baseUri}/removeUserFromRole/${ids.join(",")}`);
+  return http.delete<http.Response<boolean>>(`${baseUri}/removeUserFromRole/${ids.join(",")}`);
 };
 
 /**
  * 将用户组移出角色
  */
 export const removeUserGroupFromRole = (ids: string[]) => {
-  return http.delete<http.Response<string>>(`${baseUri}/removeUserGroupFromRole/${ids.join(",")}`);
+  return http.delete<http.Response<boolean>>(`${baseUri}/removeUserGroupFromRole/${ids.join(",")}`);
 };

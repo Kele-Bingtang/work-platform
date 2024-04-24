@@ -34,6 +34,7 @@ export const options: FormOptionsProps<Dept.DeptTreeTable> = {
           filterable: true,
           valueKey: "id",
           defaultExpandAll: true,
+          checkStrictly: true,
         },
         enum: () => listDeptTreeList(),
         isHidden: form => form.parentId === "0",

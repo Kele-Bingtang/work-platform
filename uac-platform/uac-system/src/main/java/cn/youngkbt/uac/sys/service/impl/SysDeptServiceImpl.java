@@ -12,6 +12,7 @@ import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
+import cn.youngkbt.uac.sys.service.RoleDeptLinkService;
 import cn.youngkbt.uac.sys.service.SysDeptService;
 import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
 import cn.youngkbt.utils.ListUtil;
@@ -22,6 +23,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -38,8 +40,11 @@ import java.util.Objects;
  * @note 针对表【t_sys_dept(部门表)】的数据库操作Service实现
  */
 @Service
+@RequiredArgsConstructor
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
+    private final RoleDeptLinkService roleDeptLinkService;
+    
     @Override
     public List<SysDeptVO> queryList(SysDeptDTO sysDeptDTO) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
@@ -271,6 +276,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public boolean removeOne(Long id) {
         return baseMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public List<Tree<String>> listDeptListByRoleId(String roleId, String appId) {
+        List<SysDept> sysMenuList = roleDeptLinkService.listDeptListByRoleId(roleId, appId);
+        return buildDeptTree(sysMenuList);
     }
 }
 

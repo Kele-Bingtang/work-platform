@@ -109,26 +109,26 @@ export const listUserLinkByRoleId = (params: { roleId: string }) => {
  * 添加用户组到用户（多个用户组）
  */
 export const addUserGroupsToUser = (data: User.UserLinkUserGroup) => {
-  return http.post<http.Response<string>>(`${baseUri}/addUserGroupsToUser`, data);
+  return http.post<http.Response<boolean>>(`${baseUri}/addUserGroupsToUser`, data);
 };
 
 /**
  * 添加角色到用户（多个角色）
  */
 export const addRolesToUser = (data: User.UserLinkRole) => {
-  return http.post<http.Response<string>>(`${baseUri}/addRolesToUser`, data);
+  return http.post<http.Response<boolean>>(`${baseUri}/addRolesToUser`, data);
 };
 
 export const addOne = (data: User.UserInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 export const editOne = (data: RequiredKeyPartialOther<User.UserInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 export const deleteOne = (data: User.UserInfo) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
     {
@@ -138,7 +138,7 @@ export const deleteOne = (data: User.UserInfo) => {
 };
 
 export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: User.UserInfo[] }) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
     {

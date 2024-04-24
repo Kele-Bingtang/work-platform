@@ -32,15 +32,15 @@ export const listPage = () => {
 };
 
 export const addOne = (data: Tenant.TenantInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 export const editOne = (data: RequiredKeyPartialOther<Tenant.TenantInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 export const deleteOne = (data: Tenant.TenantInfo) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
     {
@@ -50,7 +50,7 @@ export const deleteOne = (data: Tenant.TenantInfo) => {
 };
 
 export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Tenant.TenantInfo[] }) => {
-  return http.delete<http.Response<string>>(
+  return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},
     {

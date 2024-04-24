@@ -62,6 +62,14 @@ public class SysDeptController {
         return HttpResult.ok(treeTable);
     }
 
+    @GetMapping("/listDeptListByRoleId/{appId}/{roleId}")
+    @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
+    @PreAuthorize("hasAuthority('system:dept:query')")
+    public Response<List<Tree<String>>> listDeptListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
+        List<Tree<String>> sysMenuVOList = sysDeptService.listDeptListByRoleId(roleId, appId);
+        return HttpResult.ok(sysMenuVOList);
+    }
+
     @GetMapping("/parentDept")
     @Operation(summary = "部门父级部门查询", description = "通过部门 ID 查询父级部门")
     @PreAuthorize("hasAuthority('system:dept:query')")

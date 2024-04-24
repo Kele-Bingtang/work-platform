@@ -7,15 +7,14 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
+import cn.youngkbt.uac.sys.model.dto.link.RoleLinkDeptDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkUserGroupDTO;
 import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
-import cn.youngkbt.uac.sys.service.SysRoleService;
-import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
-import cn.youngkbt.uac.sys.service.UserRoleLinkService;
+import cn.youngkbt.uac.sys.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +37,8 @@ public class SysRoleController {
     private final SysRoleService sysRoleService;
     private final UserRoleLinkService userRoleLinkService;
     private final UserGroupRoleLinkService userGroupRoleLinkService;
+    private final RoleMenuLinkService roleMenuLinkService;
+    private final RoleDeptLinkService roleDeptLinkService;
 
     @GetMapping("/list")
     @Operation(summary = "角色列表查询", description = "通过条件查询角色列表")
@@ -165,5 +166,19 @@ public class SysRoleController {
     @PreAuthorize("hasAuthority('system:role:edit')")
     public Response<Boolean> updateLinkInfo(@Validated(RestGroup.EditGroup.class) @RequestBody UserRoleLinkDTO userRoleLinkDTO) {
         return HttpResult.ok(userRoleLinkService.updateOne(userRoleLinkDTO));
+    }
+    
+    @PostMapping("/addMenusToRole")
+    @Operation(summary = "添加菜单到角色", description = "添加菜单到角色")
+    @PreAuthorize("hasAuthority('system:role:add')")
+    public Response<Boolean> addMenusToRole(@RequestBody SysRoleDTO sysRoleDTO) {
+        return HttpResult.ok(roleMenuLinkService.addMenusToRole(sysRoleDTO, true));
+    }
+
+    @PostMapping("/addDeptsToRole")
+    @Operation(summary = "添加部门到角色", description = "添加部门到角色")
+    @PreAuthorize("hasAuthority('system:role:add')")
+    public Response<Boolean> addDeptsToRole(@RequestBody RoleLinkDeptDTO roleLinkDeptDTO) {
+        return HttpResult.ok(roleDeptLinkService.addDeptsToRole(roleLinkDeptDTO, true));
     }
 }

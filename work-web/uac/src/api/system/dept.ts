@@ -28,7 +28,7 @@ export namespace Dept {
     weight: number;
     icon: string;
     children: DeptTreeList[];
-    status: number;
+    value: string;
   }
 
   export interface DeptTreeTable extends DeptInfo {
@@ -46,14 +46,18 @@ export const listDeptTreeTable = () => {
   return http.get<http.Response<Dept.DeptTreeTable[]>>(`${baseUri}/treeTable`);
 };
 
+export const listDeptListByRoleId = (appId: string, roleId: string) => {
+  return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/listDeptListByRoleId/${appId}/${roleId}`);
+};
+
 export const addOne = (data: Dept.DeptInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 export const editOne = (data: RequiredKeyPartialOther<Dept.DeptInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 export const deleteOne = (data: Dept.DeptInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}/${data.deptId}`);
+  return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}/${data.deptId}`);
 };

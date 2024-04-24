@@ -18,6 +18,6 @@ public interface RoleMenuLinkService extends IService<RoleMenuLink> {
 
     List<Tree<String>> listMenuListByRoleId(String roleId, String appId);
 
-    boolean addMenusToRole(SysRoleDTO sysRoleDTO);
+    boolean addMenusToRole(SysRoleDTO sysRoleDTO, boolean removeLink);
 
 }

@@ -86,6 +86,7 @@ export const useFormOptions = (
             placeholder: "请选择 上级字典",
             filterable: true,
             valueKey: "id",
+            checkStrictly: true,
           },
           enum: () => listDataTreeList({ dictCode: defaultValue.value }),
           isHidden: form => form.parentId === "0",

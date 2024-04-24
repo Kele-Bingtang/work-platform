@@ -54,13 +54,13 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
                 .eq(StringUtil.hasText(appId), "trml.app_id", appId);
 
         List<SysMenu> sysMenu = baseMapper.listMenuListByRoleId(wrapper);
-        return buildDeptTree(sysMenu);
+        return buildMenuTree(sysMenu);
     }
 
     /**
      * 构建前端所需要下拉树结构
      */
-    private List<Tree<String>> buildDeptTree(List<SysMenu> sysMenuList) {
+    private List<Tree<String>> buildMenuTree(List<SysMenu> sysMenuList) {
         if (CollUtil.isEmpty(sysMenuList)) {
             return Collections.emptyList();
         }
@@ -74,16 +74,22 @@ public class RoleMenuLinkServiceImpl extends ServiceImpl<RoleMenuLinkMapper, Rol
     }
 
     @Override
-    public boolean addMenusToRole(SysRoleDTO sysRoleDTO) {
+    public boolean addMenusToRole(SysRoleDTO sysRoleDTO, boolean removeLink) {
+        if (removeLink) {
+            // 删除角色与菜单关联
+            baseMapper.delete(Wrappers.<RoleMenuLink>lambdaQuery()
+                    .eq(RoleMenuLink::getRoleId, sysRoleDTO.getRoleId()));
+        }
+        
         List<String> selectedMenuIds = sysRoleDTO.getSelectedMenuIds();
 
-        List<RoleMenuLink> userGroupLinkList = ListUtil.newArrayList(selectedMenuIds, menuId ->
+        List<RoleMenuLink> roleMenuLinkList = ListUtil.newArrayList(selectedMenuIds, menuId ->
                         new RoleMenuLink().setMenuId(menuId)
                                 .setRoleId(sysRoleDTO.getRoleId())
                                 .setAppId(sysRoleDTO.getAppId())
                 , RoleMenuLink.class);
 
-        return Db.saveBatch(userGroupLinkList);
+        return Db.saveBatch(roleMenuLinkList);
     }
 }
 

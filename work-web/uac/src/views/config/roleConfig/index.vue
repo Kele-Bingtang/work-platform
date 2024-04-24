@@ -63,6 +63,7 @@ import Description from "@/components/Description/index.vue";
 import LinkUser from "./components/linkUser.vue";
 import LinkUserGroup from "./components/linkUserGroup.vue";
 import LinkMenu from "./components/linkMenu.vue";
+import LinkDept from "./components/linkDept.vue";
 
 const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
@@ -184,6 +185,17 @@ const tabEnums: TabEnum[] = [
       return {
         appId: requestParam.appId,
         id: clickRowInfo.value?.id,
+        roleId: clickRowInfo.value?.roleId,
+      };
+    }),
+  },
+  {
+    name: "Dept",
+    label: "关联部门",
+    components: LinkDept,
+    props: computed(() => {
+      return {
+        appId: requestParam.appId,
         roleId: clickRowInfo.value?.roleId,
       };
     }),

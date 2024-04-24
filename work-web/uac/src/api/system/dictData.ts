@@ -38,13 +38,13 @@ export const listDataTreeTable = (params: Partial<DictData.DictDataInfo>) => {
 };
 
 export const addOne = (data: DictData.DictDataInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 export const editOne = (data: DictData.DictDataInfo) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 export const removeOne = (data: DictData.DictDataInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}`);
+  return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}`);
 };

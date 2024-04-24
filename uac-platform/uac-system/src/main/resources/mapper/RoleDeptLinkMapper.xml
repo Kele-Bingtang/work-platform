@@ -25,4 +25,10 @@
         update_by,update_by_id,update_time,
         status,is_deleted,app_id
     </sql>
+    
+    <select id="listDeptListByRoleId" resultType="cn.youngkbt.uac.sys.model.po.SysDept">
+        select tsd.* from t_role_dept_link trdl
+        join t_sys_dept tsd on trdl.dept_id = tsd.dept_id and tsd.is_deleted = 0
+        ${ew.getCustomSqlSegment}
+    </select>
 </mapper>

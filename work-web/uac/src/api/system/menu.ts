@@ -32,7 +32,7 @@ export namespace Menu {
     weight: number;
     icon: string;
     children: MenuTreeList[];
-    status: number;
+    value: string;
   }
 
   export interface MenuTreeTable extends MenuInfo {
@@ -75,17 +75,17 @@ export const listMenuIdsByRoleId = (appId: string, roleId: string) => {
 };
 
 export const listMenuListByRoleId = (appId: string, roleId: string) => {
-  return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/listMenuListByRoleId/${appId}/${roleId}`);
+  return http.get<http.Response<Menu.MenuTreeList[]>>(`${baseUri}/listMenuListByRoleId/${appId}/${roleId}`);
 };
 
 export const addOne = (data: Menu.MenuInfo) => {
-  return http.post<http.Response<string>>(baseUri, data);
+  return http.post<http.Response<boolean>>(baseUri, data);
 };
 
 export const editOne = (data: RequiredKeyPartialOther<Menu.MenuInfo, "id">) => {
-  return http.put<http.Response<string>>(baseUri, data);
+  return http.put<http.Response<boolean>>(baseUri, data);
 };
 
 export const deleteOne = (data: Menu.MenuInfo) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.id}/${data.menuId}`);
+  return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}/${data.menuId}`);
 };

@@ -31,8 +31,8 @@ const initRequestParam = reactive({
 
 const columns: TableColumnProps<DictData.DictDataInfo>[] = [
   { type: "index", label: "#", width: 80 },
-  { prop: "dictValue", label: "字典键值", align: "left" },
-  { prop: "dictLabel", label: "字典标签", search: { el: "el-input" } },
+  { prop: "dictLabel", label: "字典标签", align: "left", search: { el: "el-input" } },
+  { prop: "dictValue", label: "字典键值" },
   { prop: "dictSort", label: "字典排序" },
   { prop: "createTime", label: "创建时间" },
   { prop: "operation", label: "操作" },

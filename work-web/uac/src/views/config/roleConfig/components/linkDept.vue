@@ -7,27 +7,26 @@
 </template>
 
 <script setup lang="tsx" name="LinkMenu">
-import { listMenuListByRoleId, listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
+import { listDeptListByRoleId, listDeptTreeList, type Dept } from "@/api/system/dept";
 import { ProForm, Tree, useDialog } from "work";
 import type { FormOptionsProps } from "@work/components";
-import { addMenusToRole } from "@/api/system/role";
+import { addDeptsToRole } from "@/api/system/role";
 
 export interface LinkUserProps {
   appId: string;
-  id: number;
   roleId: string;
 }
 
 const props = defineProps<LinkUserProps>();
 
-const data = ref<Menu.MenuTreeList[]>([]);
-const form = ref<{ selectedMenuIds: string[] }>({ selectedMenuIds: [] });
-const selectedMenuIds = ref<string[]>([]);
+const data = ref<Dept.DeptTreeList[]>([]);
+const form = ref<{ selectedDeptIds: string[] }>({ selectedDeptIds: [] });
+const selectedDeptIds = ref<string[]>([]);
 
 const initTreeData = async (appId = props.appId, roleId = props.roleId) => {
-  const treeData = await listMenuListByRoleId(appId, roleId);
+  const treeData = await listDeptListByRoleId(appId, roleId);
   data.value = treeData.data || [];
-  selectedMenuIds.value = treeData.data?.map(item => item.value);
+  selectedDeptIds.value = treeData.data?.map(item => item.value);
 };
 
 watchEffect(() => initTreeData(props.appId, props.roleId));
@@ -35,9 +34,9 @@ watchEffect(() => initTreeData(props.appId, props.roleId));
 const { open } = useDialog();
 
 const handleEdit = () => {
-  form.value.selectedMenuIds = selectedMenuIds.value;
+  form.value.selectedDeptIds = selectedDeptIds.value;
   open({
-    title: "编辑菜单",
+    title: "编辑部门",
     onClose: handleCancel,
     onConfirm: handleConfirm,
     render: () => {
@@ -47,30 +46,30 @@ const handleEdit = () => {
 };
 
 const handleCancel = () => {
-  form.value = { selectedMenuIds: [] };
+  form.value = { selectedDeptIds: [] };
 };
 
 const handleConfirm = async () => {
-  await addMenusToRole({
+  await addDeptsToRole({
     roleId: props.roleId,
     appId: props.appId,
-    selectedMenuIds: form.value.selectedMenuIds,
+    selectedDeptIds: form.value.selectedDeptIds,
   });
-  initTreeData();
+  initTreeData(props.appId, props.roleId);
 };
 
 const options: FormOptionsProps = {
   form: { inline: true, labelPosition: "right", labelWidth: 80, size: "default", fixWidth: true },
   columns: [
     {
-      formItem: { label: "", prop: "selectedMenuIds", br: true },
+      formItem: { label: "", prop: "selectedDeptIds", br: true },
       attrs: {
         el: "el-tree",
-        defaultValue: () => {
+        defaultValue: async () => {
           if (!props.appId) return [];
-          return selectedMenuIds.value;
+          return selectedDeptIds.value;
         },
-        enum: () => listMenuTreeSelectByApp({ appId: props.appId }),
+        enum: () => listDeptTreeList(),
         props: { nodeKey: "value", search: true, checkbox: true },
       },
     },

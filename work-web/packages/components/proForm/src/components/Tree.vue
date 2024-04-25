@@ -20,7 +20,11 @@
     v-bind="$attrs"
     :data="data"
     :nodeKey="nodeKey"
-  />
+  >
+    <template #default="{ node, data }">
+      <slot :node="node" :data="data"></slot>
+    </template>
+  </el-tree>
 </template>
 <script setup lang="ts">
 import { ElTree } from "element-plus";

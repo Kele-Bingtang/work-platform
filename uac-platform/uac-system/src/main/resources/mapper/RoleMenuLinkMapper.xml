@@ -27,8 +27,12 @@
     </sql>
     
     <select id="listMenuListByRoleId" resultType="cn.youngkbt.uac.sys.model.po.SysMenu">
-        select tsm.* from t_role_menu_link trml
-        join t_sys_menu tsm on trml.menu_id = tsm.menu_id and tsm.is_deleted = 0
-        ${ew.getCustomSqlSegment}
+        select
+            tsm.*, case when trml.menu_id is null then 0 else 1 end as selected
+        from
+            t_sys_menu tsm left join (
+                select * from t_role_menu_link where is_deleted = 0 and role_id = #{roleId} and app_id = #{appId}
+            ) trml on tsm.menu_id = trml.menu_id
+        where tsm.app_id = #{appId} and tsm.is_deleted = 0;
     </select>
 </mapper>

@@ -8,7 +8,11 @@
       :detailForm="detailForm"
       :border="false"
       :pagination="false"
-    ></ProTable>
+    >
+      <template #operationExtra="{ row, operate }">
+        <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.deptId })">新增</el-button>
+      </template>
+    </ProTable>
   </div>
 </template>
 
@@ -20,6 +24,7 @@ import { options } from "./formOptions";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
+import { Plus } from "@element-plus/icons-vue";
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -63,7 +68,7 @@ const columns: TableColumnProps<Dept.DeptTreeTable>[] = [
   { prop: "phone", label: "电话", width: 120 },
   { prop: "email", label: "邮箱", width: 120 },
   { prop: "createTime", label: "创建时间", width: 160 },
-  { prop: "operation", label: "操作", width: 160, fixed: "right" },
+  { prop: "operation", label: "操作", width: 200, fixed: "right" },
 ];
 
 const detailForm: DialogForm = {

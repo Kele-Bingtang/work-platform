@@ -18,6 +18,7 @@
             :selected-list-ids="selectedListIds"
             :selected-list="selectedList"
             :is-selected="isSelected"
+            v-bind="{ operate: dialogOperateRef }"
           >
             <el-button
               v-if="visibleButton(detailForm?.addApi, detailForm?.useAdd)"
@@ -41,7 +42,7 @@
             >
               删除
             </el-button>
-            <slot name="tableHeaderExtra"></slot>
+            <slot name="tableHeaderExtra" v-bind="{ operate: dialogOperateRef }"></slot>
           </slot>
         </div>
         <div v-if="toolButton" class="header-button-ri">
@@ -124,7 +125,7 @@
 
           <TableColumn v-else-if="item.prop === 'operation'" :column="item">
             <template #operation="scope">
-              <slot name="operation" v-bind="scope">
+              <slot name="operation" v-bind="{ ...scope, operate: dialogOperateRef }">
                 <el-button
                   link
                   type="primary"
@@ -153,7 +154,7 @@
                     </el-button>
                   </template>
                 </el-popconfirm>
-                <slot name="operationExtra" v-bind="scope"></slot>
+                <slot name="operationExtra" v-bind="{ ...scope, operate: dialogOperateRef }"></slot>
               </slot>
             </template>
           </TableColumn>

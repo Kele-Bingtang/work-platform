@@ -6,7 +6,7 @@ import { ElMessageBox } from "element-plus";
 export const useChange = (
   name: string,
   desc: string,
-  editApi: (params: any, status: number) => Promise<http.Response<string>>,
+  editApi: (params: any, status: number) => Promise<http.Response<boolean>>,
   listApi: () => Promise<any> | undefined
 ) => {
   const statusChange = async (value: number, row: any) => {

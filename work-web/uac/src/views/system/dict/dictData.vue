@@ -7,7 +7,11 @@
     :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
     :pagination="!isCascade"
     :detailForm="detailForm"
-  ></ProTable>
+  >
+    <template #operationExtra="{ row, operate }" v-if="isCascade">
+      <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.dataId })">新增</el-button>
+    </template>
+  </ProTable>
 </template>
 
 <script setup lang="ts" name="DictData">
@@ -15,6 +19,7 @@ import { ProTable } from "work";
 import { listPage, listDataTreeTable, addOne, editOne, removeOne, type DictData } from "@/api/system/dictData";
 import { type DialogForm, type TableColumnProps } from "@work/components";
 import { useFormOptions } from "./useFormOptions";
+import { Plus } from "@element-plus/icons-vue";
 
 export interface DictDataProps {
   dictCode: string;
@@ -35,7 +40,7 @@ const columns: TableColumnProps<DictData.DictDataInfo>[] = [
   { prop: "dictValue", label: "字典键值" },
   { prop: "dictSort", label: "字典排序" },
   { prop: "createTime", label: "创建时间" },
-  { prop: "operation", label: "操作" },
+  { prop: "operation", label: "操作", width: computed(() => (props.isCascade ? 200 : 160)) },
 ];
 
 const detailForm = reactive<DialogForm>({

@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.youngkbt.core.constants.ColumnConstant;
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysDictDataMapper;
@@ -117,7 +116,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
         List<SysDictData> sysDictData = baseMapper.selectList(wrapper);
         List<SysDictDataVO> sysDictDataVOList = MapstructUtil.convert(sysDictData, SysDictDataVO.class);
 
-        return TreeBuildUtil.build(sysDictDataVOList, SysDictDataVO::getDataId);
+        return TreeBuildUtil.build(sysDictDataVOList, "0", SysDictDataVO::getDataId);
     }
 
     @Override

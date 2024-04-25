@@ -75,6 +75,24 @@ public interface SysDeptService extends IService<SysDept> {
     Long listChildrenDeptCountById(String deptId);
 
     /**
+     * 根据角色 ID 查询部门列表
+     *
+     * @param roleId 角色 ID
+     * @param appId  应用 ID
+     * @return 部门列表
+     */
+    List<Tree<String>> listDeptListByRoleId(String roleId, String appId);
+
+    /**
+     * 根据角色 ID 查询部门 ID 列表
+     *
+     * @param roleId 角色 ID
+     * @param appId  应用 ID
+     * @return 部门 ID 列表
+     */
+    List<String> listDeptIdsByRoleId(String roleId, String appId);
+
+    /**
      * 判断部门是否有子部门
      *
      * @param deptId 部门 ID
@@ -130,12 +148,4 @@ public interface SysDeptService extends IService<SysDept> {
      */
     boolean removeOne(Long id);
 
-    /**
-     * 根据角色 ID 查询部门列表
-     *
-     * @param roleId 角色 ID
-     * @param appId  应用 ID
-     * @return 部门列表
-     */
-    List<Tree<String>> listDeptListByRoleId(String roleId, String appId);
 }

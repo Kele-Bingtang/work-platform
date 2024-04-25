@@ -60,6 +60,15 @@ public interface SysMenuService extends IService<SysMenu> {
     List<SysMenuVO> listMenuListByUserId(String appId,  String userId);
 
     /**
+     * 通过角色 ID 查询菜单列表
+     *
+     * @param roleId 角色 ID
+     * @param appId  应用 ID
+     * @return 菜单列表
+     */
+    List<Tree<String>> listMenuListByRoleId(String roleId, String appId);
+    
+    /**
      * 检查菜单名称是否唯一
      *
      * @param sysMenuDTO 查询条件

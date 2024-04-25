@@ -64,7 +64,8 @@ declare type PartialKey<T, U extends keyof T> = Pick<T, Exclude<keyof T, U>> & P
  * 在 Element Plus 的类型基础增强
  **/
 export interface TableColumnProps<T = any>
-  extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader">> {
+  extends Partial<Omit<TableColumnCtx<T>, "children" | "renderCell" | "renderHeader" | "width">> {
+  width?: string | number | ComputedRef<string> | ComputedRef<number>;
   tag?: boolean; // 是否是标签展示
   isShow?: boolean; // 是否显示在表格当中
   search?: SearchProps | undefined; // 搜索项配置

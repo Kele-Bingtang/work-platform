@@ -90,4 +90,9 @@ public class SysDept extends BaseDO {
      */
     private String tenantId;
 
+    /**
+     * 是否被选中
+     */
+    @TableField(exist = false)
+    private boolean selected;
 }

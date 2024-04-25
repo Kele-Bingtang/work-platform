@@ -75,7 +75,7 @@ public class SysMenuController {
     @Operation(summary = "菜单列表查询", description = "通过角色 ID 查询菜单 ID 列表")
     @PreAuthorize("hasAuthority('system:menu:query')")
     public Response<List<Tree<String>>> listMenuListByRoleId(@PathVariable String appId, @PathVariable String roleId) {
-        List<Tree<String>> sysMenuVOList = roleMenuLinkService.listMenuListByRoleId(roleId, appId);
+        List<Tree<String>> sysMenuVOList = sysMenuService.listMenuListByRoleId(roleId, appId);
         return HttpResult.ok(sysMenuVOList);
     }
 

@@ -46,6 +46,10 @@ export const listDeptTreeTable = () => {
   return http.get<http.Response<Dept.DeptTreeTable[]>>(`${baseUri}/treeTable`);
 };
 
+export const listDeptIdsByRoleId = (appId: string, roleId: string) => {
+  return http.get<http.Response<string[]>>(`${baseUri}/listDeptIdsByRoleId/${appId}/${roleId}`);
+};
+
 export const listDeptListByRoleId = (appId: string, roleId: string) => {
   return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/listDeptListByRoleId/${appId}/${roleId}`);
 };

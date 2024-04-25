@@ -46,7 +46,7 @@ public class SysDictDataController {
 
     @GetMapping("/treeList")
     @Operation(summary = "字典数据树形结构查询", description = "通过条件查询字典数据树形结构")
-    @PreAuthorize("hasAuthority('system:dictData:query')")
+    @PreAuthorize("hasAuthority('system:dict:query')")
     public Response<List<Tree<String>>> listDataTreeList(SysDictDataDTO sysDictDataDTO) {
         List<Tree<String>> dataTreeList = sysDictDataService.listDataTreeList(sysDictDataDTO);
         return HttpResult.ok(dataTreeList);

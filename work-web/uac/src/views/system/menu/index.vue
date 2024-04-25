@@ -29,13 +29,8 @@
         :border="false"
         :pagination="false"
       >
-        <template #operationExtra="{ row }">
-          <el-button
-            link
-            size="small"
-            :icon="Plus"
-            @click="proTableRef?.dialogOperateRef?.handleAdd({ parentId: row.menuId })"
-          >
+        <template #operationExtra="{ row, operate }">
+          <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.menuId })">
             新增
           </el-button>
         </template>

@@ -1,13 +1,18 @@
 <template>
-  <div style="margin-bottom: 10px">
+  <div style="display: flex; align-items: center; margin-bottom: 10px">
     <el-button type="primary" @click="handleEdit">编辑</el-button>
     <el-button @click="initTreeData()">刷新</el-button>
+    <el-alert title="蓝色代表已关联的菜单，黑色代表未关联的菜单" :closable="false" style="margin: 0 10px" />
   </div>
-  <Tree :data="data" node-key="value" checkbox search :select="false" />
+  <Tree :data="data" node-key="value" checkbox search :select="false">
+    <template #default="{ data }">
+      <span :class="data.class">{{ data.label }}</span>
+    </template>
+  </Tree>
 </template>
 
 <script setup lang="tsx" name="LinkMenu">
-import { listMenuListByRoleId, listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
+import { listMenuListByRoleId, listMenuIdsByRoleId, listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
 import { ProForm, Tree, useDialog } from "work";
 import type { FormOptionsProps } from "@work/components";
 import { addMenusToRole } from "@/api/system/role";
@@ -25,9 +30,13 @@ const form = ref<{ selectedMenuIds: string[] }>({ selectedMenuIds: [] });
 const selectedMenuIds = ref<string[]>([]);
 
 const initTreeData = async (appId = props.appId, roleId = props.roleId) => {
-  const treeData = await listMenuListByRoleId(appId, roleId);
+  const [treeData, menuIds] = await Promise.all([
+    listMenuListByRoleId(appId, roleId),
+    listMenuIdsByRoleId(props.appId, props.roleId),
+  ]);
   data.value = treeData.data || [];
-  selectedMenuIds.value = treeData.data?.map(item => item.value);
+  form.value.selectedMenuIds = menuIds.data;
+  selectedMenuIds.value = menuIds.data;
 };
 
 watchEffect(() => initTreeData(props.appId, props.roleId));
@@ -66,10 +75,6 @@ const options: FormOptionsProps = {
       formItem: { label: "", prop: "selectedMenuIds", br: true },
       attrs: {
         el: "el-tree",
-        defaultValue: () => {
-          if (!props.appId) return [];
-          return selectedMenuIds.value;
-        },
         enum: () => listMenuTreeSelectByApp({ appId: props.appId }),
         props: { nodeKey: "value", search: true, checkbox: true },
       },
@@ -78,4 +83,8 @@ const options: FormOptionsProps = {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.selected {
+  color: var(--el-color-primary);
+}
+</style>

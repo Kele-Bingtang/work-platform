@@ -113,4 +113,11 @@ public class SysMenu extends BaseDO {
      */
     private String appId;
 
+
+    /**
+     * 是否被选中
+     */
+    @TableField(exist = false)
+    private boolean selected;
+
 }

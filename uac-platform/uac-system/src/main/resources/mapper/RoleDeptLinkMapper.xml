@@ -27,8 +27,12 @@
     </sql>
     
     <select id="listDeptListByRoleId" resultType="cn.youngkbt.uac.sys.model.po.SysDept">
-        select tsd.* from t_role_dept_link trdl
-        join t_sys_dept tsd on trdl.dept_id = tsd.dept_id and tsd.is_deleted = 0
-        ${ew.getCustomSqlSegment}
+        select
+            tsd.*, case when trdl.dept_id is null then 0 else 1 end as selected
+        from
+            t_sys_dept tsd left join (
+                select * from t_role_dept_link where is_deleted = 0 and role_id = #{roleId} and app_id = #{appId}
+            ) trdl on tsd.dept_id = trdl.dept_id
+        where tsd.is_deleted = 0;
     </select>
 </mapper>

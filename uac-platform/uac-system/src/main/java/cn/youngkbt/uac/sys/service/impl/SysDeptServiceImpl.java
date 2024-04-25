@@ -10,6 +10,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysDeptMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
+import cn.youngkbt.uac.sys.model.po.RoleDeptLink;
 import cn.youngkbt.uac.sys.model.po.SysDept;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
 import cn.youngkbt.uac.sys.service.RoleDeptLinkService;
@@ -44,7 +45,7 @@ import java.util.Objects;
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
     private final RoleDeptLinkService roleDeptLinkService;
-    
+
     @Override
     public List<SysDeptVO> queryList(SysDeptDTO sysDeptDTO) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
@@ -57,7 +58,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     public TablePage<SysDeptVO> listPage(SysDeptDTO sysDeptDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
         Page<SysDept> sysDeptPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
-        
+
         return TablePage.build(sysDeptPage, SysDeptVO.class);
     }
 
@@ -67,7 +68,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         sysDeptDTO.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
-        
+
         return buildDeptTree(sysDeptList);
     }
 
@@ -76,8 +77,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
         List<SysDeptVO> sysDeptVoList = MapstructUtil.convert(sysDeptList, SysDeptVO.class);
-        
-        return TreeBuildUtil.build(sysDeptVoList, SysDeptVO::getDeptId);
+
+        return TreeBuildUtil.build(sysDeptVoList, "0", SysDeptVO::getDeptId);
     }
 
     private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptDTO sysDeptDTO) {
@@ -96,12 +97,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             return Collections.emptyList();
         }
 
-        return TreeBuildUtil.build(sysDeptList, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
-                tree.setId(treeNode.getDeptId())
-                        .setParentId(treeNode.getParentId())
-                        .setName(treeNode.getDeptName())
-                        .setWeight(treeNode.getOrderNum())
-                        .putExtra("icon", treeNode.getIcon()));
+        return TreeBuildUtil.build(sysDeptList, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) -> {
+                    tree.setId(treeNode.getDeptId())
+                            .setParentId(treeNode.getParentId())
+                            .setName(treeNode.getDeptName())
+                            .setWeight(treeNode.getOrderNum())
+                            .putExtra("icon", treeNode.getIcon());
+                    // 如果节点是选中状态，则设置选中样式
+                    tree.putExtra("class", treeNode.isSelected() ? "selected" : "");
+                }
+        );
     }
 
     /**
@@ -142,6 +147,26 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         return baseMapper.selectCount(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getStatus, ColumnConstant.STATUS_NORMAL)
                 .apply("FIND_IN_SET({0}, ancestors) > 0", deptId));
+    }
+
+    @Override
+    public List<Tree<String>> listDeptListByRoleId(String roleId, String appId) {
+        List<SysDept> sysMenuList = roleDeptLinkService.listDeptListByRoleId(roleId, appId);
+        return buildDeptTree(sysMenuList);
+    }
+
+    @Override
+    public List<String> listDeptIdsByRoleId(String roleId, String appId) {
+        List<RoleDeptLink> roleDeptLinkList = roleDeptLinkService.list(Wrappers.<RoleDeptLink>lambdaQuery()
+                .eq(RoleDeptLink::getRoleId, roleId)
+                .eq(StringUtil.hasText(appId), RoleDeptLink::getAppId, appId)
+        );
+
+        if (ListUtil.isNotEmpty(roleDeptLinkList)) {
+            return roleDeptLinkList.stream().map(RoleDeptLink::getDeptId).toList();
+        }
+
+        return List.of();
     }
 
     /**
@@ -278,11 +303,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         return baseMapper.deleteById(id) > 0;
     }
 
-    @Override
-    public List<Tree<String>> listDeptListByRoleId(String roleId, String appId) {
-        List<SysDept> sysMenuList = roleDeptLinkService.listDeptListByRoleId(roleId, appId);
-        return buildDeptTree(sysMenuList);
-    }
 }
 
 

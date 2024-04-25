@@ -7,12 +7,12 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
-import cn.youngkbt.uac.sys.mapper.RoleMenuLinkMapper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
+import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
 import cn.youngkbt.utils.MapstructUtil;
@@ -37,7 +37,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
-    private final RoleMenuLinkMapper roleMenuLinkMapper;
+    private final RoleMenuLinkService roleMenuLinkService;
 
     @Override
     public List<SysMenuVO> queryList(SysMenuDTO sysMenuDTO) {
@@ -64,7 +64,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         sysMenuDTO.setStatus(ColumnConstant.STATUS_NORMAL);
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
-        return buildDeptTree(sysMenuList);
+        return buildMenuTree(sysMenuList);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
         List<SysMenuVO> menuTreeList = MapstructUtil.convert(sysMenuList, SysMenuVO.class);
 
-        return TreeBuildUtil.build(menuTreeList, SysMenuVO::getMenuId);
+        return TreeBuildUtil.build(menuTreeList, "0", SysMenuVO::getMenuId);
     }
 
     private LambdaQueryWrapper<SysMenu> buildQueryWrapper(SysMenuDTO sysMenuDTO) {
@@ -86,25 +86,36 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .orderByAsc(SysMenu::getOrderNum);
     }
 
+    @Override
+    public List<SysMenuVO> listMenuListByUserId(String appId, String userId) {
+        return baseMapper.listMenuListByUserId(appId, userId);
+    }
+
+    @Override
+    public List<Tree<String>> listMenuListByRoleId(String roleId, String appId) {
+        List<SysMenu> sysMenuList = roleMenuLinkService.listMenuListByRoleId(roleId, appId);
+        return buildMenuTree(sysMenuList);
+    }
+
     /**
      * 构建前端所需要下拉树结构
      */
-    private List<Tree<String>> buildDeptTree(List<SysMenu> sysMenuList) {
+    private List<Tree<String>> buildMenuTree(List<SysMenu> sysMenuList) {
         if (CollUtil.isEmpty(sysMenuList)) {
             return Collections.emptyList();
         }
 
-        return TreeBuildUtil.build(sysMenuList, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) ->
-                tree.setId(treeNode.getMenuId())
-                        .setParentId(treeNode.getParentId())
-                        .setName(treeNode.getMenuName())
-                        .setWeight(treeNode.getOrderNum())
-                        .putExtra("icon", treeNode.getIcon()));
-    }
+        return TreeBuildUtil.build(sysMenuList, ColumnConstant.PARENT_ID, TreeNodeConfig.DEFAULT_CONFIG.setIdKey("value").setNameKey("label"), (treeNode, tree) -> {
+                    tree.setId(treeNode.getMenuId())
+                            .setParentId(treeNode.getParentId())
+                            .setName(treeNode.getMenuName())
+                            .setWeight(treeNode.getOrderNum())
+                            .putExtra("icon", treeNode.getIcon());
 
-    @Override
-    public List<SysMenuVO> listMenuListByUserId(String appId,  String userId) {
-        return baseMapper.listMenuListByUserId(appId, userId);
+                    // 如果节点是选中状态，则设置选中样式
+                    tree.putExtra("class", treeNode.isSelected() ? "selected" : "");
+                }
+        );
     }
 
     @Override
@@ -114,7 +125,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .eq(SysMenu::getParentId, sysMenuDTO.getParentId())
                 .ne(Objects.nonNull(sysMenuDTO.getMenuId()), SysMenu::getMenuId, sysMenuDTO.getMenuId()));
     }
-    
+
     @Override
     public boolean checkMenuNameUnique(SysMenuDTO sysMenuDTO) {
         return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
@@ -132,7 +143,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public boolean checkMenuExistRole(String menuId) {
-        return roleMenuLinkMapper.exists(Wrappers.<RoleMenuLink>lambdaQuery()
+        return roleMenuLinkService.exists(Wrappers.<RoleMenuLink>lambdaQuery()
                 .eq(RoleMenuLink::getMenuId, menuId));
     }
 
@@ -172,6 +183,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
                 .in(SysMenu::getAppId, appIds));
     }
+
 }
 
 

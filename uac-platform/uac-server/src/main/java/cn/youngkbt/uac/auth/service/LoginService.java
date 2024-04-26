@@ -1,6 +1,10 @@
 package cn.youngkbt.uac.auth.service;
 
 import cn.youngkbt.core.constants.ColumnConstant;
+import cn.youngkbt.core.event.LoginInfoEvent;
+import cn.youngkbt.helper.SpringHelper;
+import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.convertor.LoginBOToVOConvertor;
 import cn.youngkbt.uac.auth.convertor.LoginDTOToBOConvertor;
@@ -9,11 +13,13 @@ import cn.youngkbt.uac.auth.model.vo.LoginVO;
 import cn.youngkbt.uac.auth.strategy.AuthHandler;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
+import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.core.exception.TenantException;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.model.po.SysTenant;
 import cn.youngkbt.uac.sys.service.SysTenantService;
+import cn.youngkbt.utils.ServletUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,8 +53,24 @@ public class LoginService {
     /**
      * 退出登录
      */
-    public void logout() {
-
+    public boolean logout() {
+        LoginUser loginUser = UacHelper.getLoginUser();
+        boolean logout = UacHelper.logout();
+        if (logout) {
+            LoginInfoEvent loginInfoEvent = LoginInfoEvent.builder()
+                    .tenantId(loginUser.getTenantId())
+                    .userId(loginUser.getUserId())
+                    .username(loginUser.getUsername())
+                    .clientName(loginUser.getClientName())
+                    .loginTime(LocalDateTime.now())
+                    .status(AuthConstant.LOGOUT)
+                    .request(ServletUtil.getRequest())
+                    .message("退出成功")
+                    .build();
+            // 发布退出成功事件
+            SpringHelper.publishEvent(loginInfoEvent);
+        }
+        return logout;
     }
 
     /**

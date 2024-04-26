@@ -54,12 +54,6 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "执行登录")
     public Response<LoginVO> login(@Valid @RequestBody LoginUserDTO loginUserDTO) {
-        // 避免重复登录
-        // String username = SecurityUtils.getUsername();
-        // if (Objects.nonNull(username) && StringUtils.equals(username, loginUserDTO.getUsername())) {
-        //     return HttpResult.ok("用户名已登录");
-        // }
-
         String appId = loginUserDTO.getAppId();
         // 校验 App ID
         SysApp sysApp = appService.checkAppIdThenGet(loginUserDTO.getTenantId(), appId);
@@ -83,6 +77,13 @@ public class AuthController {
         loginService.checkTenant(loginUserDTO.getTenantId());
         // 执行登录
         return HttpResult.ok(loginService.login(loginUserDTO, sysApp, sysClient));
+    }
+    
+    @PostMapping("/logout")
+    @Operation(summary = "退出登录")
+    public Response<String> logout() {
+        loginService.logout();
+        return HttpResult.ok("退出成功");
     }
 
     @GetMapping("/tenant/list")

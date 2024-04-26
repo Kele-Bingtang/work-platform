@@ -85,6 +85,10 @@ class RequestHttp {
         if (response.config.headers?.loading) tryHideFullScreenLoading();
         else axiosCanceler.removePendingRequest(response.config);
         const userStore = useUserStore();
+
+        // 如果后台自动续期 Token，则更新
+        if (response.headers && response.headers["jwt-token"]) userStore.setToken(response.headers["jwt-token"]);
+
         //  登陆失效（code == 401）
         if (data.code && data.code === ResultEnum.LOGIN) {
           message.error(data.message);

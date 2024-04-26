@@ -68,6 +68,8 @@ public class WebSecurityConfig {
         http.userDetailsService(userDetailsService);
         return http.build();
     }
+    
+    
 
     /**
      * 动态权限判断，请求的 URL 和数据库中的权限进行匹配

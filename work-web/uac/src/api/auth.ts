@@ -53,6 +53,10 @@ export const login = (loginBody: Auth.LoginBody) => {
   return http.post<http.Response<Auth.LoginResponse>>("/auth/login", loginBody);
 };
 
+export const logout = () => {
+  return http.post<http.Response<string>>("/auth/logout");
+};
+
 export const getTenantSelectList = () => {
   return http.get<http.Response<Auth.TenantSelectList>>("/auth/tenant/list");
 };

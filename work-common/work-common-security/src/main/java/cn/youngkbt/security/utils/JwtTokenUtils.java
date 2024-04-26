@@ -40,7 +40,7 @@ public class JwtTokenUtils {
      * 有效期 12 小时：12 * 60 * 60 * 1000
      */
     public static long EXPIRE_TIME;
-
+    
     public JwtTokenUtils(@Value("${jwt-token.authorities:authorities}") String authorities, @Value("${jwt.secret:work-uac-platform-abcdefghijklmnopqrstuvwxyz}") String secretKey,
                          @Value("${jwt.expire-time:#{12 * 60 * 60 * 1000}}") Long expireTime) {
         JwtTokenUtils.AUTHORITIES = authorities;
@@ -72,6 +72,7 @@ public class JwtTokenUtils {
     public static String generateToken(Authentication authentication, Long expireTime, String namespace) {
         Map<String, Object> claims = new HashMap<>(2);
         claims.put(AUTHORITIES, authentication.getAuthorities());
+        claims.put("expireTime", expireTime);
         if (StringUtils.hasText(namespace)) {
             claims.put("namespace", namespace);
         }
@@ -260,6 +261,37 @@ public class JwtTokenUtils {
             return expiration.before(new Date());
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * 获取 Token 有效期
+     *
+     * @param token 令牌
+     * @return Token 有效期
+     */
+    public static Date getTokenExpired(String token) {
+        try {
+            Claims claims = getClaimsFromToken(token);
+            return claims.getExpiration();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 获取 Token 有效期时间，如 720000 为 2 小时
+     *
+     * @param token 令牌
+     * @return Token 有效期
+     */
+    public static Long getTokenExpireTime(String token) {
+        try {
+            Claims claims = getClaimsFromToken(token);
+            Integer expireTime = (Integer) claims.get("expireTime");
+            return Long.valueOf(expireTime);
+        } catch (Exception e) {
+            return null;
         }
     }
 

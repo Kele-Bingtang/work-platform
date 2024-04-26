@@ -1,15 +1,10 @@
 package cn.youngkbt.security.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author Kele-Bingtang
@@ -68,7 +63,12 @@ public class LoginUser {
     /**
      * 登录后的 token
      */
-    private String token;
+    private String accessToken;
+
+    /**
+     * 登录后的刷新 token
+     */
+    private String refreshToken;
     
     /**
      * 最后登录IP

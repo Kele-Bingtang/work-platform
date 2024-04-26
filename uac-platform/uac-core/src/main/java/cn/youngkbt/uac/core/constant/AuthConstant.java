@@ -7,16 +7,18 @@ package cn.youngkbt.uac.core.constant;
  */
 public interface AuthConstant {
     
-    String LOGIN_SUCCESS = "Success";
-    String LOGIN_FAIL = "Error";
-    String LOGOUT = "Logout";
-    String REGISTER = "Register";
+    String LOGIN_SUCCESS = "Login_Success";
+    String LOGIN_FAIL = "Login_Error";
+    String LOGOUT = "Logout_Success";
+    String REGISTER = "Register_Success";
     String TENANT_ID = "tenantId";
     
     String USERNAME = "username";
     String PASSWORD = "password";
     
     String CLIENT_NAME = "clientName";
+    
+    String JWT_TOKEN = "Jwt-Token";
     
     /**
      * 用户名长度限制

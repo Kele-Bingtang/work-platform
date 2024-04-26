@@ -126,7 +126,6 @@
         ></component>
       </template>
     </template>
-
     <slot v-else></slot>
   </component>
 </template>

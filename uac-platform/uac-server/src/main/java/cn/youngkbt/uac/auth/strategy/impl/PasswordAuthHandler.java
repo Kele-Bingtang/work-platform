@@ -96,22 +96,31 @@ public class PasswordAuthHandler implements AuthHandler {
             loginFailureHandler.onAuthenticationFailure(request, ServletUtil.getResponse(), exception, loginUserBO);
         }
 
-        LoginSuccessBO loginSuccessBO = new LoginSuccessBO();
-        loginSuccessBO.setAccessToken(token.getAccessToken());
-        loginSuccessBO.setExpireIn(timeout);
+        // 判断是否登录过且没过期。如果用户在浏览器 A 登录后，在浏览器 B 登录时，直接返回浏览器 A 登录的 token
+        LoginUser loginUser = UacHelper.getLoginUser(loginUserBO.getUsername());
 
-        // 用户基本信息存入 Redis
-        cacheLoginUser(token, timeout, sysClient.getClientName(), request);
+        LoginSuccessBO loginSuccessBO = new LoginSuccessBO();
+        if (Objects.nonNull(loginUser)) {
+            loginSuccessBO.setAccessToken(loginUser.getAccessToken());
+            loginSuccessBO.setRefreshToken(loginUser.getRefreshToken());
+            loginSuccessBO.setExpireIn(timeout);
+        } else {
+            loginSuccessBO.setAccessToken(token.getAccessToken());
+            loginSuccessBO.setRefreshToken(token.getRefreshToken());
+            loginSuccessBO.setExpireIn(timeout);
+            // 用户基本信息存入 Redis
+            cacheLoginUser(token, timeout, sysClient.getClientName(), request);
+        }
         return loginSuccessBO;
     }
 
     /**
      * 用户基本信息存入 Redis
      *
-     * @param token   认证信息令牌
-     * @param timeout 超时时间
+     * @param token      认证信息令牌
+     * @param timeout    超时时间
      * @param clientName 客户端名称
-     * @param request 请求
+     * @param request    请求
      */
     private void cacheLoginUser(JwtAuthenticationToken token, Long timeout, String clientName, HttpServletRequest request) {
         LoginUser loginUser = MapstructUtil.convert(token.getAuthentication().getPrincipal(), LoginUser.class);
@@ -125,7 +134,8 @@ public class PasswordAuthHandler implements AuthHandler {
         String os = userAgent.getOs().getName();
         // 获取客户端浏览器
         String browser = userAgent.getBrowser().getName();
-        loginUser.setToken(token.getAccessToken())
+        loginUser.setAccessToken(token.getAccessToken())
+                .setRefreshToken(token.getRefreshToken())
                 .setLoginIp(clientIp)
                 .setLoginLocation(address)
                 .setOs(os)

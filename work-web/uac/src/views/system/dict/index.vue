@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="tsx" name="DictType">
-import { ProTable, TreeFilter, BasicDrawer } from "work";
+import { ProTable, TreeFilter, BasicDrawer, Point } from "work";
 import { getAppTreeList } from "@/api/application/app";
 import { listPage, addOne, editOne, deleteOne, type DictType } from "@/api/system/dictType";
 import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
@@ -64,6 +64,11 @@ const handleTreeChange = (nodeId: number) => {
   initRequestParam.appId = nodeId + "";
 };
 
+const isCascadeColorMap: Record<string, any> = {
+  0: "#909399",
+  1: "#395ae3",
+};
+
 const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
   { type: "index", label: "#", width: 80 },
   {
@@ -81,7 +86,16 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
     },
   },
   { prop: "dictName", label: "字典名称", search: { el: "el-input" } },
-  { prop: "isCascade", label: "是否级联", width: 110, enum: baseEnum, search: { el: "el-input" } },
+  {
+    prop: "isCascade",
+    label: "是否级联",
+    width: 110,
+    enum: baseEnum,
+    search: { el: "el-input" },
+    render: ({ row }) => {
+      return <Point color={isCascadeColorMap[row.isCascade]}>{row._enum.isCascade}</Point>;
+    },
+  },
   { prop: "intro", label: "描述" },
   { prop: "createTime", label: "创建时间", sortable: true },
   { prop: "operation", label: "操作", width: 160, fixed: "right" },

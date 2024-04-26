@@ -30,6 +30,14 @@ public class UacHelper {
         return (LoginUser) userInfo;
     }
 
+    public static LoginUser getLoginUser(String username) {
+        Object userInfo = RedisUtil.getForValue(AuthRedisConstant.USER_INFO_KEY + username);
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return (LoginUser) userInfo;
+    }
+
     public static List<LoginUser> getAllLoginUser() {
         List<LoginUser> loginUserList = new ArrayList<>();
         Set<String> keys = RedisUtil.keys(AuthRedisConstant.USER_INFO_KEY + "*");
@@ -57,5 +65,13 @@ public class UacHelper {
             return null;
         }
         return userInfo.getTenantId();
+    }
+
+    public static boolean logout() {
+        LoginUser userInfo = getLoginUser();
+        if (Objects.isNull(userInfo)) {
+            return false;
+        }
+        return RedisUtil.delete(AuthRedisConstant.USER_INFO_KEY + userInfo.getUsername());
     }
 }

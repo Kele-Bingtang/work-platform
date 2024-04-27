@@ -16,13 +16,17 @@
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         style="display: flex; flex-direction: column"
         :detailForm="detailForm"
-      ></ProTable>
+      >
+        <template #operationExtra>
+          <el-button link size="small" :icon="Key" @click="resetPassword">重置密码</el-button>
+        </template>
+      </ProTable>
     </div>
   </div>
 </template>
 
 <script setup lang="tsx" name="UserInfo">
-import { TreeFilter, ProTable, type TableColumnProps } from "work";
+import { TreeFilter, ProTable, useDialog, type TableColumnProps } from "work";
 import { listDeptTreeList } from "@/api/system/dept";
 import { addOne, editOne, deleteOne, deleteBatch, listPage, type User } from "@/api/user/user";
 import { useFormOptions } from "./useFormOptions";
@@ -30,8 +34,32 @@ import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
+import { Key } from "@element-plus/icons-vue";
 
 const proTableRef = shallowRef<ProTableInstance>();
+const newPassword = ref("");
+
+const { open } = useDialog();
+
+const resetPassword = () => {
+  open({
+    title: "重置密码",
+    onClose: () => (newPassword.value = ""),
+    onConfirm: handleConfirm,
+    render: () => {
+      return <el-input v-model={newPassword.value}></el-input>;
+    },
+  });
+};
+
+const handleConfirm = () => {
+  if (!newPassword.value) {
+    return;
+  }
+  // editOne({ id: row.id, userId: row.userId, password: newPassword.value }).then(() => {
+  //   proTableRef.value?.getTableList();
+  // });
+};
 
 const { statusChange } = useChange(
   "username",
@@ -73,7 +101,7 @@ const columns: TableColumnProps<User.UserInfo>[] = [
     },
   },
   { prop: "registerTime", width: 160, label: "注册时间" },
-  { prop: "operation", label: "操作", width: 160, fixed: "right" },
+  { prop: "operation", label: "操作", width: 220, fixed: "right" },
 ];
 
 const detailForm: DialogForm = {

@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ import java.util.Objects;
 @RequestMapping("/system/user")
 public class SysUserController {
 
+    private final PasswordEncoder passwordEncoder;
     private final SysUserService sysUserService;
     private final UserGroupLinkService userGroupLinkService;
     private final UserRoleLinkService userRoleLinkService;
@@ -151,6 +153,14 @@ public class SysUserController {
         }
 
         return HttpResult.ok(sysUserService.updateOne(sysUserDTO));
+    }
+
+    @PutMapping("/resetPassword")
+    @OperateLog(title = "用户管理", businessType = BusinessType.UPDATE)
+    public Response<Boolean> resetPassword(@RequestBody SysUserDTO sysUserDTO) {
+        sysUserDTO.setPassword(passwordEncoder.encode(sysUserDTO.getPassword()));
+        boolean result = sysUserService.updatePassword(sysUserDTO.getUserId(), sysUserDTO.getPassword());
+        return HttpResult.ok(result);
     }
 
     @DeleteMapping("/{ids}")

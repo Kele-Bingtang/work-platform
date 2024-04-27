@@ -1,0 +1,70 @@
+package cn.youngkbt.uac.auth.controller.system;
+
+import cn.youngkbt.core.http.HttpResult;
+import cn.youngkbt.core.http.Response;
+import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.security.utils.UacHelper;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
+import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
+import cn.youngkbt.uac.sys.model.dto.profile.ProfileInfoDTO;
+import cn.youngkbt.uac.sys.model.dto.profile.UserPasswordDTO;
+import cn.youngkbt.uac.sys.model.po.SysUser;
+import cn.youngkbt.uac.sys.service.SysUserService;
+import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
+
+/**
+ * @author Kele-Bingtang
+ * @date 2024/4/28 00:42:24
+ * @note
+ */
+@RestController
+@RequestMapping("/system/user/profile")
+@RequiredArgsConstructor
+public class SysProfileController {
+
+    private final SysUserService sysUserService;
+    private final PasswordEncoder passwordEncoder;
+
+    @PutMapping
+    @OperateLog(title = "个人信息", businessType = BusinessType.UPDATE)
+    private Response<Boolean> updateProfileInfo(ProfileInfoDTO profileInfoDTO) {
+        SysUserDTO sysUserDTO = MapstructUtil.convert(profileInfoDTO, SysUserDTO.class);
+
+        if (StringUtil.hasText(sysUserDTO.getPhone()) && sysUserService.checkPhoneUnique(sysUserDTO)) {
+            return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，手机号「" + sysUserDTO.getPhone() + "」已存在");
+        }
+        if (StringUtil.hasText(sysUserDTO.getEmail()) && sysUserService.checkEmailUnique(sysUserDTO)) {
+            return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，邮箱账号「" + sysUserDTO.getEmail() + "」已存在");
+        }
+        return HttpResult.ok(sysUserService.updateOne(sysUserDTO));
+    }
+
+    @PutMapping("/updatePassword")
+    @OperateLog(title = "个人信息", businessType = BusinessType.UPDATE)
+    private Response<Boolean> updatePassword(UserPasswordDTO userPasswordDTO) {
+        LoginUser loginUser = UacHelper.getLoginUser();
+        if (Objects.isNull(loginUser)) {
+            return HttpResult.failMessage("用户未登录");
+        }
+        SysUser sysUser = sysUserService.getById(loginUser.getId());
+        if (!passwordEncoder.matches(userPasswordDTO.getOldPassword(), sysUser.getPassword())) {
+            return HttpResult.failMessage("修改密码失败，旧密码错误");
+        }
+
+        if (!passwordEncoder.matches(userPasswordDTO.getNewPassword(), sysUser.getPassword())) {
+            return HttpResult.failMessage("新密码不能与旧密码相同");
+        }
+
+        boolean result = sysUserService.updatePassword(loginUser.getUserId(), passwordEncoder.encode(userPasswordDTO.getNewPassword()));
+        return HttpResult.ok(result);
+    }
+}

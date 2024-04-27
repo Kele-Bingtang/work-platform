@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
-    List<SysMenuVO> listMenuListByUserId(@Param("appId") String appId, @Param("userId") String userId);
+    List<SysMenuVO> listMenuListByUserId(@Param("appId") String appId, @Param("userId") String userId, @Param("onlyGetMenu") boolean onlyGetMenu);
 }
 
 

@@ -5,6 +5,7 @@ export default {
     Layout: "布局",
     ErrorLog: "错误日志",
     Error: "错误页面",
+    Profile: "我的主页",
     403: "403 页面",
     404: "404 页面",
     500: "500 页面",

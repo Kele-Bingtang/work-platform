@@ -19,7 +19,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -39,6 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements SysTenantService {
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
+    private final PasswordEncoder passwordEncoder;
     private final SysUserService sysUserService;
     private final SysRoleService sysRoleService;
     private final SysDeptService sysDeptService;
@@ -278,7 +279,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         SysUser sysUser = new SysUser()
                 .setUsername(sysTenantDTO.getUsername())
                 .setNickname(sysTenantDTO.getUsername())
-                .setPassword(new BCryptPasswordEncoder().encode(sysTenantDTO.getPassword()))
+                .setPassword(passwordEncoder.encode(sysTenantDTO.getPassword()))
                 .setTenantId(tenantId)
                 .setDeptId(deptId);
 

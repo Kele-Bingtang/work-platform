@@ -7,11 +7,14 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
+import cn.youngkbt.uac.sys.model.vo.router.RouterVO;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
@@ -38,6 +41,24 @@ import java.util.Objects;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
 
     private final RoleMenuLinkService roleMenuLinkService;
+
+    @Override
+    public List<RouterVO> listRoutes(String appId) {
+        // 查询用户拥有的菜单列表
+        LoginUser loginUser = UacHelper.getLoginUser();
+        if (Objects.isNull(loginUser)) {
+            throw new ServiceException("查询不到登录用户的信息");
+        }
+        
+        List<SysMenuVO> sysMenuVOList = listMenuListByUserId(appId, loginUser.getUsername());
+        // 构建前端需要的路由列表
+        return buildRoutes(sysMenuVOList);
+        
+    }
+
+    private List<RouterVO> buildRoutes(List<SysMenuVO> sysMenuVOList) {
+        return null;
+    }
 
     @Override
     public List<SysMenuVO> queryList(SysMenuDTO sysMenuDTO) {
@@ -88,7 +109,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public List<SysMenuVO> listMenuListByUserId(String appId, String userId) {
-        return baseMapper.listMenuListByUserId(appId, userId);
+        return baseMapper.listMenuListByUserId(appId, userId, false);
     }
 
     @Override

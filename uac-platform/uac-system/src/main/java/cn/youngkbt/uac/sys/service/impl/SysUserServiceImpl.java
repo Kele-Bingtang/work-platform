@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -46,7 +46,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Value("${default.password}")
     private String password;
 
-    private final SysPostService sysPostService;
+    private final PasswordEncoder passwordEncoder;
     private final SysDeptService sysDeptService;
     private final UserRoleLinkService userRoleLinkService;
     private final UserPostLinkService userPostLinkService;
@@ -116,9 +116,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public boolean insertOne(SysUserDTO sysUserDTO) {
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setRegisterTime(LocalDateTime.now());
-        sysUser.setPassword(new BCryptPasswordEncoder().encode(sysUser.getPassword()));
+        sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
         if (Objects.isNull(sysUser.getPassword())) {
-            sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
+            sysUser.setPassword(passwordEncoder.encode(password));
         }
         int insert = baseMapper.insert(sysUser);
 
@@ -142,6 +142,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         addOrUpdatePostAndRole(sysUserDTO, sysUserDTO.getUserId());
 
         return insert > 0;
+    }
+
+    @Override
+    public boolean updatePassword(String userId, String passowrd) {
+        return baseMapper.update(null,
+                Wrappers.<SysUser>lambdaUpdate()
+                        .set(SysUser::getPassword, password)
+                        .eq(SysUser::getUserId, userId)) > 0;
     }
 
     /**

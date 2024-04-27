@@ -66,6 +66,9 @@
             AND tsu.user_id = #{userId})
         ) AS all_roles ON trml.role_id = all_roles.role_id
         WHERE tsm.is_deleted = 0 AND tsm.status = 1
+        <if test="onlyGetMenu">
+            AND tsm.menu_type IN ('M', 'C')
+        </if>
         AND tsm.app_id = #{appId};
     </select>
 </mapper>

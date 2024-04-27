@@ -16,7 +16,12 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class LoginUser {
     /**
-     * 用户ID
+     * 主键
+     */
+    private Long id;
+    
+    /**
+     * 用户 ID
      */
     private String userId;
 

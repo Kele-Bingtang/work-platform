@@ -10,6 +10,7 @@ import cn.youngkbt.uac.core.log.annotation.OperateLog;
 import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
+import cn.youngkbt.uac.sys.model.vo.router.RouterVO;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,14 @@ public class SysMenuController {
     
     private final SysMenuService sysMenuService;
     private final RoleMenuLinkService roleMenuLinkService;
+
+    @GetMapping("/listRoutes")
+    @Operation(summary = "路由列表查询", description = "查询前端需要的路由列表")
+    public Response<List<RouterVO>> listRoutes(String appId) {
+        List<RouterVO> routerVOList = sysMenuService.listRoutes(appId);
+        return HttpResult.ok(routerVOList);
+    }
+     
 
     @GetMapping("/list")
     @Operation(summary = "菜单列表查询", description = "通过查询条件查询菜单列表")
@@ -133,4 +142,5 @@ public class SysMenuController {
 
         return HttpResult.ok(sysMenuService.removeOne(id));
     }
+    
 }

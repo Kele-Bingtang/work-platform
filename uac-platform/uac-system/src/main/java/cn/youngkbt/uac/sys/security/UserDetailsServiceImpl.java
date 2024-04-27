@@ -63,6 +63,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .toList();
         
         SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(), authorities);
+        securityUser.setId(user.getId());
         securityUser.setUserId(user.getUserId());
         securityUser.setDeptId(user.getDeptId());
         securityUser.setTenantId(user.getTenantId());

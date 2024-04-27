@@ -33,7 +33,7 @@
  * @param meta.useTooltip ==> 菜单的文字超出后，是否使用 el-toolTip 提示，仅针二级路由及以上生效。默认读取全局的 routeUseTooltip（src/config/settings.ts）
  */
 
-import { HomeFilled } from "@element-plus/icons-vue";
+import { HomeFilled, User } from "@element-plus/icons-vue";
 
 export const HOME_URL = "/home";
 export const HOME_NAME = "Home";
@@ -72,6 +72,12 @@ export const constantRoutes: RouterConfigRaw[] = [
         name: "ErrorLog",
         component: () => import("@/views/errorLog/index.vue"),
         meta: { title: "错误日志", isKeepAlive: false, hideInMenu: true },
+      },
+      {
+        path: "/profile",
+        name: "Profile",
+        component: () => import("@/views/profile/index.vue"),
+        meta: { title: "我的主页", icon: User },
       },
     ],
   },

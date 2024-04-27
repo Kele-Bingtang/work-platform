@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * @author Kele-Bingtang
@@ -17,6 +16,11 @@ import java.util.Date;
 @Setter
 @Getter
 public class SecurityUser extends User {
+    /**
+     * 主键
+     */
+    private Long id;
+    
     /**
      * 用户ID
      */

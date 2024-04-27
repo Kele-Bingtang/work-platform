@@ -6,6 +6,7 @@ import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
+import cn.youngkbt.uac.sys.model.vo.router.RouterVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -16,6 +17,14 @@ import java.util.List;
  * @note 针对表【t_sys_menu(菜单表)】的数据库操作Service
  */
 public interface SysMenuService extends IService<SysMenu> {
+
+    /**
+     * 查询前端需要的路由列表
+     *
+     * @param appId 应用 ID
+     * @return 路由列表
+     */
+    List<RouterVO> listRoutes(String appId);
 
     /**
      * 通过条件查询菜单列表

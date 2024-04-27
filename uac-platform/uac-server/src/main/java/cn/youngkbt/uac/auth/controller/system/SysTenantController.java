@@ -6,6 +6,8 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.constant.TenantConstant;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysTenantService;
@@ -49,6 +51,7 @@ public class SysTenantController {
 
     @PostMapping
     @Operation(summary = "租户列表新增", description = "新增租户")
+    @OperateLog(title = "租户管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:tenant:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
         if (sysTenantService.checkCompanyNameUnique(sysTenantDTO)) {
@@ -59,6 +62,7 @@ public class SysTenantController {
 
     @PutMapping
     @Operation(summary = "租户列表修改", description = "修改租户")
+    @OperateLog(title = "租户管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:tenant:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
         if (sysTenantService.checkCompanyNameUnique(sysTenantDTO)) {
@@ -69,6 +73,7 @@ public class SysTenantController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "租户列表删除", description = "通过主键批量删除租户")
+    @OperateLog(title = "租户管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:tenant:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> tenantIds) {
         if (tenantIds.contains(TenantConstant.DEFAULT_TENANT_ID)) {

@@ -30,13 +30,13 @@ const renderCellData = (item: TableColumnProps, scope: RenderScope<any>, enumDat
 
 // 获取 tag 标签
 const renderTag = (item: any, data: any, last = true, index?: number) => {
-  const { tagType = "primary", tagEffect = "light" } = item;
+  const { tagType, tagEffect } = item;
 
   if (item.tagEl === "el-check-tag") {
     // 直接 index ? : 是不行的，因为这样 index = 0 是 false
     return (
       <>
-        <ElCheckTag key={index} checked type={tagType}>
+        <ElCheckTag key={index} checked type={tagType || "primary"}>
           {data}
         </ElCheckTag>
         {last ? "" : " "}
@@ -45,7 +45,7 @@ const renderTag = (item: any, data: any, last = true, index?: number) => {
   }
   return (
     <>
-      <ElTag key={index} type={tagType} effect={tagEffect}>
+      <ElTag key={index} type={tagType} effect={tagEffect || "light"}>
         {data}
       </ElTag>
       {last ? "" : " "}
@@ -76,7 +76,7 @@ const RenderTableColumn = (item: TableColumnProps) => {
                 if (Array.isArray(enumData)) {
                   return enumData.map((e, index) => renderTag(e, data[index], enumData.length - 1 === index, index));
                 }
-                return renderTag(getEnumData, data);
+                return renderTag(enumData, data);
               }
               return Array.isArray(data) ? data.join(",") : data;
             },

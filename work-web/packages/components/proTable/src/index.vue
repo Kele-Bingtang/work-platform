@@ -18,7 +18,7 @@
             :selected-list-ids="selectedListIds"
             :selected-list="selectedList"
             :is-selected="isSelected"
-            v-bind="{ operate: dialogOperateRef }"
+            :operate="dialogOperateRef"
           >
             <el-button
               v-if="visibleButton(detailForm?.addApi, detailForm?.useAdd)"
@@ -42,7 +42,13 @@
             >
               删除
             </el-button>
-            <slot name="tableHeaderExtra" v-bind="{ operate: dialogOperateRef }"></slot>
+            <slot
+              name="tableHeaderExtra"
+              :selected-list-ids="selectedListIds"
+              :selected-list="selectedList"
+              :is-selected="isSelected"
+              :operate="dialogOperateRef"
+            ></slot>
           </slot>
         </div>
         <div v-if="toolButton" class="header-button-ri">
@@ -213,7 +219,7 @@ import { ElTable } from "element-plus";
 import { useTable, type Table } from "./hooks/useTable";
 import { useSelection } from "./hooks/useSelection";
 import { SearchForm, Pagination, type BreakPoint } from "@work/components";
-import type { TableColumnProps } from "./interface";
+import type { TableColumnProps, DialogOperateInstance } from "./interface";
 import { Refresh, Plus, Operation, Search, Edit, Delete, Coin, Download } from "@element-plus/icons-vue";
 import { lastProp, filterEnum, filterEnumLabel, handleRowAccordingToProp, downloadFile } from "./utils";
 import ColSetting from "./components/ColSetting.vue";
@@ -405,7 +411,7 @@ const colSetting = tableColumns.value!.filter(
 const openColSetting = () => colRef.value.openColSetting();
 
 // 操作框
-const dialogOperateRef = ref();
+const dialogOperateRef = shallowRef<DialogOperateInstance>();
 
 // 编辑回调
 const handleEdit = (scope: any, item: TableColumnProps) => {

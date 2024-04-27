@@ -67,6 +67,11 @@ public class SysMenuDTO {
     private Integer orderNum;
 
     /**
+     * 权限标识
+     */
+    private String permission;
+
+    /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
     private String menuType;

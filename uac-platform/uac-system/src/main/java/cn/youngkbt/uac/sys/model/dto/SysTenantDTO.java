@@ -110,6 +110,9 @@ public class SysTenantDTO {
      */
     private Integer status;
 
+    /**
+     * 应用 ID
+     */
     private String appId;
 
 }

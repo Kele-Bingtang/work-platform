@@ -124,10 +124,10 @@ export const editOne = (data: RequiredKeyPartialOther<UserGroup.UserGroupInfo, "
 };
 
 /**
- * 修改用户组和用户䣌关联信息
+ * 修改用户组和用户的关联信息
  */
 export const editUserGroupLinkInfo = (data: RequiredKeyPartialOther<UserGroup.UserGroupLinkInfo, "id">) => {
-  return http.put<http.Response<boolean>>(`${baseUri}/updateLinkInfo`, data);
+  return http.put<http.Response<boolean>>(`${baseUri}/editUserGroupUserLink`, data);
 };
 
 export const deleteOne = (data: UserGroup.UserGroupInfo) => {

@@ -212,7 +212,7 @@ const handleDelete = async ({ row }: any) => {
   }
 };
 
-const handleDeleteBatch = async (selectedListIds: string[], selectedList: any, fallback: () => {}) => {
+const handleDeleteBatch = async (selectedListIds: string[], selectedList: any, fallback: () => void) => {
   ElMessageBox.confirm(`删除所选信息?`, "温馨提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",

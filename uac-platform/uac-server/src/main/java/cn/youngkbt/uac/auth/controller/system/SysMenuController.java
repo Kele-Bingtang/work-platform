@@ -6,6 +6,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
@@ -81,6 +83,7 @@ public class SysMenuController {
 
     @PostMapping
     @Operation(summary = "菜单新增", description = "新增菜单")
+    @OperateLog(title = "菜单管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:menu:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
         if (sysMenuService.checkMenuCodeUnique(sysMenuDTO)) {
@@ -96,6 +99,7 @@ public class SysMenuController {
 
     @PutMapping
     @Operation(summary = "菜单修改", description = "修改菜单")
+    @OperateLog(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:menu:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
 
@@ -116,6 +120,7 @@ public class SysMenuController {
 
     @DeleteMapping("/{id}/{menuId}")
     @Operation(summary = "菜单删除", description = "通过主键删除菜单")
+    @OperateLog(title = "菜单管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:menu:remove')")
     public Response<Boolean> removeOne(@PathVariable Long id, @PathVariable String menuId) {
         if (sysMenuService.hasChild(menuId)) {

@@ -33,7 +33,7 @@ public class SysLoginLog implements Serializable {
     private Long id;
 
     /**
-     * 访问 ID
+     * 登录 ID
      */
     @TableField(fill = FieldFill.INSERT)
     @FieldValueFill(ValueStrategy.SNOWFLAKE)
@@ -80,7 +80,7 @@ public class SysLoginLog implements Serializable {
     private Integer status;
 
     /**
-     * 访问时间
+     * 登录时间
      */
     private LocalDateTime loginTime;
 

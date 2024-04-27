@@ -7,6 +7,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.utils.UacHelper;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkInfoDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
@@ -93,6 +95,7 @@ public class SysUserController {
 
     @PostMapping("/addUserGroupsToUser")
     @Operation(summary = "添加用户组到用户", description = "添加用户组到用户（多个用户组）")
+    @OperateLog(title = "用户用户组管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:user:add')")
     public Response<Boolean> addUserGroupsToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkUserGroupDTO userLinkUserGroupDTO) {
         if (userGroupLinkService.checkUserExistUserGroups(userLinkUserGroupDTO)) {
@@ -104,6 +107,7 @@ public class SysUserController {
 
     @PostMapping("/addRolesToUser")
     @Operation(summary = "添加角色到用户", description = "添加角色到用户（多个角色）")
+    @OperateLog(title = "用户角色管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:user:add')")
     public Response<Boolean> addRolesToUser(@Validated(RestGroup.AddGroup.class) @RequestBody UserLinkRoleDTO userLinkRoleDTO) {
         if (userRoleLinkService.checkUserExistRoles(userLinkRoleDTO)) {
@@ -115,6 +119,7 @@ public class SysUserController {
 
     @PostMapping
     @Operation(summary = "用户列表新增", description = "新增用户列表")
+    @OperateLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:user:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
@@ -132,6 +137,7 @@ public class SysUserController {
 
     @PutMapping
     @Operation(summary = "用户列表修改", description = "修改用户列表")
+    @OperateLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:user:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
@@ -149,6 +155,7 @@ public class SysUserController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "用户列表删除", description = "通过主键批量删除用户列表")
+    @OperateLog(title = "用户管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:user:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> userIds) {
         LoginUser loginUser = UacHelper.getLoginUser();

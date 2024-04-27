@@ -169,7 +169,7 @@ export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
  * 修改用户和角色关联信息
  */
 export const editUserRoleLinkInfo = (data: RequiredKeyPartialOther<Role.RoleLinkInfo, "id">) => {
-  return http.put<http.Response<boolean>>(`${baseUri}/updateLinkInfo`, data);
+  return http.put<http.Response<boolean>>(`${baseUri}/editUserRoleLink`, data);
 };
 
 /**

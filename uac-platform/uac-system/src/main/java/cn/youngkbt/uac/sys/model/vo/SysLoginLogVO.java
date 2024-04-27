@@ -12,6 +12,16 @@ import java.time.LocalDateTime;
 @Data
 public class SysLoginLogVO implements Serializable {
     /**
+     * 主键
+     */
+    private Long id;
+    
+    /**
+     * 登录 ID
+     */
+    private String loginId;
+    
+    /**
      * 用户账号
      */
     private String username;
@@ -52,7 +62,7 @@ public class SysLoginLogVO implements Serializable {
     private Integer status;
 
     /**
-     * 访问时间
+     * 登录时间
      */
     private LocalDateTime loginTime;
 

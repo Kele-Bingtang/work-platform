@@ -1,29 +1,18 @@
-package cn.youngkbt.uac.sys.model.vo;
+package cn.youngkbt.uac.core.log.event;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 操作日志记录
- * @TableName t_sys_opera_log
+ * @author Kele-Bingtang
+ * @date 2024/4/27 16:22:34
+ * @note
  */
 @Data
-@AutoMapper(target = SysOperaLogVO.class, reverseConvertGenerate = false)
-public class SysOperaLogVO implements Serializable {
-    /**
-     * 主键
-     */
-    private Long id;
-
-    /**
-     * 日志 ID
-     */
-    private String operaId;
-
+public class OperaLogEvent implements Serializable {
     /**
      * 模块标题
      */
@@ -102,8 +91,13 @@ public class SysOperaLogVO implements Serializable {
     /**
      * 消耗时间
      */
-    private Integer costTime;
+    private Long costTime;
 
-    @TableField(exist = false)
+    /**
+     * 租户编号
+     */
+    private String tenantId;
+
+    @Serial
     private static final long serialVersionUID = 1L;
 }

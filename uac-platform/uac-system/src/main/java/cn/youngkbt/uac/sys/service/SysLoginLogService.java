@@ -8,6 +8,8 @@ import cn.youngkbt.uac.sys.model.po.SysLoginLog;
 import cn.youngkbt.uac.sys.model.vo.SysLoginLogVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2023-11-11 23:40:21
@@ -24,9 +26,26 @@ public interface SysLoginLogService extends IService<SysLoginLog> {
 
     /**
      * 通过条件查询登录日志列表（支持分页）
+     *
      * @param sysLoginLogDTO 查询条件
-     * @param pageQuery 分页条件
+     * @param pageQuery      分页条件
      * @return 登录日志列表
      */
     TablePage<SysLoginLogVO> listPage(SysLoginLogDTO sysLoginLogDTO, PageQuery pageQuery);
+
+    /**
+     * 批量删除登录日志
+     *
+     * @param ids 登录日志id列表
+     * @return 是否删除成功
+     */
+    Boolean removeBatch(List<Long> ids);
+
+    /**
+     * 清空所有登录日志
+     *
+     * @return 是否清空成功
+     */
+    Boolean cleanAllOperaLog();
+
 }

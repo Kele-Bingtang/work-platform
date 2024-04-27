@@ -6,6 +6,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysPostDTO;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
 import cn.youngkbt.uac.sys.model.vo.extra.UserSelectPostVo;
@@ -58,6 +60,7 @@ public class SysPostController {
 
     @PostMapping
     @Operation(summary = "新增岗位", description = "新增岗位")
+    @OperateLog(title = "新增管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:post:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysPostDTO sysPostDTO) {
         if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
@@ -72,6 +75,7 @@ public class SysPostController {
 
     @PutMapping
     @Operation(summary = "修改岗位", description = "修改岗位")
+    @OperateLog(title = "新增管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:post:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysPostDTO sysPostDTO) {
         if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
@@ -90,6 +94,7 @@ public class SysPostController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "删除岗位", description = "通过主键批量删除岗位")
+    @OperateLog(title = "新增管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:post:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> postIds) {
         if (userPostLinkService.checkPostExistUser(postIds)) {

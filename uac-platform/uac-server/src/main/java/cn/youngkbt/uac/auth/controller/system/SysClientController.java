@@ -5,6 +5,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysClientDTO;
 import cn.youngkbt.uac.sys.model.vo.SysClientVO;
 import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
@@ -59,6 +61,7 @@ public class SysClientController {
 
     @PostMapping
     @Operation(summary = "客户端新增", description = "新增客户端")
+    @OperateLog(title = "客户端管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:client:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDTO) {
         if (clientService.checkClientKeyUnique(sysClientDTO)) {
@@ -75,6 +78,7 @@ public class SysClientController {
      */
     @PutMapping
     @Operation(summary = "客户端修改", description = "修改客户端")
+    @OperateLog(title = "客户端管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:client:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDTO) {
         if (clientService.checkClientKeyUnique(sysClientDTO)) {
@@ -89,6 +93,7 @@ public class SysClientController {
 
     @PutMapping("/updateStatus")
     @Operation(summary = "客户端状态修改", description = "修改客户端状态")
+    @OperateLog(title = "客户端管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:client:edit')")
     public Response<Boolean> updateStatus(@RequestBody SysClientDTO sysClientDTO) {
         return HttpResult.ok(clientService.updateStatus(sysClientDTO.getId(), sysClientDTO.getStatus()));
@@ -96,6 +101,7 @@ public class SysClientController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "客户端删除", description = "通过主键批量删除客户端")
+    @OperateLog(title = "客户端管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:client:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> clientIds) {
         if (sysAppService.checkExitApp(clientIds)) {

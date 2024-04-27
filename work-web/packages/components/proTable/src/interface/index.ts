@@ -2,6 +2,7 @@ import type { VNode, ComponentPublicInstance, ComputedRef, Ref } from "vue";
 import type { BreakPoint, Responsive, FormColumnProps } from "@work/components";
 import type { TableColumnCtx } from "element-plus";
 import ProTable, { type ProTableProps } from "../index.vue";
+import DialogOperate, { type DialogFormProps } from "../components/DialogOperate.vue";
 
 type ValueType = string | number | boolean | any[];
 
@@ -82,4 +83,8 @@ export interface TableColumnProps<T = any>
   handleDelete?: (scope: any, expose: any) => void;
 }
 
+export type DialogOperateInstance = Omit<
+  InstanceType<typeof DialogOperate>,
+  keyof ComponentPublicInstance | keyof DialogFormProps
+>;
 export type ProTableInstance = Omit<InstanceType<typeof ProTable>, keyof ComponentPublicInstance | keyof ProTableProps>;

@@ -5,6 +5,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.dto.UserRoleLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.RoleLinkDeptDTO;
@@ -58,6 +60,7 @@ public class SysRoleController {
 
     @PostMapping
     @Operation(summary = "角色列表新增", description = "新增角色")
+    @OperateLog(title = "角色管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
         if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
@@ -72,6 +75,7 @@ public class SysRoleController {
 
     @PutMapping
     @Operation(summary = "角色列表修改", description = "修改角色")
+    @OperateLog(title = "角色管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:role:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
         if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
@@ -86,6 +90,7 @@ public class SysRoleController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "角色列表删除", description = "通过主键批量删除角色列表")
+    @OperateLog(title = "角色管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:role:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> roleIds) {
         return HttpResult.ok(sysRoleService.removeBatch(List.of(ids), roleIds));
@@ -125,6 +130,7 @@ public class SysRoleController {
 
     @PostMapping("/addUserGroupsToRole")
     @Operation(summary = "添加角色到用户组", description = "添加角色到用户组（多个用户组）")
+    @OperateLog(title = "用户组角色关联管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> addUserGroupsToRole(@Validated(RestGroup.AddGroup.class) @RequestBody RoleLinkUserGroupDTO roleLinkUserGroupDTO) {
         if (userGroupRoleLinkService.checkRoleExistUserGroups(roleLinkUserGroupDTO)) {
@@ -136,6 +142,7 @@ public class SysRoleController {
 
     @PostMapping("/addUsersToRole")
     @Operation(summary = "添加用户到角色", description = "添加用户到角色（多个用户）")
+    @OperateLog(title = "用户角色关联管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> addUsersToRole(@Validated(RestGroup.AddGroup.class) @RequestBody RoleLinkUserDTO roleLinkUserDTO) {
         if (userRoleLinkService.checkRoleExistUser(roleLinkUserDTO)) {
@@ -147,6 +154,7 @@ public class SysRoleController {
 
     @DeleteMapping("/removeUserFromRole/{ids}")
     @Operation(summary = "移出角色", description = "将用户移出角色")
+    @OperateLog(title = "用户组角色关联管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:role:remove')")
     public Response<Boolean> removeUserFromRole(@PathVariable Long[] ids) {
         boolean result = userRoleLinkService.removeUserFromRole(List.of(ids));
@@ -155,21 +163,24 @@ public class SysRoleController {
 
     @DeleteMapping("/removeUserGroupFromRole/{ids}")
     @Operation(summary = "移出角色", description = "将用户组移出角色")
+    @OperateLog(title = "用户组角色关联管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:role:remove')")
     public Response<Boolean> removeUserGroupFromRole(@PathVariable Long[] ids) {
         boolean result = userGroupRoleLinkService.removeUserGroupFromRole(List.of(ids));
         return HttpResult.ok(result);
     }
 
-    @PutMapping("/updateLinkInfo")
+    @PutMapping("/editUserRoleLink")
     @Operation(summary = "用户关联角色信息修改", description = "修改用户组和角色关联信息")
+    @OperateLog(title = "用户角色关联管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:role:edit')")
-    public Response<Boolean> updateLinkInfo(@Validated(RestGroup.EditGroup.class) @RequestBody UserRoleLinkDTO userRoleLinkDTO) {
+    public Response<Boolean> editUserRoleLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserRoleLinkDTO userRoleLinkDTO) {
         return HttpResult.ok(userRoleLinkService.updateOne(userRoleLinkDTO));
     }
     
     @PostMapping("/addMenusToRole")
     @Operation(summary = "添加菜单到角色", description = "添加菜单到角色")
+    @OperateLog(title = "角色菜单关联管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> addMenusToRole(@RequestBody SysRoleDTO sysRoleDTO) {
         return HttpResult.ok(roleMenuLinkService.addMenusToRole(sysRoleDTO, true));
@@ -177,6 +188,7 @@ public class SysRoleController {
 
     @PostMapping("/addDeptsToRole")
     @Operation(summary = "添加部门到角色", description = "添加部门到角色")
+    @OperateLog(title = "角色部门关联管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> addDeptsToRole(@RequestBody RoleLinkDeptDTO roleLinkDeptDTO) {
         return HttpResult.ok(roleDeptLinkService.addDeptsToRole(roleLinkDeptDTO, true));

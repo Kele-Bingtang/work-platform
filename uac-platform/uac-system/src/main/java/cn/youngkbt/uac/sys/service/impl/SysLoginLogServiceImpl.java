@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -96,10 +97,10 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         if (Objects.isNull(pageQuery.getOrderRuleList())) {
             wrapper.orderByDesc(SysLoginLog::getLoginId);
         }
-        
-        Page<SysLoginLog> sysMenuPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
 
-        return TablePage.build(sysMenuPage, SysLoginLogVO.class);
+        Page<SysLoginLog> sysLoginLogPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+
+        return TablePage.build(sysLoginLogPage, SysLoginLogVO.class);
     }
 
     private LambdaQueryWrapper<SysLoginLog> buildQueryWrapper(SysLoginLogDTO sysLoginLogDTO) {
@@ -115,6 +116,16 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
         }
 
         return wrapper;
+    }
+
+    @Override
+    public Boolean removeBatch(List<Long> ids) {
+        return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public Boolean cleanAllOperaLog() {
+        return baseMapper.delete(new LambdaQueryWrapper<>()) > 0;
     }
 }
 

@@ -389,7 +389,7 @@ DROP TABLE IF EXISTS `t_sys_opera_log`;
 CREATE TABLE `t_sys_opera_log` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `opera_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '日志 ID',
-  `business_type` tinyint DEFAULT NULL COMMENT '业务类型（0 其它 1 新增 2 修改 3 删除）',
+  `business_type` tinyint DEFAULT NULL COMMENT '业务类型（0 其它 1 新增 2 修改 3 删除 ...）',
   `method` varchar(64) DEFAULT NULL COMMENT '方法名称',
   `request_method` varchar(10) DEFAULT NULL COMMENT '请求方式',
   `operator_type` tinyint DEFAULT NULL COMMENT '操作类别（0 其它 1 后台用户 2 手机端用户）',

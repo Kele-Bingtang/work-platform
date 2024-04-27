@@ -2,7 +2,11 @@ package cn.youngkbt.uac.sys.model.po;
 
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
+import cn.youngkbt.uac.core.log.event.OperaLogEvent;
+import cn.youngkbt.uac.sys.model.vo.SysOperaLogVO;
 import com.baomidou.mybatisplus.annotation.*;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
 import lombok.Data;
 
 import java.io.Serial;
@@ -13,9 +17,13 @@ import java.time.LocalDateTime;
  * @author Kele-Bingtang
  * @date 2023-23-12 00:23:54
  * @note 操作日志记录
-*/
+ */
 @TableName("t_sys_opera_log")
 @Data
+@AutoMappers({
+        @AutoMapper(target = OperaLogEvent.class, convertGenerate = false),
+        @AutoMapper(target = SysOperaLogVO.class, reverseConvertGenerate = false)
+})
 public class SysOperaLog implements Serializable {
     /**
      * 主键
@@ -31,7 +39,12 @@ public class SysOperaLog implements Serializable {
     private String operaId;
 
     /**
-     * 业务类型（0 其它 1 新增 2 修改 3 删除）
+     * 模块标题
+     */
+    private String title;
+
+    /**
+     * 业务类型（0 其它 1 新增 2 修改 3 删除 ...）
      */
     private Integer businessType;
 
@@ -96,9 +109,9 @@ public class SysOperaLog implements Serializable {
     private Integer status;
 
     /**
-     * 创建时间
+     * 操作时间
      */
-    private LocalDateTime createTime;
+    private LocalDateTime operaTime;
 
     /**
      * 消耗时间
@@ -109,16 +122,6 @@ public class SysOperaLog implements Serializable {
      * 租户编号
      */
     private String tenantId;
-
-    /**
-     * 应用 ID
-     */
-    private String appId;
-
-    /**
-     * 菜单 ID
-     */
-    private String menuId;
 
     @Serial
     @TableField(exist = false)

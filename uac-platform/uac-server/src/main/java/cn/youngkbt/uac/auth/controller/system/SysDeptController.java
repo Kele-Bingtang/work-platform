@@ -7,6 +7,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
 import cn.youngkbt.uac.sys.service.SysDeptService;
@@ -103,6 +105,7 @@ public class SysDeptController {
 
     @PostMapping
     @Operation(summary = "部门新增", description = "新增部门")
+    @OperateLog(title = "部门管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:dept:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDeptDTO sysDeptDTO) {
         if (sysDeptService.checkDeptNameUnique(sysDeptDTO)) {
@@ -114,6 +117,7 @@ public class SysDeptController {
 
     @PutMapping
     @Operation(summary = "部门修改", description = "修改部门")
+    @OperateLog(title = "部门管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:dept:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDeptDTO sysDeptDTO) {
         String deptId = sysDeptDTO.getDeptId();
@@ -140,6 +144,7 @@ public class SysDeptController {
 
     @DeleteMapping("/{id}/{deptId}")
     @Operation(summary = "部门删除", description = "通过主键删除部门")
+    @OperateLog(title = "部门管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:dept:remove')")
     public Response<Boolean> removeOne(@PathVariable Long id, @PathVariable String deptId) {
         if (sysDeptService.hasChild(deptId)) {

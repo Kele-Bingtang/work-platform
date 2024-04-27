@@ -5,6 +5,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysUserGroupDTO;
 import cn.youngkbt.uac.sys.model.dto.UserGroupLinkDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserGroupLinkInfoDTO;
@@ -88,6 +90,7 @@ public class SysUserGroupController {
 
     @PostMapping("/addRolesToUserGroup")
     @Operation(summary = "添加角色到用户组", description = "添加角色到用户组（多个角色）")
+    @OperateLog(title = "用户组角色关联管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:userGroup:add')")
     public Response<Boolean> addRolesToUserGroup(@Validated(RestGroup.AddGroup.class) @RequestBody UserGroupLinkRoleDTO userGroupLinkRoleDTO) {
         if (userGroupRoleLinkService.checkRolesExistUserGroup(userGroupLinkRoleDTO)) {
@@ -99,6 +102,7 @@ public class SysUserGroupController {
 
     @PostMapping("/addUsersToGroup")
     @Operation(summary = "添加用户到用户组", description = "添加用户到用户组（多个用户）")
+    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:userGroup:add')")
     public Response<Boolean> addUsersToUserGroup(@Validated(RestGroup.AddGroup.class) @RequestBody UserGroupLinkUserDTO userGroupLinkUserDTO) {
         if (userGroupLinkService.checkUsersExistUserGroup(userGroupLinkUserDTO)) {
@@ -110,21 +114,24 @@ public class SysUserGroupController {
 
     @DeleteMapping("/removeUserFromUserGroup/{ids}")
     @Operation(summary = "移出用户组", description = "将用户移出项目组")
+    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:userGroup:remove')")
     public Response<Boolean> removeUserFromUserGroup(@PathVariable Long[] ids) {
         boolean result = userGroupLinkService.removeUserFromUserGroup(List.of(ids));
         return HttpResult.ok(result);
     }
 
-    @PutMapping("/updateLinkInfo")
+    @PutMapping("/editUserGroupUserLink")
     @Operation(summary = "用户关联用户信息修改", description = "修改用户组和用户䣌关联信息")
+    @OperateLog(title = "用户用户组关联管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
-    public Response<Boolean> updateLinkInfo(@Validated(RestGroup.EditGroup.class) @RequestBody UserGroupLinkDTO userGroupLinkDTO) {
+    public Response<Boolean> editUserGroupUserLink(@Validated(RestGroup.EditGroup.class) @RequestBody UserGroupLinkDTO userGroupLinkDTO) {
         return HttpResult.ok(userGroupLinkService.updateOne(userGroupLinkDTO));
     }
 
     @PostMapping
     @Operation(summary = "用户组列表新增", description = "新增用户组")
+    @OperateLog(title = "用户组管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:userGroup:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDTO) {
         if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDTO)) {
@@ -136,6 +143,7 @@ public class SysUserGroupController {
 
     @PutMapping
     @Operation(summary = "用户组列表修改", description = "修改用户组")
+    @OperateLog(title = "用户组管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDTO) {
         if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDTO)) {
@@ -146,6 +154,7 @@ public class SysUserGroupController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "用户组列表删除", description = "通过主键批量删除用户组列表")
+    @OperateLog(title = "用户组管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:userGroup:remove')")
     public Response<Boolean> removeBatch(@PathVariable Long[] ids, @RequestBody List<String> userGroupIds) {
         return HttpResult.ok(sysUserGroupService.removeBatch(List.of(ids), userGroupIds));

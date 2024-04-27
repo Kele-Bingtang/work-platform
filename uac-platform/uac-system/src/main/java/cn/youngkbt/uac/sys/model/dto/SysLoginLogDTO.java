@@ -1,7 +1,5 @@
 package cn.youngkbt.uac.sys.model.dto;
 
-import cn.youngkbt.core.validate.RestGroup;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.io.Serial;
@@ -49,12 +47,6 @@ public class SysLoginLogDTO implements Serializable {
      * 登录时间
      */
     private List<String> loginTime;
-
-    /**
-     * 租户编号
-     */
-    @NotBlank(message = "租户 ID 不能为空", groups = {RestGroup.AddGroup.class})
-    private String tenantId;
 
     @Serial
     private static final long serialVersionUID = 1L;

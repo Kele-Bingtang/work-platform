@@ -6,6 +6,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
@@ -62,6 +64,7 @@ public class SysDictDataController {
 
     @PostMapping
     @Operation(summary = "字典数据新增", description = "新增字典数据")
+    @OperateLog(title = "字典数据管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:dict:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
         if (sysDictDataService.checkDictDataValueUnique(sysDictDataDTO)) {
@@ -73,6 +76,7 @@ public class SysDictDataController {
 
     @PutMapping
     @Operation(summary = "字典数据修改", description = "修改字典数据")
+    @OperateLog(title = "字典数据管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:dict:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
         if (sysDictDataDTO.getParentId().equals(sysDictDataDTO.getDataId())) {
@@ -87,6 +91,7 @@ public class SysDictDataController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "字典数据删除", description = "通过主键批量删除字典数据")
+    @OperateLog(title = "字典数据管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:dict:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return HttpResult.ok(sysDictDataService.removeBatch(List.of(ids)));

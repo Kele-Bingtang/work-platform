@@ -5,6 +5,8 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.log.annotation.OperateLog;
+import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysAppDTO;
 import cn.youngkbt.uac.sys.model.vo.SysAppVO;
 import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
@@ -74,6 +76,7 @@ public class SysAppController {
 
     @PostMapping
     @Operation(summary = "应用新增", description = "新增应用")
+    @OperateLog(title = "应用管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:app:add')")
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysAppDTO sysAppDTO) {
         if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
@@ -85,6 +88,7 @@ public class SysAppController {
 
     @PutMapping
     @Operation(summary = "应用修改", description = "修改应用")
+    @OperateLog(title = "应用管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:app:edit')")
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysAppDTO sysAppDTO) {
         if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
@@ -95,6 +99,7 @@ public class SysAppController {
 
     @DeleteMapping("/{ids}")
     @Operation(summary = "应用删除", description = "通过主键批量删除应用")
+    @OperateLog(title = "应用管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:app:remove')")
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> appIds) {
         if (sysRoleService.checkAppExitRole(appIds)) {

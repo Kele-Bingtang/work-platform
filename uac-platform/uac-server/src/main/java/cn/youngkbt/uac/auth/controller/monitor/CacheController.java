@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.RedisServerCommands;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ public class CacheController {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('system:cache:list')")
     public Response<CacheInfo> list() {
 
         RedisServerCommands redisServerCommands = redisTemplate.getRequiredConnectionFactory().getConnection().serverCommands();

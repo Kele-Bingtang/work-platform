@@ -162,7 +162,7 @@ function messageType(
 }
 
 function isMessageProps(value: MessageProps | MessageParams): value is MessageProps {
-  return isString(value) || !(value as MessageParams).message;
+  return isString(value) || !(value as MessageParams)?.message;
 }
 
 function isMessageParams(params: MessageParams | Omit<MessageParams, "type">): params is MessageParams {

@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * @author Kele-Bingtang
@@ -49,6 +47,16 @@ public class UacHelper {
 
     public static void cacheUserInfo(LoginUser loginUser, Long timeout) {
         RedisUtil.setForValue(AuthRedisConstant.USER_INFO_KEY + loginUser.getUsername(), loginUser, Duration.ofMillis(timeout));
+    }
+
+    public static boolean updateUserInfo(LoginUser loginUser) {
+        String key = AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername();
+        // 单位为秒
+        Long expire = RedisUtil.getExpire(key);
+        // 获取过期时间
+        Date date = new Date(Instant.now().toEpochMilli() + expire * 1000);
+        RedisUtil.setForValue(AuthRedisConstant.USER_INFO_KEY + loginUser.getUsername(), loginUser);
+        return RedisUtil.expireAt(key, date);
     }
 
     public static String getUsername() {

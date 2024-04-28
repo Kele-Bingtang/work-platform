@@ -1,7 +1,6 @@
 package cn.youngkbt.redis.config;
 
 import cn.youngkbt.core.date.DatePatternPlus;
-import cn.youngkbt.core.serializer.JacksonNumberSerializer;
 import cn.youngkbt.redis.utils.RedisUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -13,7 +12,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -64,15 +62,16 @@ public class RedisTemplateConfig {
      *
      * @return redisTemplate
      */
-    @Bean
-    public RedisTemplate<String, Object> tranRedisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = redisTemplate();
-        // 支持 spring 事务，如 @Transactional 注解
-        redisTemplate.setEnableTransactionSupport(true);
-        return redisTemplate;
-    }
+    // @Bean
+    // public RedisTemplate<String, Object> tranRedisTemplate() {
+    //     RedisTemplate<String, Object> redisTemplate = redisTemplate();
+    //     // 支持 spring 事务，如 @Transactional 注解
+    //     redisTemplate.setEnableTransactionSupport(true);
+    //     return redisTemplate;
+    // }
     
     public <T> RedisTemplate<String, T> initRedisTemplate(RedisTemplate<String, T> redisTemplate) {
+        
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -82,19 +81,15 @@ public class RedisTemplateConfig {
         // 解决 Redis 无法存入 LocalDateTime 等 JDK8 的时间类
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         /*
-         * 1. 新增 Long 类型序列化规则，数值超过 2^53-1，在 JS 会出现精度丢失问题，因此 Long 自动序列化为字符串类型
-         * 2. 新增 LocalDateTime 序列化、反序列化规则
+         * 新增 LocalDateTime 序列化、反序列化规则
          */
         javaTimeModule
-                .addSerializer(Long.class, JacksonNumberSerializer.INSTANCE)
-                .addSerializer(Long.TYPE, JacksonNumberSerializer.INSTANCE)
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DatePatternPlus.NORM_DATETIME_FORMATTER)) // yyyy-MM-dd HH:mm:ss
-                .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_LOCAL_DATE))// yyyy-MM-dd
-                .addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ISO_LOCAL_TIME))// HH:mm:ss
-                .addSerializer(Instant.class, InstantSerializer.INSTANCE)// Instant 类型序列化
-                .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DatePatternPlus.NORM_DATETIME_FORMATTER))// yyyy-MM-dd HH:mm:ss
-                .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ISO_LOCAL_DATE))// yyyy-MM-dd
-                .addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ISO_LOCAL_TIME))// HH:mm:ss
+                .addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ISO_LOCAL_TIME)) // HH:mm:ss
+                .addSerializer(Instant.class, InstantSerializer.INSTANCE) // Instant 类型序列化
+                .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DatePatternPlus.NORM_DATETIME_FORMATTER)) // yyyy-MM-dd HH:mm:ss
+                .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ISO_LOCAL_DATE)) // yyyy-MM-dd
+                .addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ISO_LOCAL_TIME)) // HH:mm:ss
                 .addDeserializer(Instant.class, InstantDeserializer.INSTANT);// Instant 反序列化
 
         objectMapper.registerModules(javaTimeModule);

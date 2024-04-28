@@ -19,26 +19,26 @@ import java.io.Serializable;
 public class ProfileInfoDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * 用户昵称
      */
     @Size(min = 0, max = 30, message = "用户昵称长度不能超过{max}个字符")
     private String nickname;
-    
+
     /**
      * 手机密码
      */
     @Size(min = 0, max = 30, message = "用户昵称长度不能超过{max}个字符")
     private String phone;
-    
+
     /**
      * 邮箱
      */
     @Email(message = "邮箱格式不正确")
     @Size(min = 0, max = 50, message = "邮箱长度不能超过{max}个字符")
     private String email;
-    
+
     /**
      * 性别
      */

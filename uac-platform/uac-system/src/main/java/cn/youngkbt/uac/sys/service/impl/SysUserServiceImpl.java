@@ -4,11 +4,12 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkPostDTO;
-import cn.youngkbt.uac.sys.model.dto.link.UserLinkRoleDTO;
 import cn.youngkbt.uac.sys.model.po.*;
 import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.service.*;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +48,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Value("${default.password}")
     private String password;
 
-    private final PasswordEncoder passwordEncoder;
     private final SysDeptService sysDeptService;
     private final UserRoleLinkService userRoleLinkService;
     private final UserPostLinkService userPostLinkService;
@@ -114,6 +115,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertOne(SysUserDTO sysUserDTO) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setRegisterTime(LocalDateTime.now());
         sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
@@ -122,7 +124,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         int insert = baseMapper.insert(sysUser);
 
-        addOrUpdatePostAndRole(sysUserDTO, sysUser.getUserId());
+        if (Objects.nonNull(sysUserDTO.getPostId())) {
+            addOrUpdatePost(sysUserDTO, sysUser.getUserId(), false);
+        }
 
         return insert > 0;
     }
@@ -134,18 +138,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setPassword(null);
         int insert = baseMapper.updateById(sysUser);
 
-        // 删除用户与角色关联
-        userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery().eq(UserRoleLink::getUserId, sysUserDTO.getUserId()));
-        // 删除用户与岗位表
-        userPostLinkService.remove(Wrappers.<UserPostLink>lambdaQuery().eq(UserPostLink::getUserId, sysUserDTO.getUserId()));
+        if (Objects.nonNull(sysUserDTO.getPostId())) {
+            addOrUpdatePost(sysUserDTO, sysUserDTO.getUserId(), true);
+        }
 
-        addOrUpdatePostAndRole(sysUserDTO, sysUserDTO.getUserId());
+        // 更新缓存的用户信息
+        LoginUser loginUser = UacHelper.getLoginUser();
+        if(Objects.nonNull(loginUser)) {
+            loginUser.setAvatar(sysUser.getAvatar());
+            loginUser.setDeptId(sysUser.getDeptId());
+            loginUser.setEmail(sysUser.getEmail());
+            loginUser.setNickname(sysUser.getNickname());
+            loginUser.setPhone(sysUser.getPhone());
+            loginUser.setSex(sysUser.getSex());
+            loginUser.setBirthday(sysUser.getBirthday());
 
+            UacHelper.updateUserInfo(loginUser);
+        }
+       
         return insert > 0;
     }
 
     @Override
-    public boolean updatePassword(String userId, String passowrd) {
+    public boolean updatePassword(String userId, String password) {
         return baseMapper.update(null,
                 Wrappers.<SysUser>lambdaUpdate()
                         .set(SysUser::getPassword, password)
@@ -158,19 +173,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @param sysUserDTO 用户信息
      * @param userId     用户 ID
      */
-    private void addOrUpdatePostAndRole(SysUserDTO sysUserDTO, String userId) {
+    private void addOrUpdatePost(SysUserDTO sysUserDTO, String userId, boolean removeLink) {
+        if (removeLink) {
+            // 删除用户与岗位表
+            userPostLinkService.remove(Wrappers.<UserPostLink>lambdaQuery().eq(UserPostLink::getUserId, sysUserDTO.getUserId()));
+        }
+
         List<String> postId = sysUserDTO.getPostId();
         if (Objects.nonNull(postId)) {
             UserLinkPostDTO userLinkPostDTO = new UserLinkPostDTO().setUserId(userId)
                     .setPostIds(postId);
             userPostLinkService.addPostsToUser(userLinkPostDTO);
-        }
-        List<String> roleId = sysUserDTO.getRoleId();
-
-        if (Objects.nonNull(roleId)) {
-            UserLinkRoleDTO userLinkPostDTO = new UserLinkRoleDTO().setUserId(userId)
-                    .setRoleIds(roleId);
-            userRoleLinkService.addRolesToUser(userLinkPostDTO);
         }
     }
 

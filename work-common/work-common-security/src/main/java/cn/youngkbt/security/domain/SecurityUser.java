@@ -57,6 +57,11 @@ public class SecurityUser extends User {
     private String phone;
 
     /**
+     * 生日
+     */
+    private String birthday;
+
+    /**
      * 用户性别（0 未知 1 男 2 女）
      */
     private Integer sex;

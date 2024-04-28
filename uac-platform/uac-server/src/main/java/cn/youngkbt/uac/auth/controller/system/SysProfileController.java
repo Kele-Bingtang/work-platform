@@ -15,9 +15,8 @@ import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -27,8 +26,8 @@ import java.util.Objects;
  * @note
  */
 @RestController
-@RequestMapping("/system/user/profile")
 @RequiredArgsConstructor
+@RequestMapping("/system/user/profile")
 public class SysProfileController {
 
     private final SysUserService sysUserService;
@@ -36,21 +35,27 @@ public class SysProfileController {
 
     @PutMapping
     @OperateLog(title = "个人信息", businessType = BusinessType.UPDATE)
-    private Response<Boolean> updateProfileInfo(ProfileInfoDTO profileInfoDTO) {
+    public Response<Boolean> updateProfileInfo(@Validated @RequestBody ProfileInfoDTO profileInfoDTO) {
+        LoginUser loginUser = UacHelper.getLoginUser();
+        if (Objects.isNull(loginUser)) {
+            return HttpResult.failMessage("用户信息失效");
+        }
         SysUserDTO sysUserDTO = MapstructUtil.convert(profileInfoDTO, SysUserDTO.class);
-
+        sysUserDTO.setId(loginUser.getId());
+        sysUserDTO.setUserId(loginUser.getUserId());
         if (StringUtil.hasText(sysUserDTO.getPhone()) && sysUserService.checkPhoneUnique(sysUserDTO)) {
             return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，手机号「" + sysUserDTO.getPhone() + "」已存在");
         }
         if (StringUtil.hasText(sysUserDTO.getEmail()) && sysUserService.checkEmailUnique(sysUserDTO)) {
             return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，邮箱账号「" + sysUserDTO.getEmail() + "」已存在");
         }
-        return HttpResult.ok(sysUserService.updateOne(sysUserDTO));
+        boolean result = sysUserService.updateOne(sysUserDTO);
+        return HttpResult.ok(result);
     }
 
     @PutMapping("/updatePassword")
     @OperateLog(title = "个人信息", businessType = BusinessType.UPDATE)
-    private Response<Boolean> updatePassword(UserPasswordDTO userPasswordDTO) {
+    public Response<Boolean> updatePassword(@Validated @RequestBody UserPasswordDTO userPasswordDTO) {
         LoginUser loginUser = UacHelper.getLoginUser();
         if (Objects.isNull(loginUser)) {
             return HttpResult.failMessage("用户未登录");
@@ -60,7 +65,7 @@ public class SysProfileController {
             return HttpResult.failMessage("修改密码失败，旧密码错误");
         }
 
-        if (!passwordEncoder.matches(userPasswordDTO.getNewPassword(), sysUser.getPassword())) {
+        if (passwordEncoder.matches(userPasswordDTO.getNewPassword(), sysUser.getPassword())) {
             return HttpResult.failMessage("新密码不能与旧密码相同");
         }
 

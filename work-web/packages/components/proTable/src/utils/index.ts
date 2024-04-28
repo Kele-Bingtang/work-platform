@@ -36,7 +36,6 @@ export function filterEnum(callValue: any, enumData?: any, fieldNames?: FieldNam
       });
     } else filterData = findItemNested(enumData, callValue, value, children);
   }
-
   return filterDataArray.length ? filterDataArray : filterData || "";
 }
 

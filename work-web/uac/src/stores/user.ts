@@ -11,6 +11,7 @@ export const useUserStore = defineStore(
   () => {
     const token = ref("");
     const userInfo = ref<UserInfo>({
+      id: 0,
       userId: "",
       tenantId: "",
       deptId: "",
@@ -18,7 +19,7 @@ export const useUserStore = defineStore(
       nickname: "",
       email: "",
       phone: "",
-      sex: "",
+      sex: 0,
       avatar: "",
       loginIp: "",
       loginTime: "",

@@ -34,6 +34,7 @@ export namespace Auth {
   }
 
   export interface LoginUserInfo {
+    id: number;
     userId: string;
     tenantId: string;
     deptId: string;
@@ -41,7 +42,7 @@ export namespace Auth {
     nickname: string;
     email: string;
     phone: string;
-    sex: string;
+    sex: number;
     avatar: string;
     loginIp: string;
     loginTime: string;

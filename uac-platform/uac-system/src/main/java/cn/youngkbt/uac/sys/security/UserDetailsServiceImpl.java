@@ -71,6 +71,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         securityUser.setEmail(user.getEmail());
         securityUser.setPhone(user.getPhone());
         securityUser.setSex(user.getSex());
+        securityUser.setBirthday(user.getBirthday());
         securityUser.setAvatar(user.getAvatar());
         securityUser.setRegisterTime(user.getRegisterTime());
         securityUser.setLoginTime(user.getLoginTime());

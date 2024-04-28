@@ -36,6 +36,7 @@ import { useUserStore, type UserInfo } from "@/stores";
 const userStore = useUserStore();
 const activeTab = ref("timeline");
 const canEditUser = ref<UserInfo>({
+  id: 0,
   userId: "",
   tenantId: "",
   deptId: "",
@@ -43,7 +44,7 @@ const canEditUser = ref<UserInfo>({
   nickname: "",
   email: "",
   phone: "",
-  sex: "",
+  sex: 0,
   avatar: "",
   loginIp: "",
   loginTime: "",

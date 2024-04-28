@@ -15,9 +15,7 @@
         </slot>
       </div>
       <div class="header-content">
-        <div class="user-name">
-          {{ user.username }}
-        </div>
+        <div class="user-name">{{ user.username }} {{ user.nickname }}</div>
         <div class="user-role">
           {{ getUserRoles() }}
         </div>
@@ -31,29 +29,9 @@
         </div>
         <div class="user-card-info-section-body">
           <div class="basic-info">
-            <div class="basic-info-item">
-              <span>用户名称</span>
-              <div class="basic-info-content">{{ user.username }}</div>
-            </div>
-            <div class="basic-info-item">
-              <span>用户性别</span>
-              <div class="basic-info-content">{{ user.sex }}</div>
-            </div>
-            <div class="basic-info-item">
-              <span>联系方式</span>
-              <div class="basic-info-content">{{ user.phone }}</div>
-            </div>
-            <div class="basic-info-item">
-              <span>用户邮箱</span>
-              <div class="basic-info-content">{{ user.email }}</div>
-            </div>
-            <div class="basic-info-item">
-              <span>用户角色</span>
-              <div class="basic-info-content">{{ getUserRoles() }}</div>
-            </div>
-            <div class="basic-info-item">
-              <span>注册时间</span>
-              <div class="basic-info-content">{{ user.registerTime }}</div>
+            <div class="basic-info-item" v-for="item in basicInfo" :key="item.name">
+              <span>{{ item.name }}</span>
+              <div class="basic-info-content">{{ item.content }}</div>
             </div>
           </div>
         </div>
@@ -103,7 +81,7 @@
 </template>
 
 <script setup lang="ts" name="UserCard">
-import type { UserInfo } from "@/stores";
+import { useLayoutStore, type UserInfo } from "@/stores";
 import defaultAvatar from "@work/static/images/default.png";
 
 const props = defineProps<{ user: UserInfo; roles: string[] }>();
@@ -117,6 +95,34 @@ const getUserRoles = () => {
   });
   return userRole.slice(separator.length);
 };
+
+const sexEnum = ref();
+const sexLabel = ref("");
+
+onMounted(async () => {
+  const res = await useLayoutStore().getDictData("sys_user_sex");
+  sexEnum.value = res.data;
+});
+
+watch(sexEnum, () => {
+  if (Array.isArray(sexEnum.value)) {
+    const label = sexEnum.value.filter(item => item.dictValue === user.value.sex + "");
+    console.log(label);
+    label.length && (sexLabel.value = label[0].dictLabel);
+  } else sexLabel.value = "";
+});
+
+const basicInfo = [
+  { name: "用户名称", content: user.value.nickname },
+  {
+    name: "用户性别",
+    content: computed(() => sexLabel.value),
+  },
+  { name: "联系方式", content: user.value.phone },
+  { name: "用户邮箱", content: user.value.email },
+  { name: "用户角色", content: getUserRoles() },
+  { name: "注册时间", content: user.value.registerTime },
+];
 </script>
 
 <style lang="scss" scoped>

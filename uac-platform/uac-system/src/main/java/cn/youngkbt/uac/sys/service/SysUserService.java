@@ -77,10 +77,10 @@ public interface SysUserService extends IService<SysUser> {
      * 更新用户密码
      *
      * @param userId 用户 ID
-     * @param passowrd 密码
+     * @param password 密码
      * @return 是否成功
      */
-    boolean updatePassword(String userId, String passowrd);
+    boolean updatePassword(String userId, String password);
 
     /**
      * 通过用户 ID 更新用户

@@ -27,7 +27,7 @@ public class SysUserDTO {
      * ID
      */
     @NotNull(message = "id 不能为空", groups = { RestGroup.EditGroup.class, RestGroup.DeleteGroup.class })
-    private String id;
+    private Long id;
 
     /**
      * 用户 ID
@@ -115,9 +115,4 @@ public class SysUserDTO {
      * 岗位
      */
     private List<String> postId;
-
-    /**
-     * 角色
-     */
-    private List<String> roleId;
 }

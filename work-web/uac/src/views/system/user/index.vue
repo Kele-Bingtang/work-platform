@@ -33,7 +33,7 @@ import { useFormOptions } from "./useFormOptions";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch } from "element-plus";
+import { ElSwitch, ElInput } from "element-plus";
 import { Key } from "@element-plus/icons-vue";
 
 const proTableRef = shallowRef<ProTableInstance>();
@@ -47,7 +47,7 @@ const resetPassword = () => {
     onClose: () => (newPassword.value = ""),
     onConfirm: handleConfirm,
     render: () => {
-      return <el-input v-model={newPassword.value}></el-input>;
+      return <ElInput v-model={newPassword.value}></ElInput>;
     },
   });
 };

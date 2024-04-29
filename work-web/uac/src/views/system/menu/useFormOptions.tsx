@@ -16,6 +16,11 @@ export const menuTypeEnum = [
   { value: "F", label: "按钮" },
 ];
 
+export const commonEnum = [
+  { value: 1, label: "是" },
+  { value: 0, label: "否" },
+];
+
 export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: ComputedRef<string>) => {
   const options: FormOptionsProps<Menu.MenuInfo> = {
     form: {
@@ -30,6 +35,7 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       col: { span: 12 },
     },
     columns: [
+      { title: "基础配置" },
       {
         formItem: { label: "所属 App", prop: "appId", br: true },
         attrs: {
@@ -142,44 +148,163 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
         },
       },
       {
-        formItem: { label: "是否缓存", prop: "isCache" },
-        attrs: {
-          el: "el-radio-group",
-          enum: [
-            { value: 1, label: "是" },
-            { value: 0, label: "否" },
-          ],
-          defaultValue: 0,
-          isDestroy: form => form.menuType !== "C",
-        },
-      },
-      {
-        formItem: { label: "是否嵌入", prop: "isFrame" },
-        attrs: {
-          el: "el-radio-group",
-          enum: [
-            { value: 1, label: "是" },
-            { value: 0, label: "否" },
-          ],
-          defaultValue: 0,
-          isDestroy: form => form.menuType !== "C",
-        },
-      },
-      {
-        formItem: { label: "meta 配置", prop: "meta", br: true },
-        attrs: {
-          el: "el-input",
-          isDestroy: form => form.menuType === "F",
-          props: {
-            type: "textarea",
-            clearable: true,
-            placeholder: "请输入 配置",
-          },
-        },
-      },
-      {
         formItem: { label: "介绍", prop: "intro", br: true },
         attrs: { el: "el-input", props: { type: "textarea", clearable: true, placeholder: "请输入 介绍" } },
+      },
+      { title: "META 配置", formItem: {}, attrs: {} },
+      {
+        formItem: { label: "META 配置", prop: "useMeta", br: true },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.menuType === "F",
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "允许点击面包屑", prop: "notClickBread", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "不添加到面包屑", prop: "hideInBread", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "不添加到菜单", prop: "hideInMenu", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "总是渲染为菜单", prop: "alwaysShowRoot", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "缓存", prop: "isKeepAlive", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "固定在标签页", prop: "isAffix", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "全屏", prop: "isFull", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "高亮菜单", prop: "activeMenu", labelWidth: 120 },
+        attrs: {
+          el: "el-input",
+          isDestroy: form => form.useMeta === 0,
+        },
+      },
+      {
+        formItem: { label: "关闭路由回调名", prop: "beforeCloseName", labelWidth: 120 },
+        attrs: {
+          el: "el-input",
+          isDestroy: form => form.useMeta === 0,
+        },
+      },
+      {
+        formItem: { label: "IFrame 链接", prop: "frameSrc", labelWidth: 120 },
+        attrs: {
+          el: "el-input",
+          isDestroy: form => form.useMeta === 0,
+        },
+      },
+      {
+        formItem: { label: "IFrame 加载动画", prop: "frameLoading", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 1,
+        },
+      },
+      {
+        formItem: { label: "IFrame 开启缓存", prop: "frameKeepAlive", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "IFrame 新标签页打开", prop: "frameOpen", labelWidth: 150 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "添加到标签页", prop: "hideInTab", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "动态路由最大数量", prop: "dynamicLevel", labelWidth: 130 },
+        attrs: {
+          el: "el-input",
+          isDestroy: form => form.useMeta === 0,
+        },
+      },
+      {
+        formItem: { label: "是否开启 i18n", prop: "useI18n", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
+      },
+      {
+        formItem: { label: "菜单溢出开启 Tip", prop: "useTooltip", labelWidth: 120 },
+        attrs: {
+          el: "el-radio-group",
+          isDestroy: form => form.useMeta === 0,
+          enum: commonEnum,
+          defaultValue: 0,
+        },
       },
     ],
   };

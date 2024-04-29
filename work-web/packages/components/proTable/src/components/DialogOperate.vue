@@ -89,6 +89,7 @@ const dialogTitle = computed(() =>
 const formOptions = computed(() => {
   // 目前 status 一变化，都走一遍循环，优化：可以利用 Map 存储有 show 的 column（存下标），然后监听 status，当 status 变化，则通过下标获取 column，将 isHidden 设置为 true
   props.options.columns.forEach(column => {
+    if (!column.attrs) return;
     const { destroy, hidden, disabled } = column.attrs;
 
     if (Array.isArray(destroy)) {

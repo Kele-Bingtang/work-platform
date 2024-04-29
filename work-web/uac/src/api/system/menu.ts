@@ -17,7 +17,7 @@ export namespace Menu {
     visible: number; // 显示状态（0 隐藏 1 显示）
     isCache: number; // 是否缓存（0 不缓存 1 缓存）
     isFrame: number; // 是否为外链（0 否 1 是）
-    meta: string; // 菜单前端额外配置
+    useMeta: number; // 菜单前端额外配置
     intro: string; // 菜单介绍
     appId: string; // 应用 ID
     status: number; // 状态

@@ -1,12 +1,18 @@
 <template>
   <component :is="'el-form'" v-bind="options.form" ref="formRef" :model="form">
     <component :is="`el-row`" v-bind="options.row" style="width: 100%">
-      <template v-for="item in options.columns" :key="item.formItem.prop">
+      <template v-for="item in options.columns" :key="item.formItem?.prop || item?.title">
+        <template v-if="item.title">
+          <div style="margin-bottom: 15px">
+            <el-divider direction="vertical" />
+            <span style="font-size: 16px; font-weight: bold">{{ item.title }}</span>
+          </div>
+        </template>
         <component
           :is="`el-col`"
           v-bind="item.formItem.col || options.row?.col"
           :span="item.formItem.br ? 24 : item.formItem.col?.span || options.row?.col?.span || 24"
-          v-if="!isDestroy(item)"
+          v-else-if="!isDestroy(item)"
           v-show="!isHidden(item)"
         >
           <component
@@ -57,6 +63,7 @@ const enumMap = ref(new Map<string, { [key: string]: any }[]>());
 provide("enumMap", enumMap);
 const setEnumMap = async (column: FormColumnProps) => {
   const attrs = column.attrs;
+  if (!attrs) return;
   const formItem = column.formItem;
   if (!attrs.enum) return;
   // 如果当前 enum 为后台数据需要请求数据，则调用该请求接口，并存储到 enumMap
@@ -150,11 +157,11 @@ props.options.columns.forEach((item, index) => {
   cascadeEnum(item);
 
   // 设置表单排序默认值
-  item.attrs!.order = item.attrs!.order ?? index + 2;
+  item.attrs && (item.attrs.order = item.attrs.order ?? index + 2);
 });
 
 // 排序表单项
-props.options.columns.sort((a, b) => a.attrs!.order! - b.attrs!.order!);
+props.options.columns.sort((a, b) => a.attrs?.order! - b.attrs?.order!);
 
 // 获取每个表单的宽度
 const formWidth = (column: FormColumnProps) => {

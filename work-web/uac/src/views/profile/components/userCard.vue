@@ -96,33 +96,24 @@ const getUserRoles = () => {
   return userRole.slice(separator.length);
 };
 
-const sexEnum = ref();
 const sexLabel = ref("");
 
 onMounted(async () => {
   const res = await useLayoutStore().getDictData("sys_user_sex");
-  sexEnum.value = res.data;
+  if (Array.isArray(res.data)) {
+    const label = res.data.filter(item => item.dictValue === user.value.sex + "");
+    if (label.length) sexLabel.value = label[0].dictLabel;
+  }
 });
 
-watch(sexEnum, () => {
-  if (Array.isArray(sexEnum.value)) {
-    const label = sexEnum.value.filter(item => item.dictValue === user.value.sex + "");
-    console.log(label);
-    label.length && (sexLabel.value = label[0].dictLabel);
-  } else sexLabel.value = "";
-});
-
-const basicInfo = [
+const basicInfo = computed(() => [
   { name: "用户名称", content: user.value.nickname },
-  {
-    name: "用户性别",
-    content: computed(() => sexLabel.value),
-  },
+  { name: "用户性别", content: sexLabel.value },
   { name: "联系方式", content: user.value.phone },
   { name: "用户邮箱", content: user.value.email },
   { name: "用户角色", content: getUserRoles() },
   { name: "注册时间", content: user.value.registerTime },
-];
+]);
 </script>
 
 <style lang="scss" scoped>

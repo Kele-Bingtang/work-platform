@@ -1,17 +1,18 @@
 <template>
   <component :is="'el-form'" v-bind="options.form" ref="formRef" :model="form">
     <component :is="`el-row`" v-bind="options.row" style="width: 100%">
-      <template v-for="item in options.columns" :key="item.formItem?.prop || item?.title">
-        <template v-if="item.title">
-          <div style="margin-bottom: 15px">
+      <template v-for="item in options.columns" :key="item.formItem.prop || item.formItem.title">
+        <template v-if="item.formItem.title && !isDestroy(item)">
+          <el-col :span="24" class="mb-15">
             <el-divider direction="vertical" />
-            <span style="font-size: 16px; font-weight: bold">{{ item.title }}</span>
-          </div>
+            <span :style="getTitleFontStyle(item)">{{ item.formItem.title }}</span>
+          </el-col>
         </template>
+
         <component
           :is="`el-col`"
           v-bind="item.formItem.col || options.row?.col"
-          :span="item.formItem.br ? 24 : item.formItem.col?.span || options.row?.col?.span || 24"
+          :span="item.formItem.br ? 24 : item.formItem?.col?.span || options.row?.col?.span || 24"
           v-else-if="!isDestroy(item)"
           v-show="!isHidden(item)"
         >
@@ -62,15 +63,13 @@ const isResponsive = (obj: any) => {
 const enumMap = ref(new Map<string, { [key: string]: any }[]>());
 provide("enumMap", enumMap);
 const setEnumMap = async (column: FormColumnProps) => {
-  const attrs = column.attrs;
-  if (!attrs) return;
-  const formItem = column.formItem;
+  const { attrs, formItem } = column;
   if (!attrs.enum) return;
   // 如果当前 enum 为后台数据需要请求数据，则调用该请求接口，并存储到 enumMap
-  if (isResponsive(attrs.enum)) return enumMap.value.set(formItem.prop!, (attrs.enum as Ref).value!);
-  if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop!, (attrs.enum as FormEnumProps[])!);
+  if (isResponsive(attrs.enum)) return enumMap.value.set(formItem.prop, (attrs.enum as Ref).value!);
+  if (typeof attrs.enum !== "function") return enumMap.value.set(formItem.prop, (attrs.enum as FormEnumProps[])!);
   const { data } = await attrs.enum(form.value);
-  enumMap.value.set(formItem.prop!, data);
+  enumMap.value.set(formItem.prop, data);
 };
 
 // 初始化默认值
@@ -80,21 +79,21 @@ const initDefaultValue = async (column: FormColumnProps) => {
   if (form.value[formItem.prop] || form.value[formItem.prop] === false || form.value[formItem.prop] === 0) return;
 
   // 设置表单项的默认值
-  if (attrs?.defaultValue !== undefined && attrs?.defaultValue !== null) {
+  if (attrs.defaultValue !== undefined && attrs.defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
-    if (isResponsive(attrs.defaultValue)) return (form.value[formItem.prop] = (attrs?.defaultValue as Ref).value);
-    if (typeof attrs?.defaultValue === "function") {
-      return (form.value[formItem.prop] = await attrs?.defaultValue(form.value, enumMap.value));
+    if (isResponsive(attrs.defaultValue)) return (form.value[formItem.prop] = (attrs.defaultValue as Ref).value);
+    if (typeof attrs.defaultValue === "function") {
+      return (form.value[formItem.prop] = await attrs.defaultValue(form.value, enumMap.value));
     }
-    return (form.value[formItem.prop] = attrs?.defaultValue);
+    return (form.value[formItem.prop] = attrs.defaultValue);
   }
 
   // 如果没有设置默认值，则判断后台是否返回 isDefault 为 Y 的枚举
-  const enumData = enumMap.value.get(column.formItem.prop);
+  const enumData = enumMap.value.get(formItem.prop);
   if (enumData && enumData.length) {
     // 找出 isDefault 为 Y 的 value
     const data = enumData.filter(item => item.isDefault === "Y");
-    return data.length && (form.value[formItem.prop] = data[0][column.attrs.fieldNames?.value ?? "value"]);
+    return data.length && (form.value[formItem.prop] = data[0][attrs.fieldNames?.value ?? "value"]);
   }
 };
 
@@ -102,7 +101,7 @@ const cascadeEnum = (column: FormColumnProps) => {
   const { formItem, attrs } = column;
   const formEl = attrs?.el;
   if (formEl === "el-select") {
-    if (attrs && attrs.subProp && typeof attrs.subProp === "string") {
+    if (attrs.subProp && typeof attrs.subProp === "string") {
       watch(
         () => form.value[formItem.prop],
         async (newVal: string) => {
@@ -110,7 +109,7 @@ const cascadeEnum = (column: FormColumnProps) => {
           const { subEnum } = attrs;
           if (subEnum && !enumMap.value.get(`${attrs.subProp!}-${newVal}`)) {
             if (typeof subEnum === "function") {
-              enumMap.value.set(attrs.subProp!, await subEnum(newVal, enumMap.value.get(column.formItem.prop)));
+              enumMap.value.set(attrs.subProp!, await subEnum(newVal, enumMap.value.get(formItem.prop)));
             } else if (Array.isArray(typeof subEnum)) enumMap.value.set(`${attrs.subProp!}-${newVal}`, subEnum);
           }
           const formEnum = enumMap.value.get(formItem.prop) || [];
@@ -140,7 +139,7 @@ const isDestroy = (column: FormColumnProps) => {
 
   // 如果不销毁，则初始化表单默认值，反之则重置为空
   if (!destroy) initDefaultValue(column);
-  else form.value[column.formItem.prop] = "";
+  else column.formItem && delete form.value[column.formItem.prop];
 
   return destroy;
 };
@@ -161,17 +160,24 @@ props.options.columns.forEach((item, index) => {
 });
 
 // 排序表单项
-props.options.columns.sort((a, b) => a.attrs?.order! - b.attrs?.order!);
+props.options.columns.sort((a, b) => a.attrs.order! - b.attrs.order!);
 
 // 获取每个表单的宽度
 const formWidth = (column: FormColumnProps) => {
   const { form } = props.options;
   const { attrs } = column;
-  const style = attrs.style || {};
+  const style = attrs?.style || {};
   if (column.formItem.br) return { ...style, width: "100%" };
   if (attrs.width) return { ...style, width: getPx(attrs.width) };
-  if (form?.fixWidth) return { ...style, width: getPx(form.width || "220px") };
+  if (form?.fixWidth) return { ...style, width: getPx(form?.width || "220px") };
   return style;
+};
+
+const getTitleFontStyle = (column: FormColumnProps) => {
+  if (!column.formItem.size || column.formItem.size === "default") return { fontSize: "16px", fontWeight: 600 };
+  if (column.formItem.size === "small") return { fontSize: "14px", fontWeight: 600 };
+  if (column.formItem.size === "large") return { fontSize: "18px", fontWeight: 600 };
+  return {};
 };
 
 defineExpose({ formRef });

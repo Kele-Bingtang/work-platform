@@ -107,12 +107,28 @@ const columns: TableColumnProps<Menu.MenuInfo>[] = [
   { prop: "operation", label: "操作", width: 200, fixed: "right" },
 ];
 
+const installMeta = (data: any) => {
+  if (data.meta) {
+    const keys = Object.keys(data.meta);
+    keys?.forEach((key: any) => {
+      if (data.meta[key] === "default") delete data.meta[key];
+    });
+    return data.meta;
+  }
+};
+
 const detailForm: DialogForm = {
   options: useFormOptions(
     computed(() => treeFilterRef.value?.treeData),
     computed(() => initRequestParam.appId)
   ).options,
-  addApi: data => addOne({ ...data, path: (data.pathPrefix || "") + (data.path || ""), appId: initRequestParam.appId }),
+  addApi: data =>
+    addOne({
+      ...data,
+      path: (data.pathPrefix || "") + (data.path || ""),
+      meta: installMeta(data),
+      appId: initRequestParam.appId,
+    }),
   editApi: data =>
     editOne({ ...data, path: (data.pathPrefix || "") + (data.path || ""), appId: initRequestParam.appId }),
   deleteApi: deleteOne,

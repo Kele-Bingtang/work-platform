@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.model.vo;
 
 import cn.youngkbt.uac.sys.model.bo.TreeBO;
+import cn.youngkbt.uac.sys.model.vo.router.Meta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -84,25 +85,10 @@ public class SysMenuVO extends TreeBO<SysMenuVO> implements Serializable {
     private String component;
 
     /**
-     * 显示状态（0 隐藏 1 显示）
-     */
-    private Integer visible;
-
-    /**
-     * 是否缓存（0 不缓存 1 缓存）
-     */
-    private Integer isCache;
-
-    /**
-     * 是否为外链（0 否 1 是）
-     */
-    private Integer isFrame;
-
-    /**
      * 菜单前端额外配置
      */
-    private String meta;
-
+    private Meta meta;
+    
     /**
      * 菜单介绍
      */
@@ -122,5 +108,6 @@ public class SysMenuVO extends TreeBO<SysMenuVO> implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+
 
 }

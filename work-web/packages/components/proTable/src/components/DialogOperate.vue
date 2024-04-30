@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { type DialogProps, ElMessage, type FormInstance, ElMessageBox } from "element-plus";
-import { ProForm, type FormOptionsProps } from "@work/components";
+import { ProForm, handleNestProp, type FormOptionsProps } from "@work/components";
 import { shallowRef, ref, computed } from "vue";
 
 defineOptions({ name: "DialogOperate" });
@@ -129,7 +129,7 @@ const handleFormConfirm = (f: any, status: string) => {
   const formRef = formElementRef.value.formRef as FormInstance;
   props.beforeConfirm && props.beforeConfirm(status);
 
-  let data = { ...f };
+  let data = handleNestProp(f);
   // _enum 是 ProTable 内置的属性，专门存储字典数据，不需要发送给后台
   delete data._enum;
 

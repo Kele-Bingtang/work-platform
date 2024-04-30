@@ -96,9 +96,9 @@
         :border="border"
         :row-key="rowKey"
         @selection-change="selectionChange"
-        :row-style="rowStyle"
-        :cell-style="cellStyle"
-        :header-cell-style="headerCellStyle"
+        :row-style="getRowStyle"
+        :cell-style="getCellStyle"
+        :header-cell-style="getHeaderCellStyle"
       >
         <!-- 默认插槽 -->
         <slot></slot>
@@ -214,7 +214,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, provide, onMounted, computed, nextTick, isRef, type ComputedRef } from "vue";
+import { ref, watch, provide, onMounted, computed, nextTick, isRef, type ComputedRef, useAttrs, shallowRef } from "vue";
 import { ElTable } from "element-plus";
 import { useTable, type Table } from "./hooks/useTable";
 import { useSelection } from "./hooks/useSelection";
@@ -484,7 +484,28 @@ const changeTableSize = (size: ElTableSize) => {
 const changeStyle = (style: Object) => {
   rowStyle.value = style;
   cellStyle.value = style;
-  headerCellStyle.value = style;
+  headerCellStyle.value = { ...style, backgroundColor: "#ededed" }; // 表头背景色
+};
+
+const attrs = useAttrs();
+
+const getStyle = (tableInfo: any, styleName: string, styleRef: any) => {
+  if (!attrs[styleName]) return styleRef;
+  if (typeof attrs[styleName] === "function") {
+    return { ...styleRef, ...(attrs[styleName] as any)(tableInfo) };
+  } else return { ...(attrs[styleName] as any), ...styleRef };
+};
+
+const getRowStyle = (tableInfo: any) => {
+  return getStyle(tableInfo, "rowStyle", rowStyle.value);
+};
+
+const getCellStyle = (tableInfo: any) => {
+  return getStyle(tableInfo, "cellStyle", cellStyle.value);
+};
+
+const getHeaderCellStyle = (tableInfo: any) => {
+  return getStyle(tableInfo, "headerCellStyle", headerCellStyle.value);
 };
 
 const visibleButton = (api: any, flag: boolean | undefined) => {

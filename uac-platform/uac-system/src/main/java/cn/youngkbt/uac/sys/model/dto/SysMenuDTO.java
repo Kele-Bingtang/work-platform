@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.model.dto;
 
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
+import cn.youngkbt.uac.sys.model.vo.router.Meta;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -83,24 +84,9 @@ public class SysMenuDTO {
     private String component;
 
     /**
-     * 显示状态（0 隐藏 1 显示）
-     */
-    private Integer visible;
-
-    /**
-     * 是否缓存（0 不缓存 1 缓存）
-     */
-    private Integer isCache;
-
-    /**
-     * 是否为外链（0 否 1 是）
-     */
-    private Integer isFrame;
-
-    /**
      * 菜单前端额外配置
      */
-    private String meta;
+    private Meta meta;
 
     /**
      * 菜单介绍
@@ -117,5 +103,6 @@ public class SysMenuDTO {
      * 状态（0 异用 1 正常）
      */
     private Integer status;
+
 
 }

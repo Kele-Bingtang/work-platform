@@ -3,12 +3,17 @@ package cn.youngkbt.uac.sys.model.po;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.uac.sys.config.MetaTypeHandler;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
-import com.baomidou.mybatisplus.annotation.*;
+import cn.youngkbt.uac.sys.model.vo.router.Meta;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
 
 /**
  * @author Kele-Bingtang
@@ -79,24 +84,10 @@ public class SysMenu extends BaseDO {
     private String component;
 
     /**
-     * 显示状态（0 隐藏 1 显示）
-     */
-    private Integer visible;
-
-    /**
-     * 是否缓存（0 不缓存 1 缓存）
-     */
-    private Integer isCache;
-
-    /**
-     * 是否为外链（0 否 1 是）
-     */
-    private Integer isFrame;
-
-    /**
      * 菜单前端额外配置
      */
-    private String meta;
+    @TableField(typeHandler = MetaTypeHandler.class)
+    private Meta meta;
 
     /**
      * 菜单介绍

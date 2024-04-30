@@ -9,16 +9,12 @@
             <result property="menuId" column="menu_id" jdbcType="VARCHAR"/>
             <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
             <result property="menuCode" column="menu_code" jdbcType="VARCHAR"/>
-            <result property="meunName" column="meun_name" jdbcType="VARCHAR"/>
+            <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
             <result property="path" column="path" jdbcType="VARCHAR"/>
             <result property="param" column="param" jdbcType="VARCHAR"/>
             <result property="icon" column="icon" jdbcType="VARCHAR"/>
             <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
             <result property="component" column="component" jdbcType="VARCHAR"/>
-            <result property="visible" column="visible" jdbcType="TINYINT"/>
-            <result property="isCache" column="is_cache" jdbcType="TINYINT"/>
-            <result property="isFrame" column="is_frame" jdbcType="TINYINT"/>
-            <result property="meta" column="meta" jdbcType="VARCHAR"/>
             <result property="intro" column="intro" jdbcType="VARCHAR"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>

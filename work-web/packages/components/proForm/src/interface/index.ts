@@ -63,11 +63,11 @@ export type FormRenderScope = {
 };
 
 export interface FormColumnProps<T = any> {
-  title?: string;
-  formItem?: Partial<FormItem<T>> & {
+  formItem: FormItem<T> & {
     col?: Partial<ColProps>;
+    title?: string;
   };
-  attrs?: {
+  attrs: {
     el?: FormType;
     enum?: FormEnumProps[] | ((form: any) => Promise<any>) | ComputedRef<FormEnumProps[]>;
     enumKey?: string; // 如果 enum 是接口调用，那么可以指定哪个 key 获取 enum 数据，默认返回的数据作为 enum

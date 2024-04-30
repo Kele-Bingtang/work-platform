@@ -2,6 +2,8 @@ import { listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
 import type { FormOptionsProps } from "@work/components";
 import { ElInput, ElOption, ElSelect, type FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@work/constants";
+import { layoutFormColumn } from "./layoutOptions";
+import { iframeFormColumn } from "./iframeOptions";
 
 const rules = reactive<FormRules>({
   appId: [{ required: true, message: "请选择 App", trigger: "blur" }],
@@ -35,7 +37,7 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       col: { span: 12 },
     },
     columns: [
-      { title: "基础配置" },
+      { formItem: { title: "基础配置", label: "", prop: "" }, attrs: {} },
       {
         formItem: { label: "所属 App", prop: "appId", br: true },
         attrs: {
@@ -137,23 +139,12 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
         attrs: { el: "el-input-number", defaultValue: 0 },
       },
       {
-        formItem: { label: "显示状态", prop: "visible" },
-        attrs: {
-          el: "el-radio-group",
-          enum: [
-            { value: 1, label: "显示" },
-            { value: 0, label: "隐藏" },
-          ],
-          defaultValue: 1,
-        },
-      },
-      {
         formItem: { label: "介绍", prop: "intro", br: true },
         attrs: { el: "el-input", props: { type: "textarea", clearable: true, placeholder: "请输入 介绍" } },
       },
-      { title: "META 配置", formItem: {}, attrs: {} },
+      { formItem: { title: "META 配置", label: "", prop: "" }, attrs: { isDestroy: form => form.menuType === "F" } },
       {
-        formItem: { label: "META 配置", prop: "useMeta", br: true },
+        formItem: { label: "启用", prop: "useMeta", br: true },
         attrs: {
           el: "el-radio-group",
           isDestroy: form => form.menuType === "F",
@@ -161,151 +152,9 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
           defaultValue: 0,
         },
       },
-      {
-        formItem: { label: "允许点击面包屑", prop: "notClickBread", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "不添加到面包屑", prop: "hideInBread", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "不添加到菜单", prop: "hideInMenu", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "总是渲染为菜单", prop: "alwaysShowRoot", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "缓存", prop: "isKeepAlive", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "固定在标签页", prop: "isAffix", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "全屏", prop: "isFull", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "高亮菜单", prop: "activeMenu", labelWidth: 120 },
-        attrs: {
-          el: "el-input",
-          isDestroy: form => form.useMeta === 0,
-        },
-      },
-      {
-        formItem: { label: "关闭路由回调名", prop: "beforeCloseName", labelWidth: 120 },
-        attrs: {
-          el: "el-input",
-          isDestroy: form => form.useMeta === 0,
-        },
-      },
-      {
-        formItem: { label: "IFrame 链接", prop: "frameSrc", labelWidth: 120 },
-        attrs: {
-          el: "el-input",
-          isDestroy: form => form.useMeta === 0,
-        },
-      },
-      {
-        formItem: { label: "IFrame 加载动画", prop: "frameLoading", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 1,
-        },
-      },
-      {
-        formItem: { label: "IFrame 开启缓存", prop: "frameKeepAlive", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "IFrame 新标签页打开", prop: "frameOpen", labelWidth: 150 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "添加到标签页", prop: "hideInTab", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "动态路由最大数量", prop: "dynamicLevel", labelWidth: 130 },
-        attrs: {
-          el: "el-input",
-          isDestroy: form => form.useMeta === 0,
-        },
-      },
-      {
-        formItem: { label: "是否开启 i18n", prop: "useI18n", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
-      {
-        formItem: { label: "菜单溢出开启 Tip", prop: "useTooltip", labelWidth: 120 },
-        attrs: {
-          el: "el-radio-group",
-          isDestroy: form => form.useMeta === 0,
-          enum: commonEnum,
-          defaultValue: 0,
-        },
-      },
+
+      ...layoutFormColumn,
+      ...iframeFormColumn,
     ],
   };
 
@@ -314,5 +163,6 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
     else if (form.menuType === "C") return "菜单";
     else if (form.menuType === "F") return "按钮";
   };
+
   return { options };
 };

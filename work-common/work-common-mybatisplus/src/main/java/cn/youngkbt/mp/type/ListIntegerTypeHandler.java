@@ -1,10 +1,10 @@
 package cn.youngkbt.mp.type;
 
+import cn.youngkbt.utils.StringUtil;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
-import org.springframework.util.StringUtils;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -50,7 +50,7 @@ public class ListIntegerTypeHandler extends BaseTypeHandler<List<Integer>> {
     }
 
     private List<Integer> stringToListInteger(String columnValue) {
-        if (!StringUtils.hasText(columnValue)) {
+        if (!StringUtil.hasText(columnValue)) {
             return Collections.emptyList();
         }
         String[] values = columnValue.split(DELIMITER);

@@ -52,11 +52,6 @@ public class SysMenuDTO {
     private String path;
 
     /**
-     * 路由参数
-     */
-    private String param;
-
-    /**
      * 图标
      */
     private String icon;

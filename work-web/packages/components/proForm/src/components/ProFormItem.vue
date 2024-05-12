@@ -1,46 +1,32 @@
 <template>
   <Tinymce
     v-if="column.attrs?.el === 'tinymce'"
-    v-model="_form[column.formItem.prop]"
-    v-bind="{
-      ...handleFormProps,
-      ...placeholder,
-      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
-    }"
+    :model-value="getFormProp(_form, column.formItem.prop)"
+    @update:model-value="v => setFormProp(_form, column.formItem.prop, v)"
+    v-bind="{ ...handleFormProps }"
   ></Tinymce>
 
   <WangEditor
     v-if="column.attrs?.el === 'wang-editor'"
-    v-model="_form[column.formItem.prop]"
-    v-bind="{
-      ...handleFormProps,
-      ...placeholder,
-      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
-    }"
+    :model-value="getFormProp(_form, column.formItem.prop)"
+    @update:model-value="v => setFormProp(_form, column.formItem.prop, v)"
+    v-bind="{ ...handleFormProps }"
   ></WangEditor>
 
   <UserSelect
     v-if="column.attrs?.el === 'user-select'"
-    v-model="_form[column.formItem.prop]"
-    v-bind="{
-      ...handleFormProps,
-      ...placeholder,
-      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
-    }"
+    :model-value="getFormProp(_form, column.formItem.prop)"
+    @update:model-value="v => setFormProp(_form, column.formItem.prop, v)"
+    v-bind="{ ...handleFormProps }"
     :style="style"
   ></UserSelect>
 
   <Tree
     v-else-if="!column.attrs?.render && column.attrs?.el === 'el-tree'"
     :data="columnEnum"
-    v-model="_form[column.formItem.prop]"
-    select
-    v-bind="{
-      ...handleFormProps,
-      ...placeholder,
-      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
-      clearable,
-    }"
+    :model-value="getFormProp(_form, column.formItem.prop)"
+    @update:model-value="v => setFormProp(_form, column.formItem.prop, v)"
+    v-bind="{ ...handleFormProps }"
   ></Tree>
 
   <component
@@ -50,12 +36,13 @@
     v-bind="{
       ...handleFormProps,
       ...placeholder,
-      scope: { form: _form, data: _form[column.formItem.prop], enumData: columnEnum },
+      scope: { form: _form, data: getFormProp(_form, column.formItem.prop), enumData: columnEnum },
       clearable,
     }"
-    v-model="_form[column.formItem.prop]"
+    :model-value="getFormProp(_form, column.formItem.prop, column.attrs.valueFormat)"
+    @update:model-value="(v: any) => setFormProp(_form, column.formItem.prop, v)"
     :data="column.attrs?.el === 'el-tree-select' ? columnEnum : []"
-    :options="['el-cascader', 'el-select-v 2'].includes(column.attrs?.el!) ? columnEnum : []"
+    :options="['el-cascader', 'el-select-v2'].includes(column.attrs?.el!) ? columnEnum : []"
     :style="style"
   >
     <template v-if="column.attrs?.el === 'el-cascader'" #default="{ data }">
@@ -135,6 +122,7 @@ import { computed, inject, ref } from "vue";
 import type { FormColumnProps } from "../interface";
 import { WangEditor, Tinymce, UserSelect } from "@work/components";
 import Tree from "./Tree.vue";
+import { getFormProp, setFormProp } from "../utils";
 
 defineOptions({ name: "ProFormItem" });
 

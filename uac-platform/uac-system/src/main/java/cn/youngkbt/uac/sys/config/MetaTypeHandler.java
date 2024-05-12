@@ -2,6 +2,7 @@ package cn.youngkbt.uac.sys.config;
 
 import cn.youngkbt.uac.sys.model.vo.router.Meta;
 import cn.youngkbt.utils.JacksonUtil;
+import cn.youngkbt.utils.StringUtil;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -28,16 +29,25 @@ public class MetaTypeHandler extends BaseTypeHandler<Meta> {
 
     @Override
     public Meta getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        if (!StringUtil.hasText(rs.getString(columnName))) {
+            return null;
+        }
         return JacksonUtil.toJson(rs.getString(columnName), Meta.class);
     }
 
     @Override
     public Meta getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        if (!StringUtil.hasText(rs.getString(columnIndex))) {
+            return null;
+        }
         return JacksonUtil.toJson(rs.getString(columnIndex), Meta.class);
     }
 
     @Override
     public Meta getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        if (!StringUtil.hasText(cs.getString(columnIndex))) {
+            return null;
+        }
         return JacksonUtil.toJson(cs.getString(columnIndex), Meta.class);
-    }
+    } 
 }

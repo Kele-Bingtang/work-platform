@@ -1,10 +1,10 @@
 package cn.youngkbt.mp.type;
 
+import cn.youngkbt.utils.StringUtil;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
-import org.springframework.util.StringUtils;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -46,7 +46,7 @@ public class ListStringTypeHandler extends BaseTypeHandler<List<String>> {
     }
 
     private List<String> parseListString(String str) {
-        if (!StringUtils.hasText(str)) {
+        if (!StringUtil.hasText(str)) {
             return Collections.emptyList();
         }
         // 将字符串按逗号分隔转换为 List<String>

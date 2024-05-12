@@ -2,6 +2,7 @@ package cn.youngkbt.tenant.handler;
 
 import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.tenant.properties.TenantProperties;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class PlusTenantLineHandler implements TenantLineHandler {
     @Override
     public Expression getTenantId() {
         String tenantId = SecurityUtils.getTenantId();
-        if (!StringUtils.hasText(tenantId)) {
+        if (!StringUtil.hasText(tenantId)) {
             log.error("无法获取有效的租户id -> Null");
             return new NullValue();
         }
@@ -59,7 +60,7 @@ public class PlusTenantLineHandler implements TenantLineHandler {
 
         String tenantId = SecurityUtils.getTenantId();
         // 判断是否有租户
-        if (StringUtils.hasText(tenantId)) {
+        if (StringUtil.hasText(tenantId)) {
             // 不需要过滤租户的表
             List<String> excludes = tenantProperties.getExcludesTable();
             return excludes.contains(tableName);

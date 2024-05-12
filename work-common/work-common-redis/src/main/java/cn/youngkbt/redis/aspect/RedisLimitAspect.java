@@ -5,6 +5,7 @@ import cn.youngkbt.redis.constants.RedisConstants;
 import cn.youngkbt.redis.exception.RedisLimitException;
 import cn.youngkbt.redis.limit.CurrentLimitProperties;
 import cn.youngkbt.redis.limit.annotations.RedisLimit;
+import cn.youngkbt.utils.StringUtil;
 import cn.youngkbt.utils.WebUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +20,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class RedisLimitAspect {
                 limit = currentLimitProperties.getLimit();
                 expire= currentLimitProperties.getExpire();
             }
-            if (!StringUtils.hasText(key)) {
+            if (!StringUtil.hasText(key)) {
                 throw new RedisLimitException("redis key cannot be null");
             }
 

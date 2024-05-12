@@ -2,6 +2,7 @@ package cn.youngkbt.mp.interceptor;
 
 import cn.hutool.core.util.StrUtil;
 import cn.youngkbt.mp.utils.JSqlParseUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.binding.MapperMethod;
@@ -16,7 +17,6 @@ import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -104,7 +104,7 @@ public class QueryInterceptor implements Interceptor {
     }
 
     public static String escapeStr(String str) {
-        if (StringUtils.hasText(str)) {
+        if (StringUtil.hasText(str)) {
             str = str.replaceAll("\\\\", "\\\\\\\\");
             str = str.replaceAll("_", "\\\\_");
             str = str.replaceAll("%", "\\\\%");

@@ -13,6 +13,7 @@ import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.*;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -22,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -74,7 +74,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenantDTO sysTenantDTO) {
         return Wrappers.<SysTenant>lambdaQuery()
-                .eq(StringUtils.hasText(sysTenantDTO.getTenantId()), SysTenant::getTenantId, sysTenantDTO.getTenantId())
+                .eq(StringUtil.hasText(sysTenantDTO.getTenantId()), SysTenant::getTenantId, sysTenantDTO.getTenantId())
                 .eq(Objects.nonNull(sysTenantDTO.getUserCount()), SysTenant::getUserCount, sysTenantDTO.getUserCount())
                 .eq(Objects.nonNull(sysTenantDTO.getStatus()), SysTenant::getStatus, sysTenantDTO.getStatus())
                 .orderByAsc(SysTenant::getId);
@@ -357,6 +357,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Override
     public boolean updateOne(SysTenantDTO sysTenantDTO) {
+        checkTenantAllowed(sysTenantDTO.getTenantId());
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDTO, SysTenant.class);
         return baseMapper.updateById(sysTenant) > 0;
     }
@@ -364,6 +365,13 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public boolean removeBatch(List<Long> ids) {
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public void checkTenantAllowed(String tenantId) {
+        if (Objects.nonNull(tenantId) && TenantConstant.DEFAULT_TENANT_ID.equals(tenantId)) {
+            throw new ServiceException("不允许操作默认管理租户");
+        }
     }
 }
 

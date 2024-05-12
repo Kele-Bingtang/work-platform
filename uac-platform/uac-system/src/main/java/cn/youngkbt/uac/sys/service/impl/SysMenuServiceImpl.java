@@ -14,10 +14,12 @@ import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
 import cn.youngkbt.uac.sys.model.po.SysMenu;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
+import cn.youngkbt.uac.sys.model.vo.router.Meta;
 import cn.youngkbt.uac.sys.model.vo.router.RouterVO;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import cn.youngkbt.uac.sys.utils.TreeBuildUtil;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -27,6 +29,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -49,15 +52,33 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         if (Objects.isNull(loginUser)) {
             throw new ServiceException("查询不到登录用户的信息");
         }
-        
-        List<SysMenuVO> sysMenuVOList = listMenuListByUserId(appId, loginUser.getUsername());
+
+        List<SysMenu> sysMenuList = baseMapper.listMenuListByUserId(appId, loginUser.getUserId(), true);
+        List<SysMenuVO> sysMenuVOList = MapstructUtil.convert(sysMenuList, SysMenuVO.class);
+
+        List<SysMenuVO> treeList = TreeBuildUtil.build(sysMenuVOList, "0", SysMenuVO::getMenuId);
+
         // 构建前端需要的路由列表
-        return buildRoutes(sysMenuVOList);
-        
+        return buildRoutes(treeList);
+
     }
 
-    private List<RouterVO> buildRoutes(List<SysMenuVO> sysMenuVOList) {
-        return null;
+    private List<RouterVO> buildRoutes(List<SysMenuVO> treeList) {
+        List<RouterVO> routers = new ArrayList<>();
+        for (SysMenuVO sysMenuVO : treeList) {
+            RouterVO router = new RouterVO()
+                    .setPath(sysMenuVO.getPath())
+                    .setName(sysMenuVO.getMenuCode())
+                    .setComponent(sysMenuVO.getComponent())
+                    .setMeta(sysMenuVO.getMeta());
+
+            List<SysMenuVO> childMenus = sysMenuVO.getChildren();
+            if (ListUtil.isNotEmpty(childMenus)) {
+                router.setChildren(buildRoutes(childMenus));
+            }
+            routers.add(router);
+        }
+        return routers;
     }
 
     @Override
@@ -109,7 +130,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Override
     public List<SysMenuVO> listMenuListByUserId(String appId, String userId) {
-        return baseMapper.listMenuListByUserId(appId, userId, false);
+        List<SysMenu> sysMenuList = baseMapper.listMenuListByUserId(appId, userId, false);
+        return MapstructUtil.convert(sysMenuList, SysMenuVO.class);
     }
 
     @Override
@@ -185,12 +207,41 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
 
         sysMenu.setParentId(ColumnConstant.PARENT_ID);
+        // 更新部分菜单数据到 Meta
+        if (!sysMenu.getMenuType().equals(ColumnConstant.MENU_TYPE_BUTTON)) {
+            Meta meta = sysMenu.getMeta();
+
+            if (Objects.isNull(meta)) {
+                meta = new Meta();
+            }
+
+            meta.setTitle(sysMenu.getMenuName())
+                    .setIcon(sysMenu.getIcon())
+                    .setRank(sysMenu.getOrderNum());
+            sysMenu.setMeta(meta);
+        }
+
         return baseMapper.insert(sysMenu) > 0;
     }
 
     @Override
     public boolean updateOne(SysMenuDTO sysMenuDTO) {
         SysMenu sysMenu = MapstructUtil.convert(sysMenuDTO, SysMenu.class);
+        // 更新部分菜单数据到 Meta
+        if (!sysMenu.getMenuType().equals(ColumnConstant.MENU_TYPE_BUTTON)) {
+            Meta meta = sysMenu.getMeta();
+
+            if (Objects.isNull(meta)) {
+                meta = new Meta();
+            }
+
+            meta.setTitle(sysMenu.getMenuName())
+                    .setIcon(sysMenu.getIcon())
+                    .setRank(sysMenu.getOrderNum());
+            sysMenu.setMeta(meta);
+        }
+
+
         return baseMapper.updateById(sysMenu) > 0;
     }
 

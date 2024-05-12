@@ -118,6 +118,17 @@ export const notFoundRouter = {
   redirect: { name: "404" },
 };
 
+export const homeRouter = {
+  path: HOME_URL,
+  name: HOME_NAME,
+  component: "/home/index",
+  meta: {
+    isAffix: true,
+    title: "首页",
+    icon: HomeFilled,
+  },
+};
+
 export const rolesRoutes: RouterConfigRaw[] = [
   {
     path: HOME_URL,

@@ -1,7 +1,9 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.constant.TenantConstant;
 import cn.youngkbt.uac.sys.mapper.SysRoleMapper;
 import cn.youngkbt.uac.sys.model.dto.SysRoleDTO;
 import cn.youngkbt.uac.sys.model.po.*;
@@ -9,14 +11,15 @@ import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import cn.youngkbt.uac.sys.service.*;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -53,9 +56,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     private LambdaQueryWrapper<SysRole> buildQueryWrapper(SysRoleDTO sysRoleDTO) {
         return Wrappers.<SysRole>lambdaQuery()
-                .eq(StringUtils.hasText(sysRoleDTO.getRoleId()), SysRole::getRoleId, sysRoleDTO.getRoleId())
-                .eq(StringUtils.hasText(sysRoleDTO.getRoleCode()), SysRole::getRoleCode, sysRoleDTO.getRoleCode())
-                .eq(StringUtils.hasText(sysRoleDTO.getAppId()), SysRole::getAppId, sysRoleDTO.getAppId())
+                .eq(StringUtil.hasText(sysRoleDTO.getRoleId()), SysRole::getRoleId, sysRoleDTO.getRoleId())
+                .eq(StringUtil.hasText(sysRoleDTO.getRoleCode()), SysRole::getRoleCode, sysRoleDTO.getRoleCode())
+                .eq(StringUtil.hasText(sysRoleDTO.getAppId()), SysRole::getAppId, sysRoleDTO.getAppId())
                 .eq(Objects.nonNull(sysRoleDTO.getStatus()), SysRole::getStatus, sysRoleDTO.getStatus())
                 .orderByAsc(SysRole::getOrderNum);
 
@@ -78,6 +81,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean insertOne(SysRoleDTO sysRoleDTO) {
+        checkRoleAllowed(sysRoleDTO);
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         int result = baseMapper.insert(sysRole);
         if (ListUtil.isNotEmpty(sysRoleDTO.getSelectedMenuIds())) {
@@ -90,6 +94,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateOne(SysRoleDTO sysRoleDTO) {
+        checkRoleAllowed(sysRoleDTO);
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         int result = baseMapper.updateById(sysRole);
         if (ListUtil.isNotEmpty(sysRoleDTO.getSelectedMenuIds())) {
@@ -101,6 +106,13 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeBatch(List<Long> ids, List<String> roleIds) {
+        // 校验是否删除的是管理员角色
+        roleIds.forEach(roleId -> {
+            SysRoleDTO sysRoleDTO = new SysRoleDTO();
+            sysRoleDTO.setRoleId(roleId);
+            checkRoleAllowed(sysRoleDTO);
+        });
+
         // 删除角色与菜单关联
         roleMenuLinkService.remove(Wrappers.<RoleMenuLink>lambdaQuery().in(RoleMenuLink::getRoleId, roleIds));
         // 删除角色与部门关联
@@ -116,6 +128,32 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public boolean checkAppExitRole(List<String> appIds) {
         return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
                 .in(SysRole::getAppId, appIds));
+    }
+
+    @Override
+    public void checkRoleAllowed(SysRoleDTO sysRoleDTO) {
+        if (Objects.nonNull(sysRoleDTO.getRoleId()) && TenantConstant.DEFAULT_ROLE_ID.equals(sysRoleDTO.getRoleId())) {
+            throw new ServiceException("不允许操作超级管理员角色");
+        }
+        // 新增不允许使用 管理员标识符
+        if (Objects.isNull(sysRoleDTO.getRoleId())
+                && StringUtils.equalsAny(sysRoleDTO.getRoleCode(),
+                TenantConstant.SUPER_ADMIN_ROLE_KEY, TenantConstant.TENANT_ADMIN_ROLE_KEY)) {
+            throw new ServiceException("不允许使用系统内置管理员角色标识符!");
+        }
+        // 修改不允许修改 管理员标识符
+        if (Objects.nonNull(sysRoleDTO.getRoleId())) {
+            SysRole sysRole = baseMapper.selectOne(Wrappers.<SysRole>lambdaQuery()
+                    .eq(SysRole::getRoleId, sysRoleDTO.getRoleId())
+                    .eq(SysRole::getAppId, sysRoleDTO.getAppId())
+            );
+            // 如果标识符不相等 判断为修改了管理员标识符
+            if (!StringUtils.equals(sysRole.getRoleCode(), sysRoleDTO.getRoleCode())
+                    && StringUtils.equalsAny(sysRole.getRoleCode(),
+                    TenantConstant.SUPER_ADMIN_ROLE_KEY, TenantConstant.TENANT_ADMIN_ROLE_KEY)) {
+                throw new ServiceException("不允许修改系统内置管理员角色标识符!");
+            }
+        }
     }
 }
 

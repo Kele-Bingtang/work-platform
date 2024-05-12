@@ -10,6 +10,7 @@ import cn.youngkbt.uac.sys.model.vo.SysAppVO;
 import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -53,12 +54,12 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
 
     private LambdaQueryWrapper<SysApp> buildQueryWrapper(SysAppDTO sysAppDTO) {
         return Wrappers.<SysApp>lambdaQuery()
-                .eq(StringUtils.hasText(sysAppDTO.getAppId()), SysApp::getAppId, sysAppDTO.getAppId())
-                .eq(StringUtils.hasText(sysAppDTO.getAppCode()), SysApp::getAppCode, sysAppDTO.getAppCode())
-                .eq(StringUtils.hasText(sysAppDTO.getAppName()), SysApp::getAppName, sysAppDTO.getAppName())
+                .eq(StringUtil.hasText(sysAppDTO.getAppId()), SysApp::getAppId, sysAppDTO.getAppId())
+                .eq(StringUtil.hasText(sysAppDTO.getAppCode()), SysApp::getAppCode, sysAppDTO.getAppCode())
+                .eq(StringUtil.hasText(sysAppDTO.getAppName()), SysApp::getAppName, sysAppDTO.getAppName())
                 .eq(Objects.nonNull(sysAppDTO.getStatus()), SysApp::getStatus, sysAppDTO.getStatus())
-                .eq(StringUtils.hasText(sysAppDTO.getDeptId()), SysApp::getDeptId, sysAppDTO.getDeptId())
-                .eq(StringUtils.hasText(sysAppDTO.getClientId()), SysApp::getClientId, sysAppDTO.getClientId())
+                .eq(StringUtil.hasText(sysAppDTO.getDeptId()), SysApp::getDeptId, sysAppDTO.getDeptId())
+                .eq(StringUtil.hasText(sysAppDTO.getClientId()), SysApp::getClientId, sysAppDTO.getClientId())
                 .orderByAsc(SysApp::getOrderNum);
     }
 

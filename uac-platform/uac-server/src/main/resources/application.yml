@@ -75,6 +75,7 @@ security:
     # actuator 监控配置
     - /actuator
     - /actuator/**
+    - /ai/**
 
 # springdoc 配置
 springdoc:

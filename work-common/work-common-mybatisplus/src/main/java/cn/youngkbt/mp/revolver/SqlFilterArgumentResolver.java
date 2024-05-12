@@ -1,6 +1,7 @@
 package cn.youngkbt.mp.revolver;
 
 import cn.hutool.core.util.StrUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,11 +62,11 @@ public class SqlFilterArgumentResolver implements HandlerMethodArgumentResolver 
         String size = request.getParameter("size");
 
         Page<?> page = new Page<>();
-        if (StringUtils.hasText(current)) {
+        if (StringUtil.hasText(current)) {
             page.setCurrent(Long.parseLong(current));
         }
 
-        if (StringUtils.hasText(size)) {
+        if (StringUtil.hasText(size)) {
             page.setSize(Long.parseLong(size));
         }
 

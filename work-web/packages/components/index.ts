@@ -13,5 +13,6 @@ export * from "./list";
 export * from "./userSelect";
 export * from "./transferSelect";
 export * from "./tinymce";
-export * from "./basicDialog";
+export * from "./useDialog";
+export * from "./useDrawer";
 export * from "./point";

@@ -47,7 +47,7 @@ const resetPassword = () => {
     onClose: () => (newPassword.value = ""),
     onConfirm: handleConfirm,
     render: () => {
-      return <ElInput v-model={newPassword.value}></ElInput>;
+      return <ElInput v-model={newPassword.value} placeholder="请输入新密码"></ElInput>;
     },
   });
 };

@@ -38,29 +38,13 @@ export namespace Menu {
   export interface MenuTreeTable extends MenuInfo {
     children: MenuTreeTable[];
   }
-
-  export interface BackstageMenuList {
-    imageIcon: string;
-    menuCode: string;
-    pagePath: string;
-    menuName: string;
-    menuUrl: string;
-    parentMenuCode: string;
-    seq: number;
-    children?: BackstageMenuList[];
-  }
 }
 
-export const getMenuList = () => {
-  // 模拟请求菜单
-  return Promise.resolve([] as Menu.BackstageMenuList[]);
-  // return http.request<http.JsonResponse<BackstageMenuList[]>>({
-  //   url: "/getMenuList",
-  //   method: "get",
-  // });
-};
-
 const baseUri = "/system/menu";
+
+export const listRoutes = (appId: string) => {
+  return http.get<http.Response<RouterConfigRaw[]>>(`${baseUri}/listRoutes/${appId}`);
+};
 
 export const listMenuTreeTableByApp = (params: { appId: string }) => {
   return http.get<http.Response<Menu.MenuInfo[]>>(`${baseUri}/treeTable`, params);

@@ -19,7 +19,7 @@ public class AddressUtil {
     public static final String UNKNOWN = "XX XX";
 
     public static String getRealAddressByIp(String ip) {
-        if (!StringUtils.hasText(ip)) {
+        if (!StringUtil.hasText(ip)) {
             return UNKNOWN;
         }
         // 内网不查询

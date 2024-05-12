@@ -80,4 +80,10 @@ public interface SysRoleService extends IService<SysRole> {
      * @return 是否存在
      */
     boolean checkAppExitRole(List<String> appIds);
+
+    /**
+     * 校验角色是否允许操作
+     * @param sysRoleDTO 角色信息
+     */
+    void checkRoleAllowed(SysRoleDTO sysRoleDTO);
 }

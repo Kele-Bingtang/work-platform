@@ -11,10 +11,12 @@
             <result property="menuCode" column="menu_code" jdbcType="VARCHAR"/>
             <result property="menuName" column="menu_name" jdbcType="VARCHAR"/>
             <result property="path" column="path" jdbcType="VARCHAR"/>
-            <result property="param" column="param" jdbcType="VARCHAR"/>
             <result property="icon" column="icon" jdbcType="VARCHAR"/>
             <result property="orderNum" column="order_num" jdbcType="INTEGER"/>
+            <result property="permission" column="permission" jdbcType="INTEGER"/>
+            <result property="menuType" column="menu_type" jdbcType="INTEGER"/>
             <result property="component" column="component" jdbcType="VARCHAR"/>
+            <result property="meta" column="meta" jdbcType="VARCHAR" javaType="cn.youngkbt.uac.sys.model.vo.router.Meta" typeHandler="cn.youngkbt.uac.sys.config.MetaTypeHandler"/>
             <result property="intro" column="intro" jdbcType="VARCHAR"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
@@ -25,6 +27,7 @@
             <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
             <result property="appId" column="app_id" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -38,7 +41,7 @@
         status,is_deleted,app_id
     </sql>
     
-    <select id="listMenuListByUserId" resultType="cn.youngkbt.uac.sys.model.vo.SysMenuVO">
+    <select id="listMenuListByUserId" resultMap="BaseResultMap">
         SELECT DISTINCT tsm.*
         FROM t_sys_menu tsm
         JOIN t_role_menu_link trml ON tsm.menu_id = trml.menu_id AND trml.is_deleted = 0 AND trml.status = 1

@@ -1,11 +1,11 @@
 package cn.youngkbt.core.factory;
 
+import cn.youngkbt.utils.StringUtil;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.support.DefaultPropertySourceFactory;
 import org.springframework.core.io.support.EncodedResource;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public class YmlPropertySourceFactory extends DefaultPropertySourceFactory {
     @Override
     public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
         String sourceName = resource.getResource().getFilename();
-        if (StringUtils.hasText(sourceName) && (sourceName.endsWith(".yml") || sourceName.endsWith(".yaml"))) {
+        if (StringUtil.hasText(sourceName) && (sourceName.endsWith(".yml") || sourceName.endsWith(".yaml"))) {
             YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
             factory.setResources(resource.getResource());
             factory.afterPropertiesSet();

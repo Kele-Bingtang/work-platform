@@ -27,8 +27,9 @@
 
 <script setup lang="ts">
 import { type DialogProps, ElMessage, type FormInstance, ElMessageBox } from "element-plus";
-import { ProForm, handleNestProp, type FormOptionsProps } from "@work/components";
+import { ProForm, type FormOptionsProps } from "@work/components";
 import { shallowRef, ref, computed } from "vue";
+import { deepCloneTableRow } from "../utils";
 
 defineOptions({ name: "DialogOperate" });
 
@@ -110,9 +111,9 @@ const formOptions = computed(() => {
   return props.options;
 });
 
-const handleAdd = async (row?: any) => {
+const handleAdd = async () => {
   status.value = "add";
-  if (!props?.cache) form.value = { ...row };
+  if (!props?.cache) form.value = {};
   else props?.id && delete (form.value as any)[props?.id!];
   props.clickAdd && (form.value = (await props.clickAdd(form.value)) ?? form.value);
   dialogFormVisible.value = true;
@@ -120,16 +121,15 @@ const handleAdd = async (row?: any) => {
 
 const handleEdit = async ({ row }: any) => {
   status.value = "edit";
-  form.value = { ...row };
+  form.value = deepCloneTableRow(row);
   props.clickEdit && (form.value = (await props.clickEdit(form.value)) ?? form.value);
   dialogFormVisible.value = true;
 };
 
-const handleFormConfirm = (f: any, status: string) => {
+const handleFormConfirm = (data: any, status: string) => {
   const formRef = formElementRef.value.formRef as FormInstance;
   props.beforeConfirm && props.beforeConfirm(status);
 
-  let data = handleNestProp(f);
   // _enum 是 ProTable 内置的属性，专门存储字典数据，不需要发送给后台
   delete data._enum;
 
@@ -188,7 +188,7 @@ const handleFormConfirm = (f: any, status: string) => {
 
 const handleDelete = async ({ row }: any) => {
   if (props) {
-    let data = { ...row };
+    let data = deepCloneTableRow(row);
     // _enum 是 ProTable 内置的属性，专门存储字典数据，不需要发送给后台
     delete data._enum;
 

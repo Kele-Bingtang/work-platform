@@ -4,7 +4,7 @@
     v-bind="{ ...handleSearchProps, ...placeholder, searchParam: _searchParam, clearable }"
     v-model.trim="_searchParam[column.search?.key ?? lastProp(column.prop!)]"
     :data="column.search?.el === 'el-tree-select' ? columnEnum : []"
-    :options="['el-cascader', 'el-select-v 2'].includes(column.search?.el!) ? columnEnum : []"
+    :options="['el-cascader', 'el-select-v2'].includes(column.search?.el!) ? columnEnum : []"
   >
     <template v-if="column.search?.el === 'el-cascader'" #default="{ data }">
       <span>{{ data[fieldNames.label] }}</span>
@@ -77,7 +77,7 @@ const columnEnum = computed(() => {
 
   let enumData = enumMap.value.get(props.column.prop);
   if (!enumData) return [];
-  if (props.column.search?.el === "el-select-v 2" && props.column.fieldNames) {
+  if (props.column.search?.el === "el-select-v2" && props.column.fieldNames) {
     enumData = enumData.map((item: { [key: string]: any }) => {
       return { ...item, label: item[fieldNames.value.label], value: item[fieldNames.value.value] };
     });

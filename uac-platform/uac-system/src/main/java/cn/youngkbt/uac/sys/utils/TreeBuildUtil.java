@@ -27,7 +27,7 @@ public class TreeBuildUtil extends cn.hutool.core.lang.tree.TreeUtil {
         for (T tree : nodes) {
             if (!parentId.equals(tree.getParentId())) { // 非根节点
                 T parentNode = nodeMap.get(tree.getParentId());
-                if (parentNode != null) {
+                if (null != parentNode) {
                     parentNode.getChildren().add(tree);
                 }
             }

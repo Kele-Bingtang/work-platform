@@ -73,4 +73,9 @@ public interface SysTenantService extends IService<SysTenant> {
      */
     boolean checkCompanyNameUnique(SysTenantDTO sysTenantDTO);
 
+    /**
+     * 校验租户是否允许操作
+     */
+    void checkTenantAllowed(String tenantId);
+
 }

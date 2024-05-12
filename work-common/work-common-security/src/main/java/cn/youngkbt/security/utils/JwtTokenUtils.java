@@ -6,6 +6,7 @@ import cn.youngkbt.jwt.properties.JwtProperties;
 import cn.youngkbt.security.JwtAuthenticationToken;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.utils.StringUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwsHeader;
@@ -18,7 +19,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -73,7 +73,7 @@ public class JwtTokenUtils {
         Map<String, Object> claims = new HashMap<>(2);
         claims.put(AUTHORITIES, authentication.getAuthorities());
         claims.put("expireTime", expireTime);
-        if (StringUtils.hasText(namespace)) {
+        if (StringUtil.hasText(namespace)) {
             claims.put("namespace", namespace);
         }
         return generateToken(claims, expireTime);

@@ -1,7 +1,6 @@
 package cn.youngkbt.uac.sys.mapper;
 
 import cn.youngkbt.uac.sys.model.po.SysMenu;
-import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
-    List<SysMenuVO> listMenuListByUserId(@Param("appId") String appId, @Param("userId") String userId, @Param("onlyGetMenu") boolean onlyGetMenu);
+    List<SysMenu> listMenuListByUserId(@Param("appId") String appId, @Param("userId") String userId, @Param("onlyGetMenu") boolean onlyGetMenu);
 }
 
 

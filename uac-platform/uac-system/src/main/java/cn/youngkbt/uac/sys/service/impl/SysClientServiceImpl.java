@@ -12,6 +12,7 @@ import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -55,10 +56,10 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
 
     private LambdaQueryWrapper<SysClient> buildQueryWrapper(SysClientDTO sysClientDTO) {
         return Wrappers.<SysClient>lambdaQuery()
-                .like(StringUtils.hasText(sysClientDTO.getClientId()), SysClient::getClientId, sysClientDTO.getClientId())
-                .eq(StringUtils.hasText(sysClientDTO.getClientKey()), SysClient::getClientKey, sysClientDTO.getClientKey())
-                .eq(StringUtils.hasText(sysClientDTO.getClientName()), SysClient::getClientName, sysClientDTO.getClientName())
-                .like(StringUtils.hasText(sysClientDTO.getClientSecret()), SysClient::getClientSecret, sysClientDTO.getClientSecret())
+                .like(StringUtil.hasText(sysClientDTO.getClientId()), SysClient::getClientId, sysClientDTO.getClientId())
+                .eq(StringUtil.hasText(sysClientDTO.getClientKey()), SysClient::getClientKey, sysClientDTO.getClientKey())
+                .eq(StringUtil.hasText(sysClientDTO.getClientName()), SysClient::getClientName, sysClientDTO.getClientName())
+                .like(StringUtil.hasText(sysClientDTO.getClientSecret()), SysClient::getClientSecret, sysClientDTO.getClientSecret())
                 .in(Objects.nonNull(sysClientDTO.getGrantTypeList()), SysClient::getGrantTypes, sysClientDTO.getGrantTypeList())
                 .eq(Objects.nonNull(sysClientDTO.getStatus()), SysClient::getStatus, sysClientDTO.getStatus());
     }

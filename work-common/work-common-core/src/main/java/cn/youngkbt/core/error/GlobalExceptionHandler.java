@@ -5,6 +5,7 @@ import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.http.ResponseStatusEnum;
+import cn.youngkbt.utils.StringUtil;
 import jakarta.servlet.Servlet;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -16,7 +17,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -162,9 +162,9 @@ public class GlobalExceptionHandler {
         // log.error("服务器异常：{}", Objects.nonNull(e.getMessage()) ? e.getMessage() : e.getCause().getMessage());
         // 本地调式，知道在哪里发生异常
         log.error("服务器异常", e);
-        if (StringUtils.hasText(e.getMessage())) {
+        if (StringUtil.hasText(e.getMessage())) {
             return HttpResult.errorMessage(e.getMessage());
-        } else if (StringUtils.hasText(e.getCause().getMessage())) {
+        } else if (StringUtil.hasText(e.getCause().getMessage())) {
             return HttpResult.errorMessage(e.getCause().getMessage());
         }
         return HttpResult.error(ResponseStatusEnum.INTERNAL_SERVER_ERROR);

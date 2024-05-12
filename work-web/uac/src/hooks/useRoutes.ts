@@ -1,12 +1,13 @@
 import router from "@/router";
-import { HOME_NAME, LOGIN_URL, notFoundRouter, rolesRoutes } from "@/router/routesConfig";
+import { HOME_NAME, LOGIN_URL, notFoundRouter, homeRouter } from "@/router/routesConfig";
 import { usePermissionStore, useUserStore } from "@/stores";
 import { isExternal, isType } from "@work/utils";
 import { ElNotification } from "element-plus";
 import type { RouteRecordRaw } from "vue-router";
 import settings from "@/config/settings";
 import { useLayoutNoSetup } from "./useLayout";
-import type { Menu } from "@/api/application/menu";
+import { listRoutes } from "@/api/system/menu";
+import { uacAppSecret } from "@work/constants";
 
 const modules = import.meta.glob("@/views/**/*.vue");
 const FrameView = () => import("@/layout/components/FrameLayout/FrameView.vue");
@@ -37,8 +38,12 @@ export const useRoutes = () => {
       routeList = JSON.parse(cacheRoutes);
       isCacheDynamicRoutes = true;
     } else if (api) routeList = getDynamicRouters(await api());
-    else routeList = rolesRoutes;
-    // else routeList = getDynamicRouters(await getMenuList()); // 请求后台拿到菜单，并处理成路由
+    else {
+      // routeList = rolesRoutes;
+      // 请求后台拿到路由
+      const res = await listRoutes(uacAppSecret);
+      routeList = [homeRouter, ...res.data];
+    }
 
     // 缓存后台路由
     if (cacheDynamicRoutes && !isCacheDynamicRoutes) {
@@ -150,17 +155,17 @@ export const useRoutes = () => {
     routers.forEach(router => {
       const fullPath = router.path.startsWith("/") ? router.path : (basePath + "/" + router.path).replace(/\/+/g, "/");
       // 处理成后面布局要用到的 title。title 如果为函数，则涉及到当前路由，所以这里无法处理
-      if (router.meta) {
-        const { useI18n, isKeepAlive, isFull, useTooltip } = router.meta;
-        const { routeUseI18n, isKeepAlive: keepAlive, isFull: full, routeUseTooltip } = settings;
-        router.meta._fullPath = fullPath;
-        // 这两个顺序不能互换，因为 getLayoutTitle 函数需要 useI18n
-        if (useI18n === undefined && routeUseI18n !== undefined) router.meta.useI18n = routeUseI18n;
-        router.meta.title = getLayoutTitle(router as RouteConfig);
-        if (isKeepAlive === undefined && keepAlive !== undefined) router.meta.isKeepAlive = keepAlive;
-        if (isFull === undefined && full !== undefined) router.meta.isFull = full;
-        if (useTooltip === undefined && routeUseTooltip !== undefined) router.meta.useTooltip = routeUseTooltip;
-      }
+      if (!router.meta) router.meta = {};
+
+      const { useI18n, isKeepAlive, isFull, useTooltip } = router.meta;
+      const { routeUseI18n, isKeepAlive: keepAlive, isFull: full, routeUseTooltip } = settings;
+      router.meta._fullPath = fullPath;
+      // 这两个顺序不能互换，因为 getLayoutTitle 函数需要 useI18n
+      if (useI18n === undefined && routeUseI18n !== undefined) router.meta.useI18n = routeUseI18n;
+      router.meta.title = getLayoutTitle(router as RouteConfig);
+      if (isKeepAlive === undefined && keepAlive !== undefined) router.meta.isKeepAlive = keepAlive;
+      if (isFull === undefined && full !== undefined) router.meta.isFull = full;
+      if (useTooltip === undefined && routeUseTooltip !== undefined) router.meta.useTooltip = routeUseTooltip;
       if (router.children && router.children.length) {
         if (isExternal(fullPath)) router.children = processRouteMeta(router.children, "");
         else router.children = processRouteMeta(router.children, fullPath);

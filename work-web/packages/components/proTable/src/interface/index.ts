@@ -21,7 +21,7 @@ export type SearchType =
   | "el-input"
   | "el-input-number"
   | "el-select"
-  | "el-select-v 2"
+  | "el-select-v2"
   | "el-tree-select"
   | "el-cascader"
   | "el-date-picker"

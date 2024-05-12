@@ -1,6 +1,7 @@
 package cn.youngkbt.uac.sys.model.vo.router;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * @note
  */
 @Data
+@Accessors(chain = true)
 public class RouterVO {
     /**
      * 路由名字

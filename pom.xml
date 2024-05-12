@@ -21,10 +21,10 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-boot.version>3.1.5</spring-boot.version>
+        <spring-boot.version>3.2.5</spring-boot.version>
         <spring-cloud.version>2022.0.0</spring-cloud.version>
         <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
-        <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
+        <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <mysql.version>8.0.28</mysql.version>
         <fastjson.version>2.0.28</fastjson.version>
         <lombok.version>1.18.30</lombok.version>
@@ -186,6 +186,13 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>2.16.2</version>
+            </dependency>
+
+            <!-- 解决 Spring Boot 3.2.x 后报错，Mybatis Plus 没有引用最新的 mybatis-spring，后续新版引用，则可以去掉该依赖  -->
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>3.0.3</version>
             </dependency>
 
             <!--<dependency>-->

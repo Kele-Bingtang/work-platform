@@ -98,4 +98,10 @@ public interface SysUserService extends IService<SysUser> {
      */
     boolean removeBatch(List<Long> ids, List<String> userIds);
 
+    /**
+     * 校验用户是否允许操作
+     *
+     * @param userId 用户 ID
+     */
+    void checkUserAllowed(String userId);
 }

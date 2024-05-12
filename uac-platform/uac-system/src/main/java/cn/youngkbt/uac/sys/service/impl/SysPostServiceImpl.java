@@ -1,6 +1,5 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysPostMapper;
@@ -12,6 +11,7 @@ import cn.youngkbt.uac.sys.model.vo.extra.UserSelectPostVo;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.uac.sys.service.UserPostLinkService;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -52,8 +52,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     private LambdaQueryWrapper<SysPost> buildQueryWrapper(SysPostDTO sysPostDTO) {
         return Wrappers.<SysPost>lambdaQuery()
-                .eq(StringUtils.hasText(sysPostDTO.getPostCode()), SysPost::getPostCode, sysPostDTO.getPostCode())
-                .eq(StringUtils.hasText(sysPostDTO.getPostName()), SysPost::getPostName, sysPostDTO.getPostName())
+                .eq(StringUtil.hasText(sysPostDTO.getPostCode()), SysPost::getPostCode, sysPostDTO.getPostCode())
+                .eq(StringUtil.hasText(sysPostDTO.getPostName()), SysPost::getPostName, sysPostDTO.getPostName())
                 .eq(Objects.nonNull(sysPostDTO.getStatus()), SysPost::getStatus, sysPostDTO.getStatus())
                 .orderByAsc(SysPost::getOrderNum);
     }

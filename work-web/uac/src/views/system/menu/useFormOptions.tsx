@@ -144,7 +144,7 @@ export const useFormOptions = (enumData: ComputedRef<any>, defaultValue: Compute
       },
       { formItem: { title: "META 配置", label: "", prop: "" }, attrs: { isDestroy: form => form.menuType === "F" } },
       {
-        formItem: { label: "启用", prop: "useMeta", br: true },
+        formItem: { label: "显示", prop: "useMeta", br: true },
         attrs: {
           el: "el-radio-group",
           isDestroy: form => form.menuType === "F",

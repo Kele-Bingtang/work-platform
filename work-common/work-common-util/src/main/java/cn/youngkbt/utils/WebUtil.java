@@ -96,7 +96,7 @@ public class WebUtil {
     public static String getRequestContent(HttpServletRequest request) {
         try {
             String queryString = request.getQueryString();
-            if (StringUtils.hasText(queryString)) {
+            if (StringUtil.hasText(queryString)) {
                 return new String(queryString.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8).replaceAll("&amp;", "&").replaceAll("%22", "\"");
             }
             String charEncoding = request.getCharacterEncoding();
@@ -105,7 +105,7 @@ public class WebUtil {
             }
             byte[] buffer = getRequestBody(request.getInputStream()).getBytes();
             String str = new String(buffer, charEncoding).trim();
-            if (!StringUtils.hasText(str)) {
+            if (!StringUtil.hasText(str)) {
                 StringBuilder sb = new StringBuilder();
                 Enumeration<String> parameterNames = request.getParameterNames();
                 while (parameterNames.hasMoreElements()) {

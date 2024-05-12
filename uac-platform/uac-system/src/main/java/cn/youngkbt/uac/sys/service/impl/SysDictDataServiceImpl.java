@@ -56,9 +56,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     private LambdaQueryWrapper<SysDictData> buildQueryWrapper(SysDictDataDTO sysDictDataDTO) {
         return Wrappers.<SysDictData>lambdaQuery()
                 .eq(Objects.nonNull(sysDictDataDTO.getDictSort()), SysDictData::getDictSort, sysDictDataDTO.getDictSort())
-                .eq(StringUtils.hasText(sysDictDataDTO.getDictLabel()), SysDictData::getDictLabel, sysDictDataDTO.getDictCode())
-                .eq(StringUtils.hasText(sysDictDataDTO.getAppId()), SysDictData::getAppId, sysDictDataDTO.getAppId())
-                .eq(StringUtils.hasText(sysDictDataDTO.getDictCode()), SysDictData::getDictCode, sysDictDataDTO.getDictCode())
+                .eq(StringUtil.hasText(sysDictDataDTO.getDictLabel()), SysDictData::getDictLabel, sysDictDataDTO.getDictCode())
+                .eq(StringUtil.hasText(sysDictDataDTO.getAppId()), SysDictData::getAppId, sysDictDataDTO.getAppId())
+                .eq(StringUtil.hasText(sysDictDataDTO.getDictCode()), SysDictData::getDictCode, sysDictDataDTO.getDictCode())
                 .orderByAsc(SysDictData::getDictSort);
     }
 
@@ -124,8 +124,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
         return baseMapper.exists(Wrappers.<SysDictData>lambdaQuery()
                 .eq(SysDictData::getDictValue, sysDictDataDTO.getDictValue())
                 .eq(SysDictData::getDictCode, sysDictDataDTO.getDictCode())
-                .eq(StringUtils.hasText(sysDictDataDTO.getParentId()), SysDictData::getParentId, sysDictDataDTO.getParentId())
-                .ne(StringUtils.hasText(sysDictDataDTO.getDataId()), SysDictData::getDataId, sysDictDataDTO.getDataId()));
+                .eq(StringUtil.hasText(sysDictDataDTO.getParentId()), SysDictData::getParentId, sysDictDataDTO.getParentId())
+                .ne(StringUtil.hasText(sysDictDataDTO.getDataId()), SysDictData::getDataId, sysDictDataDTO.getDataId()));
     }
 
     @Override

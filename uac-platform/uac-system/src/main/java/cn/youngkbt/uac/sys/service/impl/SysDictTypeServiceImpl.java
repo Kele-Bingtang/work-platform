@@ -10,6 +10,7 @@ import cn.youngkbt.uac.sys.model.vo.SysDictTypeVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
 import cn.youngkbt.uac.sys.service.SysDictTypeService;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -50,9 +51,9 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
 
     private LambdaQueryWrapper<SysDictType> buildQueryWrapper(SysDictTypeDTO sysDictTypeDTO) {
         return Wrappers.<SysDictType>lambdaQuery()
-                .eq(StringUtils.hasText(sysDictTypeDTO.getDictName()), SysDictType::getDictName, sysDictTypeDTO.getDictName())
-                .eq(StringUtils.hasText(sysDictTypeDTO.getDictCode()), SysDictType::getDictCode, sysDictTypeDTO.getDictCode())
-                .eq(StringUtils.hasText(sysDictTypeDTO.getAppId()), SysDictType::getAppId, sysDictTypeDTO.getAppId())
+                .eq(StringUtil.hasText(sysDictTypeDTO.getDictName()), SysDictType::getDictName, sysDictTypeDTO.getDictName())
+                .eq(StringUtil.hasText(sysDictTypeDTO.getDictCode()), SysDictType::getDictCode, sysDictTypeDTO.getDictCode())
+                .eq(StringUtil.hasText(sysDictTypeDTO.getAppId()), SysDictType::getAppId, sysDictTypeDTO.getAppId())
                 .orderByAsc(SysDictType::getDictId);
     }
 
@@ -87,7 +88,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     public boolean checkDictCodeUnique(SysDictTypeDTO sysDictTypeDTO) {
         return baseMapper.exists(Wrappers.<SysDictType>lambdaQuery()
                 .eq(SysDictType::getDictCode, sysDictTypeDTO.getDictCode())
-                .ne(StringUtils.hasText(sysDictTypeDTO.getDictId()), SysDictType::getDictId, sysDictTypeDTO.getDictId()));
+                .ne(StringUtil.hasText(sysDictTypeDTO.getDictId()), SysDictType::getDictId, sysDictTypeDTO.getDictId()));
     }
 }
 

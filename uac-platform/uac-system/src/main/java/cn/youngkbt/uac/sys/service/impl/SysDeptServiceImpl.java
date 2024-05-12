@@ -83,9 +83,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     private LambdaQueryWrapper<SysDept> buildQueryWrapper(SysDeptDTO sysDeptDTO) {
         return Wrappers.<SysDept>lambdaQuery()
-                .eq(StringUtils.hasText(sysDeptDTO.getDeptId()), SysDept::getDeptId, sysDeptDTO.getDeptId())
-                .eq(StringUtils.hasText(sysDeptDTO.getParentId()), SysDept::getParentId, sysDeptDTO.getParentId())
-                .eq(StringUtils.hasText(sysDeptDTO.getDeptName()), SysDept::getDeptName, sysDeptDTO.getDeptName())
+                .eq(StringUtil.hasText(sysDeptDTO.getDeptId()), SysDept::getDeptId, sysDeptDTO.getDeptId())
+                .eq(StringUtil.hasText(sysDeptDTO.getParentId()), SysDept::getParentId, sysDeptDTO.getParentId())
+                .eq(StringUtil.hasText(sysDeptDTO.getDeptName()), SysDept::getDeptName, sysDeptDTO.getDeptName())
                 .eq(Objects.nonNull(sysDeptDTO.getStatus()), SysDept::getStatus, sysDeptDTO.getStatus());
     }
 

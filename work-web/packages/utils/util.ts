@@ -8,6 +8,32 @@ export function copyObj(obj: unknown) {
 }
 
 /**
+ * @description 深拷贝函数
+ */
+export const deepClone = (obj: any, hash = new WeakMap()): Record<string, any> => {
+  if (!obj || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map(item => deepClone(item));
+
+  if (hash.has(obj)) return hash.get(obj);
+
+  const Constructor = obj.constructor;
+
+  if (Constructor === Date) return new Date(obj);
+  if (Constructor === RegExp) return new RegExp(obj);
+
+  const newObj = new Constructor();
+  hash.set(obj, newObj);
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      newObj[key] = deepClone(obj[key], hash);
+    }
+  }
+
+  return newObj;
+};
+
+/**
  * 去重
  * @param arr 多个对象的数组
  * @param removeKeys 去重的 keys，数组形式
@@ -232,4 +258,30 @@ export const getPx = (val: number | string) => {
     return val;
   }
   return `${val}px`;
+};
+
+/**
+ * @description 处理 prop 为多级嵌套的情况，返回的数据 (列如: prop: user.name)
+ */
+export const get = (form: { [key: string]: any }, prop: string) => {
+  if (!prop.includes(".")) return form[prop] ?? "";
+  prop.split(".").forEach(item => (form = form[item] ?? ""));
+  return form;
+};
+
+/**
+ * @description 处理 prop 为多级嵌套的情况，返回的数据 (列如: prop: user.name)
+ */
+export const set = (form: { [key: string]: any }, prop: string, value: any) => {
+  if (!form) return;
+  const props = prop.split(".");
+  let current = form;
+
+  for (let i = 0; i < props.length - 1; i++) {
+    const prop = props[i];
+    if (!current[prop]) current[prop] = {};
+    current = current[prop];
+  }
+
+  current[props[props.length - 1]] = value;
 };

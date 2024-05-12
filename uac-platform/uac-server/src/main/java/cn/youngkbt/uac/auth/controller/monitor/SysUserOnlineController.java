@@ -6,11 +6,11 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.utils.UacHelper;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +37,7 @@ public class SysUserOnlineController {
         int fromIndex = (int) ((page.getCurrent() - 1) * page.getSize());
         int toIndex = (int) Math.min(fromIndex + page.getCurrent(), allLoginUser.size());
 
-        if (StringUtils.hasText(username)) {
+        if (StringUtil.hasText(username)) {
             allLoginUser = allLoginUser.stream().filter(userOnline -> username.equals(userOnline.getUsername())).toList();
         }
 

@@ -26,8 +26,12 @@ public interface TenantConstant {
      * 默认租户ID
      */
     String DEFAULT_TENANT_ID = "000000";
-    
+    /**
+     * 默认 APP ID
+     */
     String DEFAULT_UAC_APP_ID = "1000000000000000000";
-    
+    /**
+     * 默认超级管理员角色 ID
+     */
     String DEFAULT_ROLE_ID = "1000000000000000000";
 }

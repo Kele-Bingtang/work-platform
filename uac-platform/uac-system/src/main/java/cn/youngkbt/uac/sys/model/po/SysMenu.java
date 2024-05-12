@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
  * @date 2023-23-12 00:23:08
  * @note 菜单
  */
-@TableName("t_sys_menu")
+@TableName(value = "t_sys_menu", autoResultMap = true)
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
@@ -52,11 +52,6 @@ public class SysMenu extends BaseDO {
      * 菜单地址
      */
     private String path;
-
-    /**
-     * 路由参数
-     */
-    private String param;
 
     /**
      * 图标

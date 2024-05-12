@@ -51,6 +51,7 @@ export const useFormOptions = (defaultValue: ComputedRef<string>) => {
         formItem: { label: "性别", prop: "sex" },
         attrs: {
           el: "el-select",
+          valueFormat: "string",
           enum: () => useLayoutStore().getDictData("sys_user_sex"),
           fieldNames: { value: "dictValue", label: "dictLabel" },
           props: { clearable: true, placeholder: "请选择 性别" },

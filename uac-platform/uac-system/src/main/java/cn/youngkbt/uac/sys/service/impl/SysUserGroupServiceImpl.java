@@ -12,6 +12,7 @@ import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -54,8 +55,8 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
 
     private LambdaQueryWrapper<SysUserGroup> buildQueryWrapper(SysUserGroupDTO sysUserGroupDTO) {
         return Wrappers.<SysUserGroup>lambdaQuery()
-                .eq(StringUtils.hasText(sysUserGroupDTO.getGroupName()), SysUserGroup::getGroupName, sysUserGroupDTO.getGroupName())
-                .eq(StringUtils.hasText(sysUserGroupDTO.getAppId()), SysUserGroup::getAppId, sysUserGroupDTO.getAppId())
+                .eq(StringUtil.hasText(sysUserGroupDTO.getGroupName()), SysUserGroup::getGroupName, sysUserGroupDTO.getGroupName())
+                .eq(StringUtil.hasText(sysUserGroupDTO.getAppId()), SysUserGroup::getAppId, sysUserGroupDTO.getAppId())
                 .orderByAsc(SysUserGroup::getCreateTime);
     }
 

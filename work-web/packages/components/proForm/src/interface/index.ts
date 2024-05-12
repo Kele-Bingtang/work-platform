@@ -87,6 +87,7 @@ export interface FormColumnProps<T = any> {
     destroy?: Array<"add" | "edit">; // 是否销毁表单，给 ProTable 的 DialogOperate.vue 使用
     hidden?: Array<"add" | "edit">; // 是否隐藏表单，给 ProTable 的 DialogOperate.vue 使用
     disabled?: Array<"add" | "edit">; // 是否禁用表单，给 ProTable 的 DialogOperate.vue 使用
+    valueFormat?: "default" | "string" | "number" | "boolean"; // 表单绑定的值格式，默认 default（针对 Enum Value 是 string "1"，而值是 number 1 导致编辑时无法匹配问题）
     [key: string]: any;
   };
 }

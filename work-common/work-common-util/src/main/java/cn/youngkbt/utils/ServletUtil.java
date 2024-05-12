@@ -150,7 +150,7 @@ public class ServletUtil extends JakartaServletUtil {
 
     public static String getHeader(HttpServletRequest request, String name) {
         String value = request.getHeader(name);
-        if (!StringUtils.hasText(value)) {
+        if (!StringUtil.hasText(value)) {
             return "";
         }
         return urlDecode(value);

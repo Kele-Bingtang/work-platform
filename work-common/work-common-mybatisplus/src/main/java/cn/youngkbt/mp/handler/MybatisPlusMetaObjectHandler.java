@@ -10,13 +10,13 @@ import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -99,7 +99,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         // 2. 如果用户有手动设置的值
         Object userSetValue = metaObject.getValue(fieldName);
         String setValueStr = StrUtil.str(userSetValue, Charset.defaultCharset());
-        if (StringUtils.hasText(setValueStr) && !isCover) {
+        if (StringUtil.hasText(setValueStr) && !isCover) {
             return;
         }
         // 3. field 类型相同时设置

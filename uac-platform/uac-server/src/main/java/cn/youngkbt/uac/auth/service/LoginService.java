@@ -20,10 +20,10 @@ import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.model.po.SysTenant;
 import cn.youngkbt.uac.sys.service.SysTenantService;
 import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -83,7 +83,7 @@ public class LoginService {
 
     public void checkTenant(String tenantId) {
         // 校验租户是否存在
-        if (!StringUtils.hasText(tenantId)) {
+        if (!StringUtil.hasText(tenantId)) {
             throw new TenantException("该租户不存在");
         }
         // 校验租户模式是否启用

@@ -1,8 +1,6 @@
 package cn.youngkbt.auth.controller;
 
 import cn.hutool.core.util.StrUtil;
-import cn.youngkbt.core.http.HttpResult;
-import cn.youngkbt.core.http.Response;
 import cn.youngkbt.auth.dto.OpenApiClientDTO;
 import cn.youngkbt.auth.entity.SysAuthClient;
 import cn.youngkbt.auth.provider.AuthTokenGeneratorProvider;
@@ -11,8 +9,11 @@ import cn.youngkbt.auth.service.impl.OpenApiServiceImpl;
 import cn.youngkbt.auth.vo.OpenApiTokenVO;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
+import cn.youngkbt.core.http.HttpResult;
+import cn.youngkbt.core.http.Response;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.enumeration.AuthGrantTypeEnum;
+import cn.youngkbt.utils.StringUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.StringUtils;
@@ -90,7 +91,7 @@ public class OpenApiController {
         String clientSecret; // 先从 Header 中获取
         String authorization = request.getHeader("Authorization");
         authorization = StrUtil.subAfter(authorization, "Basic ", true);
-        if (StringUtils.hasText(authorization)) {
+        if (StringUtil.hasText(authorization)) {
             authorization = new String(Base64.getDecoder().decode(authorization.getBytes()));
             clientId = StrUtil.subBefore(authorization, ":", false);
             clientSecret = StrUtil.subAfter(authorization, ":", false);
@@ -100,7 +101,7 @@ public class OpenApiController {
             clientSecret = request.getParameter("appSecret");
         }
         // 如果两者非空，则返回 
-        if (!StringUtils.hasText(clientId) && StringUtils.hasText(clientSecret)) {
+        if (!StringUtil.hasText(clientId) && StringUtil.hasText(clientSecret)) {
             return new String[]{clientId, clientSecret};
         }
         return null;

@@ -5,6 +5,7 @@ import cn.youngkbt.log.enumeration.RequestLogLevelEnum;
 import cn.youngkbt.log.properties.RequestLogProperties;
 import cn.youngkbt.utils.ClassUtil;
 import cn.youngkbt.utils.JacksonUtil;
+import cn.youngkbt.utils.StringUtil;
 import cn.youngkbt.utils.WebUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +21,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.io.InputStreamSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -178,7 +178,7 @@ public class RequestLogAspect {
             // 参数名
             RequestParam requestParam = methodParam.getParameterAnnotation(RequestParam.class);
             String paraName = parameterName;
-            if (requestParam != null && StringUtils.hasText(requestParam.value())) {
+            if (requestParam != null && StringUtil.hasText(requestParam.value())) {
                 paraName = requestParam.value();
             }
             if (value == null) {

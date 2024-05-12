@@ -38,9 +38,9 @@ export interface TreeProps {
   nodeKey?: string; // 每一个树节点 id
   checkValueType?: "keys" | "nodes"; // v-model 返回的格式，keys 返回选中的节点 nodeKey，nodes 为返回选中的节点
   expandSelected?: boolean; // 初始化就有默认选中的节点时，是否展开选中节点的所有父节点
-  checkbox?: boolean;
-  search?: boolean;
-  select?: boolean;
+  checkbox?: boolean; // 开启工具栏
+  search?: boolean; // 开启搜索功能
+  select?: boolean; // 开启全选/全不选功能
 }
 
 const props = withDefaults(defineProps<TreeProps>(), {

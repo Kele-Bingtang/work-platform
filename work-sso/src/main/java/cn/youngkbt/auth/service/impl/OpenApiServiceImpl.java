@@ -8,6 +8,7 @@ import cn.youngkbt.auth.service.OpenApiService;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.enumeration.AuthGrantTypeEnum;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -45,13 +46,13 @@ public class OpenApiServiceImpl extends ServiceImpl<OpenApiMapper, SysAuthClient
 
     @Override
     public SysAuthClient getApp(String appId, String appSecret, String authorizedGrantType) {
-        if (!StringUtils.hasText(appSecret)) {
+        if (!StringUtil.hasText(appSecret)) {
             throw new ServiceException(AuthErrorCodeEnum.AUTH_APP_SECRET_ERROR.getCode(), AuthErrorCodeEnum.AUTH_APP_SECRET_ERROR.getMessage());
         }
-        if (!StringUtils.hasText(authorizedGrantType)) {
+        if (!StringUtil.hasText(authorizedGrantType)) {
             throw new ServiceException(AuthErrorCodeEnum.AUTH_APP_GRANT_TYPE_NOT_SUPPORT.getCode(), AuthErrorCodeEnum.AUTH_APP_GRANT_TYPE_NOT_SUPPORT.getMessage());
         }
-        SysAuthClient oauthClient = getOne(Wrappers.<SysAuthClient>lambdaQuery().eq(SysAuthClient::getAppId, appId).eq(StringUtils.hasText(appSecret), SysAuthClient::getAppSecret, appSecret));
+        SysAuthClient oauthClient = getOne(Wrappers.<SysAuthClient>lambdaQuery().eq(SysAuthClient::getAppId, appId).eq(StringUtil.hasText(appSecret), SysAuthClient::getAppSecret, appSecret));
         if (Objects.isNull(oauthClient)) {
             throw new ServiceException(AuthErrorCodeEnum.AUTH_APP_GRANT_TYPE_NOT_REALIZE.getCode(), AuthErrorCodeEnum.AUTH_APP_GRANT_TYPE_NOT_REALIZE.getMessage());
         }

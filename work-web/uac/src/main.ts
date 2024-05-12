@@ -16,12 +16,17 @@ import { Icon } from "@work/components";
 import errorHandler, { checkNeed } from "@/utils/errorHandler";
 import Auth from "@/components/Permission/auth";
 import Role from "@/components/Permission/role.vue";
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
 const pinia = createPinia();
 const app = createApp(App);
 pinia.use(piniaPluginPersistedstate);
 
 checkNeed() && (app.config.errorHandler = errorHandler);
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component);
+}
 
 // 全局注册按钮级别权限组件
 app.component("Auth", Auth);

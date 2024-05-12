@@ -2,11 +2,13 @@ package cn.youngkbt.uac.sys.service.impl;
 
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.event.LoginInfoEvent;
+import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.uac.core.constant.AuthConstant;
+import cn.youngkbt.uac.core.constant.TenantConstant;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkPostDTO;
@@ -15,6 +17,7 @@ import cn.youngkbt.uac.sys.model.vo.SysUserVO;
 import cn.youngkbt.uac.sys.service.*;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -28,7 +31,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -70,12 +72,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private QueryWrapper<SysUser> buildQueryWrapper(SysUserDTO sysUserDTO) {
         QueryWrapper<SysUser> wrapper = Wrappers.query();
         wrapper.eq("su.is_deleted", ColumnConstant.NON_DELETED)
-                .eq(StringUtils.hasText(sysUserDTO.getUserId()), "su.user_id", sysUserDTO.getUserId())
-                .like(StringUtils.hasText(sysUserDTO.getUsername()), "su.username", sysUserDTO.getUsername())
-                .like(StringUtils.hasText(sysUserDTO.getPhone()), "su.phone", sysUserDTO.getPhone())
-                .like(StringUtils.hasText(sysUserDTO.getEmail()), "su.email", sysUserDTO.getEmail())
+                .eq(StringUtil.hasText(sysUserDTO.getUserId()), "su.user_id", sysUserDTO.getUserId())
+                .like(StringUtil.hasText(sysUserDTO.getUsername()), "su.username", sysUserDTO.getUsername())
+                .like(StringUtil.hasText(sysUserDTO.getPhone()), "su.phone", sysUserDTO.getPhone())
+                .like(StringUtil.hasText(sysUserDTO.getEmail()), "su.email", sysUserDTO.getEmail())
                 .eq(Objects.nonNull(sysUserDTO.getStatus()), "su.status", sysUserDTO.getStatus())
-                .and(StringUtils.hasText(sysUserDTO.getDeptId()), c -> {
+                .and(StringUtil.hasText(sysUserDTO.getDeptId()), c -> {
                     // 查出 deptId 所对应的部门及其子部门 ID 信息
                     List<SysDept> sysDeptList = sysDeptService.list(Wrappers.<SysDept>lambdaQuery()
                             .select(SysDept::getDeptId)
@@ -134,6 +136,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateOne(SysUserDTO sysUserDTO) {
+        checkUserAllowed(sysUserDTO.getUserId());
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setPassword(null);
         int insert = baseMapper.updateById(sysUser);
@@ -144,7 +147,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         // 更新缓存的用户信息
         LoginUser loginUser = UacHelper.getLoginUser();
-        if(Objects.nonNull(loginUser)) {
+        if (Objects.nonNull(loginUser)) {
             loginUser.setAvatar(sysUser.getAvatar());
             loginUser.setDeptId(sysUser.getDeptId());
             loginUser.setEmail(sysUser.getEmail());
@@ -155,12 +158,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
             UacHelper.updateUserInfo(loginUser);
         }
-       
+
         return insert > 0;
     }
 
     @Override
     public boolean updatePassword(String userId, String password) {
+        checkUserAllowed(userId);
         return baseMapper.update(null,
                 Wrappers.<SysUser>lambdaUpdate()
                         .set(SysUser::getPassword, password)
@@ -189,6 +193,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public boolean updateOneByUserId(SysUserDTO sysUserDTO) {
+        checkUserAllowed(sysUserDTO.getUserId());
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setPassword(null);
         return baseMapper.update(sysUser, Wrappers.<SysUser>lambdaUpdate()
@@ -198,7 +203,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeBatch(List<Long> ids, List<String> userIds) {
-
+        // 校验删除的是否为超级管理员用户
+        userIds.forEach(this::checkUserAllowed);
         // 删除用户与角色关联
         userRoleLinkService.remove(Wrappers.<UserRoleLink>lambdaQuery().in(UserRoleLink::getUserId, userIds));
         // 删除用户与岗位表
@@ -229,6 +235,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         baseMapper.update(user, Wrappers.<SysUser>lambdaUpdate().eq(SysUser::getUserId, userId));
     }
 
+    @Override
+    public void checkUserAllowed(String userId) {
+        if (Objects.nonNull(userId) && TenantConstant.DEFAULT_ROLE_ID.equals(userId)) {
+            throw new ServiceException("不允许操作超级管理员用户");
+        }
+    }
 }
 
 

@@ -1,9 +1,9 @@
 <template>
-  <component :is="'el-form'" v-bind="options.form" ref="formRef" :model="form">
+  <component class="pro-form-container" :is="'el-form'" v-bind="options.form" ref="formRef" :model="form">
     <component :is="`el-row`" v-bind="options.row" style="width: 100%">
       <template v-for="item in options.columns" :key="item.formItem.prop || item.formItem.title">
         <template v-if="item.formItem.title && !isDestroy(item)">
-          <el-col :span="24" class="mb-15">
+          <el-col :span="24" class="title-col">
             <el-divider direction="vertical" />
             <span :style="getTitleFontStyle(item)">{{ item.formItem.title }}</span>
           </el-col>
@@ -36,11 +36,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, shallowRef, ref, provide, watch, isRef, isProxy, type Ref } from "vue";
+import { computed, shallowRef, ref, provide, watch, type Ref } from "vue";
 import type { FormColumnProps, FormEnumProps, FormOptionsProps } from "./interface";
 import ProFormItem from "./components/ProFormItem.vue";
 import { getPx } from "@work/utils";
 import type { FormInstance } from "element-plus";
+import { isResponsive, getFormProp, setFormProp } from "./utils";
 
 defineOptions({ name: "ProForm" });
 
@@ -54,10 +55,6 @@ const props = withDefaults(defineProps<ProFormProps>(), { disabled: false, model
 
 const formRef = shallowRef<FormInstance>();
 const form = computed(() => props.modelValue);
-
-const isResponsive = (obj: any) => {
-  return isRef(obj) || isProxy(obj);
-};
 
 // 定义 enumMap 存储 enum 值（避免异步请求无法格式化单元格内容 || 无法填充下拉选择）
 const enumMap = ref(new Map<string, { [key: string]: any }[]>());
@@ -75,17 +72,18 @@ const setEnumMap = async (column: FormColumnProps) => {
 // 初始化默认值
 const initDefaultValue = async (column: FormColumnProps) => {
   const { attrs, formItem } = column;
+  const value = getFormProp(form.value, formItem.prop);
+  if (value || value === false || value === 0) return;
 
-  if (form.value[formItem.prop] || form.value[formItem.prop] === false || form.value[formItem.prop] === 0) return;
-
+  const defaultValue = attrs.defaultValue;
   // 设置表单项的默认值
-  if (attrs.defaultValue !== undefined && attrs.defaultValue !== null) {
+  if (defaultValue !== undefined && defaultValue !== null) {
     // 如果存在值，则不需要赋默认值
-    if (isResponsive(attrs.defaultValue)) return (form.value[formItem.prop] = (attrs.defaultValue as Ref).value);
-    if (typeof attrs.defaultValue === "function") {
-      return (form.value[formItem.prop] = await attrs.defaultValue(form.value, enumMap.value));
+    if (isResponsive(defaultValue)) return setFormProp(form.value, formItem.prop, (defaultValue as Ref).value);
+    if (typeof defaultValue === "function") {
+      return setFormProp(form.value, formItem.prop, await defaultValue(form.value, enumMap.value));
     }
-    return (form.value[formItem.prop] = attrs.defaultValue);
+    return setFormProp(form.value, formItem.prop, defaultValue);
   }
 
   // 如果没有设置默认值，则判断后台是否返回 isDefault 为 Y 的枚举
@@ -93,32 +91,48 @@ const initDefaultValue = async (column: FormColumnProps) => {
   if (enumData && enumData.length) {
     // 找出 isDefault 为 Y 的 value
     const data = enumData.filter(item => item.isDefault === "Y");
-    return data.length && (form.value[formItem.prop] = data[0][attrs.fieldNames?.value ?? "value"]);
+
+    return data.length && setFormProp(form.value, formItem.prop, data[0][attrs.fieldNames?.value ?? "value"]);
   }
 };
 
+/**
+ * 多个 Select 框级联下拉
+ */
 const cascadeEnum = (column: FormColumnProps) => {
   const { formItem, attrs } = column;
-  const formEl = attrs?.el;
-  if (formEl === "el-select") {
-    if (attrs.subProp && typeof attrs.subProp === "string") {
-      watch(
-        () => form.value[formItem.prop],
-        async (newVal: string) => {
-          // 然后执行内置的级联 change 事件
-          const { subEnum } = attrs;
-          if (subEnum && !enumMap.value.get(`${attrs.subProp!}-${newVal}`)) {
-            if (typeof subEnum === "function") {
-              enumMap.value.set(attrs.subProp!, await subEnum(newVal, enumMap.value.get(formItem.prop)));
-            } else if (Array.isArray(typeof subEnum)) enumMap.value.set(`${attrs.subProp!}-${newVal}`, subEnum);
+  if (attrs?.el === "el-select") {
+    if (typeof attrs.subProp !== "string") return;
+    // 监听级联下拉变化
+    watch(
+      () => getFormProp(form.value, formItem.prop),
+      async (newVal: string) => {
+        if (!newVal) return;
+        const { subEnum } = attrs;
+        if (!subEnum) return;
+
+        let subEnumData;
+        if (enumMap.value.get(`${attrs.subProp!}-${newVal}`)) {
+          // 存在缓存字典数据，则取出来赋值
+          enumMap.value.set(`${attrs.subProp!}`, enumMap.value.get(`${attrs.subProp!}-${newVal}`) || []);
+        } else {
+          if (typeof subEnum === "function") {
+            subEnumData = await subEnum(newVal, enumMap.value.get(formItem.prop));
+            enumMap.value.set(attrs.subProp!, subEnumData);
+          } else if (Array.isArray(subEnum)) {
+            subEnumData = subEnum;
+            enumMap.value.set(`${attrs.subProp!}`, subEnumData);
           }
-          const formEnum = enumMap.value.get(formItem.prop) || [];
-          const e = formEnum.filter(item => item.value === newVal);
-          if (e[0]?.subValue) form.value[attrs.subProp!] = e[0].subValue;
-        },
-        { immediate: true }
-      );
-    }
+          // 缓存字典数据
+          enumMap.value.set(`${attrs.subProp!}-${newVal}`, subEnumData);
+        }
+        const formEnum = enumMap.value.get(formItem.prop) || [];
+        const e = formEnum.filter(item => item.value === newVal);
+        // 如果选中的字典有 subValue，则直接赋值给 subProp
+        if (e[0]?.subValue) form.value[attrs.subProp!] = e[0].subValue;
+      },
+      { immediate: true }
+    );
   }
 };
 

@@ -1,5 +1,5 @@
 import { initDialog, closeDialog } from "./src/index";
-import type { ComponentInternalInstance } from "vue";
+import { getCurrentInstance, type ComponentInternalInstance } from "vue";
 
 export const useDialog = (ctx?: any) => {
   const thisAppContext = ctx || (getCurrentInstance() as ComponentInternalInstance);

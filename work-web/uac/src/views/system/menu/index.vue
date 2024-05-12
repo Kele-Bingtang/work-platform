@@ -130,7 +130,12 @@ const detailForm: DialogForm = {
       appId: initRequestParam.appId,
     }),
   editApi: data =>
-    editOne({ ...data, path: (data.pathPrefix || "") + (data.path || ""), appId: initRequestParam.appId }),
+    editOne({
+      ...data,
+      path: (data.pathPrefix || "") + (data.path || ""),
+      meta: installMeta(data),
+      appId: initRequestParam.appId,
+    }),
   deleteApi: deleteOne,
   clickEdit: form => {
     if ([httpPrefix, httpsPrefix].find(item => form.path.includes(item))) {

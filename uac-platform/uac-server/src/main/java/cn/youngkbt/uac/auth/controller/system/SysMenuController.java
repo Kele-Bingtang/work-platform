@@ -34,9 +34,9 @@ public class SysMenuController {
     private final SysMenuService sysMenuService;
     private final RoleMenuLinkService roleMenuLinkService;
 
-    @GetMapping("/listRoutes")
+    @GetMapping("/listRoutes/{appId}")
     @Operation(summary = "路由列表查询", description = "查询前端需要的路由列表")
-    public Response<List<RouterVO>> listRoutes(String appId) {
+    public Response<List<RouterVO>> listRoutes(@PathVariable String appId) {
         List<RouterVO> routerVOList = sysMenuService.listRoutes(appId);
         return HttpResult.ok(routerVOList);
     }

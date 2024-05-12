@@ -144,3 +144,29 @@ const filterFlatData = (data: any[]) => {
     return flatArr;
   }, []);
 };
+
+/**
+ * @description 深拷贝函数
+ */
+export const deepCloneTableRow = (obj: any, hash = new WeakMap()): Record<string, any> => {
+  if (!obj || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map(item => deepCloneTableRow(item));
+
+  if (hash.has(obj)) return hash.get(obj);
+
+  const Constructor = obj.constructor;
+
+  if (Constructor === Date) return new Date(obj);
+  if (Constructor === RegExp) return new RegExp(obj);
+
+  const newObj = new Constructor();
+  hash.set(obj, newObj);
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      newObj[key] = deepCloneTableRow(obj[key], hash);
+    }
+  }
+
+  return newObj;
+};

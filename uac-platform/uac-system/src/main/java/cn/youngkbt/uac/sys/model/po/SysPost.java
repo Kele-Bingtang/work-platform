@@ -4,9 +4,7 @@ import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
 import cn.youngkbt.uac.sys.model.vo.SysPostVO;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysPostVO.class, reverseConvertGenerate = false)
 public class SysPost extends BaseDO {
+
     /**
      * 岗位 ID
      */

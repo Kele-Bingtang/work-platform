@@ -51,9 +51,12 @@ const canEditUser = ref<UserInfo>({
   registerTime: "",
 });
 
+onMounted(() => {
+  canEditUser.value = { ...userStore.userInfo };
+});
+
 const user = computed(() => {
   const { userInfo } = userStore;
-  canEditUser.value = { ...userInfo };
   return userInfo;
 });
 
@@ -61,5 +64,3 @@ const resetUser = () => {
   canEditUser.value = { ...userStore.userInfo };
 };
 </script>
-
-<style lang="scss" scoped></style>

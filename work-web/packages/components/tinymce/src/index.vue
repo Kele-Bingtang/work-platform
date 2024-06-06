@@ -1,10 +1,11 @@
 <template>
-  <div class="tinymce-component" :class="{ fullscreen: fullscreen }">
+  <div :class="[prefixClass, { fullscreen: fullscreen }]">
     <TinymceEditor :id="id" v-model="tinymceContent" :init="initOptions" />
   </div>
 </template>
 
 <script setup lang="ts" name="Tinymce">
+import { ref, reactive, computed, onMounted, onBeforeUnmount, watch, nextTick, unref, useAttrs } from "vue";
 import TinymceEditor from "@tinymce/tinymce-vue";
 import "tinymce/tinymce";
 import "tinymce/icons/default";
@@ -43,22 +44,26 @@ import "tinymce/plugins/wordcount"; // 右下角统计字数，https://www.tiny.
 import "tinymce/models/dom";
 import { plugins, toolbar as toolbarConfig } from "./config";
 import "/public/tinymce/plugins/axupimgs/plugin";
-import { ref, reactive, computed, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+import { useDesign } from "@work/hooks";
+
+defineOptions({ name: "Tinymce" });
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("tinymce");
 
 export type UITheme = "default" | "dark" | "tinymce-5" | "tinymce-5-dark";
 export type ContentTheme = "" | "default" | "dark" | "document" | "tinymce-5" | "tinymce-5-dark";
 
 interface TinymceProps {
-  modelValue: string | undefined; // 内容
   disabled?: boolean; // 编辑器是否禁用
   theme?: UITheme; // UI 主题
   contentTheme?: ContentTheme; // 内容区主题，如果不传，默认等于 UI 主题
   id?: string; // 编辑器 id
-  menubar?: string; // 菜单区
-  toolbar?: string[]; // 工具区
+  menubar?: string; // 菜单区配置项
+  toolbar?: string[]; // 工具区配置项
   toolbarMode?: "floating" | "sliding" | "scrolling" | "wrap"; // 工具区超出一行的显示模式，floating：鼠标悬浮显示；sliding：鼠标点击显示；scrolling：鼠标滚动显示；wrap：直接换行显示
-  height?: string | number; // 编辑器高度
   width?: string | number; // 编辑器宽度
+  height?: string | number; // 编辑器高度
   lang?: string; // 编辑器语言
   move?: true | false | "both"; // true：编辑器可以垂直移动；false：编辑器无法移动；both：编辑器垂直和水平都可以移动
 }
@@ -70,41 +75,33 @@ const props = withDefaults(defineProps<TinymceProps>(), {
   menubar: "file edit view insert format tools table help",
   toolbar: () => [],
   toolbarMode: "sliding",
-  height: 360,
   width: "auto",
+  height: 360,
   lang: "zh-CN",
   move: true,
 });
 
 type TinymceEmitProps = {
-  (e: "update:modelValue", value: string): void;
-  (
-    e: "img-upload",
-    blobInfo: Function,
+  imgUpload: [
+    blobInfo: () => void,
     resolve: (value: unknown) => void,
     reject: (value: unknown) => void,
-    progress: Function
-  ): void;
-  (e: "file-upload", file: File, filetype: "image" | "media" | "file", callback: Function): void;
+    progress: () => void,
+  ];
+  fileUpload: [file: File, filetype: "image" | "media" | "file", callback: (url: string) => void];
 };
 
 const emits = defineEmits<TinymceEmitProps>();
 
+const tinymceContent = defineModel<string>({ default: "" });
+
 const fullscreen = ref(false);
 
-const languageTypeList = reactive<{ [key: string]: string }>({
+const languageTypeList = reactive<Record<string, any>>({
   "zh-CN": "zh_CN",
 });
 
 const language = computed(() => languageTypeList[props.lang]);
-const tinymceContent = computed({
-  get() {
-    return props.modelValue;
-  },
-  set(value) {
-    emits("update:modelValue", value || "");
-  },
-});
 
 const skinTheme = computed(() => {
   if (props.theme === "default") {
@@ -127,11 +124,11 @@ const initOptions = computed(() => ({
   toolbar: props.toolbar.length > 0 ? props.toolbar : toolbarConfig, // 工具栏
   toolbar_mode: props.toolbarMode, // 工具栏溢出展示模式
   menubar: props.menubar, // 菜单栏
-  language: language.value, // 语言
+  language: unref(language), // 语言
   promotion: false, // 去除右上角的 ⚡️Upgrade
   branding: false, // 去除左下角的 Tiny
   base_url: import.meta.env.VITE_PUBLIC_PATH === "/" ? "/tinymce" : `${import.meta.env.VITE_PUBLIC_PATH}/tinymce`, // 静态资源根路径
-  skin: skinTheme.value, // 皮肤
+  skin: unref(skinTheme), // 皮肤
   content_css: props.contentTheme ? props.contentTheme : props.theme, // 内容 CSS 文件
   end_container_on_empty_block: true, // 在空的内部块元素内按下 Enter 键时如何拆分当前容器块元素
   draggable_modal: true, // 对话框拖拽
@@ -171,12 +168,12 @@ const initOptions = computed(() => ({
     employeeNo: "100338",
   },
   // 图片上传回调
-  images_upload_handler: (blobInfo: Function, progress: Function) =>
+  images_upload_handler: (blobInfo: () => void, progress: () => void) =>
     new Promise((resolve, reject) => {
-      emits("img-upload", blobInfo, resolve, reject, progress);
+      emits("imgUpload", blobInfo, resolve, reject, progress);
     }),
   // 附件上传回调
-  file_picker_callback: (callback: Function, value: any, meta: any) => {
+  file_picker_callback: (callback: (url: string) => void, value: any, meta: any) => {
     const filetype =
       ".pdf, .txt, .zip, .rar, .7z, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .mp3, .mp4,.mkv, .avi,.wmv, .rmvb,.mov,.mpg,.mpeg,.webm, .jpg, .jpeg, .png, .gif"; // 限制文件的上传类型
     const input = document.createElement("input");
@@ -184,7 +181,7 @@ const initOptions = computed(() => ({
     input.setAttribute("accept", filetype);
     input.onchange = function () {
       const file = (this as any).files[0];
-      emits("file-upload", file, meta.filetype, callback);
+      emits("fileUpload", file, meta.filetype, callback);
     };
     input.click();
   },
@@ -197,7 +194,6 @@ const initOptions = computed(() => ({
 }));
 
 onMounted(() => {
-  // tinymce.init({ promotion: false });
   onDisabledChange();
 });
 
@@ -207,7 +203,7 @@ onBeforeUnmount(() => {
 
 const destroyTinymce = () => {
   const tinymce = (window as any).tinymce.get(props.id);
-  if (fullscreen.value) tinymce.execCommand("mceFullScreen");
+  if (unref(fullscreen)) tinymce.execCommand("mceFullScreen");
   if (tinymce) tinymce.destroy();
 };
 
@@ -219,20 +215,17 @@ const onDisabledChange = () => {
   }
 };
 
-watch(
-  () => language.value,
-  () => {
-    const tinymceManager = (window as any).tinymce;
-    const tinymceInstance = tinymceManager.get(props.id);
-    if (fullscreen.value) {
-      tinymceInstance.execCommand("mceFullScreen");
-    }
-    if (tinymceInstance) {
-      tinymceInstance.destroy();
-    }
-    nextTick(() => tinymceManager.init(initOptions.value));
+watch(language, () => {
+  const tinymceManager = (window as any).tinymce;
+  const tinymceInstance = tinymceManager.get(props.id);
+  if (unref(fullscreen.value)) {
+    tinymceInstance.execCommand("mceFullScreen");
   }
-);
+  if (tinymceInstance) {
+    tinymceInstance.destroy();
+  }
+  nextTick(() => tinymceManager.init(unref(initOptions)));
+});
 
 watch(
   () => props.disabled,
@@ -240,13 +233,16 @@ watch(
 );
 </script>
 
-<style lang="scss">
-.tinymce-component {
+<style lang="scss" scoped>
+$prefix-class: #{$admin-namespace}-tinymce;
+
+.#{$prefix-class} {
   position: relative;
   line-height: normal;
-}
 
-.tox {
-  z-index: 2000 !important;
+  // 内容区
+  // :deep(.tox) {
+  //   z-index: 2000 !important;
+  // }
 }
 </style>

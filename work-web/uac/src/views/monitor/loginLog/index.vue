@@ -1,5 +1,5 @@
 <template>
-  <div class="login-log-container">
+  <div :class="prefixClass">
     <ProTable
       ref="proTableRef"
       :request-api="listPage"
@@ -26,6 +26,10 @@ import { listPage, removeBatch, cleanAllLog, type LoginLog } from "@/api/monitor
 import { type ProTableInstance, type TableColumnProps } from "@work/components";
 import { Delete } from "@element-plus/icons-vue";
 import { ElMessageBox, ElMessage } from "element-plus";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("login-log");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -120,7 +124,9 @@ const columns: TableColumnProps<LoginLog.LoginLogInfo>[] = [
 </script>
 
 <style lang="scss" scoped>
-.login-log-container {
-  width: 100%;
+$prefix-class: #{$admin-namespace}-login-log;
+
+.#{$prefix-class} {
+  flex: 1;
 }
 </style>

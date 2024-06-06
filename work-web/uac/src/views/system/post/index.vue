@@ -1,24 +1,28 @@
 <template>
-  <div class="post-container">
+  <div :class="prefixClass">
     <ProTable
       ref="proTableRef"
       :request-api="listPage"
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-      :detailForm="detailForm"
+      :dialogForm="dialogForm"
       :border="false"
     ></ProTable>
   </div>
 </template>
 
-<script setup lang="tsx" name="LoginLog">
+<script setup lang="tsx" name="Post">
 import { ProTable } from "work";
 import { listPage, addOne, editOne, deleteOne, deleteBatch, type Post } from "@/api/system/post";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { options } from "./formOptions";
+import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("post");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -62,15 +66,17 @@ const columns: TableColumnProps<Post.PostInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: options,
+const dialogForm: DialogForm = {
+  formProps: { elFormProps, schema },
+  id: ["id", "postId"],
   addApi: addOne,
   editApi: editOne,
-  deleteApi: deleteOne,
-  deleteBatchApi: deleteBatch,
+  removeApi: deleteOne,
+  removeBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 220,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -78,7 +84,9 @@ const detailForm: DialogForm = {
 </script>
 
 <style lang="scss" scoped>
-.post-container {
-  width: 100%;
+$prefix-class: #{$admin-namespace}-post;
+
+.#{$prefix-class} {
+  flex: 1;
 }
 </style>

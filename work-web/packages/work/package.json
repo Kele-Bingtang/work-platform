@@ -1,9 +1,9 @@
 {
   "name": "work",
   "version": "0.0.1",
-  "description": "all utils are settled here",
+  "description": "all work are settled here",
   "dependencies": {
-    "vue": "^3.4.13",
-    "element-plus": "^2.6.0"
+    "vue": "^3.4.27",
+    "element-plus": "^2.7.3"
   }
 }

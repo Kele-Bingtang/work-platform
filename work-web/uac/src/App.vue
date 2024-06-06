@@ -1,5 +1,5 @@
 <template>
-  <el-config-provider :locale="i18nLocale" :button="config" :size="layoutSize">
+  <el-config-provider :namespace="variables.elNamespace" :locale="i18nLocale" :button="config" :size="layoutSize">
     <router-view v-slot="{ Component }">
       <component :is="Component" />
     </router-view>
@@ -7,14 +7,21 @@
 </template>
 
 <script setup lang="ts" name="App">
-import { useLayoutStore, useSettingsStore } from "@/stores";
+import { ElConfigProvider } from "element-plus";
+import { useLayoutStore } from "./stores/layout";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import en from "element-plus/es/locale/lang/en";
 import { getBrowserLang } from "@work/utils";
 import { useTheme } from "./hooks/useTheme";
 import { useFrame } from "./layout/components/FrameLayout/useFrame";
-import { getCacheVersion, removeProjectsCache, setCacheVersion } from "@/utils/cache";
 import settings from "@/config/settings";
+import { useSettingsStore } from "@/stores";
+import { useDesign } from "@work/hooks";
+import { useCache } from "@/hooks";
+import { reactive, computed, provide, onMounted } from "vue";
+import { ConfigGlobalKey } from "@work/constants";
+
+const { variables } = useDesign();
 
 const layoutStore = useLayoutStore();
 const settingsStore = useSettingsStore();
@@ -30,13 +37,18 @@ const config = reactive({
 
 // element 语言配置
 const i18nLocale = computed(() => {
-  if (layoutStore.language && layoutStore.language === "zh-CN") return zhCn;
+  if (layoutStore.language === "zh-CN") return zhCn;
   if (layoutStore.language === "en-US") return en;
   return getBrowserLang() === "zh-CN" ? zhCn : en;
 });
 
 // 配置全局组件大小
 const layoutSize = computed(() => layoutStore.layoutSize);
+
+// 自定义注入全局参数。ElConfigProvider 会自动使用 provide 全局注入它的 props 到项目里，可以通过 configProviderContextKey 来 inject 获取（先从 element-plus 引入，然后 const config = inject(configProviderContextKey)）
+provide(ConfigGlobalKey, {
+  size: layoutSize,
+});
 
 onMounted(() => {
   handleMsgFromFrame();
@@ -57,7 +69,7 @@ const handleMsgFromFrame = () => {
  */
 const versionCache = () => {
   const { version } = __APP_INFO__.pkg;
-  const cacheVersion = getCacheVersion();
+  const cacheVersion = useCache().getCacheVersion();
   if (version && cacheVersion !== version) {
     const { layoutSize, language } = settings;
     settingsStore.$patch({ ...(settings as any), menuTheme: settings.layoutTheme });
@@ -66,10 +78,8 @@ const versionCache = () => {
       language,
     });
     layoutStore.removeAllTabs();
-    removeProjectsCache();
-    setCacheVersion(version);
+    useCache().removeProjectsCache();
+    useCache().setCacheVersion(version);
   }
 };
 </script>
-
-<style lang="scss"></style>

@@ -12,10 +12,12 @@ import LayoutMixins from "./LayoutMixins/index.vue";
 import LayoutSubsystem from "./LayoutSubsystem/index.vue";
 import ThemeDrawer from "@/layout/components/ThemeDrawer/index.vue";
 import { useSettingsStore } from "@/stores";
-import { useLayout } from "@/hooks/useLayout";
+import { useLayout } from "@/hooks";
 import { getPx, setStyleVar } from "@work/utils";
+import { type Component, computed, watch, watchEffect } from "vue";
+import { useRoute } from "vue-router";
 
-const LayoutComponents: { [key: string]: Component } = {
+const LayoutComponents: Record<string, Component> = {
   vertical: LayoutVertical,
   classic: LayoutClassic,
   transverse: LayoutTransverse,
@@ -40,5 +42,5 @@ watch(
 
 watchEffect(() => setStyleVar("--aside-width", getPx(settingsStore.menuWidth)));
 
-watchEffect(() => setStyleVar("--el-menu-horizontal-height", getPx(settingsStore.headerHeight)));
+watchEffect(() => setStyleVar("--header-height", getPx(settingsStore.headerHeight)));
 </script>

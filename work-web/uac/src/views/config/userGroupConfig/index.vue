@@ -1,7 +1,7 @@
 <template>
-  <div class="user-group-container">
+  <div :class="prefixClass">
     <TreeFilter
-      class="tree-filter"
+      :class="`${prefixClass}__tree`"
       ref="treeFilterRef"
       title="App 清单"
       :requestApi="getAppTreeList"
@@ -17,14 +17,14 @@
       </template>
     </TreeFilter>
 
-    <div class="user-group-box">
+    <div :class="`${prefixClass}__box`">
       <ProTable
         ref="proTableRef"
         :request-api="listPage"
         :init-request-param="requestParam"
         :columns="columns"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }"
-        :detailForm="detailForm"
+        :dialogForm="dialogForm"
         :border="false"
         @row-click="handleRowClick"
         :data-callback="dataCallback"
@@ -32,7 +32,7 @@
       ></ProTable>
     </div>
 
-    <div class="link-box" v-if="clickRowInfo">
+    <div :class="`${prefixClass}__link`" v-if="clickRowInfo">
       <Description :title="clickRowInfo?.groupName" :data="descriptionData"></Description>
 
       <el-tabs v-model="activeName" style="height: calc(100% - 70px)">
@@ -50,11 +50,15 @@
 import { ProTable, TreeFilter } from "work";
 import { listPage, addOne, editOne, deleteOne, deleteBatch, type UserGroup } from "@/api/user/userGroup";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { useFormOptions } from "./formOptions";
+import { elFormProps, useFormSchema } from "./useFormSchema";
 import { getAppTreeList, type App } from "@/api/application/app";
-import Description from "@/components/Description/index.vue";
+import { Description } from "@/components";
 import LinkUser from "./components/linkUser.vue";
 import LinkRole from "./components/linkRole.vue";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("user-group");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -73,7 +77,7 @@ const handleRowClick = (row: UserGroup.UserGroupInfo) => {
 
 // ProTable 获取数据后的回调
 const dataCallback = (data: http.PageData<UserGroup.UserGroupInfo[]>) => {
-  clickRowInfo.value = data.list[0] || undefined;
+  clickRowInfo.value = clickRowInfo.value || data.list[0] || undefined;
   descriptionData.value[0].value = data.list[0]?.ownerId ? `${data.list[0]?.ownerName} ${data.list[0]?.ownerId}` : "";
   data.list[0] && proTableRef.value?.element?.setCurrentRow(data.list[0]);
 };
@@ -100,8 +104,12 @@ const columns: TableColumnProps<UserGroup.UserGroupInfo>[] = [
 ];
 
 // 新增、编辑弹框配置项
-const detailForm: DialogForm = {
-  options: useFormOptions().options,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps,
+    schema: useFormSchema().schema,
+  },
+  id: ["id", "groupId"],
   addApi: form => addOne({ ...form, appId: requestParam.appId }),
   beforeAdd: form => {
     form.ownerId = form.user?.username;
@@ -112,12 +120,13 @@ const detailForm: DialogForm = {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
   },
-  deleteApi: deleteOne,
-  deleteBatchApi: deleteBatch,
-  apiFilterParams: ["user", "createTime"],
+  removeApi: deleteOne,
+  removeBatchApi: deleteBatch,
+  apiFilterKeys: ["user", "createTime"],
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 150,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -165,30 +174,28 @@ const tabEnums: TabEnum[] = [
 </script>
 
 <style lang="scss" scoped>
-.user-group-container {
-  display: flex;
+$prefix-class: #{$admin-namespace}-user-group;
 
-  .tree-filter {
+.#{$prefix-class} {
+  display: flex;
+  flex: 1;
+
+  &__tree {
     width: 10%;
   }
 
-  .user-group-box {
+  &__box {
     width: 45%;
     padding-right: 12px;
     border-right: 1px solid #dfdfdf;
   }
 
-  .link-box {
+  &__link {
     width: 45%;
     padding-left: 12px;
     background-color: #ffffff;
-  }
-}
-</style>
-<style lang="scss">
-.user-group-container {
-  .link-box {
-    .el-tabs__content {
+
+    :deep(.#{$el-namespace}-tabs__content) {
       height: calc(100% - 60px);
     }
   }

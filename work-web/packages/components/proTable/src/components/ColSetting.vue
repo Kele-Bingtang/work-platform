@@ -1,7 +1,7 @@
 <template>
   <!-- 列设置 -->
   <el-drawer v-model="drawerVisible" title="列设置" size="450px">
-    <div class="table-main">
+    <div :class="`${prefixClass}__main`">
       <el-table
         :data="colSetting"
         :border="true"
@@ -16,9 +16,12 @@
         <el-table-column v-slot="{ row }" prop="sortable" align="center" label="排序">
           <el-switch v-model="row.sortable"></el-switch>
         </el-table-column>
+        <el-table-column v-slot="{ row }" prop="sortable" align="center" label="筛选">
+          <el-switch v-model="row.filterConfig.enabled"></el-switch>
+        </el-table-column>
         <template #empty>
-          <div class="table-empty">
-            <img src="@work/static/images/msg/notData.png" alt="notData" />
+          <div :class="`${prefixClass}__empty`">
+            <img src="@work/static/images/notData.png" alt="notData" />
             <div>暂无可配置列</div>
           </div>
         </template>
@@ -28,14 +31,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import type { TableColumnProps } from "../interface";
+import { ElDrawer, ElSwitch, ElTable, ElTableColumn } from "element-plus";
+import { proTablePrefixClassKey, type TableColumnProps } from "../interface";
 
 defineOptions({ name: "ColSetting" });
 
+const prefixClass = inject(proTablePrefixClassKey);
+
 defineProps<{ colSetting: TableColumnProps[] }>();
 
-const drawerVisible = ref(false);
+const drawerVisible = defineModel({ default: false });
 
 const openColSetting = () => {
   drawerVisible.value = true;
@@ -45,9 +50,3 @@ defineExpose({
   openColSetting,
 });
 </script>
-
-<style scoped lang="scss">
-.cursor-move {
-  cursor: move;
-}
-</style>

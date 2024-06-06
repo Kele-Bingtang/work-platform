@@ -1,5 +1,5 @@
 <template>
-  <div class="role-container">
+  <div :class="prefixClass">
     <TreeFilter
       ref="treeFilterRef"
       title="App 清单"
@@ -14,14 +14,14 @@
       </template>
     </TreeFilter>
 
-    <div class="role-table">
+    <div :class="`${prefixClass}__table`">
       <ProTable
         ref="proTableRef"
         :request-api="listPage"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        :detailForm="detailForm"
+        :dialogForm="dialogForm"
       ></ProTable>
     </div>
   </div>
@@ -37,10 +37,14 @@ import {
   type TableColumnProps,
   type TreeFilterInstance,
 } from "@work/components";
-import { useFormOptions } from "./useFormOptions";
+import { elFormProps, useFormSchema } from "./useFormSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("role");
 
 const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
@@ -90,18 +94,23 @@ const columns: TableColumnProps<Role.RoleInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: useFormOptions(
-    computed(() => treeFilterRef.value?.treeData),
-    computed(() => initRequestParam.appId)
-  ).options,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps,
+    schema: useFormSchema(
+      computed(() => treeFilterRef.value?.treeData),
+      computed(() => initRequestParam.appId)
+    ).schema,
+  },
+  id: ["id", "roleId"],
   addApi: addOne,
   editApi: editOne,
-  deleteApi: deleteOne,
-  deleteBatchApi: deleteBatch,
+  removeApi: deleteOne,
+  removeBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 450,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -113,11 +122,13 @@ const handleTreeChange = (nodeId: number) => {
 </script>
 
 <style lang="scss" scoped>
-.role-container {
-  display: flex;
-  width: 100%;
+$prefix-class: #{$admin-namespace}-role;
 
-  .role-table {
+.#{$prefix-class} {
+  display: flex;
+  flex: 1;
+
+  &__table {
     width: calc(100% - 230px);
     height: 100%;
   }

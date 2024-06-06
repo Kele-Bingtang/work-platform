@@ -8,7 +8,7 @@
     v-if="search"
     v-model="filterText"
     :style="{ width: $attrs.searchWidth || '98.5%' }"
-    :placeholder="$attrs.searchPlaceholder || '请输入关键词进行筛选'"
+    :placeholder="($attrs.searchPlaceholder as string) || '请输入关键词进行筛选'"
   />
   <el-tree
     ref="treeRef"
@@ -27,13 +27,12 @@
   </el-tree>
 </template>
 <script setup lang="ts">
-import { ElTree } from "element-plus";
-import { nextTick, ref, watch } from "vue";
+import { ElCheckbox, ElInput, ElTree } from "element-plus";
+import { nextTick, ref, watch, unref } from "vue";
 
 defineOptions({ name: "Tree" });
 
 export interface TreeProps {
-  modelValue?: any[];
   data: any[]; // 树数据
   nodeKey?: string; // 每一个树节点 id
   checkValueType?: "keys" | "nodes"; // v-model 返回的格式，keys 返回选中的节点 nodeKey，nodes 为返回选中的节点
@@ -44,7 +43,6 @@ export interface TreeProps {
 }
 
 const props = withDefaults(defineProps<TreeProps>(), {
-  modelValue: () => [],
   nodeKey: " id",
   checkValueType: "keys",
   expandSelected: true,
@@ -53,8 +51,8 @@ const props = withDefaults(defineProps<TreeProps>(), {
   select: true,
 });
 
-type EmitProps = { (e: "update:modelValue", value: string[]): void };
-const emits = defineEmits<EmitProps>();
+const checkedList = defineModel<any[]>();
+
 const defaultExpandAll = ref(false); // 展开/折叠状态
 const isSelectAll = ref(false); // 全选/全不选状态
 const indeterminate = ref(false); // 处于全选和全不选期间的状态
@@ -64,8 +62,7 @@ const filterText = ref(""); // 搜索的文本
 const treeRef = ref<InstanceType<typeof ElTree>>();
 
 watch(defaultExpandAll, val => {
-  const nodes = treeRef.value?.store._getAllNodes();
-  console.log(treeRef.value);
+  const nodes = unref(treeRef)?.store._getAllNodes();
   // true 全展开，false 全折叠
   if (val) nodes?.forEach(item => (item.expanded = true));
   else nodes?.forEach(item => (item.expanded = false));
@@ -73,14 +70,14 @@ watch(defaultExpandAll, val => {
 
 watch(isSelectAll, val => {
   // true 全选，false 全不选
-  if (val) treeRef.value?.setCheckedNodes(props.data);
-  else treeRef.value?.setCheckedNodes([]);
+  if (val) unref(treeRef)?.setCheckedNodes(props.data);
+  else unref(treeRef)?.setCheckedNodes([]);
   // 关闭处于全选和全不选期间的状态
   indeterminate.value = false;
 });
 
 watch(filterText, val => {
-  treeRef.value!.filter(val);
+  unref(treeRef)!.filter(val);
 });
 
 // 过滤搜索条件
@@ -89,15 +86,15 @@ const filterNode = (value: string, data: Record<string, any>) => {
   return data.label.includes(value);
 };
 
-const handleCheck = (_: any, selected: any) => {
-  if (props.checkValueType === "nodes") emits("update:modelValue", selected.checkedNodes);
-  else emits("update:modelValue", selected.checkedKeys);
+const handleCheck = (_: any, selected: { checkedKeys: string[]; checkedNodes: Record<string, any>[] }) => {
+  if (props.checkValueType === "nodes") checkedList.value = selected.checkedNodes;
+  else checkedList.value = selected.checkedKeys;
 
   // 如果都没选择任何节点，则状态关闭
   if (!selected.checkedKeys?.length) {
     isSelectAll.value = false;
     indeterminate.value = false;
-  } else if (selected.checkedKeys?.length === treeRef.value?.store._getAllNodes().length) {
+  } else if (selected.checkedKeys?.length === unref(treeRef)?.store._getAllNodes().length) {
     // 如果选择的节点等于节点数量，则代表全选
     isSelectAll.value = true;
     indeterminate.value = false;
@@ -109,18 +106,14 @@ const setChecked = (val: any[]) => {
   nextTick(() => {
     const { checkValueType, expandSelected, nodeKey } = props;
     if (checkValueType === "nodes") {
-      treeRef.value?.setCheckedNodes(val);
+      unref(treeRef)?.setCheckedNodes(val);
       if (expandSelected) defaultExpandedKeys.value = val?.map(item => item[nodeKey]);
     } else {
-      treeRef.value?.setCheckedKeys(val, false);
+      unref(treeRef)?.setCheckedKeys(val, false);
       if (expandSelected) defaultExpandedKeys.value = val;
     }
   });
 };
 
-watch(
-  () => props.modelValue,
-  val => val && setChecked(val),
-  { immediate: true }
-);
+watch(checkedList, val => val?.length && setChecked(val), { immediate: true });
 </script>

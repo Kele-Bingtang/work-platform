@@ -6,6 +6,7 @@ export namespace Table {
   export interface Paging {
     pageNum: number;
     pageSize: number;
+    pageSizes?: number[];
     total: number;
   }
 
@@ -17,10 +18,10 @@ export namespace Table {
   export interface StateProps {
     tableData: any[];
     paging: Paging;
-    searchParam: { [key: string]: any };
-    searchInitParam: { [key: string]: any };
-    totalParam: { [key: string]: any };
-    icon?: { [key: string]: any };
+    searchParam: Record<string, any>;
+    searchInitParam: Record<string, any>;
+    totalParam: Record<string, any>;
+    icon?: Record<string, any>;
   }
 }
 
@@ -42,7 +43,7 @@ export namespace Theme {
  * @param {Function} requestError 请求出错后的回调函数
  * @param {Object[]} columns 表格的列配置项
  * @param {Function} enumCallBack 字典设置的回调函数，ProTable 内置函数
- * */
+ */
 export const useTable = (
   api?: (params: any) => Promise<any>,
   initRequestParam: object = {},
@@ -61,6 +62,8 @@ export const useTable = (
       pageNum: 1,
       // 每页显示条数
       pageSize: 20,
+      // 一页显示多少条数据
+      pageSizes: [10, 20, 50, 100, 200],
       // 总条数
       total: 0,
     },
@@ -74,7 +77,7 @@ export const useTable = (
 
   /**
    * @description 分页查询参数（只包括分页和表格字段排序，其他排序方式可自行配置）
-   * */
+   */
   const pageParam = computed({
     get: () => {
       return { pageNum: state.paging.pageNum, pageSize: state.paging.pageSize };
@@ -87,18 +90,19 @@ export const useTable = (
   /**
    * @description 获取表格数据
    * @return void
-   * */
+   */
   const getTableList = async (requestParam: object = initRequestParam) => {
     if (!api) return;
     try {
       // 先把初始化参数和分页参数放到总参数里面
       Object.assign(state.totalParam, requestParam, isBackPage(openPage) ? pageParam.value : {});
-      let searchParam = { ...state.searchInitParam, ...state.totalParam };
+      let searchParam = { ...state.searchInitParam, ...state.totalParam } as any;
       beforeSearch && (searchParam = beforeSearch(searchParam) ?? searchParam);
 
-      // 排除 0、undefined 等，返回 false 则不执行查询
-      if ((searchParam as unknown as boolean) === false) return;
+      // 返回 false 则不执行查询
+      if (searchParam === false) return;
 
+      // 触发每个配置项的 beforeSearch
       if (columns) {
         for (let i = 0; i < columns.length; i++) {
           const col = columns[i];
@@ -112,6 +116,7 @@ export const useTable = (
         }
       }
 
+      // 请求数据
       let { data } = await api(searchParam);
 
       dataCallBack && (data = dataCallBack(data) || data);
@@ -119,9 +124,10 @@ export const useTable = (
 
       // 解构后台返回的分页数据 (如果有分页更新分页信息)
       if (isBackPage(openPage)) {
-        const { pageNum, pageSize, total } = data;
+        const { pageNum, pageSize, pageSizes, total } = data;
         if (pageNum) updatePaging({ pageNum });
         if (pageSize) updatePaging({ pageSize });
+        if (pageSizes) updatePaging({ pageSizes });
         if (total) updatePaging({ total });
         else updatePaging({ total: data.length });
       }
@@ -133,53 +139,67 @@ export const useTable = (
 
   /**
    * @description 更新查询参数
+   * @param {Object} model 查询参数对象
+   * @param {Boolean} removeNoValue 是否去除空值项，true 去除，false 不去除。默认为 true
    * @return void
-   * */
-  const updatedTotalParam = () => {
+   */
+  const updatedTotalParam = (model?: Record<string, any>, removeNoValue = true) => {
     state.totalParam = {};
-    // 处理查询参数，可以给查询参数加自定义前缀操作
-    const nowSearchParam: Table.StateProps["searchParam"] = {};
-    // 防止手动清空输入框携带参数（这里可以自定义查询参数前缀）
-    for (const key in state.searchParam) {
-      // 某些情况下参数为 false/0 也应该携带参数
-      if (state.searchParam[key] || state.searchParam[key] === false || state.searchParam[key] === 0) {
-        nowSearchParam[key] = state.searchParam[key];
+
+    // 如果 model 存在且不清除空值项
+    if (model && !removeNoValue) return Object.assign(state.totalParam, model, isBackPage() ? pageParam.value : {});
+
+    // 如果去除空值项
+    if (removeNoValue) {
+      const nowSearchParam: Table.StateProps["searchParam"] = model || state.searchParam;
+      // 防止手动清空输入框携带参数（这里可以自定义查询参数前缀）
+      for (const key in state.searchParam) {
+        const val = state.searchParam[key];
+        // 过滤空值
+        if (val !== "" && val !== null && val !== undefined) nowSearchParam[key] = val;
       }
+
+      return Object.assign(state.totalParam, nowSearchParam, isBackPage() ? pageParam.value : {});
     }
-    Object.assign(state.totalParam, nowSearchParam, isBackPage() ? pageParam.value : {});
+
+    return Object.assign(state.totalParam, model || state.searchParam, isBackPage() ? pageParam.value : {});
   };
 
   /**
    * @description 更新分页信息
    * @param {Object} paging 后台返回的分页数据
    * @return void
-   * */
+   */
   const updatePaging = (paging: Partial<Table.Paging>) => {
     Object.assign(state.paging, paging);
   };
 
   /**
    * @description 表格数据查询
+   * @param {Object} model 查询参数对象
+   * @param {Boolean} removeNoValue 是否去除空值项，true 去除，false 不去除。默认为 true
    * @return void
-   * */
-  const search = () => {
+   */
+  const search = (model?: Record<string, any>, removeNoValue = true) => {
     state.paging.pageNum = 1;
-    updatedTotalParam();
+    // 更新查询参数
+    updatedTotalParam(model, removeNoValue);
     getTableList();
   };
 
   /**
    * @description 表格数据重置
+   * @param {Object} model 查询参数对象
+   * @param {Boolean} removeNoValue 是否去除空值项，true 去除，false 不去除。默认为 true
    * @return void
-   * */
-  const reset = () => {
+   */
+  const reset = (model?: Record<string, any>, removeNoValue = true) => {
     state.paging.pageNum = 1;
     state.searchParam = {};
     // 重置搜索表单的时，如果有默认搜索参数，则重置默认的搜索参数
-    Object.keys(state.searchInitParam).forEach(key => {
-      state.searchParam[key] = state.searchInitParam[key];
-    });
-    updatedTotalParam();
+    state.searchParam = { ...state.searchInitParam };
+    // 更新查询参数
+    updatedTotalParam(model, removeNoValue);
     getTableList();
   };
 
@@ -187,19 +207,30 @@ export const useTable = (
    * @description 每页条数改变
    * @param {Number} paging 当前分页信息
    * @return void
-   * */
-  const handlePagination = (paging: Paging) => {
-    state.paging.pageNum = paging.currentPage;
-    state.paging.pageSize = paging.pageSize;
+   */
+  const handlePagination = (paging: Partial<Paging>) => {
+    if (paging.pageNum) state.paging.pageNum = paging.pageNum;
+    if (paging.pageSize) state.paging.pageSize = paging.pageSize;
+    if (paging.pageSizes) state.paging.pageSizes = paging.pageSizes;
     if (isBackPage()) getTableList();
   };
 
+  /**
+   * @description 是否开启分页功能
+   * @param open 分页配置项
+   * @returns Boolean。true 开启，false 不开启
+   */
   const isOpenPage = (open: boolean | Table.PaginationProps = openPage) => {
     if (open === true) return true;
     if ((open as Table.PaginationProps)?.enabled) return true;
     return false;
   };
 
+  /**
+   * @description 是否开启后端分页
+   * @param open 分页配置项
+   * @returns Boolean。true 开启，false 不开启
+   */
   const isBackPage = (open: boolean | Table.PaginationProps = openPage) => {
     if (open === true) return true;
     if (open === false) return false;
@@ -207,6 +238,11 @@ export const useTable = (
     return false;
   };
 
+  /**
+   * @description 是否开启前端分页
+   * @param open 分页配置项
+   * @returns Boolean。true 开启，false 不开启
+   */
   const isFrontPage = (open: boolean | Table.PaginationProps = openPage) => {
     if (open === true || open === false) return false;
     if ((open as Table.PaginationProps)?.enabled && (open as Table.PaginationProps)?.fake) return true;

@@ -145,7 +145,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (Objects.nonNull(sysRoleDTO.getRoleId())) {
             SysRole sysRole = baseMapper.selectOne(Wrappers.<SysRole>lambdaQuery()
                     .eq(SysRole::getRoleId, sysRoleDTO.getRoleId())
-                    .eq(SysRole::getAppId, sysRoleDTO.getAppId())
+                    .eq(Objects.nonNull(sysRoleDTO.getAppId()), SysRole::getAppId, sysRoleDTO.getAppId())
             );
             // 如果标识符不相等 判断为修改了管理员标识符
             if (!StringUtils.equals(sysRole.getRoleCode(), sysRoleDTO.getRoleCode())

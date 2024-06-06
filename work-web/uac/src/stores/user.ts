@@ -4,7 +4,6 @@ import { useRoutes } from "@/hooks/useRoutes";
 import { resetRouter } from "@/router";
 import { useLayoutStore } from "./layout";
 import { getUserInfo, login, logout, type Auth } from "@/api/auth";
-import settings from "@/config/settings";
 
 export const useUserStore = defineStore(
   "userStore",
@@ -97,8 +96,6 @@ export const useUserStore = defineStore(
   },
   {
     persist: {
-      key: settings.userCacheKey,
-      storage: localStorage,
       paths: ["token"],
     },
   }

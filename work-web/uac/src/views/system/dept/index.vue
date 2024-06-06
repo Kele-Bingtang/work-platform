@@ -1,11 +1,11 @@
 <template>
-  <div class="dept-container">
+  <div :class="prefixClass">
     <ProTable
       ref="proTableRef"
       :request-api="listDeptTreeTable"
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-      :detailForm="detailForm"
+      :dialogForm="dialogForm"
       :border="false"
       :pagination="false"
     >
@@ -20,11 +20,15 @@
 import { ProTable } from "work";
 import { listDeptTreeTable, addOne, editOne, deleteOne, type Dept } from "@/api/system/dept";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { options } from "./formOptions";
+import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("dept");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -71,14 +75,16 @@ const columns: TableColumnProps<Dept.DeptTreeTable>[] = [
   { prop: "operation", label: "操作", width: 200, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: options,
+const dialogForm: DialogForm = {
+  formProps: { elFormProps, schema },
+  id: ["id", "deptId"],
   addApi: addOne,
   editApi: editOne,
-  deleteApi: deleteOne,
+  removeApi: deleteOne,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 300,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -86,7 +92,9 @@ const detailForm: DialogForm = {
 </script>
 
 <style lang="scss" scoped>
-.dept-container {
-  width: 100%;
+$prefix-class: #{$admin-namespace}-dept;
+
+.#{$prefix-class} {
+  flex: 1;
 }
 </style>

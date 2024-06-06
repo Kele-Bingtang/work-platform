@@ -6,7 +6,7 @@
     :init-request-param="initRequestParam"
     :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
     :pagination="!isCascade"
-    :detailForm="detailForm"
+    :dialogForm="dialogForm"
   >
     <template #operationExtra="{ row, operate }" v-if="isCascade">
       <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.dataId })">新增</el-button>
@@ -18,7 +18,7 @@
 import { ProTable } from "work";
 import { listPage, listDataTreeTable, addOne, editOne, removeOne, type DictData } from "@/api/system/dictData";
 import { type DialogForm, type TableColumnProps } from "@work/components";
-import { useFormOptions } from "./useFormOptions";
+import { dictDataElFormProps, useFormSchema } from "./useFormSchema";
 import { Plus } from "@element-plus/icons-vue";
 
 export interface DictDataProps {
@@ -43,21 +43,26 @@ const columns: TableColumnProps<DictData.DictDataInfo>[] = [
   { prop: "operation", label: "操作", width: computed(() => (props.isCascade ? 200 : 160)) },
 ];
 
-const detailForm = reactive<DialogForm>({
-  options: useFormOptions(
-    computed(() => ""),
-    computed(() => props.dictCode),
-    computed(() => props.isCascade)
-  ).dictDataOptions,
+const dialogForm = reactive<DialogForm>({
+  formProps: {
+    elFormProps: dictDataElFormProps,
+    schema: useFormSchema(
+      computed(() => ""),
+      computed(() => props.dictCode),
+      computed(() => props.isCascade)
+    ).dictDataSchema,
+  },
+  id: ["id", "dictDataId"],
   addApi: params => addOne({ ...params, appId: props.appId }),
   editApi: editOne,
-  deleteApi: removeOne,
+  removeApi: removeOne,
   beforeEdit: form => {
     if (form.tagEl === undefined) form.tagEl = "";
   },
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "30%",
+    width: "45%",
+    height: 200,
     top: "5vh",
     closeOnClickModal: false,
   },

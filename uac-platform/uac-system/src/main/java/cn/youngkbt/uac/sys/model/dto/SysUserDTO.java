@@ -44,7 +44,6 @@ public class SysUserDTO {
     /**
      * 用户昵称
      */
-    @NotBlank(message = "用户昵称不能为空", groups = { RestGroup.AddGroup.class })
     @Size(min = 0, max = 30, message = "用户昵称长度不能超过 {max} 个字符", groups = { RestGroup.AddGroup.class, RestGroup.EditGroup.class })
     private String nickname;
 

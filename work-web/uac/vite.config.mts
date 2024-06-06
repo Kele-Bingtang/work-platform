@@ -4,7 +4,7 @@ import { wrapperEnv } from "./build/getEnv";
 import { resolve } from "path";
 import { getPluginsList } from "./build/plugins";
 import { include, exclude } from "./build/optimize";
-import dayjs from "dayjs";
+import { dayjs } from "element-plus";
 import pkg from "./package.json";
 
 const { dependencies, devDependencies, name, version } = pkg;
@@ -49,16 +49,17 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "@work/styles/index.scss";`,
+          additionalData: `@use "@work/styles/index.scss" as *;`,
         },
       },
     },
-    // * 打包去除 console.log && debugger
+    // 打包去除 console.log && debugger
     esbuild: {
-      pure: viteEnv.VITE_DROP_CONSOLE ? ["console.log", "debugger"] : [],
+      pure: viteEnv.VITE_DROP_CONSOLE ? ["console.log"] : [],
+      drop: viteEnv.VITE_DROP_DEBUGGER ? ["debugger"] : [],
     },
     build: {
-      // esbuild 打包更快，但是不能去除 console.log，terser 打包慢，但能去除 console.log
+      // esbuild 打包更快，terser 打包慢
       minify: "esbuild",
       // minify: "terser",
       // terserOptions: {
@@ -67,7 +68,8 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
       //     drop_debugger: true,
       //   },
       // },
-      sourcemap: false,
+      outDir: env.VITE_OUT_DIR || "dist",
+      sourcemap: viteEnv.VITE_SOURCEMAP,
       // 消除打包大小超过500kb警告
       chunkSizeWarningLimit: 4000,
       rollupOptions: {
@@ -76,11 +78,19 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         },
         // 静态资源分类打包
         output: {
+          manualChunks: {
+            "vue-chunks": ["vue", "vue-router", "pinia", "vue-i18n"],
+            "element-plus": ["element-plus"],
+            "wang-editor": ["@wangeditor/editor", "@wangeditor/editor-for-vue"],
+            tinymce: ["tinymce", "@tinymce/tinymce-vue"],
+            echarts: ["echarts"],
+          },
           chunkFileNames: "static/js/[name]-[hash].js",
           entryFileNames: "static/js/[name]-[hash].js",
           assetFileNames: "static/[ext]/[name]-[hash].[ext]",
         },
       },
+      cssCodeSplit: !env.VITE_USE_CSS_SPLIT,
     },
     define: {
       __APP_INFO__: JSON.stringify(__APP_INFO__),

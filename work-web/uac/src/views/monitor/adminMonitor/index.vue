@@ -1,7 +1,5 @@
 <template>
-  <div>AdminMonitor</div>
+  <div>AdminMonito111r</div>
 </template>
 
 <script setup lang="ts" name="AdminMonitor"></script>
-
-<style lang="scss" scoped></style>

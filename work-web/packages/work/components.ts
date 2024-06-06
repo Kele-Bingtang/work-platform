@@ -1,11 +1,11 @@
 import { Icon } from "@work/components/icon";
-import { ImageVerify } from "@work/components/imageVerify";
+import { ImageVerifyCode } from "@work/components/imageVerifyCode";
 import { Pagination } from "@work/components/pagination";
 import { Tooltip } from "@work/components/tooltip";
 import { TreeFilter } from "@work/components/treeFilter";
 import { ProForm, Tree } from "@work/components/proForm";
 import { ProTable } from "@work/components/proTable";
-import { SearchForm } from "@work/components/searchForm";
+import { ProSearch } from "@work/components/proSearch";
 import { Grid } from "@work/components/grid";
 import { WangEditor } from "@work/components/wangEditor";
 import { BasicDrawer } from "@work/components/basicDrawer";
@@ -14,17 +14,19 @@ import { UserSelect } from "@work/components/userSelect";
 import { TransferSelect } from "@work/components/transferSelect";
 import { Tinymce } from "@work/components/tinymce";
 import { Point } from "@work/components/point";
+import { IconPicker } from "@work/components/iconPicker";
+import { Plugin } from "vue";
 
 export default [
   Icon,
-  ImageVerify,
+  ImageVerifyCode,
   Pagination,
   Tooltip,
   TreeFilter,
-  Tree,
-  ProForm,
   ProTable,
-  SearchForm,
+  ProSearch,
+  ProForm,
+  Tree,
   Grid,
   WangEditor,
   BasicDrawer,
@@ -33,4 +35,5 @@ export default [
   TransferSelect,
   Tinymce,
   Point,
-];
+  IconPicker,
+] as Plugin[];

@@ -1,5 +1,11 @@
 <template>
-  <ProForm ref="proFormRef" v-model="user" :options="options">
+  <ProForm
+    ref="proFormRef"
+    v-model="user"
+    :schema="schema"
+    :el-form-props="elFormProps"
+    :row-props="{ col: { span: 24 } }"
+  >
     <template #operation>
       <el-button type="primary" @click="submit()">保存</el-button>
       <el-button type="danger" @click="reset()">重置</el-button>
@@ -31,7 +37,7 @@
 </template>
 
 <script setup lang="ts" name="EditorInfo">
-import { ProForm, type FormOptionsProps, type ProFormInstance } from "work";
+import { ProForm, type FormSchemaProps, type ProFormInstance } from "work";
 import { useFormRules } from "@/hooks/useFormRules";
 import { useUserStore, type UserInfo, useLayoutStore } from "@/stores";
 import { ElMessage } from "element-plus";
@@ -58,7 +64,7 @@ const rules = {
 } as any;
 
 const submit = () => {
-  proFormRef.value?.formRef?.validate(valid => {
+  proFormRef.value?.form?.validate(valid => {
     if (valid) {
       const { nickname, phone, email, sex } = user.value;
 
@@ -69,41 +75,47 @@ const submit = () => {
         } else reset();
       });
 
-      proFormRef.value?.formRef?.clearValidate();
+      proFormRef.value?.form?.clearValidate();
     }
   });
 };
 
 const reset = () => {
-  proFormRef.value?.formRef?.clearValidate();
+  proFormRef.value?.form?.clearValidate();
   emit("reset-user");
 };
 
-const options: FormOptionsProps = {
-  form: { labelWidth: 80, rules: rules },
-  columns: [
-    {
-      formItem: { label: "用户名称", prop: "nickname", br: true },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 用户名称", maxlength: "30" } },
-    },
-    {
-      formItem: { label: "联系方式", prop: "phone", br: true },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 领导", maxlength: "11" } },
-    },
-    {
-      formItem: { label: "用户邮箱", prop: "email", br: true },
-      attrs: { el: "el-input", props: { clearable: true, placeholder: "请输入 用户邮箱", maxlength: "50" } },
-    },
-    {
-      formItem: { label: "用户性别", prop: "sex", br: true },
-      attrs: {
-        el: "el-radio-group",
-        fieldNames: { value: "dictValue", label: "dictLabel" },
-        enum: () => useLayoutStore().getDictData("sys_user_sex"),
-      },
-    },
-  ],
+const elFormProps = {
+  labelWidth: 80,
+  rules: rules,
 };
-</script>
 
-<style lang="scss" scoped></style>
+const schema: FormSchemaProps[] = [
+  {
+    prop: "nickname",
+    label: "用户名称",
+    el: "el-input",
+    props: { clearable: true, placeholder: "请输入 用户名称", maxlength: "30" },
+  },
+  {
+    prop: "phone",
+    label: "联系方式",
+    br: true,
+    el: "el-input",
+    props: { clearable: true, placeholder: "请输入 领导", maxlength: "11" },
+  },
+  {
+    prop: "email",
+    label: "用户邮箱",
+    el: "el-input",
+    props: { clearable: true, placeholder: "请输入 用户邮箱", maxlength: "50" },
+  },
+  {
+    prop: "sex",
+    label: "用户性别",
+    el: "el-radio-group",
+    fieldNames: { value: "dictValue", label: "dictLabel" },
+    enum: () => useLayoutStore().getDictData("sys_user_sex"),
+  },
+];
+</script>

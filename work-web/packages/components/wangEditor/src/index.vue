@@ -1,14 +1,14 @@
 <template>
-  <div :class="['editor-component', disabled ? 'editor-disabled' : '']">
+  <div :class="[prefixClass, { disabled }]">
     <Toolbar
-      class="editor-toolbar"
+      :class="`${prefixClass}__toolbar`"
       :editor="editorRef"
       :defaultConfig="toolbarConfig"
       :mode="mode"
       v-if="!hideToolBar"
     />
     <Editor
-      class="editor-content"
+      :class="`${prefixClass}__content`"
       :style="{ height: typeof height == 'string' ? height : `${height}px`, overflowY: 'hidden' }"
       v-model="content"
       :defaultConfig="editorConfig"
@@ -26,39 +26,41 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 import attachmentModule from "@wangeditor/plugin-upload-attachment"; // wangeditor 的附件插件
 import "@wangeditor/editor/dist/css/style.css";
 import { toolbarKeys as toolbarKeysConfig } from "./config";
+import { onMounted, watch, onBeforeUnmount, unref, computed, shallowRef, reactive } from "vue";
+import { useDesign } from "@work/hooks";
 
 defineOptions({ name: "WangEditor" });
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("wang-editor");
 
 export type ImageInsertFnType = (url: string, alt: string) => void;
 export type VideoInsertFnType = (url: string, poster: string) => void;
 export type FileInsertFnType = (fileName: string, url: string) => void;
 
 interface WangEditorProp {
-  value?: string; // 编辑器内容 ==> 必传
   toolbarKeys?: string[]; // 工具栏内容 ==> 非必传（默认为空）
   excludeKeys?: string[]; // 去除掉指定的工具类内容 ==> 非必传（默认为空）
   height?: string; // 富文本高度 ==> 非必传（默认为 500px）
   mode?: "default" | "simple"; // 富文本模式 ==> 非必传（默认为 default）
-  disabled?: boolean; // 是否禁用编辑器 ==> 非必传（默认为false）
-  hideToolBar?: boolean; // 是否隐藏工具栏 ==> 非必传（默认为false）
+  disabled?: boolean; // 是否禁用编辑器 ==> 非必传（默认为 false）
+  hideToolBar?: boolean; // 是否隐藏工具栏 ==> 非必传（默认为 false）
 }
-type EmitProps = {
-  (e: "update:value", value: string): void;
-  (e: "image-upload", file: File, insertFn: ImageInsertFnType): void;
-  (e: "image-before-upload", file: File): void;
-  (e: "image-progress", progress: number): void;
-  (e: "image-success", file: File, res: any): void;
-  (e: "image-failed", file: File, res: any): void;
-  (e: "image-error", file: File, err: any, res: any): void;
-  (e: "video-upload", file: File, insertFn: VideoInsertFnType): void;
-  (e: "file-before-upload", file: File): void;
-  (e: "file-upload", file: File, insertFn: VideoInsertFnType): void;
-  (e: "on-paste", editor: IDomEditor, event: ClipboardEvent): void;
-  (e: "on-created", editor: IDomEditor): void;
+type WangEditorEmits = {
+  imageUpload: [file: File, insertFn: ImageInsertFnType];
+  imageBeforeUpload: [file: File];
+  imageProgress: [progress: number];
+  imageSuccess: [file: File, res: any];
+  imageFailed: [file: File, res: any];
+  imageError: [file: File, err: any, res: any];
+  videoUpload: [file: File, insertFn: VideoInsertFnType];
+  fileBeforeUpload: [file: File];
+  fileUpload: [file: File, insertFn: FileInsertFnType];
+  onPaste: [editor: IDomEditor, event: ClipboardEvent];
+  onCreated: [editor: IDomEditor];
 };
 
 const props = withDefaults(defineProps<WangEditorProp>(), {
-  value: "",
   toolbarKeys: () => [],
   excludeKeys: () => [],
   height: "400px",
@@ -67,7 +69,9 @@ const props = withDefaults(defineProps<WangEditorProp>(), {
   hideToolBar: false,
 });
 
-const emits = defineEmits<EmitProps>();
+const emits = defineEmits<WangEditorEmits>();
+
+const content = defineModel<string>({ default: "" });
 
 // 富文本 DOM 元素
 const editorRef = shallowRef();
@@ -109,22 +113,22 @@ const editorConfig = reactive<Partial<IEditorConfig>>({
       allowedFileTypes: ["image/*"],
       // 自定义上传
       customUpload: (file: File, insertFn: ImageInsertFnType) => {
-        emits("image-upload", file, insertFn);
+        emits("imageUpload", file, insertFn);
       },
       onBeforeUpload: (file: File) => {
-        emits("image-before-upload", file);
+        emits("imageBeforeUpload", file);
       },
       onProgress: (progress: number) => {
-        emits("image-progress", progress);
+        emits("imageProgress", progress);
       },
       onSuccess: (file: File, res: any) => {
-        emits("image-success", file, res);
+        emits("imageSuccess", file, res);
       },
       onFailed: (file: File, res: any) => {
-        emits("image-failed", file, res);
+        emits("imageFailed", file, res);
       },
       onError: (file: File, err: any, res: any) => {
-        emits("image-error", file, err, res);
+        emits("imageError", file, err, res);
       },
     },
     uploadVideo: {
@@ -132,17 +136,17 @@ const editorConfig = reactive<Partial<IEditorConfig>>({
       maxFileSize: 300 * 1024 * 1024,
       allowedFileTypes: ["video/*"],
       customUpload: (file: File, insertFn: VideoInsertFnType) => {
-        emits("video-upload", file, insertFn);
+        emits("videoUpload", file, insertFn);
       },
     },
     uploadAttachment: {
       // 10M
       maxFileSize: 10 * 1024 * 1024,
       onBeforeUpload: (file: File) => {
-        emits("file-before-upload", file);
+        emits("fileBeforeUpload", file);
       },
       customUpload: (file: File, insertFn: VideoInsertFnType) => {
-        emits("file-upload", file, insertFn);
+        emits("fileUpload", file, insertFn);
       },
     },
   },
@@ -161,42 +165,36 @@ const toolbarConfig = computed(() => {
   };
 });
 
-const content = computed({
-  get() {
-    return props.value;
-  },
-  set(value) {
-    // 防止富文本内容为空时，校验失败
-    if (editorRef.value.isEmpty()) value = "";
-    emits("update:value", value);
-  },
-});
-
 watch(
   () => props.disabled,
   () => {
-    if (editorRef.value) {
-      props.disabled ? editorRef.value.disable() : editorRef.value.enable();
+    if (unref(editorRef)) {
+      props.disabled ? unref(editorRef).disable() : unref(editorRef).enable();
     }
   }
 );
 
 onMounted(() => {
-  Boot.registerModule(attachmentModule);
+  try {
+    Boot.registerModule(attachmentModule);
+  } catch (e) {
+    /* empty */
+  }
 });
+
 const handleCreated = (editor: IDomEditor) => {
   editorRef.value = editor;
-  props.disabled ? editorRef.value.disable() : editorRef.value.enable();
-  emits("on-created", editor);
+  props.disabled ? unref(editorRef).disable() : unref(editorRef).enable();
+  emits("onCreated", editor);
 };
 
 const handlePaste = (editor: IDomEditor, event: ClipboardEvent) => {
-  emits("on-paste", editor, event);
+  emits("onPaste", editor, event);
 };
 
 onBeforeUnmount(() => {
-  if (!editorRef.value) return;
-  editorRef.value.destroy(); // 组件销毁时，及时销毁编辑器
+  if (!unref(editorRef)) return;
+  unref(editorRef).destroy(); // 组件销毁时，及时销毁编辑器
 });
 
 defineExpose({
@@ -205,30 +203,32 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+$prefix-class: #{$admin-namespace}-wang-editor;
+
 /* 富文本组件校验失败样式 */
 .is-error {
-  .editor-component {
-    border-color: var(--el-color-danger);
+  .#{$prefix-class} {
+    border-color: var(--#{$el-namespace}-color-danger);
   }
 }
 
-/* 富文本组件禁用样式 */
-.editor-disabled {
-  cursor: not-allowed !important;
-}
-
 /* 富文本组件样式 */
-.editor-component {
-  /* 防止富文本编辑器全屏时 tabs组件 在其层级之上 */
+.#{$prefix-class} {
+  /* 防止富文本编辑器全屏时 tabs 组件 在其层级之上 */
   z-index: 1100;
   width: 100%;
   border: 1px solid #cccccc;
 
-  .editor-toolbar {
+  /* 富文本组件禁用样式 */
+  &.disabled {
+    cursor: not-allowed !important;
+  }
+
+  &__toolbar {
     border-bottom: 1px solid #cccccc;
   }
 
-  .editor-content {
+  &__content {
     overflow-y: hidden;
   }
 }

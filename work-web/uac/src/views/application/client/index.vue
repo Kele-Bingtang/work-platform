@@ -1,11 +1,11 @@
 <template>
-  <div class="client-container">
+  <div :class="prefixClass">
     <ProTable
       ref="proTableRef"
       :request-api="listPage"
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-      :detailForm="detailForm"
+      :dialogForm="dialogForm"
     ></ProTable>
   </div>
 </template>
@@ -14,10 +14,14 @@
 import { ProTable } from "work";
 import { listPage, addOne, editOne, deleteOne, deleteBatch, type Client } from "@/api/application/client";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { options } from "./formOptions";
+import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("client");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -78,15 +82,17 @@ const columns: TableColumnProps<Client.ClientInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: options,
+const dialogForm: DialogForm = {
+  formProps: { elFormProps, schema },
+  id: ["id", "appId"],
   addApi: addOne,
   editApi: editOne,
-  deleteApi: deleteOne,
-  deleteBatchApi: deleteBatch,
+  removeApi: deleteOne,
+  removeBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 200,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -94,7 +100,9 @@ const detailForm: DialogForm = {
 </script>
 
 <style lang="scss" scoped>
-.client-container {
-  width: 100%;
+$prefix-class: #{$admin-namespace}-client;
+
+.#{$prefix-class} {
+  flex: 1;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="userLink-container">
+  <div :class="prefixClass">
     <TreeFilter
       ref="treeFilterRef"
       title="用户列表"
@@ -17,7 +17,7 @@
       </template>
     </TreeFilter>
 
-    <div class="right-card">
+    <div :class="`${prefixClass}__right--card`">
       <Description :title="descriptionData.title" :data="descriptionData.data">
         <template #extra>
           <div>
@@ -29,12 +29,11 @@
             >
               <el-option v-for="item in appTreeList" :key="item.appId" :label="item.appName" :value="item.appId" />
             </el-select>
-            <el-button size="small">日志</el-button>
           </div>
         </template>
       </Description>
 
-      <el-row :gutter="10" class="card-body" v-if="userInfo">
+      <el-row :gutter="10" :class="`${prefixClass}__right--card__body`" v-if="userInfo">
         <el-col :span="6" style="height: 100%">
           <ListCard
             ref="userGroupListCardRef"
@@ -112,10 +111,13 @@ import {
 } from "@/api/system/role";
 import { Plus, User } from "@element-plus/icons-vue";
 import { ElRow, ElCol } from "element-plus";
-import Description, { type DescriptionProps } from "@/components/Description/index.vue";
-import ListCard, { type ListCardInstance } from "@/components/ListCard/index.vue";
+import { Description, ListCard, type DescriptionProps, type ListCardInstance } from "@/components";
 import DialogForm, { type DialogFormInstance } from "./components/dialogForm.vue";
 import { getAppTreeList, type App } from "@/api/application/app";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("user-link");
 
 const userGroupListCardRef = shallowRef<ListCardInstance>();
 const roleListCardRef = shallowRef<ListCardInstance>();
@@ -248,30 +250,25 @@ const roleDelete = (item: Role.RoleLinkInfo) => {
 </script>
 
 <style lang="scss" scoped>
-.userLink-container {
+$prefix-class: #{$admin-namespace}-user-link;
+
+.#{$prefix-class} {
   display: flex;
   width: 100%;
 
-  .right-card {
+  &__right--card {
     width: 100%;
     padding: 10px;
     background-color: #ffffff;
 
-    .card-body {
+    &__body {
       display: flex;
       height: calc(100vh - 215px);
-    }
-  }
-}
-</style>
 
-<style lang="scss">
-.userLink-container {
-  .card-body {
-    .el-menu-item {
-      height: 32px;
+      :deep(.#{$el-namespace}-menu-item) {
+        height: 32px;
+      }
     }
   }
 }
 </style>
-@/api/system/role/role

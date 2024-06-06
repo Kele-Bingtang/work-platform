@@ -67,5 +67,3 @@ const reset = () => {
   password.confirmPassword = "";
 };
 </script>
-
-<style lang="scss" scoped></style>

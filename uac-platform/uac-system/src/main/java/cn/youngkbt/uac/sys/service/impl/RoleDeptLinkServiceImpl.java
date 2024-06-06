@@ -28,6 +28,7 @@ public class RoleDeptLinkServiceImpl extends ServiceImpl<RoleDeptLinkMapper, Rol
 
     @Override
     public Boolean addDeptsToRole(RoleLinkDeptDTO roleLinkDeptDTO, boolean removeLink) {
+        
         if (removeLink) {
             // 删除角色与部门关联
             baseMapper.delete(Wrappers.<RoleDeptLink>lambdaQuery()

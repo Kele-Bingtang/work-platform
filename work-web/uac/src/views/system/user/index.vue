@@ -1,5 +1,5 @@
 <template>
-  <div class="user-container">
+  <div :class="prefixClass">
     <TreeFilter :requestApi="listDeptTreeList" @change="handleTreeChange" id="value">
       <template #default="{ node }">
         <Icon v-if="node.data.icon" :icon="node.data.icon"></Icon>
@@ -15,7 +15,7 @@
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         style="display: flex; flex-direction: column"
-        :detailForm="detailForm"
+        :dialogForm="dialogForm"
       >
         <template #operationExtra>
           <el-button link size="small" :icon="Key" @click="resetPassword">重置密码</el-button>
@@ -29,12 +29,16 @@
 import { TreeFilter, ProTable, useDialog, type TableColumnProps } from "work";
 import { listDeptTreeList } from "@/api/system/dept";
 import { addOne, editOne, deleteOne, deleteBatch, listPage, type User } from "@/api/user/user";
-import { useFormOptions } from "./useFormOptions";
+import { elFormProps, useFormSchema } from "./useFormSchema";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch, ElInput } from "element-plus";
 import { Key } from "@element-plus/icons-vue";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("user");
 
 const proTableRef = shallowRef<ProTableInstance>();
 const newPassword = ref("");
@@ -69,8 +73,8 @@ const { statusChange } = useChange(
 );
 
 const columns: TableColumnProps<User.UserInfo>[] = [
-  { type: "selection", fixed: "left", width: 80 },
-  { type: "index", label: "#", width: 80 },
+  { type: "selection", fixed: "left", width: 60 },
+  { type: "index", label: "#", width: 60 },
   { prop: "username", label: "用户名称", width: 170, search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称", width: 170, search: { el: "el-input" } },
   { prop: "dept.deptName", label: "部门", width: 170, search: { el: "el-input" } },
@@ -104,16 +108,21 @@ const columns: TableColumnProps<User.UserInfo>[] = [
   { prop: "operation", label: "操作", width: 220, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: useFormOptions(computed(() => initRequestParam.deptId)).options,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps,
+    schema: useFormSchema(computed(() => initRequestParam.deptId)).schema,
+  },
+  id: ["id", "userId"],
   addApi: addOne,
   editApi: editOne,
-  editFilterParams: ["dept", "disabled", "loginIp", "loginTime", "registerTime"],
-  deleteApi: deleteOne,
-  deleteBatchApi: deleteBatch,
+  editFilterKeys: ["dept", "disabled", "loginIp", "loginTime", "registerTime"],
+  removeApi: deleteOne,
+  removeBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 420,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -129,9 +138,11 @@ const handleTreeChange = (nodeId: number) => {
 </script>
 
 <style lang="scss" scoped>
-.user-container {
+$prefix-class: #{$admin-namespace}-user;
+
+.#{$prefix-class} {
   display: flex;
-  width: 100%;
+  flex: 1;
 
   .iconify {
     margin-right: 5px;
@@ -142,15 +153,10 @@ const handleTreeChange = (nodeId: number) => {
     display: flex;
     width: calc(100% - 230px);
     height: 100%;
-  }
-}
-</style>
 
-<style lang="scss">
-.user-container {
-  .user-table .el-dialog__body {
-    margin-left: 20px;
+    :deep(.#{$el-namespace}-dialog__body) {
+      margin-left: 20px;
+    }
   }
 }
 </style>
-./useFormOptions

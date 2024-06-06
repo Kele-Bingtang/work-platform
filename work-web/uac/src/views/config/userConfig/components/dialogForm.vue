@@ -1,6 +1,13 @@
 <template>
   <el-dialog v-model="dialogVisible" top="5vh" :title="title()" width="650" :close-on-click-modal="false">
-    <ProForm ref="formElementRef" v-model="form" :options="options" />
+    <ProForm
+      ref="formElementRef"
+      v-model="form"
+      :el-form-props="elFormProps"
+      :row-props="{ col: { span: 24 } }"
+      :schema="schema"
+      :include-model-keys="['id']"
+    />
     <template #footer>
       <el-button @click="dialogVisible = false">取消</el-button>
       <el-button type="primary" @click="handleConfirm">确定</el-button>
@@ -10,7 +17,7 @@
 
 <script setup lang="tsx" name="UserLinkDialogForm">
 import { ProForm, TransferSelect } from "work";
-import type { FormOptionsProps, ProFormInstance, TransferTableColumn } from "@work/components";
+import type { FormSchemaProps, ProFormInstance, TransferTableColumn } from "@work/components";
 import { ElOption, ElSelect, ElDatePicker, ElRow, ElCol, dayjs, type FormRules } from "element-plus";
 import type { DictData } from "@/api/system/dictData";
 import { useLayoutStore } from "@/stores";
@@ -60,7 +67,7 @@ watch(
 
 // 新增用户组的弹框确认回调
 const handleConfirm = () => {
-  formElementRef.value?.formRef?.validate(async valid => {
+  formElementRef.value?.form?.validate(async valid => {
     if (valid) {
       emits("confirm", form.value, status.value, () => {
         dialogVisible.value = false;
@@ -90,70 +97,73 @@ const rules = reactive<FormRules>({
   expireOn: [{ required: true, message: "请选择过期时间", trigger: "blur" }],
 });
 
-const options: FormOptionsProps = {
-  form: { inline: false, labelPosition: "top", labelWidth: 80, size: "default", rules: rules },
-  columns: [
-    {
-      formItem: { label: "用户组选择", prop: "transferIds", br: true },
-      attrs: {
-        isDestroy: () => status.value === "edit",
-        render: ({ scope }) => {
-          return (
-            <>
-              <TransferSelect
-                ref={transferSelectRef}
-                v-model={scope.form.transferIds}
-                columns={props.transferSelectColumn}
-                request-api={props.transferApi}
-                request-params={props.requestParams}
-                multiple
-                list-icon={User}
-                id={props.id}
-              ></TransferSelect>
-            </>
-          );
-        },
-      },
-    },
-    {
-      formItem: { label: "生效时间", prop: "validFrom", br: true },
-      attrs: { el: "el-date-picker", props: { clearable: true, placeholder: "请选择生效时间" } },
-    },
-    {
-      formItem: { label: "过期时间", prop: "expireOn", br: true },
-      attrs: {
-        render: ({ scope }) => {
-          return (
-            <ElRow gutter={10}>
-              <ElCol span={12}>
-                <ElSelect
-                  vModel={scope.form.expireOnNum}
-                  placeholder="请选择时长"
-                  style={{ width: "100%" }}
-                  onChange={(val: string) => selectChange(Number(val))}
-                  clearable
-                >
-                  {expireOnOptions.value.map(item => (
-                    <ElOption key={item.dictValue} label={item.dictLabel} value={item.dictValue} />
-                  ))}
-                </ElSelect>
-              </ElCol>
-              <ElCol span={12}>
-                <ElDatePicker
-                  vModel={scope.form.expireOn}
-                  type="date"
-                  placeholder="请选择过期时间"
-                  style={{ width: "100%" }}
-                  value-format="YYYY-MM-DD"
-                />
-              </ElCol>
-            </ElRow>
-          );
-        },
-      },
-    },
-  ],
+const elFormProps = {
+  labelPosition: "top",
+  labelWidth: 80,
+  rules: rules,
 };
+
+const schema: FormSchemaProps[] = [
+  {
+    prop: "transferIds",
+    label: "用户组选择",
+    destroy: () => status.value === "edit",
+    render: ({ model }) => {
+      return (
+        <>
+          <TransferSelect
+            ref={transferSelectRef}
+            v-model={model.transferIds}
+            columns={props.transferSelectColumn}
+            request-api={props.transferApi}
+            request-params={props.requestParams}
+            multiple
+            list-icon={User}
+            id={props.id}
+          ></TransferSelect>
+        </>
+      );
+    },
+  },
+  {
+    prop: "validFrom",
+    label: "生效时间",
+    el: "el-date-picker",
+    props: { clearable: true, placeholder: "请选择生效时间" },
+  },
+  {
+    prop: "expireOn",
+    label: "过期时间",
+    render: ({ model }) => {
+      return (
+        <ElRow gutter={10} class="flex1">
+          <ElCol span={12}>
+            <ElSelect
+              vModel={model.expireOnNum}
+              placeholder="请选择时长"
+              style={{ width: "100%" }}
+              onChange={(val: string) => selectChange(Number(val))}
+              clearable
+            >
+              {expireOnOptions.value.map(item => (
+                <ElOption key={item.dictValue} label={item.dictLabel} value={item.dictValue} />
+              ))}
+            </ElSelect>
+          </ElCol>
+          <ElCol span={12}>
+            <ElDatePicker
+              vModel={model.expireOn}
+              type="date"
+              placeholder="请选择过期时间"
+              style={{ width: "100%" }}
+              value-format="YYYY-MM-DD"
+            />
+          </ElCol>
+        </ElRow>
+      );
+    },
+  },
+];
 
 const openAdd = () => {
   status.value = "add";
@@ -176,5 +186,3 @@ defineExpose({
   toggle,
 });
 </script>
-
-<style lang="scss" scoped></style>

@@ -23,12 +23,12 @@ export namespace Tenant {
 
 const baseUri = "/system/tenant";
 
-export const list = () => {
-  return http.get<http.Response<Tenant.TenantInfo[]>>(`${baseUri}/list`);
+export const list = (params: Partial<Tenant.TenantInfo>) => {
+  return http.get<http.Response<Tenant.TenantInfo[]>>(`${baseUri}/list`, params);
 };
 
-export const listPage = () => {
-  return http.get<http.Page<Tenant.TenantInfo[]>>(`${baseUri}/listPage`);
+export const listPage = (params: Partial<Tenant.TenantInfo>) => {
+  return http.get<http.Page<Tenant.TenantInfo[]>>(`${baseUri}/listPage`, params);
 };
 
 export const addOne = (data: Tenant.TenantInfo) => {

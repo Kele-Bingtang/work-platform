@@ -14,7 +14,7 @@
 <script setup lang="tsx" name="LinkMenu">
 import { listDeptListByRoleId, listDeptIdsByRoleId, listDeptTreeList, type Dept } from "@/api/system/dept";
 import { ProForm, Tree, useDialog } from "work";
-import type { FormOptionsProps } from "@work/components";
+import type { FormSchemaProps } from "@work/components";
 import { addDeptsToRole } from "@/api/system/role";
 
 export interface LinkUserProps {
@@ -46,10 +46,11 @@ const handleEdit = () => {
   form.value.selectedDeptIds = selectedDeptIds.value;
   open({
     title: "编辑部门",
+    height: 500,
     onClose: handleCancel,
     onConfirm: handleConfirm,
     render: () => {
-      return <ProForm v-model={form.value} options={options} />;
+      return <ProForm v-model={form.value} elFormProps={{ labelWidth: 80 }} schema={schema} />;
     },
   });
 };
@@ -67,19 +68,16 @@ const handleConfirm = async () => {
   initTreeData(props.appId, props.roleId);
 };
 
-const options: FormOptionsProps = {
-  form: { inline: true, labelPosition: "right", labelWidth: 80, size: "default", fixWidth: true },
-  columns: [
-    {
-      formItem: { label: "", prop: "selectedDeptIds", br: true },
-      attrs: {
-        el: "el-tree",
-        enum: () => listDeptTreeList(),
-        props: { nodeKey: "value", search: true, checkbox: true },
-      },
-    },
-  ],
-};
+const schema: FormSchemaProps[] = [
+  {
+    prop: "selectedDeptIds",
+    label: "",
+    el: "el-tree",
+    enum: () => listDeptTreeList(),
+    props: { nodeKey: "value", search: true, checkbox: true },
+    col: { span: 24 },
+  },
+];
 </script>
 
 <style lang="scss" scoped>

@@ -1,25 +1,29 @@
 <template>
-  <div class="tenant-container">
+  <div :class="prefixClass">
     <ProTable
       ref="proTableRef"
       :request-api="listPage"
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
       class="pro-table"
-      :detailForm="detailForm"
+      :dialogForm="dialogForm"
       :border="false"
     ></ProTable>
   </div>
 </template>
 
 <script setup lang="tsx" name="Tenant">
-import { ProTable } from "work";
+import { ProTable, Icon } from "work";
 import { listPage, addOne, editOne, deleteOne, deleteBatch, type Tenant } from "@/api/system/tenant";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { options } from "./formOptions";
+import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("tenant");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -34,7 +38,7 @@ const columns: TableColumnProps<Tenant.TenantInfo>[] = [
   { type: "selection", fixed: "left", width: 80 },
   { prop: "tenantId", label: "租户编号", search: { el: "el-input" } },
   { prop: "tenantName", label: "企业名称", search: { el: "el-input" } },
-  { prop: "icon", label: "企业图标" },
+  { prop: "icon", label: "企业图标", width: 100, render: ({ row }) => <Icon icon={row.icon}></Icon> },
   { prop: "contactUserName", label: "联系人" },
   { prop: "contactPhone", label: "联系电话" },
   { prop: "founder", label: "企业创始人" },
@@ -67,15 +71,17 @@ const columns: TableColumnProps<Tenant.TenantInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: options,
+const dialogForm: DialogForm = {
+  formProps: { elFormProps, schema },
+  id: ["id", "tenantId"],
   addApi: addOne,
   editApi: editOne,
-  deleteApi: deleteOne,
-  deleteBatchApi: deleteBatch,
+  removeApi: deleteOne,
+  removeBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 450,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -83,7 +89,9 @@ const detailForm: DialogForm = {
 </script>
 
 <style lang="scss" scoped>
-.tenant-container {
-  width: 100%;
+$prefix-class: #{$admin-namespace}-tenant;
+
+.#{$prefix-class} {
+  flex: 1;
 }
 </style>

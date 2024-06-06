@@ -1,5 +1,5 @@
 <template>
-  <div class="opera-log-container">
+  <div :class="prefixClass">
     <ProTable
       ref="proTableRef"
       :request-api="listPage"
@@ -20,13 +20,17 @@
   </div>
 </template>
 
-<script setup lang="tsx" name="LoginLog">
+<script setup lang="tsx" name="OperatorLog">
 import { ProTable } from "work";
 import { listPage, removeBatch, cleanAllLog, type OperaLog } from "@/api/monitor/operaLog";
 import type { ProTableInstance, TableColumnProps } from "@work/components";
 import { useLayoutStore } from "@/stores";
 import { Delete } from "@element-plus/icons-vue";
 import { ElMessageBox, ElMessage } from "element-plus";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("operator-log");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -129,7 +133,9 @@ const columns: TableColumnProps<OperaLog.OperaLogInfo>[] = [
 </script>
 
 <style lang="scss" scoped>
-.opera-log-container {
-  width: 100%;
+$prefix-class: #{$admin-namespace}-operator-login;
+
+.#{$prefix-class} {
+  flex: 1;
 }
 </style>

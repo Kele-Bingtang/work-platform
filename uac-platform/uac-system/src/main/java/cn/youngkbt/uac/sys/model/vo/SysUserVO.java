@@ -5,7 +5,6 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author Kele-Bingtang
@@ -90,7 +89,7 @@ public class SysUserVO implements Serializable {
     /**
      * 部门 ID
      */
-    private String deptId;
+    private String deptId; 
 
     /**
      * 部门对象

@@ -64,8 +64,8 @@
             su.login_ip, su.login_time, su.user_status, su.status, su.dept_id,
             sd.dept_name, sd.leader, su1.user_id as leader_name
         from t_sys_user su
-        left join t_sys_dept sd on su.dept_id = sd.dept_id and sd.is_deleted = 0
-        left join t_sys_user su1 on su1.user_id = sd.leader and su1.is_deleted = 0
+        left join (select * from t_sys_dept where is_deleted = 0) sd on su.dept_id = sd.dept_id
+        left join (select * from t_sys_user where is_deleted = 0) su1 on su1.user_id = sd.leader
         ${ew.getCustomSqlSegment}
     </select>
     

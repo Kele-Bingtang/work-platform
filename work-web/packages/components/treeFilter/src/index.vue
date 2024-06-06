@@ -1,7 +1,7 @@
 <template>
-  <div class="card filter">
+  <div :class="`${prefixClass} card`">
     <slot name="title">
-      <h4 class="title sle" v-if="title">{{ title }}</h4>
+      <h4 :class="`${prefixClass}__title sle`" v-if="title">{{ title }}</h4>
     </slot>
     <el-input v-model="filterText" placeholder="输入关键字进行过滤" clearable />
     <el-scrollbar :style="{ height: title ? `calc(100% - 95px)` : `calc(100% - 56px)` }">
@@ -23,7 +23,7 @@
         @check="handleCheckChange"
       >
         <template #default="scope">
-          <span class="el-tree-node__label">
+          <span :class="`${variables.elNamespace}-tree-node__label`">
             <slot v-bind="scope">
               {{ scope.node.label }}
             </slot>
@@ -35,11 +35,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeMount, nextTick, type ComponentPublicInstance } from "vue";
-import { ElTree } from "element-plus";
-import TreeFilter from "./index.vue";
+import { ref, watch, onBeforeMount, unref } from "vue";
+import { ElInput, ElScrollbar, ElTree } from "element-plus";
+import { useDesign } from "@work/hooks";
+import type { TreeFilter } from "..";
 
 defineOptions({ name: "TreeFilter" });
+
+const { getPrefixClass, variables } = useDesign();
+const prefixClass = getPrefixClass("tree-filter");
 
 export type TreeFilterInstance = Omit<
   InstanceType<typeof TreeFilter>,
@@ -49,7 +53,7 @@ export type TreeFilterInstance = Omit<
 // 接收父组件参数并设置默认值
 interface TreeFilterProps {
   requestApi?: (data?: any) => Promise<any>; // 请求分类数据的 api ==> 非必传
-  data?: { [key: string]: any }[]; // 分类数据，如果有分类数据，则不会执行 api 请求 ==> 非必传
+  data?: Record<string, any>[]; // 分类数据，如果有分类数据，则不会执行 api 请求 ==> 非必传
   title?: string; // treeFilter 标题 ==> 非必传
   id?: string; // 选择的id ==> 非必传，默认为 “id”
   label?: string; // 显示的label ==> 非必传，默认为 “label”
@@ -72,8 +76,8 @@ const defaultProps = {
 
 const filterText = ref<string>("");
 const treeRef = ref<InstanceType<typeof ElTree>>();
-const treeData = ref<{ [key: string]: any }[]>([]);
-const treeAllData = ref<{ [key: string]: any }[]>([]);
+const treeData = ref<Record<string, any>[]>([]);
+const treeAllData = ref<Record<string, any>[]>([]);
 // 选中的值
 const selected = ref();
 
@@ -88,9 +92,7 @@ onBeforeMount(async () => {
     treeAllData.value = props.data;
     return;
   }
-
   const { data } = await props.requestApi!();
-
   treeData.value = data;
   treeAllData.value = props.enableTotal ? [{ [props.id]: "", [props.label]: "全部" }, ...data] : data;
 
@@ -104,11 +106,11 @@ onBeforeMount(async () => {
 });
 
 watch(filterText, val => {
-  treeRef.value!.filter(val);
+  unref(treeRef)!.filter(val);
 });
 
 // 过滤
-const filterNode = (value: string, data: { [key: string]: any }, node: any) => {
+const filterNode = (value: string, data: Record<string, any>, node: any) => {
   if (!value) return true;
   let parentNode = node.parent;
   let labels = [node.label];
@@ -122,26 +124,26 @@ const filterNode = (value: string, data: { [key: string]: any }, node: any) => {
   return labels.some(label => label.indexOf(value) !== -1);
 };
 
-interface FilterEmits {
-  (e: "change", value: any, data?: any): void;
-}
+type FilterEmits = {
+  change: [value: any, data?: any];
+};
 const emit = defineEmits<FilterEmits>();
 
 // 单选
-const handleNodeClick = (data: { [key: string]: any }) => {
+const handleNodeClick = (data: Record<string, any>) => {
   if (props.multiple) return;
   emit("change", data[props.id], data);
 };
 
 // 多选
 const handleCheckChange = () => {
-  emit("change", treeRef.value?.getCheckedKeys());
+  emit("change", unref(treeRef)?.getCheckedKeys());
 };
 
 // 暴露给父组件使用
 defineExpose({ treeData, treeAllData });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import "./index";
 </style>

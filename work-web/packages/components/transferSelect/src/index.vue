@@ -1,6 +1,6 @@
 <template>
-  <div class="select-container">
-    <div class="left-box select-box">
+  <div :class="prefixClass">
+    <div :class="`${prefixClass}__left`">
       <el-table
         ref="elTableRef"
         :data="tableData"
@@ -16,24 +16,24 @@
       </el-table>
     </div>
 
-    <div class="right-box">
+    <div :class="`${prefixClass}__right`">
       <div class="flx-justify-between">
-        <div class="select-num">
+        <div :class="`${prefixClass}__right--select`">
           选择数：
-          <span class="num">{{ selectedList?.length || "" }}</span>
+          <span :class="`${prefixClass}__right--select__num`">{{ selectedList?.length || "" }}</span>
         </div>
         <el-button link @click="handleClearSelect">清空</el-button>
       </div>
 
-      <div class="selected-list">
+      <div :class="`${prefixClass}__right--selected`">
         <template v-if="selectedList?.length">
           <template v-for="item in selectedList" :key="item">
             <slot name="list" v-bind="item">
-              <div class="selected-item">
+              <div :class="`${prefixClass}__right--selected__item`">
                 <slot>
                   <el-icon><component :is="listIcon" /></el-icon>
                 </slot>
-                <span class="item-name">
+                <span :class="`${prefixClass}__right--selected__item--name`">
                   <slot name="name" v-bind="item">{{ item[columns[0].prop!] }}</slot>
                 </span>
                 <el-button :icon="closeIcon" link @click="handleCancelSelect(item)"></el-button>
@@ -47,14 +47,19 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { Close } from "@element-plus/icons-vue";
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
 import { type TableInstance, ElMessage } from "element-plus";
 import { ref, shallowRef, onBeforeMount, computed, type Component, type ComponentPublicInstance } from "vue";
 import TransferSelect from "./index.vue";
+import { useDesign } from "@work/hooks";
 
 defineOptions({ name: "TransferSelect" });
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("transfer-select");
 
 export type TransferSelectInstance = Omit<
   InstanceType<typeof TransferSelect>,
@@ -186,13 +191,15 @@ defineExpose({ tableElement: elTableRef.value, getDataList });
 </script>
 
 <style lang="scss" scoped>
-.select-container {
+$prefix-class: #{$admin-namespace}-transfer-select;
+
+.#{$prefix-class} {
   display: flex;
   flex: 1;
   align-items: center;
   width: 100%;
 
-  .left-box {
+  &__left {
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -201,7 +208,7 @@ defineExpose({ tableElement: elTableRef.value, getDataList });
     border-right: 1px solid #dfdfdf;
   }
 
-  .right-box {
+  &__right {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -209,25 +216,25 @@ defineExpose({ tableElement: elTableRef.value, getDataList });
     height: 450px;
     padding-left: 16px;
 
-    .select-num {
+    &--select {
       margin-bottom: 4px;
       line-height: 24px;
       color: #676767;
 
-      .num {
+      &__num {
         font-weight: 700;
       }
     }
 
-    .selected-list {
+    &--selected {
       overflow: auto;
 
-      .selected-item {
+      &__item {
         display: flex;
         align-items: center;
         height: 28px;
 
-        .item-name {
+        &--name {
           display: inline-block;
           flex: 1;
           margin-left: 8px;

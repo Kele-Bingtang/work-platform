@@ -1,5 +1,5 @@
 <template>
-  <div class="dict-container">
+  <div :class="prefixClass">
     <TreeFilter
       ref="treeFilterRef"
       title="App 清单"
@@ -14,19 +14,19 @@
       </template>
     </TreeFilter>
 
-    <div class="dict-table">
+    <div :class="`${prefixClass}__table`">
       <ProTable
         ref="proTableRef"
         :request-api="listPage"
         :columns="columns"
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        :detailForm="detailForm"
+        :dialogForm="dialogForm"
       ></ProTable>
     </div>
 
     <BasicDrawer v-model="drawer" size="55%" title="字典数据配置">
-      <div class="drawer-content">
+      <div :class="`${prefixClass}__drawer-content`">
         <DictData
           :dict-code="dictInfo?.dictCode || ''"
           :app-id="dictInfo?.appId || ''"
@@ -44,8 +44,12 @@ import { listPage, addOne, editOne, deleteOne, type DictType } from "@/api/syste
 import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
 import DictData from "./dictData.vue";
 import { ElLink } from "element-plus";
-import { useFormOptions } from "./useFormOptions";
+import { dictTypeElFormProps, useFormSchema } from "./useFormSchema";
 import { baseEnum } from "@work/constants";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("dict-type");
 
 const initRequestParam = reactive({
   appId: "",
@@ -101,17 +105,22 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: useFormOptions(
-    computed(() => treeFilterRef.value?.treeData),
-    computed(() => initRequestParam.appId)
-  ).dictTypeOptions,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps: dictTypeElFormProps,
+    schema: useFormSchema(
+      computed(() => treeFilterRef.value?.treeData),
+      computed(() => initRequestParam.appId)
+    ).dictTypeSchema,
+  },
+  id: ["id", "dictTypeId"],
   addApi: addOne,
   editApi: editOne,
-  deleteApi: deleteOne,
+  removeApi: deleteOne,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "30%",
+    width: "45%",
+    height: 300,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -119,27 +128,25 @@ const detailForm: DialogForm = {
 </script>
 
 <style lang="scss" scoped>
-.dict-container {
-  display: flex;
-  width: 100%;
+$prefix-class: #{$admin-namespace}-dict-type;
 
-  .dict-table {
+.#{$prefix-class} {
+  display: flex;
+  flex: 1;
+
+  &__table {
     width: calc(100% - 230px);
     height: 100%;
+
+    :deep(.#{$el-namespace}-dialog__body) {
+      margin-left: 20px;
+    }
   }
 
-  .drawer-content {
+  &__drawer-content {
     width: 100%;
     height: 100%;
     background-color: #f0f2f5;
-  }
-}
-</style>
-
-<style lang="scss">
-.dict-container {
-  .dict-table .el-dialog__body {
-    margin-left: 20px;
   }
 }
 </style>

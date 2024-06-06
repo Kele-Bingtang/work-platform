@@ -40,7 +40,7 @@
     </el-form-item>
 
     <el-form-item>
-      <div class="login-btn">
+      <div :class="`${prefixClass}__btn`">
         <el-button
           :icon="UserFilled"
           round
@@ -62,6 +62,10 @@ import { ElMessage, type FormInstance } from "element-plus";
 import { useVerifyCode } from "../verifyCode";
 import { updateRules } from "../rules";
 import { User, Phone, Lock, WarnTriangleFilled, CircleClose, UserFilled } from "@element-plus/icons-vue";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("login");
 
 const checked = ref(false);
 const loading = ref(false);

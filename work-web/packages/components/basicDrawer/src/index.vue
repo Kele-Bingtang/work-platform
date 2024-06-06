@@ -54,7 +54,7 @@ const clickModal = () => {
 .blank-drawer-modal {
   position: unset !important;
 
-  .el-rawer {
+  .#{$el-namespace}-rawer {
     z-index: "inherit";
   }
 }

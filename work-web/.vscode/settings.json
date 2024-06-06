@@ -62,6 +62,10 @@
     "auths",
     "commitlint",
     "stylelint",
-    "Iconify"
+    "iconfont",
+    "Iconify",
+    "xlink",
+    "qrcode",
+    "cascader"
   ]
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-select-component">
+  <div :class="prefixClass">
     <el-select-v2
       v-model="selectValue"
       :options="userData"
@@ -16,7 +16,7 @@
 
     <el-button :icon="User" link @click="handleOpenUseTransferSelect"></el-button>
 
-    <el-dialog v-model="dialogVisible" title="添加用户" width="700" class="select-dialog">
+    <el-dialog v-model="dialogVisible" title="添加用户" width="700" :class="`${prefixClass}__dialog`">
       <TransferSelect
         v-model="selectedIds"
         v-model:rows="selectedUserList"
@@ -39,12 +39,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount, computed, unref } from "vue";
+import { ref, onBeforeMount, computed, unref, watch } from "vue";
 import { User } from "@element-plus/icons-vue";
 import { TransferSelect } from "work";
 import type { TransferTableColumn } from "@work/components";
+import { useDesign } from "@work/hooks";
 
 defineOptions({ name: "UserSelect" });
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("user-select");
 
 export interface UserSelectProps {
   modelValue: string | string[] | any;
@@ -158,16 +162,14 @@ const transferSelectColumns: TransferTableColumn[] = [
 </script>
 
 <style lang="scss" scoped>
-.user-select-component {
+$prefix-class: #{$admin-namespace}-user-select;
+
+.#{$prefix-class} {
   display: flex;
   width: 100%;
-}
-</style>
 
-<style lang="scss">
-.user-select-component {
-  .select-dialog {
-    .el-dialog__header {
+  :deep(.#{$prefix-class}__dialog) {
+    .#{$el-namespace}-dialog__header {
       border-bottom: none !important;
     }
   }

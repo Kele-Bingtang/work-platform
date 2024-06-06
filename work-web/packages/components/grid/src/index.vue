@@ -16,6 +16,7 @@ import {
   onUnmounted,
   onDeactivated,
   onActivated,
+  unref,
   type VNodeArrayChildren,
   type VNode,
 } from "vue";
@@ -27,7 +28,7 @@ export type Responsive = responsive;
 
 export type BreakPoint = "xs" | "sm" | "md" | "lg" | "xl";
 
-interface GridProps {
+export interface GridProps {
   cols: number | Record<BreakPoint, number>; // 响应式布局
   collapsed?: boolean; // 是否开启折叠功能
   collapsedRows?: number; // 可见的行数
@@ -50,7 +51,7 @@ provide("breakPoint", breakPoint);
 
 // 注入 cols
 const gridCols = computed(() => {
-  if (typeof props.cols === "object") return props.cols[breakPoint.value] ?? props.cols;
+  if (typeof props.cols === "object") return props.cols[unref(breakPoint)] ?? props.cols;
   return props.cols;
 });
 provide("cols", gridCols);
@@ -121,16 +122,16 @@ const findHiddenIndex = () => {
   let suffixCols = 0;
   if (suffix) {
     suffixCols =
-      ((suffix as VNode).props![breakPoint.value]?.span ?? (suffix as VNode).props?.span ?? 1) +
-      ((suffix as VNode).props![breakPoint.value]?.offset ?? (suffix as VNode).props?.offset ?? 0);
+      ((suffix as VNode).props![unref(breakPoint)]?.span ?? (suffix as VNode).props?.span ?? 1) +
+      ((suffix as VNode).props![unref(breakPoint)]?.offset ?? (suffix as VNode).props?.offset ?? 0);
   }
   try {
     let find = false;
     fields.reduce((prev = 0, current, index) => {
       // 计算每个 Children 的 span 和 offset 总和
       prev +=
-        ((current as VNode)!.props![breakPoint.value]?.span ?? (current as VNode)!.props?.span ?? 1) +
-        ((current as VNode)!.props![breakPoint.value]?.offset ?? (current as VNode)!.props?.offset ?? 0);
+        ((current as VNode)!.props![unref(breakPoint)]?.span ?? (current as VNode)!.props?.span ?? 1) +
+        ((current as VNode)!.props![unref(breakPoint)]?.offset ?? (current as VNode)!.props?.offset ?? 0);
       // 当计算的多个 Children 的 span 和 offset 总和超出一行
       if (Number(prev) > props.collapsedRows * gridCols.value - suffixCols) {
         hiddenIndex.value = index;
@@ -148,7 +149,7 @@ const findHiddenIndex = () => {
 
 // 断点变化时 执行 findHiddenIndex
 watch(
-  () => breakPoint.value,
+  () => [unref(breakPoint), props.collapsedRows],
   () => {
     if (props.collapsed) findHiddenIndex();
   }
@@ -172,8 +173,8 @@ const gridGap = computed(() => {
 const style = computed(() => {
   return {
     display: "grid",
-    gap: gridGap.value, // 行和列间距
-    gridTemplateColumns: `repeat(${gridCols.value}, minmax(0, 1fr))`, // 设置网格的列数
+    gap: unref(gridGap), // 行和列间距
+    gridTemplateColumns: `repeat(${unref(gridCols)}, minmax(0, 1fr))`, // 设置网格的列数
   };
 });
 

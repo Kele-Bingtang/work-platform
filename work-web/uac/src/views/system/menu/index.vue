@@ -1,5 +1,5 @@
 <template>
-  <div class="menu-container">
+  <div :class="prefixClass">
     <TreeFilter
       ref="treeFilterRef"
       title="App 清单"
@@ -15,8 +15,10 @@
       </template>
     </TreeFilter>
 
-    <div class="menu-table">
-      <div class="empty-box" v-if="!initRequestParam.appId"><el-empty description="请先选择一个应用" /></div>
+    <div :class="`${prefixClass}__table`">
+      <div :class="`${prefixClass}__table--empty`" v-if="!initRequestParam.appId">
+        <el-empty description="请先选择一个应用" />
+      </div>
       <ProTable
         ref="proTableRef"
         v-show="initRequestParam.appId"
@@ -25,7 +27,7 @@
         :init-request-param="initRequestParam"
         :request-auto="false"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        :detailForm="detailForm"
+        :dialogForm="dialogForm"
         :border="false"
         :pagination="false"
       >
@@ -40,7 +42,7 @@
 </template>
 
 <script setup lang="tsx" name="Menu">
-import { TreeFilter, ProTable } from "work";
+import { TreeFilter, ProTable, Icon } from "work";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 import { getAppTreeList } from "@/api/application/app";
 import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/system/menu";
@@ -50,11 +52,15 @@ import {
   type ProTableInstance,
   type TreeFilterInstance,
 } from "@work/components";
-import { menuTypeEnum, useFormOptions } from "./useFormOptions";
+import { menuTypeEnum, elFormProps, useFormSchema } from "./useFormSchema";
 import { useLayoutStore } from "@/stores";
 import { Plus } from "@element-plus/icons-vue";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("menu");
 
 const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
@@ -72,7 +78,12 @@ const initRequestParam = reactive({
 
 const columns: TableColumnProps<Menu.MenuInfo>[] = [
   { prop: "menuName", label: "菜单名称", align: "left", search: { el: "el-input" } },
-  { prop: "icon", label: "图标", width: 100 },
+  {
+    prop: "icon",
+    label: "图标",
+    width: 60,
+    render: ({ row }) => <Icon icon={row.icon}></Icon>,
+  },
   { prop: "orderNum", label: "排序", width: 80 },
   { prop: "component", label: "组件路径", width: 200 },
   { prop: "permission", label: "权限标识", width: 180 },
@@ -117,11 +128,15 @@ const installMeta = (data: any) => {
   }
 };
 
-const detailForm: DialogForm = {
-  options: useFormOptions(
-    computed(() => treeFilterRef.value?.treeData),
-    computed(() => initRequestParam.appId)
-  ).options,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps,
+    schema: useFormSchema(
+      computed(() => treeFilterRef.value?.treeData),
+      computed(() => initRequestParam.appId)
+    ).schema,
+  },
+  id: ["id", "menuId"],
   addApi: data =>
     addOne({
       ...data,
@@ -136,17 +151,18 @@ const detailForm: DialogForm = {
       meta: installMeta(data),
       appId: initRequestParam.appId,
     }),
-  deleteApi: deleteOne,
+  removeApi: deleteOne,
   clickEdit: form => {
     if ([httpPrefix, httpsPrefix].find(item => form.path.includes(item))) {
       form.pathPrefix = form.path.split("//")[0] + "//";
       form.path = form.path.split("//")[1];
     } else form.pathPrefix = "";
   },
-  apiFilterParams: ["pathPrefix"],
+  apiFilterKeys: ["pathPrefix"],
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 630,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -158,21 +174,23 @@ const handleTreeChange = (nodeId: number) => {
 </script>
 
 <style lang="scss" scoped>
-.menu-container {
+$prefix-class: #{$admin-namespace}-menu;
+
+.#{$prefix-class} {
   display: flex;
-  width: 100%;
+  flex: 1;
 
-  .empty-box {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background-color: #ffffff;
-  }
-
-  .menu-table {
+  &__table {
     width: calc(100% - 230px);
     height: 100%;
+
+    &--empty {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+    }
   }
 }
 </style>

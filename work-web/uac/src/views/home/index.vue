@@ -9,5 +9,3 @@ import { Tinymce } from "work";
 
 const value = ref("");
 </script>
-
-<style lang="scss" scoped></style>

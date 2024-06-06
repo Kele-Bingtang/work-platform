@@ -1,12 +1,17 @@
 <template>
-  <span class="point-warper"><i class="point" :style="{ backgroundColor: color }"></i></span>
+  <span :class="prefixClass"><i class="point" :style="{ backgroundColor: color }"></i></span>
   <span>
     <slot>{{ text }}</slot>
   </span>
 </template>
 
 <script setup lang="ts">
+import { useDesign } from "@work/hooks";
+
 defineOptions({ name: "Point" });
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("point-warper");
 
 interface PointProps {
   color?: string;
@@ -17,7 +22,9 @@ defineProps<PointProps>();
 </script>
 
 <style lang="scss" scoped>
-.point-warper {
+$prefix-class: #{$admin-namespace}-point-warper;
+
+.#{$prefix-class} {
   margin-right: 4px;
   text-align: left;
 

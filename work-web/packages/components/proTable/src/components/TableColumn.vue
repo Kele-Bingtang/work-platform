@@ -3,27 +3,29 @@
 </template>
 
 <script setup lang="tsx">
-import { inject, ref, useSlots } from "vue";
-import type { TableColumnProps, RenderScope, HeaderRenderScope } from "../interface";
-import { filterEnum, filterEnumLabel, formatValue, lastProp, handleRowAccordingToProp } from "../utils";
+import { inject, ref, useSlots, unref } from "vue";
+import { type TableColumnProps, type TableRenderScope, type HeaderRenderScope, tableEnumMapKey } from "../interface";
+import { filterEnum, filterEnumLabel, formatValue, lastProp, handleRowAccordingToProp } from "../helper";
 import { ElCheckTag, ElTag, ElTableColumn } from "element-plus";
+import { useHeaderFilter } from "./plugins/HeaderFilter";
+import { useRowInlineEdit } from "./plugins/RowInlineEdit";
 
 defineOptions({ name: "TableColumn" });
 
-defineProps<{ column: TableColumnProps }>();
+const props = defineProps<{ column: TableColumnProps }>();
 
 const slots = useSlots();
 
-const enumMap = inject("enumMap", ref(new Map()));
+const enumMap = inject(tableEnumMapKey, ref(new Map<string, Record<string, any>[]>()));
 
-const getEnumData = (item: TableColumnProps, scope: RenderScope<any>) => {
-  return enumMap.value.get(item.prop) && item.isFilterEnum
-    ? filterEnum(handleRowAccordingToProp(scope.row, item.prop!), enumMap.value.get(item.prop)!, item.fieldNames)
+const getEnumData = (item: TableColumnProps, scope: TableRenderScope<any>) => {
+  return unref(enumMap).get(item.prop!) && item.isFilterEnum
+    ? filterEnum(handleRowAccordingToProp(scope.row, item.prop!), unref(enumMap).get(item.prop!), item.fieldNames)
     : "";
 };
 
-const renderCellData = (item: TableColumnProps, scope: RenderScope<any>, enumData: any) => {
-  return enumMap.value.get(item.prop) && item.isFilterEnum
+const renderCellData = (item: TableColumnProps, scope: TableRenderScope<any>, enumData: any) => {
+  return unref(enumMap).get(item.prop!) && item.isFilterEnum
     ? filterEnumLabel(enumData, item.fieldNames)
     : formatValue(handleRowAccordingToProp(scope.row, item.prop!));
 };
@@ -32,7 +34,7 @@ const renderCellData = (item: TableColumnProps, scope: RenderScope<any>, enumDat
 const renderTag = (item: any, data: any, last = true, index?: number) => {
   const { tagType, tagEffect } = item;
 
-  if (item.tagEl === "el-check-tag") {
+  if (["el-check-tag", "ElCheckTag"].includes(item.tagEl)) {
     // 直接 index ? : 是不行的，因为这样 index = 0 是 false
     return (
       <>
@@ -53,6 +55,9 @@ const renderTag = (item: any, data: any, last = true, index?: number) => {
   );
 };
 
+const { useFilter, renderHeaderFilter } = useHeaderFilter(props.column);
+const { useEdit, renderRowInlineEdit } = useRowInlineEdit(props.column);
+
 const RenderTableColumn = (item: TableColumnProps) => {
   return (
     <>
@@ -63,12 +68,14 @@ const RenderTableColumn = (item: TableColumnProps) => {
           showOverflowTooltip={item.showOverflowTooltip ?? item.prop !== "operation"}
         >
           {{
-            default: (scope: RenderScope<any>) => {
+            default: (scope: TableRenderScope<any>) => {
+              // 行内编辑功能
+              if (unref(useEdit) && scope.row._edit) return renderRowInlineEdit(scope);
               if (item._children) return item._children.map(child => RenderTableColumn(child));
               if (item.render) return item.render(scope);
               if (slots[lastProp(item.prop!)]) return slots[lastProp(item.prop!)]!(scope);
-              const enumData = getEnumData(item, scope);
 
+              const enumData = getEnumData(item, scope);
               const data = renderCellData(item, scope, enumData);
 
               if (item.tag && enumData) {
@@ -81,9 +88,17 @@ const RenderTableColumn = (item: TableColumnProps) => {
               return Array.isArray(data) ? data.join(",") : data;
             },
             header: (scope: HeaderRenderScope<any>) => {
-              if (item.headerRender) return item.headerRender(scope);
-              if (slots[`${lastProp(item.prop!)}Header`]) return slots[`${lastProp(item.prop!)}Header`]!(scope);
-              return item.label;
+              let headerSlot = <>{item.label}</>;
+
+              if (item.headerRender) headerSlot = item.headerRender(scope);
+              if (slots[`${lastProp(item.prop!)}Header`]) headerSlot = slots[`${lastProp(item.prop!)}Header`]!(scope);
+
+              return (
+                <>
+                  {headerSlot}
+                  {unref(useFilter) ? renderHeaderFilter() : undefined}
+                </>
+              );
             },
           }}
         </ElTableColumn>

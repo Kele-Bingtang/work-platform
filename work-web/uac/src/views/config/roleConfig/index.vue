@@ -1,7 +1,7 @@
 <template>
-  <div class="role-container">
+  <div :class="prefixClass">
     <TreeFilter
-      class="tree-filter"
+      :class="`${prefixClass}__tree`"
       ref="treeFilterRef"
       title="App 清单"
       :requestApi="getAppTreeList"
@@ -17,14 +17,14 @@
       </template>
     </TreeFilter>
 
-    <div class="role-box">
+    <div :class="`${prefixClass}__role`">
       <ProTable
         ref="proTableRef"
         :request-api="listPage"
         :init-request-param="requestParam"
         :columns="columns"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-        :detailForm="detailForm"
+        :dialogForm="dialogForm"
         :border="false"
         @row-click="handleRowClick"
         :data-callback="dataCallback"
@@ -32,7 +32,7 @@
       ></ProTable>
     </div>
 
-    <div class="link-box" v-if="clickRowInfo">
+    <div v-if="clickRowInfo" :class="`${prefixClass}__link`">
       <Description :title="clickRowInfo?.roleName"></Description>
 
       <el-tabs v-model="activeName" style="height: calc(100% - 70px)">
@@ -45,6 +45,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="tsx" name="RoleLink">
 import { TreeFilter, ProTable } from "work";
 import { getAppTreeList } from "@/api/application/app";
@@ -55,15 +56,19 @@ import {
   type TableColumnProps,
   type TreeFilterInstance,
 } from "@work/components";
-import { useFormOptions } from "@/views/system/role/useFormOptions";
+import { elFormProps, useFormSchema } from "@/views/system/role/useFormSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
 import { ElSwitch } from "element-plus";
-import Description from "@/components/Description/index.vue";
+import { Description } from "@/components";
 import LinkUser from "./components/linkUser.vue";
 import LinkUserGroup from "./components/linkUserGroup.vue";
 import LinkMenu from "./components/linkMenu.vue";
 import LinkDept from "./components/linkDept.vue";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("role-link");
 
 const treeFilterRef = shallowRef<TreeFilterInstance>();
 const proTableRef = shallowRef<ProTableInstance>();
@@ -122,18 +127,23 @@ const columns: TableColumnProps<Role.RoleInfo>[] = [
   { prop: "operation", label: "操作", width: 130, fixed: "right" },
 ];
 
-const detailForm: DialogForm = {
-  options: useFormOptions(
-    computed(() => treeFilterRef.value?.treeData),
-    computed(() => requestParam.appId)
-  ).options,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps,
+    schema: useFormSchema(
+      computed(() => treeFilterRef.value?.treeData),
+      computed(() => requestParam.appId)
+    ).schema,
+  },
+  id: ["id", "roleId", "appId"],
   addApi: addOne,
   editApi: editOne,
-  deleteApi: deleteOne,
-  deleteBatchApi: deleteBatch,
+  removeApi: deleteOne,
+  removeBatchApi: deleteBatch,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 450,
     top: "5vh",
     closeOnClickModal: false,
   },
@@ -204,31 +214,28 @@ const tabEnums: TabEnum[] = [
 </script>
 
 <style lang="scss" scoped>
-.role-container {
-  display: flex;
-  width: 100%;
+$prefix-class: #{$admin-namespace}-role-link;
 
-  .tree-filter {
+.#{$prefix-class} {
+  display: flex;
+  flex: 1;
+
+  &__tree {
     width: 10%;
   }
 
-  .role-box {
+  &__role {
     width: 45%;
     padding-right: 12px;
     border-right: 1px solid #dfdfdf;
   }
 
-  .link-box {
+  &__link {
     width: 45%;
     padding-left: 12px;
     background-color: #ffffff;
-  }
-}
-</style>
-<style lang="scss">
-.role-container {
-  .link-box {
-    .el-tabs__content {
+
+    :deep(.#{$el-namespace}-tabs__content) {
       height: calc(100% - 60px);
     }
   }

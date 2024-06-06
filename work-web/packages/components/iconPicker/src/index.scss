@@ -1,0 +1,40 @@
+$prefix-class: #{$admin-namespace}-icon-picker;
+
+.#{$prefix-class} {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.#{$prefix-class}__popover {
+  .#{$prefix-class}__icons {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+
+    .#{$prefix-class}__icon {
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease 0s;
+
+      &:hover {
+        border-color: var(--#{$el-namespace}-color-primary) !important;
+      }
+    }
+  }
+
+  .#{$prefix-class}__pagination {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding-right: var(--#{$el-namespace}-popover-padding);
+    padding-left: var(--#{$el-namespace}-popover-padding);
+  }
+}

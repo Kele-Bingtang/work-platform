@@ -1,5 +1,5 @@
 <template>
-  <div class="online-user-container">
+  <div :class="prefixClass">
     <ProTable
       ref="proTableRef"
       :request-api="listPage"
@@ -18,6 +18,10 @@ import { ProTable } from "work";
 import { listPage, type OnlineUser } from "@/api/monitor/onlineUser";
 import { type ProTableInstance, type TableColumnProps } from "@work/components";
 import { listDeptTreeList } from "@/api/system/dept";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("online-users");
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -43,7 +47,9 @@ const columns: TableColumnProps<OnlineUser.OnlineUserInfo>[] = [
 </script>
 
 <style lang="scss" scoped>
-.online-user-container {
-  width: 100%;
+$prefix-class: #{$admin-namespace}-online-users;
+
+.#{$prefix-class} {
+  flex: 1;
 }
 </style>

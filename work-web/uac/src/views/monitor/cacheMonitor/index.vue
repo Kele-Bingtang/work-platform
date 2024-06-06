@@ -1,6 +1,6 @@
 <template>
-  <div class="cache-monitor-container">
-    <el-descriptions title="基本信息" class="cache-descriptions" :column="5" border>
+  <div :class="prefixClass">
+    <el-descriptions title="基本信息" :class="`${prefixClass}__cache-descriptions`" :column="5" border>
       <template #extra>
         <el-button type="info" link @click="dialogVisible = true">详情</el-button>
       </template>
@@ -35,13 +35,17 @@
 
     <el-row :gutter="10">
       <el-col :span="12">
-        <CommandChart v-if="cacheInfo.commandStats" :data="cacheInfo.commandStats" class="chart-item" />
+        <CommandChart
+          v-if="cacheInfo.commandStats"
+          :data="cacheInfo.commandStats"
+          :class="`${prefixClass}__chart-item`"
+        />
       </el-col>
       <el-col :span="12">
         <MemoryChart
           v-if="cacheInfo.info?.used_memory_human"
           :value="cacheInfo.info?.used_memory_human"
-          class="chart-item"
+          :class="`${prefixClass}__chart-item`"
         />
       </el-col>
     </el-row>
@@ -52,6 +56,10 @@
 import { list, type Cache } from "@/api/monitor/cache";
 import CommandChart from "./components/CommandChart.vue";
 import MemoryChart from "./components/MemoryChart.vue";
+import { useDesign } from "@work/hooks";
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("cache-monitor");
 
 const cacheInfo = ref<Cache.CacheInfo>({
   info: undefined,
@@ -71,14 +79,18 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.cache-monitor-container {
-  .cache-descriptions {
+$prefix-class: #{$admin-namespace}-cache-monitor;
+
+.#{$prefix-class} {
+  flex: 1;
+
+  &__cache-descriptions {
     padding: 10px;
     margin-bottom: 10px;
     background-color: #ffffff;
   }
 
-  .chart-item {
+  &__chart-item {
     padding-top: 10px;
     background-color: #ffffff;
   }

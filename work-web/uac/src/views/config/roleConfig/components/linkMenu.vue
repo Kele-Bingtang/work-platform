@@ -14,7 +14,7 @@
 <script setup lang="tsx" name="LinkMenu">
 import { listMenuListByRoleId, listMenuIdsByRoleId, listMenuTreeSelectByApp, type Menu } from "@/api/system/menu";
 import { ProForm, Tree, useDialog } from "work";
-import type { FormOptionsProps } from "@work/components";
+import type { FormSchemaProps } from "@work/components";
 import { addMenusToRole } from "@/api/system/role";
 
 export interface LinkUserProps {
@@ -47,10 +47,11 @@ const handleEdit = () => {
   form.value.selectedMenuIds = selectedMenuIds.value;
   open({
     title: "编辑菜单",
+    height: 500,
     onClose: handleCancel,
     onConfirm: handleConfirm,
     render: () => {
-      return <ProForm v-model={form.value} options={options} />;
+      return <ProForm v-model={form.value} elFormProps={{ labelWidth: 80 }} schema={schema} />;
     },
   });
 };
@@ -68,19 +69,16 @@ const handleConfirm = async () => {
   initTreeData();
 };
 
-const options: FormOptionsProps = {
-  form: { inline: true, labelPosition: "right", labelWidth: 80, size: "default", fixWidth: true },
-  columns: [
-    {
-      formItem: { label: "", prop: "selectedMenuIds", br: true },
-      attrs: {
-        el: "el-tree",
-        enum: () => listMenuTreeSelectByApp({ appId: props.appId }),
-        props: { nodeKey: "value", search: true, checkbox: true },
-      },
-    },
-  ],
-};
+const schema: FormSchemaProps[] = [
+  {
+    prop: "selectedMenuIds",
+    label: "",
+    el: "el-tree",
+    enum: () => listMenuTreeSelectByApp({ appId: props.appId }),
+    props: { nodeKey: "value", search: true, checkbox: true },
+    col: { span: 24 },
+  },
+];
 </script>
 
 <style lang="scss" scoped>

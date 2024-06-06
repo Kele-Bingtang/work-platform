@@ -43,14 +43,14 @@
     <select id="selectWithDisabledByUserId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserGroupBindSelectVO">
         select tsug.group_id, tsug.group_name, case when tugl.user_id is not null then 1 else 0 end as disabled
         from t_sys_user_group tsug
-        join t_user_group_link tugl on tsug.group_id = tugl.user_group_id and tugl.user_id = #{userId} and tugl.is_deleted = 0
+        left join t_user_group_link tugl on tsug.group_id = tugl.user_group_id and tugl.user_id = #{userId} and tugl.is_deleted = 0
         where tsug.app_id = #{appId} and tsug.is_deleted = 0
     </select>
 
     <select id="listWithDisabledByGroupId" resultType="cn.youngkbt.uac.sys.model.vo.link.UserBindSelectVO">
         select tsu.user_id, tsu.username, tsu.nickname, case when tugl.user_group_id is not null then 1 else 0 end as disabled
         from t_sys_user tsu
-        join t_user_group_link tugl on tsu.user_id = tugl.user_id and tugl.is_deleted = 0 and tugl.user_group_id = #{userGroupId}
+        left join t_user_group_link tugl on tsu.user_id = tugl.user_id and tugl.is_deleted = 0 and tugl.user_group_id = #{userGroupId}
         where tsu.is_deleted = 0
     </select>
     

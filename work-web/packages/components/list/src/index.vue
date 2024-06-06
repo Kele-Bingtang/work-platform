@@ -1,10 +1,9 @@
 <template>
-  <ul class="list-box">
+  <ul :class="prefixClass">
     <li
       v-for="item in data"
       :key="item[value]"
-      class="list-item"
-      :class="{ 'is-active': isActive === item[value] }"
+      :class="[`${prefixClass}__item`, { 'is-active': isActive === item[value] }]"
       @click="changeClass(item[value])"
     >
       <div class="flx-justify-between">
@@ -22,9 +21,14 @@
 </template>
 
 <script setup lang="ts">
+import { type ComponentPublicInstance, ref } from "vue";
 import List from "./index.vue";
+import { useDesign } from "@work/hooks";
 
-defineOptions({ name: "List" });
+defineOptions({ name: "ListBox" });
+
+const { getPrefixClass } = useDesign();
+const prefixClass = getPrefixClass("list-box");
 
 export type ListInstance = Omit<InstanceType<typeof List>, keyof ComponentPublicInstance | keyof ListProps>;
 
@@ -47,14 +51,16 @@ const changeClass = (value: string) => {
 </script>
 
 <style lang="scss" scoped>
-.list-box {
+$prefix-class: #{$admin-namespace}-list-box;
+
+.#{$prefix-class} {
   box-sizing: border-box;
   padding-left: 0;
   margin: 0;
   list-style: none;
   border-right: solid 1px #ffffff;
 
-  .list-item {
+  &__item {
     box-sizing: border-box;
     height: 32px;
     padding: 0 20px;

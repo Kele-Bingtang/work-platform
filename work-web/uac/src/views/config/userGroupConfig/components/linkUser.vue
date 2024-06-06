@@ -6,7 +6,7 @@
       :init-request-param="requestParam"
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 3, lg: 3, xl: 3 }"
-      :detailForm="detailForm"
+      :dialogForm="dialogForm"
       :border="false"
       row-key="linkId"
       height="100%"
@@ -20,7 +20,7 @@ import { ProTable } from "work";
 import { addUsersToGroup, editUserGroupLinkInfo, removeUserFromUserGroup } from "@/api/user/userGroup";
 import { listUserLinkByGroupId, type User } from "@/api/user/user";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { useFormOptions } from "./linkUserFormOptions";
+import { elFormProps, useFormSchema } from "./linkUserFormSchema";
 
 export interface LinkUserProps {
   appId: string;
@@ -48,8 +48,13 @@ const columns: TableColumnProps<User.UserLinkInfo>[] = [
 ];
 
 // 新增、编辑弹框配置项
-const detailForm: DialogForm = {
-  options: useFormOptions(requestParam).options,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps,
+    schema: useFormSchema(requestParam).schema,
+    rowProps: { col: { span: 24 } },
+  },
+  id: ["linkId"],
   addApi: form =>
     addUsersToGroup({
       ...form,
@@ -58,12 +63,13 @@ const detailForm: DialogForm = {
       appId: props.appId,
     }),
   editApi: form => editUserGroupLinkInfo({ ...form, id: form.linkId }),
-  editFilterParams: ["userId", "appId", "userIds"],
-  deleteApi: form => removeUserFromUserGroup([form.linkId]),
-  deleteBatchApi: removeUserFromUserGroup,
+  editFilterKeys: ["userId", "appId", "userIds"],
+  removeApi: form => removeUserFromUserGroup([form.linkId]),
+  removeBatchApi: removeUserFromUserGroup,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 170,
     top: "5vh",
     closeOnClickModal: false,
   },

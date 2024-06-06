@@ -6,7 +6,7 @@
       :init-request-param="requestParam"
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 3, lg: 3, xl: 3 }"
-      :detailForm="detailForm"
+      :dialogForm="dialogForm"
       :border="false"
       row-key="linkId"
       height="100%"
@@ -18,7 +18,7 @@
 <script setup lang="tsx" name="UserGroupLinkRole">
 import { ProTable } from "work";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
-import { useFormOptions } from "./linkRoleFormOptions";
+import { elFormProps, useFormSchema } from "./linkRoleFormSchema";
 import { listRoleLinkByGroupId, removeUserGroupFromRole, type Role } from "@/api/system/role";
 import { addRolesToUserGroup } from "@/api/user/userGroup";
 
@@ -46,8 +46,12 @@ const columns: TableColumnProps<Role.RoleLinkInfo>[] = [
 ];
 
 // 新增、编辑弹框配置项
-const detailForm: DialogForm = {
-  options: useFormOptions(requestParam).options,
+const dialogForm: DialogForm = {
+  formProps: {
+    elFormProps,
+    schema: useFormSchema(requestParam).schema,
+  },
+  id: ["linkId"],
   addApi: form =>
     addRolesToUserGroup({
       ...form,
@@ -55,12 +59,13 @@ const detailForm: DialogForm = {
       userGroupId: requestParam.userGroupId,
       appId: props.appId,
     }),
-  addFilterParams: ["role"],
-  deleteApi: form => removeUserGroupFromRole([form.linkId]),
-  deleteBatchApi: removeUserGroupFromRole,
+  addFilterKeys: ["role"],
+  removeApi: form => removeUserGroupFromRole([form.linkId]),
+  removeBatchApi: removeUserGroupFromRole,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
+    height: 520,
     top: "5vh",
     closeOnClickModal: false,
   },

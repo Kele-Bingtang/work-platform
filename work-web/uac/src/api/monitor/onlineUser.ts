@@ -26,3 +26,7 @@ const baseUri = "/monitor/online";
 export const listPage = (params: Partial<OnlineUser.OnlineUserInfo>) => {
   return http.get<http.Response<OnlineUser.OnlineUserInfo[]>>(`${baseUri}/listPage`, params);
 };
+
+export const forceLogout = (username: string) => {
+  return http.delete<boolean>(`${baseUri}/${username}`);
+};

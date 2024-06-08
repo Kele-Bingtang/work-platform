@@ -13,7 +13,15 @@ import java.util.List;
  */
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
+    /**
+     * 通过用户 ID 获取有权限的菜单列表
+     * @param appId 应用 ID
+     * @param userId 用户 ID
+     * @param onlyGetMenu 是否只获取菜单
+     * @return 菜单列表
+     */
     List<SysMenu> listMenuListByUserId(@Param("appId") String appId, @Param("userId") String userId, @Param("onlyGetMenu") boolean onlyGetMenu);
+
 }
 
 

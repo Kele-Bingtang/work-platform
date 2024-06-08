@@ -8,6 +8,7 @@ import cn.youngkbt.uac.sys.model.vo.SysRoleVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -86,4 +87,12 @@ public interface SysRoleService extends IService<SysRole> {
      * @param sysRoleDTO 角色信息
      */
     void checkRoleAllowed(SysRoleDTO sysRoleDTO);
+
+    /**
+     * 根据用户 ID 查询角色码
+     *
+     * @param userId 用户 ID
+     * @return 权限列表
+     */
+    Set<String> listRoleCodesByUserId(String userId);
 }

@@ -215,6 +215,15 @@ public class JwtTokenUtils {
     }
 
     /**
+     * 从令牌中获取 Subject（用户名）
+     * @param token 令牌
+     * @return Subject
+     */
+    public static String getSubjectFromToken(String token) {
+        return getClaimsFromToken(token).getSubject();
+    }
+
+    /**
      * 验证令牌
      *
      * @param token    令牌

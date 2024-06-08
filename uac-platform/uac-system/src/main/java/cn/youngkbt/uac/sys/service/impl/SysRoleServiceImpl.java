@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Kele-Bingtang
@@ -135,10 +137,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (Objects.nonNull(sysRoleDTO.getRoleId()) && TenantConstant.DEFAULT_ROLE_ID.equals(sysRoleDTO.getRoleId())) {
             throw new ServiceException("不允许操作超级管理员角色");
         }
+
+        String[] keys = new String[]{TenantConstant.SUPER_ADMIN_ROLE_KEY, TenantConstant.TENANT_ADMIN_ROLE_KEY};
+        
         // 新增不允许使用 管理员标识符
         if (Objects.isNull(sysRoleDTO.getRoleId())
-                && StringUtils.equalsAny(sysRoleDTO.getRoleCode(),
-                TenantConstant.SUPER_ADMIN_ROLE_KEY, TenantConstant.TENANT_ADMIN_ROLE_KEY)) {
+                && StringUtils.equalsAny(sysRoleDTO.getRoleCode(), keys)) {
             throw new ServiceException("不允许使用系统内置管理员角色标识符!");
         }
         // 修改不允许修改 管理员标识符
@@ -149,11 +153,16 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             );
             // 如果标识符不相等 判断为修改了管理员标识符
             if (!StringUtils.equals(sysRole.getRoleCode(), sysRoleDTO.getRoleCode())
-                    && StringUtils.equalsAny(sysRole.getRoleCode(),
-                    TenantConstant.SUPER_ADMIN_ROLE_KEY, TenantConstant.TENANT_ADMIN_ROLE_KEY)) {
+                    && StringUtils.equalsAny(sysRole.getRoleCode(), keys)) {
                 throw new ServiceException("不允许修改系统内置管理员角色标识符!");
             }
         }
+    }
+
+    @Override
+    public Set<String> listRoleCodesByUserId(String userId) {
+        List<SysRole> sysRoleList = baseMapper.selectRoleListByUserId(userId);
+        return sysRoleList.stream().map(SysRole::getRoleCode).collect(Collectors.toSet());
     }
 }
 

@@ -26,5 +26,5 @@ public class UserInfoVO {
     /**
      * 角色权限
      */
-    private Set<String> roles;
+    private Set<String> roleCodes;
 }

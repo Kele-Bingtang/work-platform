@@ -11,7 +11,7 @@ import java.util.Collection;
 /**
  * @author Kele-Bingtang
  * @date 2023/11/16 0:52
- * @note
+ * @note Spring Security 认证后内部存储的类
  */
 @Setter
 @Getter

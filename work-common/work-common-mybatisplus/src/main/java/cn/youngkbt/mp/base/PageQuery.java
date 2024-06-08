@@ -72,7 +72,6 @@ public class PageQuery implements Serializable {
 
     /**
      * 构建排序规则
-     * 前端传：
      */
     private List<OrderItem> buildOrderItem() {
         if (Objects.isNull(orderRuleList)) {

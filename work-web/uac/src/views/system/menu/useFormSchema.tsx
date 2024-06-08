@@ -128,6 +128,7 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       label: model => `${getLabel(model)}图标`,
       el: "icon-picker",
       props: { clearable: true, placeholder: "请选择 图标" },
+      hidden: model => model.menuType === "F",
     },
     {
       prop: "param",

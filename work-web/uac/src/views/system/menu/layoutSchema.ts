@@ -114,7 +114,7 @@ export const layoutFormSchema: DialogFormSchemaProps[] = [
   {
     prop: "meta.dynamicLevel",
     label: "动态路由最大数量",
-    el: "el-input",
+    el: "el-input-number",
     destroy,
     formItem: { labelWidth: 130 },
   },

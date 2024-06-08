@@ -15,10 +15,11 @@
 
 <script setup lang="tsx" name="OnlineUsers">
 import { ProTable } from "work";
-import { listPage, type OnlineUser } from "@/api/monitor/onlineUser";
+import { forceLogout, listPage, type OnlineUser } from "@/api/monitor/onlineUser";
 import { type ProTableInstance, type TableColumnProps } from "@work/components";
 import { listDeptTreeList } from "@/api/system/dept";
 import { useDesign } from "@work/hooks";
+import { useUserStore } from "@/stores";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("online-users");
@@ -33,6 +34,8 @@ const sortChange = (data: { column: any; prop: string; order: any }) => {
   initRequestParam.orderRuleList = [{ column: data.prop, type: data.order === "descending" ? "desc" : "asc" }];
 };
 
+const { userInfo } = useUserStore();
+
 const columns: TableColumnProps<OnlineUser.OnlineUserInfo>[] = [
   { prop: "username", label: "用户账号", search: { el: "el-input" } },
   { prop: "nickname", label: "用户昵称" },
@@ -43,6 +46,23 @@ const columns: TableColumnProps<OnlineUser.OnlineUserInfo>[] = [
   { prop: "browser", label: "浏览器类型" },
   { prop: "os", label: "操作系统", width: 280 },
   { prop: "loginTime", label: "登录时间", sortable: "custom" },
+  {
+    prop: "operation",
+    label: "操作",
+    width: 100,
+    fixed: "right",
+    render: ({ row }) => (
+      <el-popconfirm title={`你确定强制 ${row.nickname} 用户下线吗?`} onConfirm={() => forceLogout(row.username)}>
+        {{
+          reference: () => (
+            <el-button link type="danger" disabled={row.username === userInfo.username}>
+              强退{" "}
+            </el-button>
+          ),
+        }}
+      </el-popconfirm>
+    ),
+  },
 ];
 </script>
 

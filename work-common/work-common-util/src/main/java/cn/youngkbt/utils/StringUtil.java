@@ -20,4 +20,13 @@ public class StringUtil extends StringUtils {
         return true;
     }
 
+    public static boolean hasAnyText(String... content) {
+        for (String s : content) {
+            if (hasText(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

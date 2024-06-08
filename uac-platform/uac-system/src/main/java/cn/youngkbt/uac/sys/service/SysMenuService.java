@@ -10,6 +10,7 @@ import cn.youngkbt.uac.sys.model.vo.router.RouterVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -141,4 +142,11 @@ public interface SysMenuService extends IService<SysMenu> {
      */
     boolean checkAppExitMenu(List<String> appIds);
 
+    /**
+     * 根据用户ID查询权限
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    Set<String> listMenuPermissionByUserId(String userId);
 }

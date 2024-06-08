@@ -1,10 +1,11 @@
-package cn.youngkbt.redis.aspect;
+package cn.youngkbt.security.aspect;
 
 import cn.hutool.core.util.StrUtil;
 import cn.youngkbt.redis.constants.RedisConstants;
 import cn.youngkbt.redis.exception.RedisLimitException;
 import cn.youngkbt.redis.limit.CurrentLimitProperties;
 import cn.youngkbt.redis.limit.annotations.RedisLimit;
+import cn.youngkbt.security.utils.LoginHelper;
 import cn.youngkbt.utils.StringUtil;
 import cn.youngkbt.utils.WebUtil;
 import jakarta.annotation.PostConstruct;
@@ -62,7 +63,7 @@ public class RedisLimitAspect {
     public void before(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        //拿到 RedisLimit 注解，如果存在则说明需要限流
+        // 拿到 RedisLimit 注解，如果存在则说明需要限流
         RedisLimit redisLimit = method.getAnnotation(RedisLimit.class);
         HttpServletRequest request = WebUtil.getRequest();
         if (Objects.isNull(request)) {
@@ -71,19 +72,18 @@ public class RedisLimitAspect {
         // StrUtil.containsAnyIgnoreCase 判断请求的 url 是否有配置文件限流的 urls
         if(null != redisLimit || StrUtil.containsAnyIgnoreCase(request.getRequestURI(), currentLimitProperties.getUrls())){
             // 获取 redis 的 key
-            // Long userId = getUser().getUserId();
-            long userId = 1L;
+            String username = LoginHelper.getUsername();
             String key;
             long limit;
             long expire;
             if (Objects.nonNull(redisLimit)) {
                 // 将数组用分隔字符串合并为字符串：AUTH:CAPTCHA:RECORD:userId:redisLimit.key()
-                key = RedisConstants.AUTH_CAPTCHA_RECORD + ":" + userId + ":" + redisLimit.key();
+                key = RedisConstants.AUTH_CAPTCHA_RECORD + ":" + username + ":" + redisLimit.key();
                 limit = redisLimit.permitsPerSecond();
                 expire = redisLimit.expire();
             } else {
                 // AUTH:CAPTCHA:RECORD:userId:request.getRequestURI()
-                key = RedisConstants.SERVER_REQUEST_LIMIT + ":" + userId + ":" + request.getRequestURI();
+                key = RedisConstants.SERVER_REQUEST_LIMIT + ":" + username + ":" + request.getRequestURI();
                 limit = currentLimitProperties.getLimit();
                 expire= currentLimitProperties.getExpire();
             }

@@ -23,6 +23,8 @@
         <module>work-common-thread</module>
         <module>work-common-tenant</module>
         <module>work-common-datasource</module>
+        <module>work-common-sensitive</module>
+        <module>work-common-encrypt</module>
     </modules>
 
     <properties>

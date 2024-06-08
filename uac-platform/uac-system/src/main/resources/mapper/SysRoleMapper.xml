@@ -32,4 +32,42 @@
         app_id
     </sql>
     
+    <select id="selectRoleListByUserId" resultType="cn.youngkbt.uac.sys.model.po.SysRole">
+        -- 查询用户和角色关联的角色信息
+        SELECT tsr.*
+        FROM t_sys_role tsr
+                 JOIN t_user_role_link turl
+                      ON turl.role_id = tsr.role_id AND turl.is_deleted = 0 AND turl.status = 1 AND
+                         turl.user_id = #{userId}
+        WHERE tsr.is_deleted = 0
+          AND tsr.status = 1
+        UNION
+        -- 查询用户所在用户组关联角色的角色信息
+        SELECT tsr.*
+        FROM t_sys_role tsr
+                 JOIN t_user_group_role_link tugrl ON tugrl.role_id = tsr.role_id
+                 JOIN t_user_group_link tugl
+                      ON tugrl.user_group_id = tugl.user_group_id AND tugrl.is_deleted = 0 AND tugrl.status = 1 AND
+                         tugl.is_deleted = 0 AND tugl.status = 1
+                 JOIN t_sys_user_group tsug
+                      ON tugl.user_group_id = tsug.group_id AND tsug.is_deleted = 0 AND tsug.status = 1
+        WHERE tsr.is_deleted = 0
+          AND tsr.status = 1
+          and tugl.user_id = #{userId}
+        UNION
+        -- 查询用户所在部门关联角色的角色信息
+        SELECT tsr.*
+        FROM t_sys_role tsr
+                 JOIN t_role_dept_link trdl
+                      ON trdl.role_id = tsr.role_id AND trdl.is_deleted = 0 AND trdl.status = 1
+        WHERE tsr.is_deleted = 0
+          AND tsr.status = 1
+          AND EXISTS (SELECT 1
+                      FROM t_sys_user tsu
+                      WHERE trdl.dept_id = tsu.dept_id
+                        AND tsu.is_deleted = 0
+                        AND tsu.status = 1
+                        AND tsu.user_id = #{userId})
+    </select>
+
 </mapper>

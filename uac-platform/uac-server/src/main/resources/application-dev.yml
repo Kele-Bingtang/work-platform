@@ -66,8 +66,8 @@ spring.boot.admin.client:
   password: 123456
   
 --- # spring ai
-spring:
-  ai:
-    openai:
-      api-key: sk-edEj6eYp4ZBWPZCFE5Bd1a8fAa8d4c918644729f4fDf7f7a
-      base-url: https://api.xty.app
+#spring:
+#  ai:
+#    openai:
+#      api-key: sk-edEj6eYp4ZBWPZCFE5Bd1a8fAa8d4c918644729f4fDf7f7a
+#      base-url: https://api.xty.app

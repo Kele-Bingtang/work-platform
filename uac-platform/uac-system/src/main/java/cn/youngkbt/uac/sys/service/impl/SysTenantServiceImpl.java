@@ -189,7 +189,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         SysRole sysRole = new SysRole();
         sysRole.setTenantId(tenantId);
         sysRole.setAppId(appId);
-        sysRole.setRoleCode(TenantConstant.DEFAULT_ROLE_ID);
+        sysRole.setRoleId(TenantConstant.DEFAULT_ROLE_ID);
         sysRole.setRoleCode(TenantConstant.TENANT_ADMIN_ROLE_KEY);
         sysRole.setRoleName(TenantConstant.TENANT_ADMIN_ROLE_NAME);
         sysRole.setOrderNum(1);
@@ -277,6 +277,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     private SysUser createUserAndUserRoleLink(SysTenantDTO sysTenantDTO, String tenantId, String appId, String deptId, String roleId) {
         SysUser sysUser = new SysUser()
+                .setUserId(TenantConstant.DEFAULT_USER_ID)
                 .setUsername(sysTenantDTO.getUsername())
                 .setNickname(sysTenantDTO.getUsername())
                 .setPassword(passwordEncoder.encode(sysTenantDTO.getPassword()))

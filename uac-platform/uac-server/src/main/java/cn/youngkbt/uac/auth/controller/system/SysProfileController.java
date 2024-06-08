@@ -3,7 +3,7 @@ package cn.youngkbt.uac.auth.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.security.domain.LoginUser;
-import cn.youngkbt.security.utils.UacHelper;
+import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
 import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;

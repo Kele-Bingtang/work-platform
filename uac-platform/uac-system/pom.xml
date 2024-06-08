@@ -58,6 +58,16 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-sensitive</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-encrypt</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
         </dependency>

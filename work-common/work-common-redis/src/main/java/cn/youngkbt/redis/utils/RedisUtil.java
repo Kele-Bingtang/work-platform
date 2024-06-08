@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @NoArgsConstructor
 public class RedisUtil {
-    
+
     private static RedisTemplate<String, Object> redisTemplate;
 
     public static void init(RedisTemplate<String, Object> redisTemplate) {
@@ -24,6 +24,14 @@ public class RedisUtil {
 
     public static Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
+    }
+
+    public static boolean hasKey(String key) {
+        Boolean hasKey = redisTemplate.hasKey(key);
+        if (Objects.nonNull(hasKey)) {
+            return hasKey;
+        }
+        return false;
     }
 
     public static Long getExpire(String key) {

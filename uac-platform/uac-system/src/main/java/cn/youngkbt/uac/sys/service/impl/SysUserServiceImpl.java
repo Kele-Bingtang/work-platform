@@ -6,9 +6,8 @@ import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
-import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.uac.core.constant.AuthConstant;
-import cn.youngkbt.uac.core.constant.TenantConstant;
+import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.sys.mapper.SysUserMapper;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;
 import cn.youngkbt.uac.sys.model.dto.link.UserLinkPostDTO;
@@ -237,7 +236,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public void checkUserAllowed(String userId) {
-        if (Objects.nonNull(userId) && TenantConstant.DEFAULT_ROLE_ID.equals(userId)) {
+        if (Objects.nonNull(userId) && UacHelper.isAdmin(userId)) {
             throw new ServiceException("不允许操作超级管理员用户");
         }
     }

@@ -6,7 +6,7 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
-import cn.youngkbt.security.utils.UacHelper;
+import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
 import cn.youngkbt.uac.core.log.enums.BusinessType;
 import cn.youngkbt.uac.sys.model.dto.SysUserDTO;

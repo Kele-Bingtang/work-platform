@@ -492,13 +492,13 @@ provide(dialogFormInstanceKey, dialogFormRef);
 // 编辑事件
 const handleEdit = (scope: any, item: TableColumnProps) => {
   if (item.handleEdit) item.handleEdit(scope, expose);
-  else unref(dialogFormRef)?.handleEdit(scope);
+  else unref(dialogFormRef)?.handleEdit(scope.row);
 };
 
 // 删除事件
 const handleRemove = (scope: any, item: TableColumnProps) => {
   if (item.handleRemove) item.handleRemove(scope, expose);
-  unref(dialogFormRef)?.handleRemove(scope);
+  unref(dialogFormRef)?.handleRemove(scope.row);
 };
 
 // 批量删除事件

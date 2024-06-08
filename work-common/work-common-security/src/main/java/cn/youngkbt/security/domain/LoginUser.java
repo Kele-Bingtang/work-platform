@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -19,7 +20,7 @@ public class LoginUser {
      * 主键
      */
     private Long id;
-    
+
     /**
      * 用户 ID
      */
@@ -78,7 +79,7 @@ public class LoginUser {
      * 登录后的刷新 token
      */
     private String refreshToken;
-    
+
     /**
      * 最后登录IP
      */
@@ -113,4 +114,14 @@ public class LoginUser {
      * 操作系统
      */
     private String os;
+
+    /**
+     * 角色码
+     */
+    private Set<String> roleCodes;
+
+    /**
+     * 菜单权限
+     */
+    private Set<String> menuPermission;
 }

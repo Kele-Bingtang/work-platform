@@ -151,7 +151,7 @@ public class OperaLogAspect {
     }
 
     /**
-     * 获取请求的参数，放到log中
+     * 获取请求的参数，放到 log 中
      *
      * @param operaLogEvent 操作日志
      */
@@ -231,7 +231,7 @@ public class OperaLogAspect {
             }
         }
 
-        // 移除循环内的直接return，改为在循环结束后判断
+        // 移除循环内的直接 return，改为在循环结束后判断
         return o instanceof MultipartFile ||
                 o instanceof HttpServletRequest ||
                 o instanceof HttpServletResponse ||

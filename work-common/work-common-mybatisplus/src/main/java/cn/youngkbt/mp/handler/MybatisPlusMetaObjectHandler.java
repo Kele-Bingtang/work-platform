@@ -7,7 +7,7 @@ import cn.youngkbt.mp.constant.MyBatisDefaultConstants;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.security.utils.SecurityUtils;
-import cn.youngkbt.security.utils.UacHelper;
+import cn.youngkbt.security.utils.LoginHelper;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
@@ -70,6 +70,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
     }
 
     public static void fillValFieldTypes(MetaObject metaObject) {
+        // 获取绑定 FieldValueFill 注解的属性
         List<Field> fieldList = FieldUtils.getFieldsListWithAnnotation(metaObject.getOriginalObject().getClass(), FieldValueFill.class);
         if (!fieldList.isEmpty()) {
             for (Field field : fieldList) {
@@ -115,7 +116,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
      * @return 当前用户名
      */
     private LoginUser getUser() {
-        LoginUser userInfo = UacHelper.getLoginUser();
+        LoginUser userInfo = LoginHelper.getLoginUser();
         Object principal = SecurityUtils.getPrincipal();
 
         if (Objects.isNull(userInfo) && principal instanceof SecurityUser) {

@@ -3,6 +3,8 @@ package cn.youngkbt.uac.sys.mapper;
 import cn.youngkbt.uac.sys.model.po.SysRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2023-24-12 02:24:55
@@ -10,6 +12,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
+    /**
+     * 根据用户 ID 查询角色列表
+     *
+     * @param userId 用户ID
+     * @return 角色列表
+     */
+    List<SysRole> selectRoleListByUserId(String userId);
 }
 
 

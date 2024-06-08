@@ -16,7 +16,7 @@ import java.sql.SQLException;
 /**
  * @author Kele-Bingtang
  * @date 2024/5/1 01:12:45
- * @note
+ * @note 菜单配置 META 数据库存储转为 JSON 串
  * @
  */
 @MappedTypes(Meta.class)

@@ -24,8 +24,9 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-mybatisplus</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>cn.youngkbt</groupId>

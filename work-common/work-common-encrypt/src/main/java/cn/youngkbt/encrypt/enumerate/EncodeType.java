@@ -1,0 +1,23 @@
+package cn.youngkbt.encrypt.enumerate;
+
+/**
+ * @author Kele-Bingtang
+ * @date 2024/6/8 22:15:34
+ * @note
+ */
+public enum EncodeType {
+    /**
+     * 默认使用 yml 配置
+     */
+    DEFAULT,
+
+    /**
+     * base64 编码
+     */
+    BASE64,
+
+    /**
+     * 16 进制编码
+     */
+    HEX;
+}

@@ -2,13 +2,13 @@
   <WorkDialog v-model="dialogFormVisible" draggable v-bind="dialogProps">
     <slot name="form">
       <ProForm
-        v-if="formProps.schema"
+        v-if="formProps?.schema"
         ref="proFormRef"
         v-bind="{ ...$attrs, ...formProps }"
         v-model="model"
         :schema="newSchema"
         :includeModelKeys="
-          formProps.includeModelKeys?.length ? [...formProps.includeModelKeys, ...includeModelKeys] : includeModelKeys
+          formProps?.includeModelKeys?.length ? [...formProps.includeModelKeys, ...includeModelKeys] : includeModelKeys
         "
         :enumMapProps="enumMap"
       >
@@ -53,8 +53,8 @@ export interface DialogFormSchemaProps<T = any> extends FormSchemaProps<T> {
 }
 
 export interface DialogFormProps<T = any> {
-  formProps: Omit<ProFormProps, "schema"> & { schema?: DialogFormSchemaProps<T>[] };
-  dialog: Partial<
+  formProps?: Omit<ProFormProps, "schema"> & { schema?: DialogFormSchemaProps<T>[] };
+  dialog?: Partial<
     Omit<DialogProps, "modelValue" | "title" | "height"> & {
       title: string | ((model: any, status: DialogStatus) => string);
       fullscreen: boolean;
@@ -125,7 +125,7 @@ const includeModelKeys = computed(() => (Array.isArray(props.id) ? props.id : [p
  */
 const newSchema = computed((): FormSchemaProps[] | undefined => {
   // 目前 status 一变化，都走一遍循环，优化：可以利用 Map 存储有 show 的 column（存下标），然后监听 status，当 status 变化，则通过下标获取 column，将 hidden 设置为 true
-  props.formProps.schema?.forEach(column => {
+  props.formProps?.schema?.forEach(column => {
     if (!column) return;
     const { destroyIn, hiddenIn, disabledIn } = column;
 
@@ -150,13 +150,14 @@ const newSchema = computed((): FormSchemaProps[] | undefined => {
 /**
  * 触发新增事件
  */
-const handleAdd = async () => {
+const handleAdd = async (row?: any) => {
   const { cache, id = "id", clickAdd } = props;
 
   status.value = "add";
   unref(proFormRef)?.form?.resetFields();
 
-  if (!cache) model.value = {};
+  if (row) model.value = deepCloneTableRow(row);
+  else if (!cache) model.value = {};
   else if (Array.isArray(id)) {
     id.forEach(key => {
       delete unref(model)[key];
@@ -169,7 +170,7 @@ const handleAdd = async () => {
 /**
  * 触发编辑事件
  */
-const handleEdit = async ({ row }: any) => {
+const handleEdit = async (row: any) => {
   const { clickEdit } = props;
 
   status.value = "edit";
@@ -285,10 +286,8 @@ const handleDoEdit = (data: any) => {
 /**
  * 执行删除事件
  */
-const handleRemove = async ({ row }: any) => {
+const handleRemove = async (row: any) => {
   let data = deepCloneTableRow(row);
-
-  console.log(row);
 
   // _enum 是 ProTable 内置的属性，专门存储字典数据，不需要发送给后台
   delete data._enum;

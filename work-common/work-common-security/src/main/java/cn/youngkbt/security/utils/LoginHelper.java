@@ -3,9 +3,6 @@ package cn.youngkbt.security.utils;
 import cn.youngkbt.redis.constants.AuthRedisConstant;
 import cn.youngkbt.redis.utils.RedisUtil;
 import cn.youngkbt.security.domain.LoginUser;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,9 +13,11 @@ import java.util.*;
  * @date 2024/1/25 1:28
  * @note
  */
-@Component
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UacHelper {
+public class LoginHelper {
+
+    public static boolean isLogin() {
+        return RedisUtil.hasKey(AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
+    }
 
     public static LoginUser getLoginUser() {
         Object userInfo = RedisUtil.getForValue(AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
@@ -59,6 +58,14 @@ public class UacHelper {
         return RedisUtil.expireAt(key, date);
     }
 
+    public static String getUserId() {
+        LoginUser userInfo = getLoginUser();
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return userInfo.getUserId();
+    }
+
     public static String getUsername() {
         LoginUser userInfo = getLoginUser();
         if (Objects.isNull(userInfo)) {
@@ -75,11 +82,32 @@ public class UacHelper {
         return userInfo.getTenantId();
     }
 
+    public static Set<String> getRoleCodes() {
+        LoginUser userInfo = getLoginUser();
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return userInfo.getRoleCodes();
+    }
+
+    public static Set<String> getMenuPermission() {
+        LoginUser userInfo = getLoginUser();
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return userInfo.getMenuPermission();
+    }
+
+
     public static boolean logout() {
         LoginUser userInfo = getLoginUser();
         if (Objects.isNull(userInfo)) {
             return false;
         }
-        return RedisUtil.delete(AuthRedisConstant.USER_INFO_KEY + userInfo.getUsername());
+        return logout(userInfo.getUsername());
+    }
+
+    public static boolean logout(String username) {
+        return RedisUtil.delete(AuthRedisConstant.USER_INFO_KEY + username);
     }
 }

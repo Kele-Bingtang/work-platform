@@ -23,7 +23,7 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       defaultValue: defaultValue,
       isDisabled: form => !!form.clientId,
       props: { clearable: true, placeholder: "请选择 所属客户端" },
-      col: { span: 12 },
+      col: { span: 24 },
     },
     {
       prop: "appCode",

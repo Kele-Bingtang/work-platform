@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "b2b.current-limit")
+@ConfigurationProperties(prefix = "redis-limit")
 public class CurrentLimitProperties {
 
     /**
@@ -27,7 +27,7 @@ public class CurrentLimitProperties {
     private Long expire;
 
     /**
-     * 限流urls
+     * 限流 urls
      */
     private String[] urls;
 

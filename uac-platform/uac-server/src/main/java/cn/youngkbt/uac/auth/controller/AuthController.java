@@ -6,7 +6,6 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.utils.SecurityUtils;
-import cn.youngkbt.security.utils.UacHelper;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.model.dto.LoginUserDTO;
 import cn.youngkbt.uac.auth.model.vo.LoginTenantSelectVO;
@@ -14,6 +13,7 @@ import cn.youngkbt.uac.auth.model.vo.LoginVO;
 import cn.youngkbt.uac.auth.model.vo.TenantSelectVO;
 import cn.youngkbt.uac.auth.model.vo.UserInfoVO;
 import cn.youngkbt.uac.auth.service.LoginService;
+import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.po.SysApp;
 import cn.youngkbt.uac.sys.model.po.SysClient;
@@ -128,8 +128,8 @@ public class AuthController {
         UserInfoVO userInfoVo = new UserInfoVO();
 
         userInfoVo.setUser(loginUser)
-                .setRoles(null)
-                .setPermissions(null);
+                .setRoleCodes(loginUser.getRoleCodes())
+                .setPermissions(loginUser.getMenuPermission());
         return HttpResult.ok(userInfoVo);
     }
 }

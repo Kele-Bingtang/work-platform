@@ -94,7 +94,7 @@ defineExpose({ paging: pageSetting });
 $prefix-class: #{$admin-namespace}-pagination;
 
 .#{$prefix-class} {
-  padding: 32px 16px;
+  padding: 15px 2px 0;
   background: #ffffff;
 
   &.hidden {

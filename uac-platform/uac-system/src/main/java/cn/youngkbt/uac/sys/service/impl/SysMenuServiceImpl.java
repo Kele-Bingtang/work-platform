@@ -8,7 +8,8 @@ import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
-import cn.youngkbt.security.utils.UacHelper;
+import cn.youngkbt.uac.core.constant.TenantConstant;
+import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
 import cn.youngkbt.uac.sys.model.po.RoleMenuLink;
@@ -29,10 +30,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Kele-Bingtang
@@ -256,6 +254,19 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .in(SysMenu::getAppId, appIds));
     }
 
+    @Override
+    public Set<String> listMenuPermissionByUserId(String userId) {
+        List<SysMenu> sysMenuList = baseMapper.listMenuListByUserId(TenantConstant.DEFAULT_UAC_APP_ID, userId, false);
+        List<String> menuPerms = sysMenuList.stream().map(SysMenu::getPermission).toList();
+        
+        Set<String> permsSet = new HashSet<>();
+        for (String perm : menuPerms) {
+            if (StringUtil.hasText(perm)) {
+                permsSet.addAll(List.of(perm.trim().split(",")));
+            }
+        }
+        return permsSet;
+    }
 }
 
 

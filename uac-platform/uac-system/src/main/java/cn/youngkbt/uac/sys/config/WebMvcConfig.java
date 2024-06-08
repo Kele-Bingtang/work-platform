@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * @author Kele-Bingtang
  * @date 2024/4/27 00:01:34
- * @note
+ * @note 排除不需要认证的 URL
  */
 @Configuration
 @RequiredArgsConstructor

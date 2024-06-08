@@ -26,7 +26,7 @@ export const iframeFormSchema: DialogFormSchemaProps[] = [
     el: "el-input",
     destroy: destroy,
     formItem: { labelWidth: 100 },
-    col: { span: 12 },
+    col: { span: 24 },
   },
   {
     prop: "meta.frameLoading",

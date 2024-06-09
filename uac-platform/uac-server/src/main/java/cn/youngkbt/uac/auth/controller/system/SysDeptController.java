@@ -5,6 +5,7 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -107,6 +108,7 @@ public class SysDeptController {
     @Operation(summary = "部门新增", description = "新增部门")
     @OperateLog(title = "部门管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:dept:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDeptDTO sysDeptDTO) {
         if (sysDeptService.checkDeptNameUnique(sysDeptDTO)) {
             return HttpResult.failMessage("新增部门「" + sysDeptDTO.getDeptName() + "」失败，部门名称已存在");
@@ -119,6 +121,7 @@ public class SysDeptController {
     @Operation(summary = "部门修改", description = "修改部门")
     @OperateLog(title = "部门管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:dept:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDeptDTO sysDeptDTO) {
         String deptId = sysDeptDTO.getDeptId();
         if (sysDeptDTO.getParentId().equals(deptId)) {
@@ -146,6 +149,7 @@ public class SysDeptController {
     @Operation(summary = "部门删除", description = "通过主键删除部门")
     @OperateLog(title = "部门管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:dept:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeOne(@PathVariable Long id, @PathVariable String deptId) {
         if (sysDeptService.hasChild(deptId)) {
             return HttpResult.failMessage("存在下级部门，不允许删除");

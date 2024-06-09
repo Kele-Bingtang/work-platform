@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -78,6 +79,7 @@ public class SysAppController {
     @Operation(summary = "应用新增", description = "新增应用")
     @OperateLog(title = "应用管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:app:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysAppDTO sysAppDTO) {
         if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
             return HttpResult.failMessage("新增应用「" + sysAppDTO.getAppName() + "」失败，应用编码「" + sysAppDTO.getAppCode() + "」已存在");
@@ -90,6 +92,7 @@ public class SysAppController {
     @Operation(summary = "应用修改", description = "修改应用")
     @OperateLog(title = "应用管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:app:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysAppDTO sysAppDTO) {
         if (sysAppService.checkAppCodeUnique(sysAppDTO)) {
             return HttpResult.failMessage("修改应用「" + sysAppDTO.getAppName() + "」失败，应用编码「" + sysAppDTO.getAppCode() + "」已存在");
@@ -101,6 +104,7 @@ public class SysAppController {
     @Operation(summary = "应用删除", description = "通过主键批量删除应用")
     @OperateLog(title = "应用管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:app:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> appIds) {
         if (sysRoleService.checkAppExitRole(appIds)) {
             return HttpResult.failMessage("存在角色绑定，不允许删除");

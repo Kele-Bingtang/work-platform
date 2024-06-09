@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
@@ -123,6 +124,7 @@ public class SysUserController {
     @Operation(summary = "用户列表新增", description = "新增用户列表")
     @OperateLog(title = "用户管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:user:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
             return HttpResult.failMessage("新增用户「" + sysUserDTO.getUsername() + "」失败，登录账号已存在");
@@ -141,6 +143,7 @@ public class SysUserController {
     @Operation(summary = "用户列表修改", description = "修改用户列表")
     @OperateLog(title = "用户管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:user:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserDTO sysUserDTO) {
         if (sysUserService.checkUserNameUnique(sysUserDTO)) {
             return HttpResult.failMessage("修改用户「" + sysUserDTO.getUsername() + "」失败，登录账号已存在");
@@ -157,6 +160,7 @@ public class SysUserController {
 
     @PutMapping("/resetPassword")
     @OperateLog(title = "用户管理", businessType = BusinessType.UPDATE)
+    @PreventRepeatSubmit
     public Response<Boolean> resetPassword(@RequestBody SysUserDTO sysUserDTO) {
         sysUserDTO.setPassword(passwordEncoder.encode(sysUserDTO.getPassword()));
         boolean result = sysUserService.updatePassword(sysUserDTO.getUserId(), sysUserDTO.getPassword());
@@ -167,6 +171,7 @@ public class SysUserController {
     @Operation(summary = "用户列表删除", description = "通过主键批量删除用户列表")
     @OperateLog(title = "用户管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:user:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> userIds) {
         LoginUser loginUser = UacHelper.getLoginUser();
         if (Objects.nonNull(loginUser) && userIds.contains(loginUser.getUserId())) {

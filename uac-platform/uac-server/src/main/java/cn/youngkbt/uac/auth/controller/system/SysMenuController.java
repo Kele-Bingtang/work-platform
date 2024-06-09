@@ -4,6 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -94,6 +95,7 @@ public class SysMenuController {
     @Operation(summary = "菜单新增", description = "新增菜单")
     @OperateLog(title = "菜单管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:menu:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
         if (sysMenuService.checkMenuCodeUnique(sysMenuDTO)) {
             return HttpResult.failMessage("新增菜单「" + sysMenuDTO.getMenuName() + "」失败，菜单名称「" + sysMenuDTO.getMenuCode() + "」已存在");
@@ -110,6 +112,7 @@ public class SysMenuController {
     @Operation(summary = "菜单修改", description = "修改菜单")
     @OperateLog(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:menu:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysMenuDTO sysMenuDTO) {
 
         if (sysMenuDTO.getParentId().equals(sysMenuDTO.getMenuId())) {
@@ -131,6 +134,7 @@ public class SysMenuController {
     @Operation(summary = "菜单删除", description = "通过主键删除菜单")
     @OperateLog(title = "菜单管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:menu:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeOne(@PathVariable Long id, @PathVariable String menuId) {
         if (sysMenuService.hasChild(menuId)) {
             return HttpResult.failMessage("存在下级菜单，不允许删除");

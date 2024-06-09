@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -55,6 +56,7 @@ public class SysDictTypeController {
     @Operation(summary = "字典类型列表新增", description = "新增字典类型列表")
     @OperateLog(title = "字典类型管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:dict:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictTypeDTO sysDictTypeDTO) {
         if (sysDictTypeService.checkDictCodeUnique(sysDictTypeDTO)) {
             return HttpResult.failMessage("新增字典类型编码「" + sysDictTypeDTO.getDictCode() + "」失败，字典字典类型编码已存在");
@@ -67,6 +69,7 @@ public class SysDictTypeController {
     @Operation(summary = "字典类型列表修改", description = "修改字典类型列表")
     @OperateLog(title = "字典类型管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:dict:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictTypeDTO sysDictTypeDTO) {
         if (sysDictTypeService.checkDictCodeUnique(sysDictTypeDTO)) {
             return HttpResult.failMessage("修改字典类型编码「" + sysDictTypeDTO.getDictCode() + "」失败，字典字典类型编码已存在");
@@ -82,6 +85,7 @@ public class SysDictTypeController {
     @Operation(summary = "字典类型列表删除", description = "通过主键批量删除字典类型列表")
     @OperateLog(title = "字典类型管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:dict:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         List<Long> idList = List.of(ids);
         List<SysDictType> sysDictTypes = sysDictDataService.checkDictTypeExitDataAndGet(idList);

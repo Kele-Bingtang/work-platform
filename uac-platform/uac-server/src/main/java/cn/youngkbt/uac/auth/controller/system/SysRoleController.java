@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -62,6 +63,7 @@ public class SysRoleController {
     @Operation(summary = "角色列表新增", description = "新增角色")
     @OperateLog(title = "角色管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:role:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
         if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
             return HttpResult.failMessage("新增角色「" + sysRoleDTO.getRoleName() + "」失败，角色编码「" + sysRoleDTO.getRoleCode() + "」已存在");
@@ -77,6 +79,7 @@ public class SysRoleController {
     @Operation(summary = "角色列表修改", description = "修改角色")
     @OperateLog(title = "角色管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:role:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysRoleDTO sysRoleDTO) {
         if (sysRoleService.checkRoleCodeUnique(sysRoleDTO)) {
             return HttpResult.failMessage("修改角色「" + sysRoleDTO.getRoleName() + "」失败，角色编码「" + sysRoleDTO.getRoleCode() + "」已存在");
@@ -92,6 +95,7 @@ public class SysRoleController {
     @Operation(summary = "角色列表删除", description = "通过主键批量删除角色列表")
     @OperateLog(title = "角色管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:role:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> roleIds) {
         return HttpResult.ok(sysRoleService.removeBatch(List.of(ids), roleIds));
     }

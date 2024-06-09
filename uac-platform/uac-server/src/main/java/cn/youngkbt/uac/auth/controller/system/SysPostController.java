@@ -4,6 +4,7 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -62,6 +63,7 @@ public class SysPostController {
     @Operation(summary = "新增岗位", description = "新增岗位")
     @OperateLog(title = "新增管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:post:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysPostDTO sysPostDTO) {
         if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
             return HttpResult.failMessage("新增岗位「" + sysPostDTO.getPostName() + "」失败，岗位编码「" + sysPostDTO.getPostCode() + "」已存在");
@@ -77,6 +79,7 @@ public class SysPostController {
     @Operation(summary = "修改岗位", description = "修改岗位")
     @OperateLog(title = "新增管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:post:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysPostDTO sysPostDTO) {
         if (sysPostService.checkPostCodeUnique(sysPostDTO)) {
             return HttpResult.failMessage("修改岗位「" + sysPostDTO.getPostName() + "」失败，岗位编码「" + sysPostDTO.getPostCode() + "」已存在");
@@ -96,6 +99,7 @@ public class SysPostController {
     @Operation(summary = "删除岗位", description = "通过主键批量删除岗位")
     @OperateLog(title = "新增管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:post:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> postIds) {
         if (userPostLinkService.checkPostExistUser(postIds)) {
             return HttpResult.failMessage("该岗位已绑定用户，不允许删除");

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.constant.TenantConstant;
@@ -53,6 +54,7 @@ public class SysTenantController {
     @Operation(summary = "租户列表新增", description = "新增租户")
     @OperateLog(title = "租户管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:tenant:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
         if (sysTenantService.checkCompanyNameUnique(sysTenantDTO)) {
             return HttpResult.failMessage("新增租户'" + sysTenantDTO.getTenantName() + "'失败，租户已存在");
@@ -64,6 +66,7 @@ public class SysTenantController {
     @Operation(summary = "租户列表修改", description = "修改租户")
     @OperateLog(title = "租户管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:tenant:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysTenantDTO sysTenantDTO) {
         if (sysTenantService.checkCompanyNameUnique(sysTenantDTO)) {
             return HttpResult.failMessage("修改租户'" + sysTenantDTO.getTenantName() + "'失败，租户已存在");
@@ -75,6 +78,7 @@ public class SysTenantController {
     @Operation(summary = "租户列表删除", description = "通过主键批量删除租户")
     @OperateLog(title = "租户管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:tenant:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids, @RequestBody List<String> tenantIds) {
         if (tenantIds.contains(TenantConstant.DEFAULT_TENANT_ID)) {
             return HttpResult.failMessage("初始租户不允许删除");

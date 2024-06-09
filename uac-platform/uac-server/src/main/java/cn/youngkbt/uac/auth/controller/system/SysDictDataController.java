@@ -4,6 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -66,6 +67,7 @@ public class SysDictDataController {
     @Operation(summary = "字典数据新增", description = "新增字典数据")
     @OperateLog(title = "字典数据管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:dict:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
         if (sysDictDataService.checkDictDataValueUnique(sysDictDataDTO)) {
             return HttpResult.failMessage("新增字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，字典数据值「" + sysDictDataDTO.getDictValue() + "」已存在");
@@ -78,6 +80,7 @@ public class SysDictDataController {
     @Operation(summary = "字典数据修改", description = "修改字典数据")
     @OperateLog(title = "字典数据管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:dict:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
         if (sysDictDataDTO.getParentId().equals(sysDictDataDTO.getDataId())) {
             return HttpResult.failMessage("修改字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，上级字典数据不能是自己");
@@ -93,6 +96,7 @@ public class SysDictDataController {
     @Operation(summary = "字典数据删除", description = "通过主键批量删除字典数据")
     @OperateLog(title = "字典数据管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:dict:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return HttpResult.ok(sysDictDataService.removeBatch(List.of(ids)));
     }

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -133,6 +134,7 @@ public class SysUserGroupController {
     @Operation(summary = "用户组列表新增", description = "新增用户组")
     @OperateLog(title = "用户组管理", businessType = BusinessType.INSERT)
     @PreAuthorize("hasAuthority('system:userGroup:add')")
+    @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDTO) {
         if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDTO)) {
             return HttpResult.failMessage("新增用户组「" + sysUserGroupDTO.getGroupName() + "」失败，用户组名称已存在");
@@ -145,6 +147,7 @@ public class SysUserGroupController {
     @Operation(summary = "用户组列表修改", description = "修改用户组")
     @OperateLog(title = "用户组管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("hasAuthority('system:userGroup:edit')")
+    @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysUserGroupDTO sysUserGroupDTO) {
         if (sysUserGroupService.checkUserGroupNameUnique(sysUserGroupDTO)) {
             return HttpResult.failMessage("修改用户组「" + sysUserGroupDTO.getGroupName() + "」失败，用户组名称已存在");
@@ -156,6 +159,7 @@ public class SysUserGroupController {
     @Operation(summary = "用户组列表删除", description = "通过主键批量删除用户组列表")
     @OperateLog(title = "用户组管理", businessType = BusinessType.DELETE)
     @PreAuthorize("hasAuthority('system:userGroup:remove')")
+    @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@PathVariable Long[] ids, @RequestBody List<String> userGroupIds) {
         return HttpResult.ok(sysUserGroupService.removeBatch(List.of(ids), userGroupIds));
     }

@@ -68,6 +68,12 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-idempotent</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        
+        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
         </dependency>

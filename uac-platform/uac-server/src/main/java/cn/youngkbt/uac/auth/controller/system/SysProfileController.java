@@ -2,6 +2,7 @@ package cn.youngkbt.uac.auth.controller.system;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -35,6 +36,7 @@ public class SysProfileController {
 
     @PutMapping
     @OperateLog(title = "个人信息", businessType = BusinessType.UPDATE)
+    @PreventRepeatSubmit
     public Response<Boolean> updateProfileInfo(@Validated @RequestBody ProfileInfoDTO profileInfoDTO) {
         LoginUser loginUser = UacHelper.getLoginUser();
         if (Objects.isNull(loginUser)) {
@@ -55,6 +57,7 @@ public class SysProfileController {
 
     @PutMapping("/updatePassword")
     @OperateLog(title = "个人信息", businessType = BusinessType.UPDATE)
+    @PreventRepeatSubmit
     public Response<Boolean> updatePassword(@Validated @RequestBody UserPasswordDTO userPasswordDTO) {
         LoginUser loginUser = UacHelper.getLoginUser();
         if (Objects.isNull(loginUser)) {

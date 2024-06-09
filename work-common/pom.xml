@@ -25,6 +25,7 @@
         <module>work-common-datasource</module>
         <module>work-common-sensitive</module>
         <module>work-common-encrypt</module>
+        <module>work-common-idempotent</module>
     </modules>
 
     <properties>

@@ -11,7 +11,22 @@
 
     <artifactId>work-common-encrypt</artifactId>
     
-    <description>接口数据加解密、数据库字段值加解密</description>
+    <description>
+        介绍：模块实现了接口数据加解密、数据库字段值加解密。
+
+        接口数据加解密实现步骤：
+            1、提供 ApiEncrypt 注解，在方法上使用后代表开启接口数据加密功能，里面有两个属性：request（对请求数据解密，非 GET 请求）、response（对响应的数据加密）
+            2、利用 Filter 过滤器来对有 ApiEncrypt 注解的请求数据进行解密，响应数据进行加密
+            3、加密解密采用 AES 算法，密钥是随机生成的 32 字符，该密钥采用 RSA 公钥加密后传输。私钥在前端持有。解密密钥时，使用私钥解密。公钥为前端持有
+
+        数据库字段值加解密实现步骤：
+            1、实现 EncryptField 注解，在字段使用后代表开启字段值加解密功能，具体加密规则在 EncryptField 里传入
+            2、实现 Mybatis insert、update 拦截器和 select 拦截器，前者对有 EncryptField 注解的字段值进行加密，后者对有 EncryptField 注解的字段值进行解密
+            3、内置缓存功能，在项目启动的时候，扫描实体类，将带有 EncryptField 注解的字段在 EncryptorManager 类里进行缓存，在第 2 步的拦截器中，进行获取并处理加解密
+            注意事项：第 3 点说明了需要扫描实体类并缓存，因此使用该功能，需要在 application 配置文件指定有 EncryptField 的实体类的包名
+        
+        加密工具类请看 encryptor 包下的类。主要利用了 hutool 提供的加密方法
+    </description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

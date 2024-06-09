@@ -37,8 +37,8 @@ public class CryptoFilter implements Filter {
         HttpServletResponse servletResponse = (HttpServletResponse) response;
         // 获取加密注解
         ApiEncrypt apiEncrypt = getApiEncryptAnnotation(servletRequest);
-        boolean requestFlag = apiEncrypt != null && apiEncrypt.request();
-        boolean responseFlag = apiEncrypt != null && apiEncrypt.response();
+        boolean requestFlag = Objects.nonNull(apiEncrypt) && apiEncrypt.request();
+        boolean responseFlag = Objects.nonNull(apiEncrypt) && apiEncrypt.response();
         ServletRequest requestWrapper = null;
         ServletResponse responseWrapper = null;
         EncryptResponseBodyWrapper responseBodyWrapper = null;
@@ -50,15 +50,13 @@ public class CryptoFilter implements Filter {
             if (StringUtil.hasText(headerValue)) {
                 // 请求解密
                 requestWrapper = new DecryptRequestBodyWrapper(servletRequest, properties.getPrivateKey(), properties.getHeaderFlag());
-            } else {
+            } else if (requestFlag) {
                 // 是否有注解，有就报错，没有放行
-                if (Objects.nonNull(apiEncrypt)) {
-                    HandlerExceptionResolver exceptionResolver = SpringHelper.getBean("handlerExceptionResolver", HandlerExceptionResolver.class);
-                    exceptionResolver.resolveException(
-                            servletRequest, servletResponse, null,
-                            new ServiceException(ResponseStatusEnum.REQ_REJECT.getCode(), ResponseStatusEnum.REQ_REJECT.getStatus(), "没有访问权限，请联系管理员授权"));
-                    return;
-                }
+                HandlerExceptionResolver exceptionResolver = SpringHelper.getBean("handlerExceptionResolver", HandlerExceptionResolver.class);
+                exceptionResolver.resolveException(
+                        servletRequest, servletResponse, null,
+                        new ServiceException(ResponseStatusEnum.REQ_REJECT.getCode(), ResponseStatusEnum.REQ_REJECT.getStatus(), "没有访问权限，请联系管理员授权"));
+                return;
             }
         }
 

@@ -13,19 +13,21 @@ import {
   checkStatus,
 } from "@work/request";
 import qs from "qs";
-import { isArray, isExternal } from "@work/utils";
+import { decryptAes, decryptBase64, decryptRas, isArray, isExternal } from "@work/utils";
 import { useUserStore, useErrorLogStore } from "@/stores";
 import router from "@/router";
 import { LOGIN_URL } from "@/router/routesConfig";
-import { message } from "@work/utils";
+import { message, encryptAes, encryptBase64, generateAesKey, encryptRas } from "@work/utils";
 import { ElNotification } from "element-plus";
 import { h } from "vue";
-
-const axiosCanceler = new AxiosCanceler();
+import { uacPrivateKey, uacPublicKey } from "@work/constants";
 
 type AxiosRequestConfigProp<D = any> = AxiosRequestConfig<D> & {
   method: "get" | "post" | "delete" | "put" | "download";
 };
+
+const axiosCanceler = new AxiosCanceler();
+const encryptHeader = "encrypt-key";
 
 /**
  * @description 当请求 url 携带的如下前缀（key），会替换为 http（value），如接口 url 为 /test/xx/xxx，则最终发送的请求为 https://youngkbt.cn/xx/xxx
@@ -69,6 +71,23 @@ class RequestHttp {
         config.params?._type === "multi" && processArray(config);
         config.params && delete config.params._type;
         config.headers.token = userStore.token;
+
+        // 开启参数加密
+        if (config.headers?.isEncrypt && ["post", "put"].includes(config.method || "")) {
+          // 生成一个 AES 密钥
+          const aesPassword = generateAesKey();
+          // base64 加密
+          const aesBase64Key = encryptBase64(aesPassword);
+          // AES 密钥最终以 RAS 加密
+          config.headers[encryptHeader] = encryptRas(aesBase64Key, uacPublicKey);
+          // 数据采用 AES 加密
+          config.data =
+            typeof config.data === "object"
+              ? encryptAes(JSON.stringify(config.data), aesPassword)
+              : encryptAes(config.data, aesPassword);
+          // ContentType 强制设置为 JSON，否则 Axios 默认以 Form Data 格式发送数据
+          config.headers["Content-Type"] = ContentTypeEnum.JSON;
+        }
         return config;
       },
       (error: AxiosError) => {
@@ -82,10 +101,23 @@ class RequestHttp {
      */
     this.service.interceptors.response.use(
       response => {
-        const { data } = response;
+        let { data } = response;
         // 在请求结束后，并关闭请求 loading
         if (response.config.headers?.loading) tryHideFullScreenLoading();
         else axiosCanceler.removePendingRequest(response.config);
+
+        // 是否需要解密
+        const encryptKey = response.headers[encryptHeader];
+        if (encryptKey) {
+          // AES 解密
+          const base64Key = decryptRas(encryptKey, uacPrivateKey);
+          // base64 解码得到请求头的 AES 秘钥
+          const aesPassword = decryptBase64(base64Key.toString());
+          // aesPassword 解码出实际的 data
+          const decryptData = decryptAes(data, aesPassword);
+          data = JSON.parse(decryptData);
+        }
+
         const userStore = useUserStore();
 
         // 如果后台自动续期 Token，则更新
@@ -129,10 +161,10 @@ class RequestHttp {
   get<T>(url: string, params?: object, _object = {}): Promise<T> {
     return this.service.get(url, { params, ..._object });
   }
-  post<T>(url: string, params?: object, _object = {}): Promise<T> {
+  post<T>(url: string, params?: object | string, _object = {}): Promise<T> {
     return this.service.post(url, params, _object);
   }
-  put<T>(url: string, params?: object, _object = {}): Promise<T> {
+  put<T>(url: string, params?: object | string, _object = {}): Promise<T> {
     return this.service.put(url, params, _object);
   }
   delete<T>(url: string, params?: any, _object = {}): Promise<T> {

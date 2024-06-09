@@ -1,8 +1,8 @@
+// eslint-disable-next-line spaced-comment
 /// <reference types="vite/client" />
 
 declare module "*.vue" {
   import type { DefineComponent } from "vue";
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
@@ -30,6 +30,8 @@ interface ImportMetaEnv {
   VITE_PUBLIC_PATH: string; // 静态资源路径
   VITE_COMPRESSION: "none" | "gzip" | "brotli" | "both" | "gzip-clear" | "brotli-clear" | "both-clear"; // 打包文件的压缩类型
   VITE_ROUTER_MODE: string; // 路由模式，默认 H5
+  VITE_WEBSOCKET: boolean | string; // 是否启用 WebSocket
+  VITE_WEBSOCKET_URL: string; // WebSocket 连接 URL，仅当 VITE_WEBSOCKET 为 true 生效
 }
 
 declare global {

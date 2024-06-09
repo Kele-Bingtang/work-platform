@@ -1,7 +1,7 @@
 import type { Auth } from "@/api/auth";
 import type { DictData } from "@/api/system/dictData";
 import type { IconifyIcon } from "@iconify/vue";
-import type { Component } from "vue";
+import type { Component, ComponentPublicInstance, ShallowRef, Ref } from "vue";
 
 // LayoutState
 export interface TabProp {
@@ -96,6 +96,16 @@ export interface ErrorLog {
   username?: string; // 用户名
   token?: string; // 用户 token
   roles?: string[]; // 用户的角色
+}
+
+// WebSocketStore
+export interface WebSocketStore {
+  websocket: Nullable<WebSocket>;
+  status: string;
+  websocketUrl: string;
+  connect: (url: string) => void;
+  disconnect: () => void;
+  sendMessage: (data: any) => void;
 }
 
 export interface Dict {

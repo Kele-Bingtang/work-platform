@@ -47,7 +47,7 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
                 gen.writeString(StrUtil.hide(value, startLen, endLen));
                 return;
             }
-            // 如果传入了 roleKey 和 perms，代表走自定义 Service 实现类来进行校验，返回 true 开启脱敏
+            // 如果传入了 roleCode 和 perms，代表走自定义 Service 实现类来进行校验，返回 true 开启脱敏
             SensitiveService sensitiveService = SpringHelper.getBean(SensitiveService.class);
             if (StringUtil.hasAnyText(roleCode, perms) && Objects.nonNull(sensitiveService)) {
                 if (sensitiveService.isSensitive(roleCode, perms)) {

@@ -11,7 +11,13 @@
 
     <artifactId>work-common-idempotent</artifactId>
     
-    <description>接口幂等性模块</description>
+    <description>
+        介绍：接口幂等性模块
+
+        接口幂等性实现步骤：
+            1、提供 PreventRepeatSubmit 注解，在接口上添加该注解，代表开启接口幂等性功能。幂等性有效时间可在注解里配置
+            2、利用 AOP 切面对 PreventRepeatSubmit 注解的方法进行切入，在 before 方法中获取 Token 和请求参数，并与 URL 拼接成 key 存入 Redis，如果存入成功，代表第一次请求，如果存入失败，代表存在第一次请求，本次为重复请求，返回错误提示信息，不继续往下走
+    </description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

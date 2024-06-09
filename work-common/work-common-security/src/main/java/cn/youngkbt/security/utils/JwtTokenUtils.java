@@ -40,7 +40,7 @@ public class JwtTokenUtils {
      * 有效期 12 小时：12 * 60 * 60 * 1000
      */
     public static long EXPIRE_TIME;
-    
+
     public JwtTokenUtils(@Value("${jwt-token.authorities:authorities}") String authorities, @Value("${jwt.secret:work-uac-platform-abcdefghijklmnopqrstuvwxyz}") String secretKey,
                          @Value("${jwt.expire-time:#{12 * 60 * 60 * 1000}}") Long expireTime) {
         JwtTokenUtils.AUTHORITIES = authorities;
@@ -216,6 +216,7 @@ public class JwtTokenUtils {
 
     /**
      * 从令牌中获取 Subject（用户名）
+     *
      * @param token 令牌
      * @return Subject
      */
@@ -312,9 +313,13 @@ public class JwtTokenUtils {
      */
     public static String getToken(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
+
         String tokenHead = "Bearer ";
-        if (token == null) {
+        if (Objects.isNull(token)) {
             token = request.getHeader("token");
+            if (Objects.isNull(token)) {
+                token = request.getParameter("token");
+            }
         } else if (token.contains(tokenHead)) {
             // 把 Bearer 去掉，只要后面的 token 值
             token = token.substring(tokenHead.length());

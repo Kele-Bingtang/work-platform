@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.thread.constants.ThreadConstant;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -19,6 +20,7 @@ import java.util.concurrent.Executor;
  */
 @EnableAsync(proxyTargetClass = true)
 @AutoConfiguration
+@Slf4j
 public class SpringAsyncConfiguration implements AsyncConfigurer {
     /**
      * 自定义 @Async 注解使用系统线程池
@@ -34,7 +36,7 @@ public class SpringAsyncConfiguration implements AsyncConfigurer {
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return (throwable, method, objects) -> {
-            throwable.printStackTrace();
+            log.error("Async exception message - {}", throwable.getMessage());
             StringBuilder sb = new StringBuilder();
             sb.append("Exception message - ")
                     .append(throwable.getMessage())

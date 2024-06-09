@@ -51,7 +51,7 @@ export namespace Auth {
 }
 
 export const login = (loginBody: Auth.LoginBody) => {
-  return http.post<http.Response<Auth.LoginResponse>>("/auth/login", loginBody);
+  return http.post<http.Response<Auth.LoginResponse>>("/auth/login", loginBody, { headers: { isEncrypt: true } });
 };
 
 export const logout = () => {

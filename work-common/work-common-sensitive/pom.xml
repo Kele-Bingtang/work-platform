@@ -11,7 +11,16 @@
 
     <artifactId>work-common-sensitive</artifactId>
     
-    <description>数据脱敏模块</description>
+    <description>
+        介绍：数据脱敏模块。
+        
+        实现数据脱敏步骤：
+            1、提供 Sensitive 注解，在实体类的属性上使用，注解里可以指定脱敏的类型
+            2、自定义类继承和实现 jackson 提供的 JsonSerializer、ContextualSerializer，这样在返回数据时，会自动触发自定义类的指定方法，将带有 Sensitive 注解的属性进行自动传入（Sensitive 注解使用了 JsonSerialize 的 use 实现自动传入）
+        
+        脱敏支持的类型请看 SensitiveStrategy 枚举类。主要利用了 hutool 的脱敏方法。
+        模块支持自定义脱敏类型，实现 SensitiveService 接口，主要基于用户权限来决定是否脱敏并返回。
+    </description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

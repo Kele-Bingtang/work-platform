@@ -48,11 +48,33 @@ export const useSimpleUuid = () => {
 /**
  * @description 随机字符串
  */
-export function toAnyString() {
+export const toAnyString = () => {
   const str: string = "xxxxx-xxxxx-4xxxx-yxxxx-xxxxx".replace(/[xy]/g, (c: string) => {
     const r: number = (Math.random() * 16) | 0;
     const v: number = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString();
   });
   return str;
-}
+};
+
+/**
+ *  随机生成指定长度字符串
+ * @param length 长度，默认 32
+ */
+export const randomString = (length = 32) => {
+  /**
+   * 生成一个指定长度的随机字符串。
+   *
+   * @param length 随机字符串的长度
+   * @returns 生成的随机字符串
+   */
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // 字符集
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    // 从字符集中随机选择一个字符并添加到结果字符串中
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return result;
+};

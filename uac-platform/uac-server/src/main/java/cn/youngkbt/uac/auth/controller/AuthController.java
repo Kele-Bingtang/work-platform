@@ -3,6 +3,7 @@ package cn.youngkbt.uac.auth.controller;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.encrypt.annotation.ApiEncrypt;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.utils.SecurityUtils;
@@ -53,6 +54,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "执行登录")
+    @ApiEncrypt(request = true, response = false)
     public Response<LoginVO> login(@Valid @RequestBody LoginUserDTO loginUserDTO) {
         String appId = loginUserDTO.getAppId();
         // 校验 App ID

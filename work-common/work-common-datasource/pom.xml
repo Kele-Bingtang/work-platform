@@ -12,7 +12,7 @@
     <groupId>cn.youngkbt</groupId>
     <artifactId>work-common-datasource</artifactId>
     
-    <description>多数据源配置</description>
+    <description>多数据源模块</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

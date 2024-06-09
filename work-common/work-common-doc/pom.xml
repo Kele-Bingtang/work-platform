@@ -11,7 +11,7 @@
 
     <artifactId>work-common-doc</artifactId>
     
-    <description>文档配置模块</description>
+    <description>Swagger 文档模块</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

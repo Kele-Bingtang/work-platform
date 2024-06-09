@@ -26,6 +26,7 @@
         <module>work-common-sensitive</module>
         <module>work-common-encrypt</module>
         <module>work-common-idempotent</module>
+        <module>work-common-websocket</module>
     </modules>
 
     <properties>

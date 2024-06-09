@@ -11,11 +11,12 @@ import LayoutColumns from "./LayoutColumns/index.vue";
 import LayoutMixins from "./LayoutMixins/index.vue";
 import LayoutSubsystem from "./LayoutSubsystem/index.vue";
 import ThemeDrawer from "@/layout/components/ThemeDrawer/index.vue";
-import { useSettingsStore } from "@/stores";
+import { useSettingsStore, useUserStore, useWebSocketStore } from "@/stores";
 import { useLayout } from "@/hooks";
 import { getPx, setStyleVar } from "@work/utils";
-import { type Component, computed, watch, watchEffect } from "vue";
+import { type Component, computed, watch, watchEffect, provide } from "vue";
 import { useRoute } from "vue-router";
+import { WebSocketKey } from "@work/constants";
 
 const LayoutComponents: Record<string, Component> = {
   vertical: LayoutVertical,
@@ -43,4 +44,14 @@ watch(
 watchEffect(() => setStyleVar("--aside-width", getPx(settingsStore.menuWidth)));
 
 watchEffect(() => setStyleVar("--header-height", getPx(settingsStore.headerHeight)));
+
+// 初始化 WebSocket
+if (import.meta.env.VITE_WEBSOCKET === "true") {
+  const webSocket = useWebSocketStore();
+  const url = import.meta.env.VITE_WEBSOCKET_URL || "";
+
+  url && webSocket.connect(url + "?token=" + useUserStore().token);
+
+  provide(WebSocketKey, webSocket);
+}
 </script>

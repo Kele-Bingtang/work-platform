@@ -2,6 +2,8 @@ package cn.youngkbt.redis.utils;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
@@ -144,4 +146,28 @@ public class RedisUtil {
         }
         return false;
     }
+
+    /**
+     * 订阅通道接收消息
+     *
+     * @param channelKey 通道 key
+     * @param listener   监听器
+     */
+    public static String subscribe(String channelKey, MessageListener listener) {
+        return redisTemplate.execute((RedisCallback<String>) (connection) -> {
+            connection.subscribe(listener, channelKey.getBytes());
+            return channelKey;
+        });
+    }
+
+    /**
+     * 发布通道消息
+     *
+     * @param channelKey 通道key
+     * @param message    发送数据
+     */
+    public static Long publish(String channelKey, Object message) {
+        return redisTemplate.convertAndSend(channelKey, message);
+    }
+
 }

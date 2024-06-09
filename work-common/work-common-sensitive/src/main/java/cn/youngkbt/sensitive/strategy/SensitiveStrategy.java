@@ -2,6 +2,7 @@ package cn.youngkbt.sensitive.strategy;
 
 import cn.hutool.core.util.DesensitizedUtil;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.function.Function;
 
@@ -11,6 +12,7 @@ import java.util.function.Function;
  * @note 脱敏策略，采用 hutool 的 DesensitizedUtil 工具类
  */
 @AllArgsConstructor
+@Getter
 public enum SensitiveStrategy {
 
     /**
@@ -60,7 +62,4 @@ public enum SensitiveStrategy {
 
     private final Function<String, String> desensitize;
 
-    public Function<String, String> getDesensitize() {
-        return desensitize;
-    }
 }

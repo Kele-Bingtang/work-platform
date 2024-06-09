@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.youngkbt</groupId>
+        <artifactId>work-common</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>work-common-websocket</artifactId>
+
+    <description>
+        介绍：websocket 模块，websocket 有两种实现：
+            1、实现 JDK 原生的方式，Spring Boot 支持
+            2、使用 Spring 自己封装的方式实现
+        
+        实现 websocket 实现步骤：
+            1、实现 HandshakeInterceptor 接口，实现 websocket 握手拦截，该接口提供两个方法，一个是握手成功的前置方法，一个是握手成功的后置方法。在前置方法，获取了用户信息，存入 session 域
+            2、继承 AbstractWebSocketHandler 类，重写 websocket 建立连接，接收消息，关闭连接等方法。其中在建立连接方法中，将 session 存入 WebSocketSessionManager 缓存里，key 是用户信息，value 为 session，方便后续使用
+            3、提供 WebSocketHelper 工具类，调用方法即可发生消息。发送消息时，会从 WebSocketSessionManager 缓存里通过用户信息获取 session，返回利用 session 发送消息
+
+        除了实现 websocket 之外，模块还内置 Redis 发布订阅模式。发送 Websocket 消息时，同时往 Redis 发布，其他服务可以订阅来获取消息。
+    </description>
+    
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-redis</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-security</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+    </dependencies>
+</project>

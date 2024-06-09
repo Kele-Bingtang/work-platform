@@ -3,15 +3,18 @@
   "version": "0.0.1",
   "description": "all utils are settled here",
   "dependencies": {
+    "crypto-js": "^4.2.0",
     "element-plus": "^2.7.3",
+    "file-saver": "^2.0.5",
+    "jsencrypt": "^3.3.2",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
     "vue": "^3.4.27",
-    "file-saver": "^2.0.5",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@types/nprogress": "^0.2.3",
-    "@types/file-saver": "^2.0.7"
+    "@types/crypto-js": "^4.2.2",
+    "@types/file-saver": "^2.0.7",
+    "@types/nprogress": "^0.2.3"
   }
 }

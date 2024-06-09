@@ -11,7 +11,7 @@
 
     <artifactId>work-common-log</artifactId>
     
-    <description>接口日志配置模块</description>
+    <description>接口日志配置模块，利用 AOP 切面在 Controller 进行切入，获取请求的数据并打印处理</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

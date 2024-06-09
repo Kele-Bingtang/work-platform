@@ -2,6 +2,7 @@ export * from "./component/install";
 export * from "./nprogress";
 export * from "./helper";
 export * from "./excel";
+export * from "./crypto";
 export * from "./layout/message";
 export * from "./layout/mittBus";
 export * from "./layout/scrollTo";

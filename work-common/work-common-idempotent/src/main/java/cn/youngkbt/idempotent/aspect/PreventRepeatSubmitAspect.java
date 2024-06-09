@@ -77,10 +77,11 @@ public class PreventRepeatSubmitAspect {
     public void doAfterReturning(JoinPoint joinPoint, PreventRepeatSubmit preventRepeatSubmit, Object result) {
         if (result instanceof Response<?> r) {
             try {
-                // 成功则不删除 redis 数据 保证在有效时间内无法重复提交
+                // 成功则不删除 redis 数据，保证在有效时间内无法重复提交
                 if (Objects.equals(r.getCode(), ResponseStatusEnum.SUCCESS.getCode())) {
                     return;
                 }
+                // 接口返回报错信息则删除 redis 数据。可再次请求
                 RedisUtil.delete(KEY_CACHE.get());
             } finally {
                 KEY_CACHE.remove();

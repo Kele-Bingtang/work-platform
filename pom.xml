@@ -41,6 +41,7 @@
         <spring-boot-admin.version>3.2.2</spring-boot-admin.version>
         <mybatis.version>3.5.16</mybatis.version>
         <bouncycastle.version>1.76</bouncycastle.version>
+        <easyexcel.version>3.3.4</easyexcel.version>
         <!-- 插件版本 -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
     </properties>
@@ -198,6 +199,11 @@
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
             </dependency>
 
             <!-- 解决使用 hutool SM2 加密报错 -->

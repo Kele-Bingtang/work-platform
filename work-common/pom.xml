@@ -27,6 +27,7 @@
         <module>work-common-encrypt</module>
         <module>work-common-idempotent</module>
         <module>work-common-websocket</module>
+        <module>work-common-excel</module>
     </modules>
 
     <properties>

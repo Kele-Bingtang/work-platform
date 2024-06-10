@@ -39,12 +39,7 @@
 
         <dependency>
             <groupId>cn.youngkbt</groupId>
-            <artifactId>work-common-sensitive</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.youngkbt</groupId>
-            <artifactId>work-common-websocket</artifactId>
+            <artifactId>uac-demo</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>

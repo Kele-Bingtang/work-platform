@@ -5,21 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.youngkbt</groupId>
-        <artifactId>work-platform</artifactId>
+        <artifactId>work-common</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>uac-platform</artifactId>
-    <packaging>pom</packaging>
-
-    <description>User Account Control Platform，用户权限控制中心平台</description>
-    <modules>
-        <module>uac-system</module>
-        <module>uac-server</module>
-        <module>uac-core</module>
-        <module>uac-monitor-admin</module>
-        <module>uac-demo</module>
-    </modules>
+    <artifactId>work-common-excel</artifactId>
+    
+    <description>Excel 模块</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -27,4 +19,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
+    <dependencies>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

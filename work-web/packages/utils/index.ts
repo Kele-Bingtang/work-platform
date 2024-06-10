@@ -8,3 +8,4 @@ export * from "./layout/mittBus";
 export * from "./layout/scrollTo";
 export * from "./layout/themeTool";
 export * from "./layout/validate";
+export * from "./layout/log";

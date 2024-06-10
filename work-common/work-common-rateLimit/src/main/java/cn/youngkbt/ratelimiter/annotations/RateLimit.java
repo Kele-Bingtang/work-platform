@@ -1,10 +1,12 @@
-package cn.youngkbt.redis.limit.annotations;
+package cn.youngkbt.ratelimiter.annotations;
 
 /**
  * @author Kele-Bingtang
  * @date 2023/6/30 23:01
  * @note
  */
+
+import cn.youngkbt.ratelimiter.enumerate.RateLimitType;
 
 import java.lang.annotation.*;
 
@@ -14,26 +16,30 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @Documented
-public @interface RedisLimit {
+public @interface RateLimit {
     /**
-     * 资源的key,唯一
+     * 资源的 key，唯一
      * 作用：不同的接口，不同的流量控制
      */
     String key() default "";
 
     /**
-     * 最多的访问限制次数
+     * 限流类型
      */
-    long permitsPerSecond() default 2;
+    RateLimitType rateLimitType() default RateLimitType.DEFAULT;
 
     /**
-     * 过期时间也可以理解为单位时间，单位秒，默认60
+     * 最多的访问限制次数
+     */
+    long count() default 2;
+
+    /**
+     * 过期时间也可以理解为单位时间，单位秒，默认 60
      */
     long expire() default 60;
-
 
     /**
      * 得不到令牌的提示语
      */
-    String msg() default "系统繁忙,请稍后再试.";
+    String msg() default "系统繁忙，请稍后再试！";
 }

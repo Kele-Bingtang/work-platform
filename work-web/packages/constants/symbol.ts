@@ -1,13 +1,13 @@
-import type { InjectionKey, ComputedRef, ShallowRef, Ref } from "vue";
+import type { InjectionKey, ComputedRef } from "vue";
 
 interface ConfigGlobal {
   size: ComputedRef<"default" | "small" | "large">;
 }
 
 export interface WebSocketStore {
-  websocket: ShallowRef<Nullable<WebSocket>>;
-  status: Ref<string>;
-  websocketUrl: Ref<string>;
+  websocket: Nullable<WebSocket>;
+  status: string;
+  websocketUrl: string;
   connect: (url: string) => void;
   disconnect: () => void;
   sendMessage: (data: any) => void;

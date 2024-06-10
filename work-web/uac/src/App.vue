@@ -82,4 +82,6 @@ const versionCache = () => {
     useCache().setCacheVersion(version);
   }
 };
+
+log.success(__APP_INFO__.pkg.version, "欢迎使用 UAC 系统");
 </script>

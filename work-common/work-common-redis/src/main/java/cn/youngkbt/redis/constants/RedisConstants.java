@@ -7,7 +7,5 @@ package cn.youngkbt.redis.constants;
  */
 public interface RedisConstants {
     
-    String AUTH_CAPTCHA_RECORD = "AUTH:CAPTCHA:RECORD";
-    
-    String SERVER_REQUEST_LIMIT = "SERVER:REQUEST:LIMIT";
+    String SERVER_REQUEST_LIMIT = "SERVER:REQUEST:LIMIT:";
 }

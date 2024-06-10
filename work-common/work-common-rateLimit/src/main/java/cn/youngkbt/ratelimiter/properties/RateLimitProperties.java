@@ -1,4 +1,4 @@
-package cn.youngkbt.redis.limit;
+package cn.youngkbt.ratelimiter.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 @ConfigurationProperties(prefix = "redis-limit")
-public class CurrentLimitProperties {
-
+public class RateLimitProperties {
+    
     /**
      * 访问次数
      */

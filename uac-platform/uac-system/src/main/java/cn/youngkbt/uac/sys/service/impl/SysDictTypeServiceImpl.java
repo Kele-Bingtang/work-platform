@@ -1,6 +1,5 @@
 package cn.youngkbt.uac.sys.service.impl;
 
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysDictTypeMapper;

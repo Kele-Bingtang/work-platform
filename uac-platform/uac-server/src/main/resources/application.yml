@@ -76,6 +76,7 @@ security:
     - /actuator
     - /actuator/**
     - /ai/**
+    - /demo/**
 
 # springdoc 配置
 springdoc:

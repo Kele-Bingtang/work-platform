@@ -33,7 +33,7 @@ public class Response<T> implements Serializable {
     /**
      * 数据
      **/
-    protected transient T data;
+    protected  T data;
 
     public static <T> Response<T> instance() {
         return new Response<>();

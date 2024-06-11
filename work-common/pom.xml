@@ -29,6 +29,7 @@
         <module>work-common-websocket</module>
         <module>work-common-excel</module>
         <module>work-common-rateLimit</module>
+        <module>work-common-cache</module>
     </modules>
 
     <properties>

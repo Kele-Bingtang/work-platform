@@ -18,7 +18,6 @@ import cn.youngkbt.uac.sys.listen.LoginEventListen;
 import cn.youngkbt.uac.sys.model.po.SysClient;
 import cn.youngkbt.uac.sys.security.handler.LoginFailureHandler;
 import cn.youngkbt.uac.sys.security.handler.LoginSuccessHandler;
-import cn.youngkbt.uac.sys.service.PermissionService;
 import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
@@ -48,7 +47,6 @@ public class PasswordAuthHandler implements AuthHandler {
     private final LoginEventListen loginEventListen;
     private final LoginSuccessHandler loginSuccessHandler;
     private final LoginFailureHandler loginFailureHandler;
-    private final PermissionService permissionService;
 
     @Override
     public boolean support(AuthGrantTypeEnum grantType) {
@@ -143,9 +141,7 @@ public class PasswordAuthHandler implements AuthHandler {
                 .setOs(os)
                 .setBrowser(browser)
                 .setClientName(clientName)
-                .setLoginTime(LocalDateTime.now())
-                .setRoleCodes(permissionService.getRoleCodes(loginUser.getUserId()))
-                .setMenuPermission(permissionService.getMenuPermission(loginUser.getUserId()));
+                .setLoginTime(LocalDateTime.now());
 
         UacHelper.cacheUserInfo(loginUser, timeout);
     }

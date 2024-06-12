@@ -143,7 +143,7 @@ public interface SysMenuService extends IService<SysMenu> {
     boolean checkAppExitMenu(List<String> appIds);
 
     /**
-     * 根据用户ID查询权限
+     * 根据用户 ID 查询权限
      *
      * @param userId 用户ID
      * @return 权限列表

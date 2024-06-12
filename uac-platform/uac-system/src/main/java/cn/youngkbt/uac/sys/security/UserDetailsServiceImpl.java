@@ -5,10 +5,13 @@ import cn.youngkbt.security.domain.SecurityUser;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.core.constant.TenantConstant;
 import cn.youngkbt.uac.core.exception.AuthException;
+import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.sys.model.po.SysUser;
 import cn.youngkbt.uac.sys.model.vo.SysMenuVO;
 import cn.youngkbt.uac.sys.service.SysMenuService;
+import cn.youngkbt.uac.sys.service.SysRoleService;
 import cn.youngkbt.uac.sys.service.SysUserService;
+import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +21,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -33,6 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final SysUserService sysUserService;
     private final SysMenuService sysMenuService;
+    private final SysRoleService sysRoleService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -55,13 +61,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 查询用户的菜单权限
         List<SysMenuVO> sysMenuVOList = sysMenuService.listMenuListByUserId(TenantConstant.DEFAULT_UAC_APP_ID, user.getUserId());
 
-        List<SimpleGrantedAuthority> authorities = sysMenuVOList.stream()
-                .map(SysMenuVO::getPermission)
-                .filter(Objects::nonNull)
+        List<String> menuPerms = sysMenuVOList.stream().map(SysMenuVO::getPermission).filter(Objects::nonNull).toList();
+
+        List<SimpleGrantedAuthority> authorities = menuPerms.stream()
                 .map(SimpleGrantedAuthority::new)
                 .distinct()
                 .toList();
-        
+
         SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(), authorities);
         securityUser.setId(user.getId());
         securityUser.setUserId(user.getUserId());
@@ -77,11 +83,42 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         securityUser.setLoginTime(user.getLoginTime());
         securityUser.setLoginIp(user.getLoginIp());
 
+        securityUser.setRoleCodes(getRoleCodes(user.getUserId()));
+        securityUser.setMenuPermission(getMenuPermission(user.getUserId(), menuPerms));
+
         return securityUser;
 
         // 用户权限列表，根据用户拥有的权限标识与如 @PreAuthorize("hasAuthority('sys:menu:view')") 标注的接口对比，决定是否可以调用接口
         // List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         // grantedAuthorities.add(new SimpleGrantedAuthority("Kele-Bingtang"));
         // return new User(user.getUsername(), user.getPassword(), grantedAuthorities);
+    }
+
+    private Set<String> getRoleCodes(String userId) {
+        Set<String> roleCode = new HashSet<>();
+        if(UacHelper.isAdmin(userId)) {
+            roleCode.add(TenantConstant.TENANT_ADMIN_ROLE_KEY);
+        } else {
+            roleCode.addAll(sysRoleService.listRoleCodesByUserId(userId));
+        }
+        return roleCode;
+    }
+
+    private Set<String> getMenuPermission(String userId, List<String> menuPermissions) {
+        Set<String> permsSet = new HashSet<>();
+        for (String perm : menuPermissions) {
+            if (StringUtil.hasText(perm)) {
+                permsSet.addAll(List.of(perm.trim().split(",")));
+            }
+        }
+
+        Set<String> perms = new HashSet<>();
+        // 管理员拥有所有权限
+        if (UacHelper.isAdmin(userId)) {
+            perms.add("*:*:*");
+        } else {
+            perms.addAll(permsSet);
+        }
+        return perms;
     }
 }

@@ -1,10 +1,12 @@
 package cn.youngkbt.uac.sys.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.youngkbt.cache.helper.CacheHelper;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.constant.CacheNameConstant;
 import cn.youngkbt.uac.core.constant.TenantConstant;
 import cn.youngkbt.uac.sys.mapper.SysTenantMapper;
 import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
@@ -20,6 +22,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +56,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private final SysDictDataService sysDictDataService;
 
     @Override
+    @Cacheable(cacheNames = CacheNameConstant.SYS_TENANT, key = "#tenantId")
     public SysTenant queryByTenantId(String tenantId) {
         return baseMapper.selectOne(Wrappers.<SysTenant>lambdaQuery().eq(SysTenant::getTenantId, tenantId));
     }
@@ -357,6 +362,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheNameConstant.SYS_TENANT, key = "#sysTenantDTO.tenantId")
     public boolean updateOne(SysTenantDTO sysTenantDTO) {
         checkTenantAllowed(sysTenantDTO.getTenantId());
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDTO, SysTenant.class);
@@ -365,7 +371,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Override
     public boolean removeBatch(List<Long> ids) {
-        return baseMapper.deleteBatchIds(ids) > 0;
+        List<SysTenant> sysTenantList = baseMapper.selectBatchIds(ids);
+
+        boolean result = baseMapper.deleteBatchIds(ids) > 0;
+        
+        for (SysTenant sysTenant : sysTenantList) {
+            CacheHelper.evict(CacheNameConstant.SYS_TENANT, sysTenant.getTenantId());
+        }
+
+        return result;
     }
 
     @Override

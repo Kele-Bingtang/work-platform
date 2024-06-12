@@ -99,4 +99,11 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @return 是否存在
      */
     List<SysDictType> checkDictTypeExitDataAndGet(List<Long> ids);
+
+    /**
+     * 校验字典类型是否存在字典数据
+     * @param dictCode 字典类型 Code
+     * @return 是否存在
+     */
+    boolean existDictData(String dictCode);
 }

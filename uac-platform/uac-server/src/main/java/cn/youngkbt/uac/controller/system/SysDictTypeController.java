@@ -74,7 +74,7 @@ public class SysDictTypeController {
         if (sysDictTypeService.checkDictCodeUnique(sysDictTypeDTO)) {
             return HttpResult.failMessage("修改字典类型编码「" + sysDictTypeDTO.getDictCode() + "」失败，字典字典类型编码已存在");
         }
-        
+
         return HttpResult.ok(sysDictTypeService.updateOne(sysDictTypeDTO));
     }
 
@@ -96,7 +96,7 @@ public class SysDictTypeController {
                     .distinct()
                     .collect(Collectors.joining(","));
 
-            return HttpResult.failMessage("存在字典数据「" + dictNames + "」，不允许删除");
+            return HttpResult.failMessage(dictNames + " 已分配字典数据，不允许删除");
         }
         return HttpResult.ok(sysDictTypeService.removeBatch(idList));
     }

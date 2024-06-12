@@ -36,7 +36,7 @@
     <select id="checkExitDictData" resultType="cn.youngkbt.uac.sys.model.po.SysDictType">
         select tsdt.id, tsdt.dict_name
         from t_sys_dict_type tsdt
-        left join t_sys_dict_data tsdd on tsdt.dict_code = tsdd.dict_code and tsdd.is_deleted = 0
+        join t_sys_dict_data tsdd on tsdt.dict_code = tsdd.dict_code and tsdd.is_deleted = 0
         ${ew.getCustomSqlSegment}
     </select>
 </mapper>

@@ -11,7 +11,20 @@
 
     <artifactId>work-common-cache</artifactId>
     
-    <description>Spring Cache 模块</description>
+    <description>
+        介绍：Spring Cache 模块。实现了 Caffeine + Redis 缓存方案，Caffeine 作为一级缓存，Redis 作为二级缓存
+        
+        实现步骤：
+            1、自定义类实现 Cache 接口。该接口是 Spring Cache 提供的自定义缓存类，比如 Spring Cache 内置了 RedisCache、EhCache、JCache、CaffeineCache 等缓存类，这些缓存的实现也是实现了 Cache 接口，重写里面的方法。
+                Cache 接口需要实现的方法都是对缓存数据的增删改查，也就是说，缓存的增删改查，都是通过 Cache 接口来实现的，因此我们自定义缓存类，就必须实现 Cache，这样 Spring 就会调用实现了这些增删改查方法的自定义类。
+                自定义类具体看 CaffeineRedisCache 类。实现增删改查的方法里，调用了 Caffeine 和 RedisCache 的增删改查方法。就形成了 Spring Cache 调用 Cache 的增删改查方法 -> 调用 Caffeine 和 RedisCache 的增删改查方法。实现一级和二级缓存
+            2、自定义类实现 CacheManager 接口。该接口是 Spring Cache 提供的自定义缓存管理类，比如 Spring Cache 内置了 Redis、EhCache、JCache、Caffeine 等缓存管理类，这些缓存管理类的实现也是实现了 CacheManager 接口，重写里面的方法。
+                CacheManager 接口需要实现的方法就是获取 Cache 缓存类，比如 RRedisCache、EhCache、JCache、CaffeineCache 等。
+                自定义类具体看 CaffeineRedisCacheManager 类。在该类里，获取了 RedisCacheManager，获取该 Manager 的目的是获取 RedisCache，因为 RedisCache 内置了对 Redis 的缓存操作。然后将 RedisCache 传入自定义缓存类 CaffeineRedisCache 里，实现缓存增删改查
+        
+        当我们使用 Cacheable、CachePut、CacheEvict 等注解后，最终会会调用 CacheManager 的 getCache 方法，从而获取 Cache 类，最后调用 Cache 类的增删改查缓存操作。
+        
+    </description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

@@ -3,9 +3,11 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.youngkbt.cache.helper.CacheHelper;
 import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.constant.CacheNameConstant;
 import cn.youngkbt.uac.sys.mapper.SysDictDataMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictData;
@@ -20,9 +22,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,11 +39,11 @@ import java.util.Objects;
 @Service
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements SysDictDataService {
 
+    @Cacheable(cacheNames = CacheNameConstant.SYS_DICT, key = "#sysDictDataDTO.dictCode")
     @Override
     public List<SysDictDataVO> queryList(SysDictDataDTO sysDictDataDTO) {
         LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
         List<SysDictData> sysDictData = baseMapper.selectList(wrapper);
-
 
         return MapstructUtil.convert(sysDictData, SysDictDataVO.class);
     }
@@ -63,6 +66,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     }
 
     @Override
+    @CachePut(cacheNames = CacheNameConstant.SYS_DICT, key = "#sysDictDataDTO.dictCode")
     public boolean insertOne(SysDictDataDTO sysDictDataDTO) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDTO, SysDictData.class);
 
@@ -76,6 +80,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
 
     @Override
     @Transactional
+    @CachePut(cacheNames = CacheNameConstant.SYS_DICT, key = "#sysDictDataDTO.dictCode")
     public boolean updateOne(SysDictDataDTO sysDictDataDTO) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDTO, SysDictData.class);
         return baseMapper.updateById(sysDictData) > 0;
@@ -91,7 +96,12 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
 
     @Override
     public boolean removeBatch(List<Long> ids) {
-        return baseMapper.deleteBatchIds(ids) > 0;
+        SysDictData dictData = baseMapper.selectById(ids.get(0));
+        
+        boolean result = baseMapper.deleteBatchIds(ids) > 0;
+
+        CacheHelper.evict(CacheNameConstant.SYS_DICT, dictData.getDictCode());
+        return result;
     }
 
     @Override
@@ -135,6 +145,12 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
                 .in("tsdt.id", ids);
 
         return baseMapper.checkExitDictData(wrapper);
+    }
+
+    @Override
+    public boolean existDictData(String dictCode) {
+        return baseMapper.exists(Wrappers.<SysDictData>lambdaQuery()
+                .eq(SysDictData::getDictCode, dictCode));
     }
 }
 

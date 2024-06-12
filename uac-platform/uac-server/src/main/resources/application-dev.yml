@@ -65,7 +65,17 @@ spring.boot.admin.client:
   username: uac
   password: 123456
   
---- # spring ai
+--- # Spring Cache
+spring:
+  cache:
+    caffeine:
+      expire: 30s # 秒
+      capacity: 100
+      maximum-size: 1000
+    redis:
+      time-to-live: 2h
+      
+--- # Spring ai
 #spring:
 #  ai:
 #    openai:

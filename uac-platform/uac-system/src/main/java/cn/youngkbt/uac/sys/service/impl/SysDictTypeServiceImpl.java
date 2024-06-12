@@ -1,7 +1,9 @@
 package cn.youngkbt.uac.sys.service.impl;
 
+import cn.youngkbt.cache.helper.CacheHelper;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.uac.core.constant.CacheNameConstant;
 import cn.youngkbt.uac.sys.mapper.SysDictTypeMapper;
 import cn.youngkbt.uac.sys.model.dto.SysDictTypeDTO;
 import cn.youngkbt.uac.sys.model.po.SysDictType;
@@ -17,7 +19,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -74,7 +75,16 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
 
     @Override
     public boolean removeBatch(List<Long> ids) {
-        return baseMapper.deleteBatchIds(ids) > 0;
+        List<SysDictType> sysDictTypeList = baseMapper.selectBatchIds(ids);
+
+        boolean result = baseMapper.deleteBatchIds(ids) > 0;
+
+        for (SysDictType sysDictType : sysDictTypeList) {
+            // 删除存储的数据
+            CacheHelper.evict(CacheNameConstant.SYS_DICT, sysDictType.getDictCode());
+        }
+
+        return result;
     }
 
     @Override

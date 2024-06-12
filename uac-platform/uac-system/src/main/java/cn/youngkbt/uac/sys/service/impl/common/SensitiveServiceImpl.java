@@ -1,4 +1,4 @@
-package cn.youngkbt.uac.sys.service.impl;
+package cn.youngkbt.uac.sys.service.impl.common;
 
 import cn.youngkbt.sensitive.service.SensitiveService;
 import cn.youngkbt.tenant.helper.TenantHelper;

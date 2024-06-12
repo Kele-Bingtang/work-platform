@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/11 22:43:34
- * @note
+ * @note 缓存工具类
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CacheHelper {
@@ -25,8 +25,8 @@ public class CacheHelper {
      * @param cacheNames 缓存组名称
      */
     public static Set<Object> keys(String cacheNames) {
-        ConcurrentMap<Object, Object> rmap = (ConcurrentMap<Object, Object>) CACHE_MANAGER.getCache(cacheNames).getNativeCache();
-        return rmap.keySet();
+        ConcurrentMap<Object, Object> map = (ConcurrentMap<Object, Object>) CACHE_MANAGER.getCache(cacheNames).getNativeCache();
+        return map.keySet();
     }
 
     /**

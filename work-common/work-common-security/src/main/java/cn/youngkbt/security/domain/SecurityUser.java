@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -85,6 +86,16 @@ public class SecurityUser extends User {
      * 注册时间
      */
     private LocalDateTime registerTime;
+
+    /**
+     * 角色码
+     */
+    private Set<String> roleCodes;
+
+    /**
+     * 菜单权限
+     */
+    private Set<String> menuPermission;
 
     public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);

@@ -3,7 +3,7 @@ package cn.youngkbt.uac.demo.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.youngkbt.uac.demo.listen.ExportDemoListener;
-import cn.youngkbt.uac.demo.model.ExportDemoVo;
+import cn.youngkbt.uac.demo.model.ExportDemoVO;
 import cn.youngkbt.excel.dropdown.DropDownOptions;
 import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.excel.model.ExcelResult;
@@ -136,9 +136,9 @@ public class DemoExcelController {
      * 导入表格
      */
     @PostMapping(value = "/importWithOptions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<ExportDemoVo> importWithOptions(@RequestPart("file") MultipartFile file) throws Exception {
+    public List<ExportDemoVO> importWithOptions(@RequestPart("file") MultipartFile file) throws Exception {
         // 处理解析结果
-        ExcelResult<ExportDemoVo> excelResult = ExcelHelper.importExcel(file.getInputStream(), ExportDemoVo.class, new ExportDemoListener());
+        ExcelResult<ExportDemoVO> excelResult = ExcelHelper.importExcel(file.getInputStream(), ExportDemoVO.class, new ExportDemoListener());
         return excelResult.getList();
     }
 
@@ -163,12 +163,12 @@ public class DemoExcelController {
 
     private void exportOptions(HttpServletResponse response) {
         // 创建表格数据，业务中一般通过数据库查询
-        List<ExportDemoVo> excelDataList = new ArrayList<>();
+        List<ExportDemoVO> excelDataList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             // 模拟数据库中的一条数据
-            ExportDemoVo everyRowData = new ExportDemoVo();
+            ExportDemoVO everyRowData = new ExportDemoVO();
             everyRowData.setNickName("用户-" + i);
-            everyRowData.setUserStatus(ExportDemoVo.UserStatus.OK.getValue());
+            everyRowData.setUserStatus(ExportDemoVO.UserStatus.OK.getValue());
             everyRowData.setGender("1");
             everyRowData.setPhoneNumber(String.format("175%08d", i));
             everyRowData.setEmail(String.format("175%08d", i) + "@163.com");
@@ -223,7 +223,7 @@ public class DemoExcelController {
         // 到此为止所有的下拉框可选项已全部配置完毕
 
         // 接下来需要将 Excel 中的展示数据转换为对应的下拉选
-        List<ExportDemoVo> outList = excelDataList.stream().map(everyRowData -> {
+        List<ExportDemoVO> outList = excelDataList.stream().map(everyRowData -> {
             // 只需要处理没有使用 @ExcelDictFormat 注解的下拉框
             // 一般来说，可以直接在数据库查询即查询出省市县信息，这里通过模拟操作赋值
             everyRowData.setProvince(buildOptions(provinceList, everyRowData.getProvinceId()));
@@ -232,7 +232,7 @@ public class DemoExcelController {
             return everyRowData;
         }).toList();
 
-        ExcelHelper.exportExcel(outList, "下拉框示例", ExportDemoVo.class, response, options);
+        ExcelHelper.exportExcel(outList, "下拉框示例", ExportDemoVO.class, response, options);
     }
 
     private String buildOptions(List<DemoCityData> cityDataList, Integer id) {

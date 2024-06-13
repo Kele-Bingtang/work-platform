@@ -22,15 +22,16 @@
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         :dialogForm="dialogForm"
+        :exportFile
       ></ProTable>
     </div>
   </div>
 </template>
 
 <script setup lang="tsx" name="Role">
-import { TreeFilter, ProTable } from "work";
+import { TreeFilter, ProTable, downloadByData } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/system/role";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type Role, exportExcel } from "@/api/system/role";
 import {
   type DialogForm,
   type ProTableInstance,
@@ -40,7 +41,7 @@ import {
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
 const { getPrefixClass } = useDesign();
@@ -118,6 +119,14 @@ const dialogForm: DialogForm = {
 
 const handleTreeChange = (nodeId: number) => {
   initRequestParam.appId = nodeId + "";
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `role_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 

@@ -22,6 +22,7 @@
         :init-request-param="initRequestParam"
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         :dialogForm="dialogForm"
+        :exportFile
       ></ProTable>
     </div>
 
@@ -38,12 +39,12 @@
 </template>
 
 <script setup lang="tsx" name="DictType">
-import { ProTable, TreeFilter, BasicDrawer, Point } from "work";
+import { ProTable, TreeFilter, BasicDrawer, Point, downloadByData } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { listPage, addOne, editOne, deleteOne, type DictType } from "@/api/system/dictType";
+import { listPage, addOne, editOne, deleteOne, type DictType, exportExcel } from "@/api/system/dictType";
 import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
 import DictData from "./dictData.vue";
-import { ElLink } from "element-plus";
+import { ElLink, ElMessageBox } from "element-plus";
 import { dictTypeElFormProps, useFormSchema } from "./useFormSchema";
 import { baseEnum } from "@work/constants";
 import { useDesign } from "@work/hooks";
@@ -124,6 +125,14 @@ const dialogForm: DialogForm = {
     top: "5vh",
     closeOnClickModal: false,
   },
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `dictType_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 

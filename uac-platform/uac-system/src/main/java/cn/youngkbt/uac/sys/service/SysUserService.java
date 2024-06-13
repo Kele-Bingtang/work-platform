@@ -22,7 +22,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDTO 用户信息
      * @return 用户列表
      */
-    List<SysUserVO> queryList(SysUserDTO sysUserDTO);
+    List<SysUserVO> listAll(SysUserDTO sysUserDTO);
 
     /**
      * 通过条件查询用户列表

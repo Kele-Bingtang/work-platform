@@ -4,6 +4,7 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -15,6 +16,7 @@ import cn.youngkbt.uac.sys.model.vo.extra.UserSelectPostVo;
 import cn.youngkbt.uac.sys.service.SysPostService;
 import cn.youngkbt.uac.sys.service.UserPostLinkService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +41,7 @@ public class SysPostController {
     @Operation(summary = "岗位列表查询", description = "通过查询条件查询岗位列表")
     @PreAuthorize("hasAuthority('system:post:list')")
     public Response<List<SysPostVO>> list(SysPostDTO sysPostDTO) {
-        List<SysPostVO> sysPostVOList = sysPostService.queryList(sysPostDTO);
+        List<SysPostVO> sysPostVOList = sysPostService.listAll(sysPostDTO);
         return HttpResult.ok(sysPostVOList);
     }
 
@@ -105,5 +107,14 @@ public class SysPostController {
             return HttpResult.failMessage("该岗位已绑定用户，不允许删除");
         }
         return HttpResult.ok(sysPostService.removeBatch(List.of(ids)));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "岗位数据导出", description = "导出岗位数据")
+    @OperateLog(title = "岗位数据管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:post:export')")
+    public void export(@RequestBody SysPostDTO sysPostDTO, HttpServletResponse response) {
+        List<SysPostVO> sysPostVOList = sysPostService.listAll(sysPostDTO);
+        ExcelHelper.exportExcel(sysPostVOList, "岗位数据", SysPostVO.class, response);
     }
 }

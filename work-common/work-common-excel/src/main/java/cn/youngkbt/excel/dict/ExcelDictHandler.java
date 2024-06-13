@@ -11,6 +11,8 @@ package cn.youngkbt.excel.dict;
  * </p>
  */
 public interface ExcelDictHandler {
+    
+    
 
     /**
      * Java 导出为 Excel 时候调用，将返回的值作为 Excel 展示值

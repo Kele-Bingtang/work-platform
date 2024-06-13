@@ -16,6 +16,7 @@
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         style="display: flex; flex-direction: column"
         :dialogForm="dialogForm"
+        :exportFile
       >
         <template #operationExtra>
           <el-button link size="small" :icon="Key" @click="resetPassword">重置密码</el-button>
@@ -26,14 +27,14 @@
 </template>
 
 <script setup lang="tsx" name="UserInfo">
-import { TreeFilter, ProTable, useDialog, type TableColumnProps } from "work";
+import { TreeFilter, ProTable, useDialog, type TableColumnProps, downloadByData } from "work";
 import { listDeptTreeList } from "@/api/system/dept";
-import { addOne, editOne, deleteOne, deleteBatch, listPage, type User } from "@/api/user/user";
+import { addOne, editOne, deleteOne, deleteBatch, listPage, type User, exportExcel } from "@/api/user/user";
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch, ElInput } from "element-plus";
+import { ElSwitch, ElInput, ElMessageBox } from "element-plus";
 import { Key } from "@element-plus/icons-vue";
 import { useDesign } from "@work/hooks";
 
@@ -134,6 +135,14 @@ const initRequestParam = reactive({
 
 const handleTreeChange = (nodeId: number) => {
   initRequestParam.deptId = nodeId + "";
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `user_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 

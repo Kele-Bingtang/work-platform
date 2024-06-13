@@ -9,6 +9,7 @@
       :border="false"
       @sort-change="sortChange"
       :default-sort="{ prop: 'loginTime', order: 'descending' }"
+      :exportFile
     >
       <template #tableHeader="scope">
         <el-button type="danger" :icon="Delete" plain @click="handleDeleteBatch(scope)" :disabled="!scope?.isSelected">
@@ -21,8 +22,8 @@
 </template>
 
 <script setup lang="tsx" name="LoginLog">
-import { ProTable } from "work";
-import { listPage, removeBatch, cleanAllLog, type LoginLog } from "@/api/monitor/loginLog";
+import { ProTable, downloadByData } from "work";
+import { listPage, removeBatch, cleanAllLog, type LoginLog, exportExcel } from "@/api/monitor/loginLog";
 import { type ProTableInstance, type TableColumnProps } from "@work/components";
 import { Delete } from "@element-plus/icons-vue";
 import { ElMessageBox, ElMessage } from "element-plus";
@@ -121,6 +122,14 @@ const columns: TableColumnProps<LoginLog.LoginLogInfo>[] = [
     },
   },
 ];
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `loginLog_${new Date().getTime()}.xlsx`);
+    });
+  });
+};
 </script>
 
 <style lang="scss" scoped>

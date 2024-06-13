@@ -211,3 +211,10 @@ export const removeUserFromRole = (ids: string[]) => {
 export const removeUserGroupFromRole = (ids: string[]) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/removeUserGroupFromRole/${ids.join(",")}`);
 };
+
+/**
+ * 角色导出
+ */
+export const exportExcel = (params: Partial<Role.RoleInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

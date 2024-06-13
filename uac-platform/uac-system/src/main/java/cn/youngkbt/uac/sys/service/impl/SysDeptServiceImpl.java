@@ -47,7 +47,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     private final RoleDeptLinkService roleDeptLinkService;
 
     @Override
-    public List<SysDeptVO> queryList(SysDeptDTO sysDeptDTO) {
+    public List<SysDeptVO> listAll(SysDeptDTO sysDeptDTO) {
         LambdaQueryWrapper<SysDept> wrapper = buildQueryWrapper(sysDeptDTO);
         List<SysDept> sysDeptList = baseMapper.selectList(wrapper);
 

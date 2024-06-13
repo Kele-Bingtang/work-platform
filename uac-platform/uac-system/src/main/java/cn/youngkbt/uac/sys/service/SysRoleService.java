@@ -23,7 +23,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param sysRoleDTO 查询条件
      * @return 角色列表
      */
-    List<SysRoleVO> queryList(SysRoleDTO sysRoleDTO);
+    List<SysRoleVO> listAll(SysRoleDTO sysRoleDTO);
 
     /**
      * 通过条件查询角色列表（支持分页）

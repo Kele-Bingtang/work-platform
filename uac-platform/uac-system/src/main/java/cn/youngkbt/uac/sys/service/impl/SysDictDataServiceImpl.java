@@ -41,7 +41,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
 
     @Cacheable(cacheNames = CacheNameConstant.SYS_DICT, key = "#sysDictDataDTO.dictCode")
     @Override
-    public List<SysDictDataVO> queryList(SysDictDataDTO sysDictDataDTO) {
+    public List<SysDictDataVO> listAll(SysDictDataDTO sysDictDataDTO) {
         LambdaQueryWrapper<SysDictData> wrapper = buildQueryWrapper(sysDictDataDTO);
         List<SysDictData> sysDictData = baseMapper.selectList(wrapper);
 
@@ -97,7 +97,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public boolean removeBatch(List<Long> ids) {
         SysDictData dictData = baseMapper.selectById(ids.get(0));
-        
+
         boolean result = baseMapper.deleteBatchIds(ids) > 0;
 
         CacheHelper.evict(CacheNameConstant.SYS_DICT, dictData.getDictCode());
@@ -151,6 +151,22 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     public boolean existDictData(String dictCode) {
         return baseMapper.exists(Wrappers.<SysDictData>lambdaQuery()
                 .eq(SysDictData::getDictCode, dictCode));
+    }
+
+    @Override
+    public SysDictData listByDictValue(String dictValue, String dictCode) {
+        return baseMapper.selectOne(Wrappers.<SysDictData>lambdaQuery()
+                .eq(SysDictData::getDictValue, dictValue)
+                .eq(SysDictData::getDictCode, dictCode)
+        );
+    }
+
+    @Override
+    public SysDictData listByDictLabel(String dictLabel, String dictCode) {
+        return baseMapper.selectOne(Wrappers.<SysDictData>lambdaQuery()
+                .eq(SysDictData::getDictLabel, dictLabel)
+                .eq(SysDictData::getDictCode, dictCode)
+        );
     }
 }
 

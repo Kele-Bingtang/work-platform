@@ -34,7 +34,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     private final SysDictDataService sysDictDataService;
 
     @Override
-    public List<SysDictTypeVO> queryList(SysDictTypeDTO sysDictTypeDTO) {
+    public List<SysDictTypeVO> listAll(SysDictTypeDTO sysDictTypeDTO) {
         LambdaQueryWrapper<SysDictType> wrapper = buildQueryWrapper(sysDictTypeDTO);
         List<SysDictType> sysDictTypeList = baseMapper.selectList(wrapper);
 

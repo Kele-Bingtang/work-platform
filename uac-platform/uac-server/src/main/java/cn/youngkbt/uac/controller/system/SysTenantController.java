@@ -3,6 +3,7 @@ package cn.youngkbt.uac.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -13,6 +14,7 @@ import cn.youngkbt.uac.sys.model.dto.SysTenantDTO;
 import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
 import cn.youngkbt.uac.sys.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +39,7 @@ public class SysTenantController {
     @Operation(summary = "租户列表查询", description = "通过条件查询租户列表")
     @PreAuthorize("hasAuthority('system:tenant:list')")
     public Response<List<SysTenantVO>> list(SysTenantDTO sysTenantDTO) {
-        List<SysTenantVO> sysTenantVOList = sysTenantService.queryList(sysTenantDTO);
+        List<SysTenantVO> sysTenantVOList = sysTenantService.listAll(sysTenantDTO);
         return HttpResult.ok(sysTenantVOList);
     }
 
@@ -84,5 +86,14 @@ public class SysTenantController {
             return HttpResult.failMessage("初始租户不允许删除");
         }
         return HttpResult.ok(sysTenantService.removeBatch(List.of(ids)));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "租户数据导出", description = "导出租户数据")
+    @OperateLog(title = "租户数据管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:tenant:export')")
+    public void export(@RequestBody SysTenantDTO sysTenantDTO, HttpServletResponse response) {
+        List<SysTenantVO> sysTenantVOList = sysTenantService.listAll(sysTenantDTO);
+        ExcelHelper.exportExcel(sysTenantVOList, "租户数据", SysTenantVO.class, response);
     }
 }

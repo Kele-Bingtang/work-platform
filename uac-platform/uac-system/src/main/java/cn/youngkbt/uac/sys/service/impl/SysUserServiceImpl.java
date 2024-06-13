@@ -55,7 +55,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private final UserGroupLinkService userGroupLinkService;
 
     @Override
-    public List<SysUserVO> queryList(SysUserDTO sysUserDTO) {
+    public List<SysUserVO> listAll(SysUserDTO sysUserDTO) {
         QueryWrapper<SysUser> wrapper = buildQueryWrapper(sysUserDTO);
         return baseMapper.queryList(wrapper);
     }

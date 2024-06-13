@@ -48,3 +48,10 @@ export const editOne = (data: DictData.DictDataInfo) => {
 export const removeOne = (data: DictData.DictDataInfo) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}`);
 };
+
+/**
+ * 字典数据导出
+ */
+export const exportExcel = (params: Partial<DictData.DictDataInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -22,6 +23,7 @@ import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.uac.sys.service.UserRoleLinkService;
 import cn.youngkbt.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,7 +53,7 @@ public class SysUserController {
     @Operation(summary = "用户列表查询", description = "通过条件查询用户列表）")
     @PreAuthorize("hasAuthority('system:user:list')")
     public Response<List<SysUserVO>> list(SysUserDTO sysUserDTO) {
-        List<SysUserVO> sysUserVOList = sysUserService.queryList(sysUserDTO);
+        List<SysUserVO> sysUserVOList = sysUserService.listAll(sysUserDTO);
         return HttpResult.ok(sysUserVOList);
     }
 
@@ -178,5 +180,14 @@ public class SysUserController {
             return HttpResult.failMessage("当前用户不能删除");
         }
         return HttpResult.ok(sysUserService.removeBatch(List.of(ids), userIds));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "用户数据导出", description = "导出用户数据")
+    @OperateLog(title = "用户数据管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:user:export')")
+    public void export(@RequestBody SysUserDTO sysUserDTO, HttpServletResponse response) {
+        List<SysUserVO> sysUserVOList = sysUserService.listAll(sysUserDTO);
+        ExcelHelper.exportExcel(sysUserVOList, "用户数据", SysUserVO.class, response);
     }
 }

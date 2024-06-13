@@ -29,6 +29,7 @@
         @row-click="handleRowClick"
         :data-callback="dataCallback"
         highlight-current-row
+        :exportFile
       ></ProTable>
     </div>
 
@@ -47,9 +48,9 @@
 </template>
 
 <script setup lang="tsx" name="RoleLink">
-import { TreeFilter, ProTable } from "work";
+import { TreeFilter, ProTable, downloadByData } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Role } from "@/api/system/role";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type Role, exportExcel } from "@/api/system/role";
 import {
   type DialogForm,
   type ProTableInstance,
@@ -59,7 +60,7 @@ import {
 import { elFormProps, useFormSchema } from "@/views/system/role/useFormSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import { Description } from "@/components";
 import LinkUser from "./components/linkUser.vue";
 import LinkUserGroup from "./components/linkUserGroup.vue";
@@ -211,6 +212,14 @@ const tabEnums: TabEnum[] = [
     }),
   },
 ];
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `role_${new Date().getTime()}.xlsx`);
+    });
+  });
+};
 </script>
 
 <style lang="scss" scoped>

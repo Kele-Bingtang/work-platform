@@ -9,6 +9,7 @@
       :border="false"
       @sort-change="sortChange"
       :default-sort="{ prop: 'loginTime', order: 'descending' }"
+      :exportFile
     >
       <template #tableHeader="scope">
         <el-button type="danger" :icon="Delete" plain @click="handleDeleteBatch(scope)" :disabled="!scope?.isSelected">
@@ -21,8 +22,8 @@
 </template>
 
 <script setup lang="tsx" name="OperatorLog">
-import { ProTable } from "work";
-import { listPage, removeBatch, cleanAllLog, type OperaLog } from "@/api/monitor/operaLog";
+import { ProTable, downloadByData } from "work";
+import { listPage, removeBatch, cleanAllLog, type OperaLog, exportExcel } from "@/api/monitor/operaLog";
 import type { ProTableInstance, TableColumnProps } from "@work/components";
 import { useLayoutStore } from "@/stores";
 import { Delete } from "@element-plus/icons-vue";
@@ -130,6 +131,14 @@ const columns: TableColumnProps<OperaLog.OperaLogInfo>[] = [
   },
   { prop: "costTime", label: "消耗时间/毫秒", search: { el: "el-input" } },
 ];
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `operatorLog_${new Date().getTime()}.xlsx`);
+    });
+  });
+};
 </script>
 
 <style lang="scss" scoped>

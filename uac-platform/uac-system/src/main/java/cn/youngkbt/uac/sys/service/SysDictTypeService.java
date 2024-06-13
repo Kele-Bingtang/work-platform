@@ -22,7 +22,7 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @param sysDictTypeDTO 查询条件
      * @return 字典类型列表
      */
-    List<SysDictTypeVO> queryList(SysDictTypeDTO sysDictTypeDTO);
+    List<SysDictTypeVO> listAll(SysDictTypeDTO sysDictTypeDTO);
 
     /**
      * 通过条件查询字典类型列表

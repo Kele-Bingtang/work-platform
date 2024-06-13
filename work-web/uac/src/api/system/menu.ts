@@ -73,3 +73,10 @@ export const editOne = (data: RequiredKeyPartialOther<Menu.MenuInfo, "id">) => {
 export const deleteOne = (data: Menu.MenuInfo) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}/${data.menuId}`);
 };
+
+/**
+ * 菜单导出
+ */
+export const exportExcel = (params: Partial<Menu.MenuInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

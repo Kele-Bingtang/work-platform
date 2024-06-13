@@ -33,7 +33,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param sysMenuDTO 查询条件
      * @return 菜单列表
      */
-    List<SysMenuVO> queryList(SysMenuDTO sysMenuDTO);
+    List<SysMenuVO> listAll(SysMenuDTO sysMenuDTO);
 
     /**
      * 通过条件查询菜单列表（支持分页）

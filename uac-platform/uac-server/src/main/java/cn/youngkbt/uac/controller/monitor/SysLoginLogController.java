@@ -2,6 +2,7 @@ package cn.youngkbt.uac.controller.monitor;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -10,13 +11,11 @@ import cn.youngkbt.uac.sys.model.dto.SysLoginLogDTO;
 import cn.youngkbt.uac.sys.model.vo.SysLoginLogVO;
 import cn.youngkbt.uac.sys.service.SysLoginLogService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -55,5 +54,14 @@ public class SysLoginLogController {
     @PreAuthorize("hasAuthority('system:loginLog:remove')")
     public Response<Boolean> cleanAllOperaLog() {
         return HttpResult.ok(sysLoginLogService.cleanAllOperaLog());
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "登录日志数据导出", description = "导出登录日志数据")
+    @OperateLog(title = "登录日志管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:loginLog:export')")
+    public void export(@RequestBody SysLoginLogDTO sysLoginLogDTO, HttpServletResponse response) {
+        List<SysLoginLogVO> sysLoginLogVOList = sysLoginLogService.listAll(sysLoginLogDTO);
+        ExcelHelper.exportExcel(sysLoginLogVOList, "登录日志", SysLoginLogVO.class, response);
     }
 }

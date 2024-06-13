@@ -2,6 +2,7 @@ package cn.youngkbt.uac.controller.monitor;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -10,6 +11,7 @@ import cn.youngkbt.uac.sys.model.dto.SysOperaLogDTO;
 import cn.youngkbt.uac.sys.model.vo.SysOperaLogVO;
 import cn.youngkbt.uac.sys.service.SysOperaLogService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,5 +53,14 @@ public class SysOperaLogController {
     @PreAuthorize("hasAuthority('system:operaLog:remove')")
     public Response<Boolean> cleanAllOperaLog() {
         return HttpResult.ok(sysOperaLogService.cleanAllOperaLog());
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "操作日志数据导出", description = "导出操作日志数据")
+    @OperateLog(title = "操作日志管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:operaLog:export')")
+    public void export(@RequestBody SysOperaLogDTO sysOperaLogDTO, HttpServletResponse response) {
+        List<SysOperaLogVO> sysOperaLogVOList = sysOperaLogService.listAll(sysOperaLogDTO);
+        ExcelHelper.exportExcel(sysOperaLogVOList, "操作日志", SysOperaLogVO.class, response);
     }
 }

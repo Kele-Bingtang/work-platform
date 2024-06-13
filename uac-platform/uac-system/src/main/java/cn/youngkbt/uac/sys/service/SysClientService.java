@@ -32,7 +32,7 @@ public interface SysClientService extends IService<SysClient> {
      * @param sysClientDTO 客户端信息
      * @return 客户端信息
      */
-    List<SysClientVO> queryList(SysClientDTO sysClientDTO);
+    List<SysClientVO> listAll(SysClientDTO sysClientDTO);
 
     /**
      * 通过条件查询客户端信息

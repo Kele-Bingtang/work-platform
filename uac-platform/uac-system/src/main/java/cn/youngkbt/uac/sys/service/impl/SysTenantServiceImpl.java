@@ -62,7 +62,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     @Override
-    public List<SysTenantVO> queryList(SysTenantDTO sysTenantDTO) {
+    public List<SysTenantVO> listAll(SysTenantDTO sysTenantDTO) {
         LambdaQueryWrapper<SysTenant> wrapper = buildQueryWrapper(sysTenantDTO);
         List<SysTenant> sysTenantList = baseMapper.selectList(wrapper);
 

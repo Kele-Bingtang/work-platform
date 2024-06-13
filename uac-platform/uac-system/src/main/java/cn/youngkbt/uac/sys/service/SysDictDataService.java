@@ -24,8 +24,8 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param sysDictDataDTO 查询条件
      * @return 字典数据列表
      */
-    List<SysDictDataVO> queryList(SysDictDataDTO sysDictDataDTO);
-    
+    List<SysDictDataVO> listAll(SysDictDataDTO sysDictDataDTO);
+
     /**
      * 通过条件查询字典数据列表
      *
@@ -102,8 +102,27 @@ public interface SysDictDataService extends IService<SysDictData> {
 
     /**
      * 校验字典类型是否存在字典数据
+     *
      * @param dictCode 字典类型 Code
      * @return 是否存在
      */
     boolean existDictData(String dictCode);
+
+    /**
+     * 通过 DictValue 获取字典数据
+     *
+     * @param dictValue 存储值
+     * @param dictCode  字典编码
+     * @return 字典数据
+     */
+    SysDictData listByDictValue(String dictValue, String dictCode);
+
+    /**
+     * 通过 DictLabel 获取字典数据
+     *
+     * @param dictLabel 展示值
+     * @param dictCode  字典编码
+     * @return 字典数据
+     */
+    SysDictData listByDictLabel(String dictLabel, String dictCode);
 }

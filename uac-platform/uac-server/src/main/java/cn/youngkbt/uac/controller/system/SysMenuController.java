@@ -4,6 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -15,6 +16,7 @@ import cn.youngkbt.uac.sys.model.vo.router.RouterVO;
 import cn.youngkbt.uac.sys.service.RoleMenuLinkService;
 import cn.youngkbt.uac.sys.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -47,7 +49,7 @@ public class SysMenuController {
     @Operation(summary = "菜单列表查询", description = "通过查询条件查询菜单列表")
     @PreAuthorize("hasAuthority('system:menu:list')")
     public Response<List<SysMenuVO>> list(SysMenuDTO sysMenuDTO) {
-        List<SysMenuVO> sysMenuVOList = sysMenuService.queryList(sysMenuDTO);
+        List<SysMenuVO> sysMenuVOList = sysMenuService.listAll(sysMenuDTO);
         return HttpResult.ok(sysMenuVOList);
     }
 
@@ -145,6 +147,15 @@ public class SysMenuController {
         }
 
         return HttpResult.ok(sysMenuService.removeOne(id));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "菜单数据导出", description = "导出菜单数据")
+    @OperateLog(title = "菜单管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:menu:export')")
+    public void export(@RequestBody SysMenuDTO sysMenuDTO, HttpServletResponse response) {
+        List<SysMenuVO> sysMenuVOList = sysMenuService.listAll(sysMenuDTO);
+        ExcelHelper.exportExcel(sysMenuVOList, "菜单数据", SysMenuVO.class, response);
     }
     
 }

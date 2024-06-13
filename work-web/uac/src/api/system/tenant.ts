@@ -58,3 +58,10 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
     }
   );
 };
+
+/**
+ * 租户导出
+ */
+export const exportExcel = (params: Partial<Tenant.TenantInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

@@ -3,7 +3,6 @@ package cn.youngkbt.uac.sys.service.impl;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
-import cn.youngkbt.security.utils.LoginHelper;
 import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.core.log.event.OperaLogEvent;
 import cn.youngkbt.uac.sys.mapper.SysOperaLogMapper;
@@ -50,6 +49,13 @@ public class SysOperaLogServiceImpl extends ServiceImpl<SysOperaLogMapper, SysOp
         }
 
         baseMapper.insert(sysOperaLog);
+    }
+
+    @Override
+    public List<SysOperaLogVO> listAll(SysOperaLogDTO sysOperaLogDTO) {
+        LambdaQueryWrapper<SysOperaLog> wrapper = buildQueryWrapper(sysOperaLogDTO);
+        List<SysOperaLog> sysOperaLogList = baseMapper.selectList(wrapper);
+        return MapstructUtil.convert(sysOperaLogList, SysOperaLogVO.class);
     }
 
     @Override

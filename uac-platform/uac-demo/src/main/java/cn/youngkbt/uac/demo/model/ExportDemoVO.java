@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @ExcelIgnoreUnannotated
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExportDemoVo {
+public class ExportDemoVO {
 
     private static final long serialVersionUID = 1L;
 

@@ -21,7 +21,7 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      *
      * @return 用户组信息
      */
-    List<SysUserGroupVO> queryList(SysUserGroupDTO sysUserGroupDTO);
+    List<SysUserGroupVO> listAll(SysUserGroupDTO sysUserGroupDTO);
     
     /**
      * 通过条件查询用户组信息

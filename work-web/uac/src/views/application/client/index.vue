@@ -6,18 +6,19 @@
       :columns="columns"
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
       :dialogForm="dialogForm"
+      :exportFile
     ></ProTable>
   </div>
 </template>
 
 <script setup lang="tsx" name="Client">
-import { ProTable } from "work";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Client } from "@/api/application/client";
+import { ProTable, downloadByData } from "work";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type Client, exportExcel } from "@/api/application/client";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
 const { getPrefixClass } = useDesign();
@@ -96,6 +97,14 @@ const dialogForm: DialogForm = {
     top: "5vh",
     closeOnClickModal: false,
   },
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `client_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 

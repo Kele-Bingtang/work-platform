@@ -5,6 +5,7 @@ import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -14,6 +15,7 @@ import cn.youngkbt.uac.sys.model.dto.SysDeptDTO;
 import cn.youngkbt.uac.sys.model.vo.SysDeptVO;
 import cn.youngkbt.uac.sys.service.SysDeptService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -37,7 +39,7 @@ public class SysDeptController {
     @Operation(summary = "部门列表查询", description = "通过部门条件查询部门列表")
     @PreAuthorize("hasAuthority('system:dept:list')")
     public Response<List<SysDeptVO>> list(SysDeptDTO sysDeptDTO) {
-        List<SysDeptVO> sysDeptVOList = sysDeptService.queryList(sysDeptDTO);
+        List<SysDeptVO> sysDeptVOList = sysDeptService.listAll(sysDeptDTO);
         return HttpResult.ok(sysDeptVOList);
     }
 
@@ -162,4 +164,12 @@ public class SysDeptController {
         return HttpResult.ok(sysDeptService.removeOne(id));
     }
 
+    @PostMapping("/export")
+    @Operation(summary = "部门数据导出", description = "导出部门数据")
+    @OperateLog(title = "部门管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:dept:export')")
+    public void export(@RequestBody SysDeptDTO sysDeptDTO, HttpServletResponse response) {
+        List<SysDeptVO> sysDeptVOList = sysDeptService.listAll(sysDeptDTO);
+        ExcelHelper.exportExcel(sysDeptVOList, "部门数据", SysDeptVO.class, response);
+    }
 }

@@ -25,6 +25,14 @@ public interface SysLoginLogService extends IService<SysLoginLog> {
     void recordLoginLog(LoginInfoEvent loginInfoEvent);
 
     /**
+     * 通过条件查询登录日志清单列表
+     *
+     * @param sysLoginLogDTO 登录信息查询条件
+     * @return 登录信息清单
+     */
+    List<SysLoginLogVO> listAll(SysLoginLogDTO sysLoginLogDTO);
+
+    /**
      * 通过条件查询登录日志列表（支持分页）
      *
      * @param sysLoginLogDTO 查询条件

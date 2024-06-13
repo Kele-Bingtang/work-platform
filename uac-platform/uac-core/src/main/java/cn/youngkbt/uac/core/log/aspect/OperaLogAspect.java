@@ -2,7 +2,6 @@ package cn.youngkbt.uac.core.log.aspect;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
@@ -129,7 +128,7 @@ public class OperaLogAspect {
     }
 
     /**
-     * 获取注解中对方法的描述信息 用于Controller层注解
+     * 获取注解中对方法的描述信息 用于 Controller 层注解
      */
     private void getControllerMethodInfo(JoinPoint joinPoint, OperateLog operateLog, OperaLogEvent operaLogEvent, Object jsonResult) {
         // 设置业务类型
@@ -145,7 +144,7 @@ public class OperaLogAspect {
         }
 
         // 是否需要保存 response，参数和值
-        if (operateLog.isSaveResponseData() && ObjectUtil.isNotNull(jsonResult)) {
+        if (operateLog.isSaveResponseData() && Objects.nonNull(jsonResult)) {
             operaLogEvent.setJsonResult(StringUtils.substring(JacksonUtil.toJsonStr(jsonResult), 0, 2000));
         }
     }
@@ -159,12 +158,11 @@ public class OperaLogAspect {
         // 创建一个键为字符串，值也为字符串的 Map，用于存储请求参数
         Map<String, String> paramsMap = ServletUtil.getParamMap(ServletUtil.getRequest());
 
-        // 获取请求的方法类型（如GET、POST）
+        // 获取请求的方法类型（如 GET、POST）
         String requestMethod = operaLogEvent.getRequestMethod();
 
         // 如果参数 Map 为空，并且请求方法为 PUT 或 POST
-        if (paramsMap.isEmpty()
-                && HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
+        if (paramsMap.isEmpty() && HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod)) {
             // 将方法参数转换为字符串，限制长度为 2000 字符，并设置到操作日志事件的参数中
             String params = argsArrayToString(joinPoint.getArgs(), excludeParamNames);
             operaLogEvent.setOperaParam(StringUtils.substring(params, 0, 2000));
@@ -204,7 +202,7 @@ public class OperaLogAspect {
     }
 
     /**
-     * 判断是否需要过滤的对象。
+     * 判断是否需要过滤的对象
      *
      * @param o 对象信息。
      * @return 如果是需要过滤的对象，则返回true；否则返回false。
@@ -219,14 +217,14 @@ public class OperaLogAspect {
             Collection collection = (Collection) o;
             for (Object value : collection) {
                 if (value instanceof MultipartFile) {
-                    return true; // 只要发现一个MultipartFile实例，就返回true
+                    return true; // 只要发现一个 MultipartFile 实例，就返回 true
                 }
             }
         } else if (Map.class.isAssignableFrom(clazz)) {
             Map map = (Map) o;
             for (Object value : map.values()) {
                 if (value instanceof MultipartFile) {
-                    return true; // 只要发现一个MultipartFile实例，就返回true
+                    return true; // 只要发现一个 MultipartFile 实例，就返回 true
                 }
             }
         }

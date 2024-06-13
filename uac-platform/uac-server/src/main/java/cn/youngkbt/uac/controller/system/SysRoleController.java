@@ -3,6 +3,7 @@ package cn.youngkbt.uac.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -19,6 +20,7 @@ import cn.youngkbt.uac.sys.model.vo.link.RoleBindSelectVO;
 import cn.youngkbt.uac.sys.model.vo.link.RoleLinkVO;
 import cn.youngkbt.uac.sys.service.*;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,7 +49,7 @@ public class SysRoleController {
     @Operation(summary = "角色列表查询", description = "通过条件查询角色列表")
     @PreAuthorize("hasAuthority('system:role:list')")
     public Response<List<SysRoleVO>> list(SysRoleDTO sysRoleDTO) {
-        List<SysRoleVO> sysRoleVOList = sysRoleService.queryList(sysRoleDTO);
+        List<SysRoleVO> sysRoleVOList = sysRoleService.listAll(sysRoleDTO);
         return HttpResult.ok(sysRoleVOList);
     }
 
@@ -196,5 +198,14 @@ public class SysRoleController {
     @PreAuthorize("hasAuthority('system:role:add')")
     public Response<Boolean> addDeptsToRole(@RequestBody RoleLinkDeptDTO roleLinkDeptDTO) {
         return HttpResult.ok(roleDeptLinkService.addDeptsToRole(roleLinkDeptDTO, true));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "角色数据导出", description = "导出角色数据")
+    @OperateLog(title = "角色管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:role:export')")
+    public void export(@RequestBody SysRoleDTO sysRoleDTO, HttpServletResponse response) {
+        List<SysRoleVO> sysRoleVOList = sysRoleService.listAll(sysRoleDTO);
+        ExcelHelper.exportExcel(sysRoleVOList, "角色数据", SysRoleVO.class, response);
     }
 }

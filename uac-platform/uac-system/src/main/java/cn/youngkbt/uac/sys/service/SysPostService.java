@@ -23,7 +23,7 @@ public interface SysPostService extends IService<SysPost> {
      * @param sysPostDTO 岗位列表查询参数
      * @return 岗位列表
      */
-    List<SysPostVO> queryList(SysPostDTO sysPostDTO);
+    List<SysPostVO> listAll(SysPostDTO sysPostDTO);
 
     /**
      * 通过条件查询岗位列表

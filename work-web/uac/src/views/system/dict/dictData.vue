@@ -7,6 +7,7 @@
     :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
     :pagination="!isCascade"
     :dialogForm="dialogForm"
+    :exportFile
   >
     <template #operationExtra="{ row, operate }" v-if="isCascade">
       <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.dataId })">新增</el-button>
@@ -15,11 +16,20 @@
 </template>
 
 <script setup lang="ts" name="DictData">
-import { ProTable } from "work";
-import { listPage, listDataTreeTable, addOne, editOne, removeOne, type DictData } from "@/api/system/dictData";
+import { ProTable, downloadByData } from "work";
+import {
+  listPage,
+  listDataTreeTable,
+  addOne,
+  editOne,
+  removeOne,
+  type DictData,
+  exportExcel,
+} from "@/api/system/dictData";
 import { type DialogForm, type TableColumnProps } from "@work/components";
 import { dictDataElFormProps, useFormSchema } from "./useFormSchema";
 import { Plus } from "@element-plus/icons-vue";
+import { ElMessageBox } from "element-plus";
 
 export interface DictDataProps {
   dictCode: string;
@@ -67,4 +77,12 @@ const dialogForm = reactive<DialogForm>({
     closeOnClickModal: false,
   },
 });
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel({ ...searchParam, dictCode: props.dictCode }).then(res => {
+      downloadByData(res, `dictData_${new Date().getTime()}.xlsx`);
+    });
+  });
+};
 </script>

@@ -8,6 +8,7 @@
       :dialogForm="dialogForm"
       :border="false"
       :pagination="false"
+      :exportFile
     >
       <template #operationExtra="{ row, operate }">
         <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.deptId })">新增</el-button>
@@ -17,13 +18,13 @@
 </template>
 
 <script setup lang="tsx" name="Dept">
-import { ProTable } from "work";
-import { listDeptTreeTable, addOne, editOne, deleteOne, type Dept } from "@/api/system/dept";
+import { ProTable, downloadByData } from "work";
+import { listDeptTreeTable, addOne, editOne, deleteOne, type Dept, exportExcel } from "@/api/system/dept";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import { useDesign } from "@work/hooks";
 
@@ -88,6 +89,14 @@ const dialogForm: DialogForm = {
     top: "5vh",
     closeOnClickModal: false,
   },
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `dept_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 

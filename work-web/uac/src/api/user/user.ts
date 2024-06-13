@@ -146,3 +146,10 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
     }
   );
 };
+
+/**
+ * 用户导出
+ */
+export const exportExcel = (params: Partial<User.UserInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

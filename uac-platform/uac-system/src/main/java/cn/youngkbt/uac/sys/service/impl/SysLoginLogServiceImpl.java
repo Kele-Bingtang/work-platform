@@ -14,6 +14,7 @@ import cn.youngkbt.uac.sys.model.vo.SysLoginLogVO;
 import cn.youngkbt.uac.sys.service.SysLoginLogService;
 import cn.youngkbt.uac.sys.service.SysUserService;
 import cn.youngkbt.utils.AddressUtil;
+import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -88,6 +89,13 @@ public class SysLoginLogServiceImpl extends ServiceImpl<SysLoginLogMapper, SysLo
                 .setLoginTime(LocalDateTime.now());
 
         sysUserService.updateOneByUserId(sysUserDTO);
+    }
+
+    @Override
+    public List<SysLoginLogVO> listAll(SysLoginLogDTO sysLoginLogDTO) {
+        LambdaQueryWrapper<SysLoginLog> wrapper = buildQueryWrapper(sysLoginLogDTO);
+        List<SysLoginLog> sysLoginLogList = baseMapper.selectList(wrapper);
+        return MapstructUtil.convert(sysLoginLogList, SysLoginLogVO.class);
     }
 
     @Override

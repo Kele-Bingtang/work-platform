@@ -30,6 +30,7 @@
         :dialogForm="dialogForm"
         :border="false"
         :pagination="false"
+        :exportFile
       >
         <template #operationExtra="{ row, operate }">
           <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.menuId })">
@@ -42,10 +43,10 @@
 </template>
 
 <script setup lang="tsx" name="Menu">
-import { TreeFilter, ProTable, Icon } from "work";
+import { TreeFilter, ProTable, Icon, downloadByData } from "work";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 import { getAppTreeList } from "@/api/application/app";
-import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu } from "@/api/system/menu";
+import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu, exportExcel } from "@/api/system/menu";
 import {
   type DialogForm,
   type TableColumnProps,
@@ -56,7 +57,7 @@ import { menuTypeEnum, elFormProps, useFormSchema } from "./useFormSchema";
 import { useLayoutStore } from "@/stores";
 import { Plus } from "@element-plus/icons-vue";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
 const { getPrefixClass } = useDesign();
@@ -170,6 +171,14 @@ const dialogForm: DialogForm = {
 
 const handleTreeChange = (nodeId: number) => {
   initRequestParam.appId = nodeId + "";
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `menu_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 

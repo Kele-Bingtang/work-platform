@@ -66,3 +66,10 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
     }
   );
 };
+
+/**
+ * 客户端导出
+ */
+export const exportExcel = (params: Partial<Client.ClientInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

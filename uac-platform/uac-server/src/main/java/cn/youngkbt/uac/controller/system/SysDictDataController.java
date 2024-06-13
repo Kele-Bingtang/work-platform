@@ -4,6 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -13,6 +14,7 @@ import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
 import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +37,7 @@ public class SysDictDataController {
     @GetMapping("/list")
     @Operation(summary = "字典数据列表查询", description = "通过条件查询字典数据列表")
     public Response<List<SysDictDataVO>> list(SysDictDataDTO sysDictDataDTO) {
-        List<SysDictDataVO> sysDictDataVOList = sysDictDataService.queryList(sysDictDataDTO);
+        List<SysDictDataVO> sysDictDataVOList = sysDictDataService.listAll(sysDictDataDTO);
         return HttpResult.ok(sysDictDataVOList);
     }
 
@@ -99,5 +101,14 @@ public class SysDictDataController {
     @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return HttpResult.ok(sysDictDataService.removeBatch(List.of(ids)));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "字典数据导出", description = "导出字典数据")
+    @OperateLog(title = "字典数据管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:dict:export')")
+    public void export(@RequestBody SysDictDataDTO sysDictDataDTO, HttpServletResponse response) {
+        List<SysDictDataVO> sysDictDataVOList = sysDictDataService.listAll(sysDictDataDTO);
+        ExcelHelper.exportExcel(sysDictDataVOList, "字典数据", SysDictDataVO.class, response);
     }
 }

@@ -30,7 +30,7 @@ public interface SysTenantService extends IService<SysTenant> {
      * @param sysTenantDTO 查询条件
      * @return 租户列表
      */
-    List<SysTenantVO> queryList(SysTenantDTO sysTenantDTO);
+    List<SysTenantVO> listAll(SysTenantDTO sysTenantDTO);
 
     /**
      * 通过条件查询租户列表

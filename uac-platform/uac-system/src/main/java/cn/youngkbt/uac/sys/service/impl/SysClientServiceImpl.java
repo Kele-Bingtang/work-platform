@@ -1,7 +1,6 @@
 package cn.youngkbt.uac.sys.service.impl;
 
 import cn.hutool.crypto.SecureUtil;
-import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.sys.mapper.SysClientMapper;
@@ -11,6 +10,7 @@ import cn.youngkbt.uac.sys.model.vo.SysClientVO;
 import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import cn.youngkbt.utils.IdsUtil;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -18,7 +18,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +37,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public List<SysClientVO> queryList(SysClientDTO sysClientDTO) {
+    public List<SysClientVO> listAll(SysClientDTO sysClientDTO) {
         LambdaQueryWrapper<SysClient> wrapper = buildQueryWrapper(sysClientDTO);
         List<SysClient> sysAppList = baseMapper.selectList(wrapper);
         return MapstructUtil.convert(sysAppList, SysClientVO.class);
@@ -60,7 +59,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
                 .eq(StringUtil.hasText(sysClientDTO.getClientKey()), SysClient::getClientKey, sysClientDTO.getClientKey())
                 .eq(StringUtil.hasText(sysClientDTO.getClientName()), SysClient::getClientName, sysClientDTO.getClientName())
                 .like(StringUtil.hasText(sysClientDTO.getClientSecret()), SysClient::getClientSecret, sysClientDTO.getClientSecret())
-                .in(Objects.nonNull(sysClientDTO.getGrantTypeList()), SysClient::getGrantTypes, sysClientDTO.getGrantTypeList())
+                .in(ListUtil.isNotEmpty(sysClientDTO.getGrantTypeList()), SysClient::getGrantTypes, sysClientDTO.getGrantTypeList())
                 .eq(Objects.nonNull(sysClientDTO.getStatus()), SysClient::getStatus, sysClientDTO.getStatus());
     }
 

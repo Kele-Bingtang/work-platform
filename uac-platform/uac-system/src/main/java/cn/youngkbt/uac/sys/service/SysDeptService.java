@@ -23,7 +23,7 @@ public interface SysDeptService extends IService<SysDept> {
      * @param sysDeptDTO 查询条件
      * @return 部门列表
      */
-    List<SysDeptVO> queryList(SysDeptDTO sysDeptDTO);
+    List<SysDeptVO> listAll(SysDeptDTO sysDeptDTO);
 
     /**
      * 根据条件查询部门列表

@@ -38,18 +38,30 @@ export namespace Dept {
 
 const baseUri = "/system/dept";
 
+/**
+ * 查询部门树列表
+ */
 export const listDeptTreeList = () => {
   return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/treeList`);
 };
 
+/**
+ * 查询部门树表格
+ */
 export const listDeptTreeTable = () => {
   return http.get<http.Response<Dept.DeptTreeTable[]>>(`${baseUri}/treeTable`);
 };
 
+/**
+ * 通过角色 ID 查询部门 ID 列表
+ */
 export const listDeptIdsByRoleId = (appId: string, roleId: string) => {
   return http.get<http.Response<string[]>>(`${baseUri}/listDeptIdsByRoleId/${appId}/${roleId}`);
 };
 
+/**
+ * 通过角色 ID 查询部门列表
+ */
 export const listDeptListByRoleId = (appId: string, roleId: string) => {
   return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/listDeptListByRoleId/${appId}/${roleId}`);
 };
@@ -64,4 +76,11 @@ export const editOne = (data: RequiredKeyPartialOther<Dept.DeptInfo, "id">) => {
 
 export const deleteOne = (data: Dept.DeptInfo) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}/${data.deptId}`);
+};
+
+/**
+ * 部门导出
+ */
+export const exportExcel = (params: Partial<Dept.DeptInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
 };

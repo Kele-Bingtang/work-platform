@@ -19,10 +19,8 @@
       <!-- 表格头部 操作按钮 -->
       <TableMainHeader
         :columns="getProps.columns"
-        :data="getProps.data ?? tableData"
         :toolButton="getProps.toolButton"
         :size="getProps.size"
-        :exportKey="getProps.exportKey"
         :showSearch="searchColumns ? searchColumns.length > 0 : false"
         :selectedList="selectedList"
         :selectedListIds="selectedListIds"
@@ -33,6 +31,7 @@
         @refresh="getTableList"
         @size="handleSizeCommand"
         @colSetting="toggleColSetting"
+        @export="handleExport"
         @search="() => setProps({ initShowSearch: !getProps.initShowSearch })"
       >
         <template v-for="slot in Object.keys($slots)" #[slot]="scope">
@@ -132,7 +131,15 @@ import {
   type FilterRule,
   editKey,
 } from "./interface";
-import { filterEnum, filterEnumLabel, handleRowAccordingToProp, setColumnProp, lastProp, frontFilter } from "./helper";
+import {
+  filterEnum,
+  filterEnumLabel,
+  handleRowAccordingToProp,
+  setColumnProp,
+  lastProp,
+  frontFilter,
+  exportExcel,
+} from "./helper";
 import ColSetting from "./components/ColSetting.vue";
 import TableMain from "./components/TableMain.vue";
 import TableMainHeader, { type CustomTableSize, type ElTableSize } from "./components/TableMainHeader.vue";
@@ -158,6 +165,7 @@ export interface ProTableProps extends /* @vue-ignore */ Partial<Omit<TableProps
   requestError?: (params: any) => void; // 表格 api 请求错误监听 ==> 非必传
   beforeSearch?: (data: any) => any; // 查询数据前的回调函数，可以对查询参数进行处理或禁止查询 ==> 非必传
   dataCallback?: (data: any) => any; // 返回数据的回调函数，可以对数据进行处理 ==> 非必传
+  exportFile?: (data: Record<string, any>[], searchParam: Record<string, any>) => void;
   initRequestParam?: any; // 初始化请求参数 ==> 非必传（默认为{}）
   title?: string; // 表格标题，目前只在打印的时候用到 ==> 非必传
   pagination?: boolean | Table.PaginationProps; // 是否需要分页组件 ==> 非必传（默认为 true）
@@ -188,7 +196,7 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   rowKey: "id",
   size: "default",
   initShowSearch: true,
-  exportKey: "dataKey",
+  exportKey: "label",
   searchCols: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
   searchModel: "search",
   filterRule: "front",
@@ -358,7 +366,7 @@ const searchColumns = computed(() => {
     const defaultValue = unref(item.search?.defaultValue);
     if (defaultValue !== undefined && defaultValue !== null) {
       if (typeof defaultValue !== "function") unref(searchInitParam)[key] = defaultValue;
-      else unref(searchInitParam)[key] = await defaultValue(searchParam, unref(enumMap));
+      else unref(searchInitParam)[key] = await defaultValue(unref(searchParam), unref(enumMap));
     }
 
     // 组装搜索表单配置项
@@ -489,6 +497,16 @@ const colSetting = computed(() =>
 );
 
 const toggleColSetting = (show = !unref(colSettingVisible)) => (colSettingVisible.value = show);
+
+// 导出事件
+const handleExport = () => {
+  const { data, exportFile, columns, exportKey } = unref(getProps);
+
+  const d = data ?? unref(tableData);
+  if (exportFile) return exportFile(d, unref(searchParam));
+
+  exportExcel(columns, d, "export", exportKey, "确认导出数据?");
+};
 
 // ------- 按钮点击事件 -------
 const dialogFormRef = shallowRef<DialogFormInstance>();

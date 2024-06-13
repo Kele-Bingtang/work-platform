@@ -4,9 +4,11 @@ import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.youngkbt.excel.annotation.ExcelDictFormat;
+import cn.youngkbt.excel.dict.DefaultExcelDictHandler;
 import cn.youngkbt.excel.dict.ExcelDictHandler;
 import cn.youngkbt.excel.dict.ExcelDictManager;
 import cn.youngkbt.excel.helper.ExcelHelper;
+import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.utils.ReflectUtil;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -42,7 +44,12 @@ public class ExcelDictConvert implements Converter<Object> {
         Field field = contentProperty.getField();
         ExcelDictFormat excelDictFormat = getAnnotation(field);
         String originValue = cellData.getStringValue();
-        ExcelDictHandler excelDictHandler = ReflectUtil.newInstance(excelDictFormat.handler());
+        // 先从 Spring 容器获取
+        ExcelDictHandler excelDictHandler = SpringHelper.getBean(excelDictFormat.handler());
+        if(Objects.isNull(excelDictHandler)) {
+            // Spring 容器获取失败，则手动调用无参构造器创建
+            excelDictHandler = ReflectUtil.newInstance(excelDictFormat.handler());
+        }
 
         if (Objects.isNull(excelDictHandler)) {
             String value = ExcelHelper.reverseValueByExp(originValue, excelDictFormat.readExp(), excelDictFormat.mappingKey(), excelDictFormat.separator());
@@ -87,9 +94,14 @@ public class ExcelDictConvert implements Converter<Object> {
         Field field = contentProperty.getField();
         ExcelDictFormat excelDictFormat = getAnnotation(field);
         String originValue = Convert.toStr(value);
-        ExcelDictHandler excelDictHandler = ReflectUtil.newInstance(excelDictFormat.handler());
+        // 先从 Spring 容器获取
+        ExcelDictHandler excelDictHandler = SpringHelper.getBeanIfPresent(excelDictFormat.handler());
+        if(Objects.isNull(excelDictHandler)) {
+            // Spring 容器获取失败，则手动调用无参构造器创建
+            excelDictHandler = ReflectUtil.newInstance(excelDictFormat.handler());
+        }
 
-        if (Objects.isNull(excelDictHandler)) {
+        if (Objects.isNull(excelDictHandler) || excelDictHandler instanceof DefaultExcelDictHandler) {
             String label = ExcelHelper.parseValueByExp(originValue, excelDictFormat.readExp(), excelDictFormat.mappingKey(), excelDictFormat.separator());
             return new WriteCellData<>(label);
         }

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -14,6 +15,7 @@ import cn.youngkbt.uac.sys.model.vo.extra.ClientTreeVO;
 import cn.youngkbt.uac.sys.service.SysAppService;
 import cn.youngkbt.uac.sys.service.SysClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,14 +35,14 @@ import java.util.List;
 @RequestMapping("/system/client")
 public class SysClientController {
 
-    private final SysClientService clientService;
+    private final SysClientService sysClientService;
     private final SysAppService sysAppService;
 
     @GetMapping("/list")
     @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表）")
     @PreAuthorize("hasAuthority('system:client:list')")
     public Response<List<SysClientVO>> list(SysClientDTO sysClientDTO) {
-        List<SysClientVO> sysClientVOList = clientService.queryList(sysClientDTO);
+        List<SysClientVO> sysClientVOList = sysClientService.listAll(sysClientDTO);
         return HttpResult.ok(sysClientVOList);
     }
 
@@ -48,7 +50,7 @@ public class SysClientController {
     @Operation(summary = "客户端列表查询", description = "通过客户端条件查询客户端列表（支持分页）")
     @PreAuthorize("hasAuthority('system:client:list')")
     public Response<TablePage<SysClientVO>> listPage(SysClientDTO sysClientDTO, PageQuery pageQuery) {
-        TablePage<SysClientVO> tablePage = clientService.listPage(sysClientDTO, pageQuery);
+        TablePage<SysClientVO> tablePage = sysClientService.listPage(sysClientDTO, pageQuery);
         return HttpResult.ok(tablePage);
     }
 
@@ -56,7 +58,7 @@ public class SysClientController {
     @Operation(summary = "客户端树形列表查询", description = "查询客户端树形列表")
     @PreAuthorize("hasAuthority('system:client:query')")
     public Response<List<ClientTreeVO>> listTreeList() {
-        List<ClientTreeVO> sysClientVoList = clientService.listTreeList();
+        List<ClientTreeVO> sysClientVoList = sysClientService.listTreeList();
         return HttpResult.ok(sysClientVoList);
     }
 
@@ -66,13 +68,13 @@ public class SysClientController {
     @PreAuthorize("hasAuthority('system:client:add')")
     @PreventRepeatSubmit
     public Response<Boolean> insertOne(@Validated(RestGroup.AddGroup.class) @RequestBody SysClientDTO sysClientDTO) {
-        if (clientService.checkClientKeyUnique(sysClientDTO)) {
+        if (sysClientService.checkClientKeyUnique(sysClientDTO)) {
             return HttpResult.failMessage("新增客户端「" + sysClientDTO.getClientName() + "」失败，客户端 Key「" + sysClientDTO.getClientKey() + "」已存在");
-        } else if (clientService.checkClientSecretUnique(sysClientDTO)) {
+        } else if (sysClientService.checkClientSecretUnique(sysClientDTO)) {
             return HttpResult.failMessage("新增客户端「" + sysClientDTO.getClientName() + "」失败，客户端密钥「" + sysClientDTO.getClientSecret() + "」已存在");
         }
 
-        return HttpResult.ok(clientService.insertOne(sysClientDTO));
+        return HttpResult.ok(sysClientService.insertOne(sysClientDTO));
     }
 
     /**
@@ -84,14 +86,14 @@ public class SysClientController {
     @PreAuthorize("hasAuthority('system:client:edit')")
     @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysClientDTO sysClientDTO) {
-        if (clientService.checkClientKeyUnique(sysClientDTO)) {
+        if (sysClientService.checkClientKeyUnique(sysClientDTO)) {
             return HttpResult.failMessage("修改客户端「" + sysClientDTO.getClientName() + "」失败，客户端 Key「" + sysClientDTO.getClientKey() + "」已存在");
         }
-        if (clientService.checkClientSecretUnique(sysClientDTO)) {
+        if (sysClientService.checkClientSecretUnique(sysClientDTO)) {
             return HttpResult.failMessage("修改客户端「" + sysClientDTO.getClientName() + "」失败，客户端密钥「" + sysClientDTO.getClientSecret() + "」已存在");
         }
 
-        return HttpResult.ok(clientService.updateOne(sysClientDTO));
+        return HttpResult.ok(sysClientService.updateOne(sysClientDTO));
     }
 
     @PutMapping("/updateStatus")
@@ -100,7 +102,7 @@ public class SysClientController {
     @PreAuthorize("hasAuthority('system:client:edit')")
     @PreventRepeatSubmit
     public Response<Boolean> updateStatus(@RequestBody SysClientDTO sysClientDTO) {
-        return HttpResult.ok(clientService.updateStatus(sysClientDTO.getId(), sysClientDTO.getStatus()));
+        return HttpResult.ok(sysClientService.updateStatus(sysClientDTO.getId(), sysClientDTO.getStatus()));
     }
 
     @DeleteMapping("/{ids}")
@@ -113,6 +115,15 @@ public class SysClientController {
             return HttpResult.failMessage("存在 APP 绑定，不允许删除");
         }
 
-        return HttpResult.ok(clientService.removeBatch(List.of(ids)));
+        return HttpResult.ok(sysClientService.removeBatch(List.of(ids)));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "客户端数据导出", description = "导出客户端数据")
+    @OperateLog(title = "客户端管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:client:export')")
+    public void export(@RequestBody SysClientDTO sysClientDTO, HttpServletResponse response) {
+        List<SysClientVO> sysClientVOList = sysClientService.listAll(sysClientDTO);
+        ExcelHelper.exportExcel(sysClientVOList, "客户端数据", SysClientVO.class, response);
     }
 }

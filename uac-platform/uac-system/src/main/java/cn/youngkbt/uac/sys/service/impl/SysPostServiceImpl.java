@@ -18,7 +18,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +34,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private final UserPostLinkService userPostLinkService;
 
     @Override
-    public List<SysPostVO> queryList(SysPostDTO sysPostDTO) {
+    public List<SysPostVO> listAll(SysPostDTO sysPostDTO) {
         LambdaQueryWrapper<SysPost> wrapper = buildQueryWrapper(sysPostDTO);
         List<SysPost> sysPostList = baseMapper.selectList(wrapper);
 
@@ -97,7 +96,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     @Override
     public UserSelectPostVo userSelectPostList(String userId) {
-        List<SysPostVO> sysPostVOList = queryList(new SysPostDTO());
+        List<SysPostVO> sysPostVOList = listAll(new SysPostDTO());
         List<SysPost> sysPosts = userPostLinkService.listPostByUserId(userId);
 
         UserSelectPostVo userSelectPostVo = new UserSelectPostVo()

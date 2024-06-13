@@ -23,6 +23,14 @@ public interface SysOperaLogService extends IService<SysOperaLog> {
      * @param operaLogEvent 操作日志事件
      */
     void recordOperaLog(OperaLogEvent operaLogEvent);
+
+    /**
+     * 通过条件查询操作日志清单列表
+     *
+     * @param sysOperaLogDTO 操作信息查询条件
+     * @return 操作信息清单
+     */
+    List<SysOperaLogVO> listAll(SysOperaLogDTO sysOperaLogDTO);
         
     /**
      * 分页查询操作日志
@@ -47,4 +55,5 @@ public interface SysOperaLogService extends IService<SysOperaLog> {
      * @return 是否清空成功
      */
     Boolean cleanAllOperaLog();
+
 }

@@ -7,18 +7,19 @@
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
       :dialogForm="dialogForm"
       :border="false"
+      :exportFile
     ></ProTable>
   </div>
 </template>
 
 <script setup lang="tsx" name="Post">
-import { ProTable } from "work";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Post } from "@/api/system/post";
+import { ProTable, downloadByData } from "work";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type Post, exportExcel } from "@/api/system/post";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange } from "@/hooks/useChange";
-import { ElSwitch } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
 const { getPrefixClass } = useDesign();
@@ -80,6 +81,14 @@ const dialogForm: DialogForm = {
     top: "5vh",
     closeOnClickModal: false,
   },
+};
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `post_${new Date().getTime()}.xlsx`);
+    });
+  });
 };
 </script>
 

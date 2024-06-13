@@ -1,11 +1,14 @@
 package cn.youngkbt.uac.sys.model.vo;
 
+import cn.youngkbt.excel.annotation.ExcelDictFormat;
+import cn.youngkbt.excel.convert.ExcelDictConvert;
+import cn.youngkbt.uac.sys.export.NormalStatusHandler;
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -20,46 +23,56 @@ public class SysRoleVO implements Serializable {
     /**
      * id
      */
+    @ExcelProperty("序号")
     private Long id;
     
     /**
      * 角色 ID
      */
+    @ExcelProperty("角色 ID")
     private String roleId;
 
     /**
      * 角色码
      */
+    @ExcelProperty("角色编码")
     private String roleCode;
 
     /**
      * 角色名
      */
+    @ExcelProperty("角色名称")
     private String roleName;
 
     /**
      * 状态
      */
+    @ExcelProperty(value = "角色状态", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(handler = NormalStatusHandler.class)
     private Integer status;
 
     /**
      * 显示顺序
      */
+    @ExcelProperty("角色顺序")
     private Integer orderNum;
 
     /**
      * 角色介绍
      */
+    @ExcelProperty("角色介绍")
     private String intro;
 
     /**
      * 创建时间
      */
+    @ExcelProperty("创建时间")
     private LocalDateTime createTime;
 
     /**
      * 应用 ID
      */
+    @ExcelProperty("应用 ID")
     private String appId;
 
 }

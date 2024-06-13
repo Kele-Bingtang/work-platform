@@ -1,5 +1,6 @@
 package cn.youngkbt.uac.sys.model.bo;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -13,5 +14,6 @@ import java.util.List;
 @Data
 public class TreeBO<T> {
     private String parentId;
+    @ExcelIgnore
     private List<T> children = new ArrayList<>();
 }

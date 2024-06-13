@@ -62,3 +62,10 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
     }
   );
 };
+
+/**
+ * 岗位导出
+ */
+export const exportExcel = (params: Partial<Post.PostInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -14,6 +15,7 @@ import cn.youngkbt.uac.sys.model.vo.SysDictTypeVO;
 import cn.youngkbt.uac.sys.service.SysDictDataService;
 import cn.youngkbt.uac.sys.service.SysDictTypeService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,7 +42,7 @@ public class SysDictTypeController {
     @Operation(summary = "字典类型列表查询", description = "通过应用条件查询字典类型列表")
     @PreAuthorize("hasAuthority('system:dict:list')")
     public Response<List<SysDictTypeVO>> list(SysDictTypeDTO sysDictTypeDTO) {
-        List<SysDictTypeVO> sysDictTypeVOList = sysDictTypeService.queryList(sysDictTypeDTO);
+        List<SysDictTypeVO> sysDictTypeVOList = sysDictTypeService.listAll(sysDictTypeDTO);
         return HttpResult.ok(sysDictTypeVOList);
     }
 
@@ -99,5 +101,14 @@ public class SysDictTypeController {
             return HttpResult.failMessage(dictNames + " 已分配字典数据，不允许删除");
         }
         return HttpResult.ok(sysDictTypeService.removeBatch(idList));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "字典类型导出", description = "导出字典类型")
+    @OperateLog(title = "字典类型管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:dict:export')")
+    public void export(@RequestBody SysDictTypeDTO sysDictTypeDTO, HttpServletResponse response) {
+        List<SysDictTypeVO> sysDictTypeVOList = sysDictTypeService.listAll(sysDictTypeDTO);
+        ExcelHelper.exportExcel(sysDictTypeVOList, "字典类型数据", SysDictTypeVO.class, response);
     }
 }

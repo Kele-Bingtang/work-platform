@@ -41,7 +41,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private final UserGroupRoleLinkService userGroupRoleLinkService;
 
     @Override
-    public List<SysRoleVO> queryList(SysRoleDTO sysRoleDTO) {
+    public List<SysRoleVO> listAll(SysRoleDTO sysRoleDTO) {
         LambdaQueryWrapper<SysRole> wrapper = buildQueryWrapper(sysRoleDTO);
         List<SysRole> sysRoleList = baseMapper.selectList(wrapper);
 

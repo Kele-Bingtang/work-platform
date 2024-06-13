@@ -91,7 +91,7 @@ public class AuthController {
     @GetMapping("/tenant/list")
     @Operation(summary = "多租户下拉选项")
     public Response<LoginTenantSelectVO> tenantSelectOption(HttpServletRequest request) {
-        List<SysTenantVO> sysTenantVOList = sysTenantService.queryList(new SysTenantDTO());
+        List<SysTenantVO> sysTenantVOList = sysTenantService.listAll(new SysTenantDTO());
         List<TenantSelectVO> tenantSelectVOList = MapstructUtil.convert(sysTenantVOList, TenantSelectVO.class);
 
         // 获取域名

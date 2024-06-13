@@ -28,3 +28,10 @@ export const removeBatch = (idList: string[]) => {
 export const cleanAllLog = () => {
   return http.delete<http.Response<boolean>>(`${baseUri}/clean`);
 };
+
+/**
+ * 登录日志导出
+ */
+export const exportExcel = (params: Partial<LoginLog.LoginLogInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

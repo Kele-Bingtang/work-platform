@@ -1,5 +1,6 @@
 package cn.youngkbt.excel.annotation;
 
+import cn.youngkbt.excel.dict.DefaultExcelDictHandler;
 import cn.youngkbt.excel.dict.ExcelDictHandler;
 
 import java.lang.annotation.*;
@@ -17,7 +18,7 @@ public @interface ExcelDictFormat {
     /**
      * 自定义实现字典数据处理类
      */
-    Class<? extends ExcelDictHandler> handler();
+    Class<? extends ExcelDictHandler> handler() default DefaultExcelDictHandler.class;
 
     /**
      * 是否缓存 自定义实现字典数据处理类 返回的数据（如果处理类涉及数据库操作，建议开启 true）
@@ -35,7 +36,7 @@ public @interface ExcelDictFormat {
     String mappingKey() default ":";
 
     /**
-     * 分隔符，读取字符串组内容
+     * 分隔符，读取字符串组内容，可以加空格，如 Y:是, N:否
      */
     String separator() default ",";
 

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -20,6 +21,7 @@ import cn.youngkbt.uac.sys.service.SysUserGroupService;
 import cn.youngkbt.uac.sys.service.UserGroupLinkService;
 import cn.youngkbt.uac.sys.service.UserGroupRoleLinkService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -45,7 +47,7 @@ public class SysUserGroupController {
     @Operation(summary = "用户组列表查询", description = "通过主键查询用户组列表")
     @PreAuthorize("hasAuthority('system:userGroup:list')")
     public Response<List<SysUserGroupVO>> list(SysUserGroupDTO sysUserGroupDTO) {
-        List<SysUserGroupVO> sysUserGroupVOList = sysUserGroupService.queryList(sysUserGroupDTO);
+        List<SysUserGroupVO> sysUserGroupVOList = sysUserGroupService.listAll(sysUserGroupDTO);
         return HttpResult.ok(sysUserGroupVOList);
     }
 
@@ -162,5 +164,14 @@ public class SysUserGroupController {
     @PreventRepeatSubmit
     public Response<Boolean> removeBatch(@PathVariable Long[] ids, @RequestBody List<String> userGroupIds) {
         return HttpResult.ok(sysUserGroupService.removeBatch(List.of(ids), userGroupIds));
+    }
+
+    @PostMapping("/export")
+    @Operation(summary = "用户组数据导出", description = "导出用户组数据")
+    @OperateLog(title = "用户组数据管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:user:export')")
+    public void export(@RequestBody SysUserGroupDTO sysUserGroupDTO, HttpServletResponse response) {
+        List<SysUserGroupVO> sysUserGroupVOList = sysUserGroupService.listAll(sysUserGroupDTO);
+        ExcelHelper.exportExcel(sysUserGroupVOList, "用户组数据", SysUserGroupVO.class, response);
     }
 }

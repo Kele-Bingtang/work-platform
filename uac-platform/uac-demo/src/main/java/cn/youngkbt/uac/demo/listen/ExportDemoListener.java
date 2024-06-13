@@ -2,7 +2,7 @@ package cn.youngkbt.uac.demo.listen;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.youngkbt.core.validate.RestGroup;
-import cn.youngkbt.uac.demo.model.ExportDemoVo;
+import cn.youngkbt.uac.demo.model.ExportDemoVO;
 import cn.youngkbt.excel.dropdown.DropDownOptions;
 import cn.youngkbt.excel.listen.BaseExcelListener;
 import cn.youngkbt.utils.ValidatorUtil;
@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2024/6/10 19:52:48
  * @note Excel 带下拉框的解析处理器
  */
-public class ExportDemoListener extends BaseExcelListener<ExportDemoVo> {
+public class ExportDemoListener extends BaseExcelListener<ExportDemoVO> {
 
     public ExportDemoListener() {
         // 显示使用构造函数，否则将导致空指针
@@ -23,7 +23,7 @@ public class ExportDemoListener extends BaseExcelListener<ExportDemoVo> {
     }
 
     @Override
-    public void invoke(ExportDemoVo data, AnalysisContext context) {
+    public void invoke(ExportDemoVO data, AnalysisContext context) {
         // 先校验必填
         ValidatorUtil.validate(data, RestGroup.AddGroup.class);
 

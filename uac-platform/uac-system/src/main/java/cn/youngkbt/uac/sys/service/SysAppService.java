@@ -30,7 +30,7 @@ public interface SysAppService extends IService<SysApp> {
      * @param sysAppDTO 应用信息查询条件
      * @return 应用信息清单
      */
-    List<SysAppVO> queryList(SysAppDTO sysAppDTO);
+    List<SysAppVO> listAll(SysAppDTO sysAppDTO);
 
     /**
      * 通过条件查询 App 清单列表

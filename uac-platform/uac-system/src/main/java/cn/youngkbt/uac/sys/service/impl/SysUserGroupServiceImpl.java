@@ -38,7 +38,7 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
     private final UserGroupRoleLinkService userGroupRoleLinkService;
     
     @Override
-    public List<SysUserGroupVO> queryList(SysUserGroupDTO sysUserGroupDTO) {
+    public List<SysUserGroupVO> listAll(SysUserGroupDTO sysUserGroupDTO) {
         LambdaQueryWrapper<SysUserGroup> wrapper = buildQueryWrapper(sysUserGroupDTO);
         List<SysUserGroup> sysUserGroupList = baseMapper.selectList(wrapper);
 

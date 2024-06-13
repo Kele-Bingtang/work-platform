@@ -156,3 +156,10 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
 export const removeUserFromUserGroup = (ids: string[]) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/removeUserFromUserGroup/${ids.join(",")}`);
 };
+
+/**
+ * 用户组导出
+ */
+export const exportExcel = (params: Partial<UserGroup.UserGroupInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

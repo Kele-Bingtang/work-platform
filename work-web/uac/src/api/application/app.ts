@@ -59,3 +59,10 @@ export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: 
     }
   );
 };
+
+/**
+ * 应用导出
+ */
+export const exportExcel = (params: Partial<App.AppInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

@@ -3,6 +3,7 @@ package cn.youngkbt.uac.controller.system;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -13,6 +14,7 @@ import cn.youngkbt.uac.sys.model.vo.SysAppVO;
 import cn.youngkbt.uac.sys.model.vo.extra.AppTreeVO;
 import cn.youngkbt.uac.sys.service.*;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +45,7 @@ public class SysAppController {
     @Operation(summary = "应用列表查询", description = "通过应用条件查询应用列表")
     @PreAuthorize("hasAuthority('system:app:list')")
     public Response<List<SysAppVO>> list(SysAppDTO sysAppDTO) {
-        List<SysAppVO> sysAppVOList = sysAppService.queryList(sysAppDTO);
+        List<SysAppVO> sysAppVOList = sysAppService.listAll(sysAppDTO);
         return HttpResult.ok(sysAppVOList);
     }
 
@@ -121,4 +123,12 @@ public class SysAppController {
         return HttpResult.ok(sysAppService.removeBatch(List.of(ids)));
     }
 
+    @PostMapping("/export")
+    @Operation(summary = "应用数据导出", description = "导出应用数据")
+    @OperateLog(title = "应用管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("hasAuthority('system:app:export')")
+    public void export(@RequestBody SysAppDTO sysAppDTO, HttpServletResponse response) {
+        List<SysAppVO> sysAppVOList = sysAppService.listAll(sysAppDTO);
+        ExcelHelper.exportExcel(sysAppVOList, "应用数据", SysAppVO.class, response);
+    }
 }

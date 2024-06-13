@@ -95,18 +95,19 @@ export function findItemNested(enumData: any, callValue: any, value: string, chi
 }
 
 // 导出
-export const downloadFile = async (
+export const exportExcel = async (
   columns: any,
   data: any[],
   fileName: string,
-  msg: string,
-  exportKey: "props" | "label" | "dataKey"
+  exportKey: "props" | "label" | "dataKey" = "label",
+  message = "确认导出数据?"
 ) => {
-  ElMessageBox.confirm(msg, "温馨提示", { type: "warning" }).then(() => {
+  ElMessageBox.confirm(message, "温馨提示", { type: "warning" }).then(() => {
     const tHeader = [] as string[];
     const propName = [] as string[];
 
     const flatData = filterFlatData(data);
+
     if (exportKey === "dataKey") {
       Object.keys(flatData[0]).forEach((item: any) => {
         propName.push(item);
@@ -133,7 +134,9 @@ export const downloadFile = async (
  * @description 扁平化 data，data 可能有 children 属性和 _enum 属性
  */
 const filterFlatData = (data: any[]) => {
-  return data.reduce((pre: any[], current: any) => {
+  const d = deepCloneTableRow(data);
+
+  return d.reduce((pre: any[], current: any) => {
     // 针对枚举类的导出
     if (current._enum) {
       Object.keys(current._enum).forEach(key => (current[key] = unref(current._enum[key])));

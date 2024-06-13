@@ -37,3 +37,10 @@ export const deleteOne = (data: DictType.DictTypeInfo) => {
 export const deleteBatch = ({ idList }: { idList: string[] }) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${idList.join(",")}`);
 };
+
+/**
+ * 字典类型导出
+ */
+export const exportExcel = (params: Partial<DictType.DictTypeInfo>) => {
+  return http.post<any>(`${baseUri}/export`, params, { responseType: "blob" });
+};

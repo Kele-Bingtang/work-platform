@@ -80,7 +80,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<SysMenuVO> queryList(SysMenuDTO sysMenuDTO) {
+    public List<SysMenuVO> listAll(SysMenuDTO sysMenuDTO) {
         LambdaQueryWrapper<SysMenu> wrapper = buildQueryWrapper(sysMenuDTO);
         List<SysMenu> sysMenuList = baseMapper.selectList(wrapper);
 

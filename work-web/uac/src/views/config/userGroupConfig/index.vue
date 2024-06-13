@@ -29,6 +29,7 @@
         @row-click="handleRowClick"
         :data-callback="dataCallback"
         highlight-current-row
+        :exportFile
       ></ProTable>
     </div>
 
@@ -47,8 +48,8 @@
 </template>
 
 <script setup lang="tsx" name="UserGroup">
-import { ProTable, TreeFilter } from "work";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type UserGroup } from "@/api/user/userGroup";
+import { ProTable, TreeFilter, downloadByData } from "work";
+import { listPage, addOne, editOne, deleteOne, deleteBatch, type UserGroup, exportExcel } from "@/api/user/userGroup";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import { getAppTreeList, type App } from "@/api/application/app";
@@ -56,6 +57,7 @@ import { Description } from "@/components";
 import LinkUser from "./components/linkUser.vue";
 import LinkRole from "./components/linkRole.vue";
 import { useDesign } from "@work/hooks";
+import { ElMessageBox } from "element-plus";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("user-group");
@@ -171,6 +173,14 @@ const tabEnums: TabEnum[] = [
     }),
   },
 ];
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(searchParam).then(res => {
+      downloadByData(res, `userGroup_${new Date().getTime()}.xlsx`);
+    });
+  });
+};
 </script>
 
 <style lang="scss" scoped>

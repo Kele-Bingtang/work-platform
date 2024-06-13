@@ -156,7 +156,8 @@ const handleAdd = async (row?: any) => {
   status.value = "add";
   unref(proFormRef)?.form?.resetFields();
 
-  if (row) model.value = deepCloneTableRow(row);
+  // 过滤掉 Event 类型
+  if (row && !(row instanceof Event)) model.value = deepCloneTableRow(row);
   else if (!cache) model.value = {};
   else if (Array.isArray(id)) {
     id.forEach(key => {
@@ -175,7 +176,7 @@ const handleEdit = async (row: any) => {
 
   status.value = "edit";
   unref(proFormRef)?.form?.resetFields();
-  model.value = deepCloneTableRow(row);
+  if (!(row instanceof Event)) model.value = deepCloneTableRow(row);
   clickEdit && (model.value = (await clickEdit(unref(model))) ?? unref(model));
   dialogFormVisible.value = true;
 };

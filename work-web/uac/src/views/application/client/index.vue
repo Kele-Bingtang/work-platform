@@ -7,6 +7,7 @@
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
       :dialogForm="dialogForm"
       :exportFile
+      :disabled-button="!hasAuth('system:client:export') ? ['export'] : []"
     ></ProTable>
   </div>
 </template>
@@ -17,7 +18,7 @@ import { listPage, addOne, editOne, deleteOne, deleteBatch, type Client, exportE
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
@@ -83,13 +84,19 @@ const columns: TableColumnProps<Client.ClientInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
-  id: ["id", "appId"],
+  id: ["id", "clientId"],
   addApi: addOne,
   editApi: editOne,
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
+  disableAdd: !hasAuth("system:client:add"),
+  disableEdit: !hasAuth("system:client:edit"),
+  disableRemove: !hasAuth("system:client:remove"),
+  disableRemoveBatch: !hasAuth("system:client:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

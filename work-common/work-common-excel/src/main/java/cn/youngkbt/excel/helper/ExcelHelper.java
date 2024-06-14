@@ -502,7 +502,7 @@ public class ExcelHelper {
      * 编码文件名
      */
     public static String encodingFilename(String filename) {
-        return IdUtil.fastSimpleUUID() + "_" + filename + ".xlsx";
+        return filename + "_" + IdUtil.fastSimpleUUID() + ".xlsx";
     }
 
     /**

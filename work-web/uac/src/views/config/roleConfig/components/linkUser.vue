@@ -11,6 +11,7 @@
       row-key="linkId"
       height="100%"
       :isShowSearch="false"
+      :disabled-button="!hasAuth('system:role:linkUser') ? ['export'] : []"
     ></ProTable>
   </div>
 </template>
@@ -21,6 +22,7 @@ import { addUsersToRole, editUserRoleLinkInfo, removeUserFromRole } from "@/api/
 import { listUserLinkByRoleId, type User } from "@/api/user/user";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, useFormSchema } from "./linkUserFormSchema";
+import { usePermission } from "@/hooks";
 
 export interface LinkUserProps {
   appId: string;
@@ -47,6 +49,8 @@ const columns: TableColumnProps<User.UserLinkInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 // 新增、编辑弹框配置项
 const dialogForm: DialogForm = {
   formProps: {
@@ -66,6 +70,10 @@ const dialogForm: DialogForm = {
   editFilterKeys: ["userId", "appId", "userIds"],
   removeApi: form => removeUserFromRole([form.linkId]),
   removeBatchApi: removeUserFromRole,
+  disableAdd: !hasAuth("system:role:linkUser"),
+  disableEdit: !hasAuth("system:role:linkUser"),
+  disableRemove: !hasAuth("system:role:linkUser"),
+  disableRemoveBatch: !hasAuth("system:role:linkUser"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

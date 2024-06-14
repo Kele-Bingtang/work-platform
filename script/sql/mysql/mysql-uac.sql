@@ -344,7 +344,7 @@ CREATE TABLE `t_sys_menu` (
   `icon` varchar(64) DEFAULT NULL COMMENT '图标',
   `order_num` int DEFAULT NULL COMMENT '显示顺序',
   `permission` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '权限标识',
-  `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+  `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '菜单类型（C目录 M菜单 F按钮）',
   `component` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '组件路径',
   `meta` varchar(1000) DEFAULT NULL COMMENT '菜单前端额外配置',
   `intro` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '菜单介绍',

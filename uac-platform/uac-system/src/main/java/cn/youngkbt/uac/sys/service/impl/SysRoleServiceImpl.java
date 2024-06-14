@@ -139,7 +139,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
 
         String[] keys = new String[]{TenantConstant.SUPER_ADMIN_ROLE_KEY, TenantConstant.TENANT_ADMIN_ROLE_KEY};
-        
+
         // 新增不允许使用 管理员标识符
         if (Objects.isNull(sysRoleDTO.getRoleId())
                 && StringUtils.equalsAny(sysRoleDTO.getRoleCode(), keys)) {

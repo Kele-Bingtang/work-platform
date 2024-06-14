@@ -8,6 +8,7 @@
       :dialogForm="dialogForm"
       :border="false"
       :exportFile
+      :disabled-button="!hasAuth('system:post:export') ? ['export'] : []"
     ></ProTable>
   </div>
 </template>
@@ -18,7 +19,7 @@ import { listPage, addOne, editOne, deleteOne, deleteBatch, type Post, exportExc
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
@@ -67,6 +68,8 @@ const columns: TableColumnProps<Post.PostInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
   id: ["id", "postId"],
@@ -74,6 +77,10 @@ const dialogForm: DialogForm = {
   editApi: editOne,
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
+  disableAdd: !hasAuth("system:post:add"),
+  disableEdit: !hasAuth("system:post:edit"),
+  disableRemove: !hasAuth("system:post:remove"),
+  disableRemoveBatch: !hasAuth("system:post:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

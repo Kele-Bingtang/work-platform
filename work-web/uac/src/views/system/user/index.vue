@@ -17,9 +17,12 @@
         style="display: flex; flex-direction: column"
         :dialogForm="dialogForm"
         :exportFile
+        :disabled-button="!hasAuth('system:user:export') ? ['export'] : []"
       >
         <template #operationExtra>
-          <el-button link size="small" :icon="Key" @click="resetPassword">重置密码</el-button>
+          <el-button v-auth="['system:user:passwordReset']" link size="small" :icon="Key" @click="resetPassword">
+            重置密码
+          </el-button>
         </template>
       </ProTable>
     </div>
@@ -33,7 +36,7 @@ import { addOne, editOne, deleteOne, deleteBatch, listPage, type User, exportExc
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElSwitch, ElInput, ElMessageBox } from "element-plus";
 import { Key } from "@element-plus/icons-vue";
 import { useDesign } from "@work/hooks";
@@ -109,6 +112,8 @@ const columns: TableColumnProps<User.UserInfo>[] = [
   { prop: "operation", label: "操作", width: 220, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: {
     elFormProps,
@@ -120,6 +125,10 @@ const dialogForm: DialogForm = {
   editFilterKeys: ["dept", "disabled", "loginIp", "loginTime", "registerTime"],
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
+  disableAdd: !hasAuth("system:user:add"),
+  disableEdit: !hasAuth("system:user:edit"),
+  disableRemove: !hasAuth("system:user:remove"),
+  disableRemoveBatch: !hasAuth("system:user:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

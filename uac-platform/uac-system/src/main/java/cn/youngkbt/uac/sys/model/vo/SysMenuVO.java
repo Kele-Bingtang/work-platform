@@ -86,10 +86,10 @@ public class SysMenuVO extends TreeBO<SysMenuVO> implements Serializable {
     private String permission;
 
     /**
-     * 菜单类型（M目录 C菜单 F按钮）
+     * 菜单类型（C目录 M菜单 F按钮）
      */
     @ExcelProperty(value = "菜单类型", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(readExp = "M:目录, C:菜单, F:按钮")
+    @ExcelDictFormat(readExp = "C:目录, M:菜单, F:按钮")
     private String menuType;
 
     /**

@@ -23,6 +23,7 @@ export const useFormSchema = () => {
     {
       prop: "owner",
       label: "负责人",
+      renderUseProp: ["ownerId", "user"],
       render: ({ model }) => {
         return (
           <UserSelect v-model={model.ownerId} v-model:user={model.user} requestApi={list} id="username"></UserSelect>

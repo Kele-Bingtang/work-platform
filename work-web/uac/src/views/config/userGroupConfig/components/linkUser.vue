@@ -11,6 +11,7 @@
       row-key="linkId"
       height="100%"
       :isShowSearch="false"
+      :disabled-button="!hasAuth('system:userGroup:linkUser') ? ['export'] : []"
     ></ProTable>
   </div>
 </template>
@@ -21,6 +22,7 @@ import { addUsersToGroup, editUserGroupLinkInfo, removeUserFromUserGroup } from 
 import { listUserLinkByGroupId, type User } from "@/api/user/user";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, useFormSchema } from "./linkUserFormSchema";
+import { usePermission } from "@/hooks";
 
 export interface LinkUserProps {
   appId: string;
@@ -47,6 +49,8 @@ const columns: TableColumnProps<User.UserLinkInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 // 新增、编辑弹框配置项
 const dialogForm: DialogForm = {
   formProps: {
@@ -66,6 +70,10 @@ const dialogForm: DialogForm = {
   editFilterKeys: ["userId", "appId", "userIds"],
   removeApi: form => removeUserFromUserGroup([form.linkId]),
   removeBatchApi: removeUserFromUserGroup,
+  disableAdd: !hasAuth("system:userGroup:linkUser"),
+  disableEdit: !hasAuth("system:userGroup:linkUser"),
+  disableRemove: !hasAuth("system:userGroup:linkUser"),
+  disableRemoveBatch: !hasAuth("system:userGroup:linkUser"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

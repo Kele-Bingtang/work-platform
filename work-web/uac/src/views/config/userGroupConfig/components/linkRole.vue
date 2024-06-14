@@ -11,6 +11,7 @@
       row-key="linkId"
       height="100%"
       :isShowSearch="false"
+      :disabled-button="!hasAuth('system:userGroup:linkRole') ? ['export'] : []"
     ></ProTable>
   </div>
 </template>
@@ -21,13 +22,14 @@ import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@
 import { elFormProps, useFormSchema } from "./linkRoleFormSchema";
 import { listRoleLinkByGroupId, removeUserGroupFromRole, type Role } from "@/api/system/role";
 import { addRolesToUserGroup } from "@/api/user/userGroup";
+import { usePermission } from "@/hooks";
 
-export interface LinkUserProps {
+export interface LinkRoleProps {
   appId: string;
   userGroupId: string;
 }
 
-const props = defineProps<LinkUserProps>();
+const props = defineProps<LinkRoleProps>();
 
 const requestParam = reactive({ userGroupId: props.userGroupId });
 
@@ -44,6 +46,8 @@ const columns: TableColumnProps<Role.RoleLinkInfo>[] = [
   { prop: "createTime", label: "创建时间", minWidth: 160 },
   { prop: "operation", label: "操作", width: 100, fixed: "right" },
 ];
+
+const { hasAuth } = usePermission();
 
 // 新增、编辑弹框配置项
 const dialogForm: DialogForm = {
@@ -62,6 +66,10 @@ const dialogForm: DialogForm = {
   addFilterKeys: ["role"],
   removeApi: form => removeUserGroupFromRole([form.linkId]),
   removeBatchApi: removeUserGroupFromRole,
+  disableAdd: !hasAuth("system:userGroup:linkRole"),
+  disableEdit: !hasAuth("system:userGroup:linkRole"),
+  disableRemove: !hasAuth("system:userGroup:linkRole"),
+  disableRemoveBatch: !hasAuth("system:userGroup:linkRole"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

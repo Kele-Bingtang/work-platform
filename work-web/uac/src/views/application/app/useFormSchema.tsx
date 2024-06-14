@@ -1,6 +1,7 @@
 import type { App } from "@/api/application/app";
-import type { DialogFormSchemaProps } from "@work/components";
+import { UserSelect, type DialogFormSchemaProps } from "@work/components";
 import type { FormRules } from "element-plus";
+import { list } from "@/api/user/user";
 
 const rules = reactive<FormRules>({
   clientId: [{ required: true, message: "请选择客户端", trigger: "blur" }],
@@ -36,6 +37,16 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       label: "应用名称",
       el: "el-input",
       props: { clearable: true, placeholder: "请输入 角色名称" },
+    },
+    {
+      prop: "owner",
+      label: "负责人",
+      renderUseProp: ["ownerId", "user"],
+      render: ({ model }) => {
+        return (
+          <UserSelect v-model={model.ownerId} v-model:user={model.user} requestApi={list} id="username"></UserSelect>
+        );
+      },
     },
     {
       prop: "orderNum",

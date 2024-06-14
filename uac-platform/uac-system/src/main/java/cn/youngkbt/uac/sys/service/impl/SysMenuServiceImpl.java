@@ -9,6 +9,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.uac.core.constant.TenantConstant;
+import cn.youngkbt.uac.core.enums.MenuType;
 import cn.youngkbt.uac.core.helper.UacHelper;
 import cn.youngkbt.uac.sys.mapper.SysMenuMapper;
 import cn.youngkbt.uac.sys.model.dto.SysMenuDTO;
@@ -51,7 +52,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new ServiceException("查询不到登录用户的信息");
         }
 
-        List<SysMenu> sysMenuList = baseMapper.listMenuListByUserId(appId, loginUser.getUserId(), true);
+        List<SysMenu> sysMenuList = baseMapper.listMenuListByUserId(appId, loginUser.getUserId(), false);
         List<SysMenuVO> sysMenuVOList = MapstructUtil.convert(sysMenuList, SysMenuVO.class);
 
         List<SysMenuVO> treeList = TreeBuildUtil.build(sysMenuVOList, "0", SysMenuVO::getMenuId);
@@ -64,6 +65,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private List<RouterVO> buildRoutes(List<SysMenuVO> treeList) {
         List<RouterVO> routers = new ArrayList<>();
         for (SysMenuVO sysMenuVO : treeList) {
+            // 按钮权限过滤掉
+            if (MenuType.FUNCTION.getValue().equals(sysMenuVO.getMenuType())) {
+                continue;
+            }
             RouterVO router = new RouterVO()
                     .setPath(sysMenuVO.getPath())
                     .setName(sysMenuVO.getMenuCode())
@@ -72,6 +77,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
             List<SysMenuVO> childMenus = sysMenuVO.getChildren();
             if (ListUtil.isNotEmpty(childMenus)) {
+                // 每个路由菜单添加 Auths 按钮权限
+                childMenus.forEach(childMenu -> {
+                    if (MenuType.FUNCTION.getValue().equals(childMenu.getMenuType())) {
+                        Meta meta = router.getMeta();
+                        Set<String> auths = Optional.ofNullable(meta.getAuths()).orElse(new HashSet<>());
+                        // 按钮权限可能是多个，所以需要拆分
+                        String[] split = Optional.ofNullable(childMenu.getPermission()).orElse("").split(",");
+                        auths.addAll(Arrays.asList(split));
+                        meta.setAuths(auths);
+                        router.setMeta(meta);
+                    }
+                });
                 router.setChildren(buildRoutes(childMenus));
             }
             routers.add(router);
@@ -258,7 +275,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public Set<String> listMenuPermissionByUserId(String userId) {
         List<SysMenu> sysMenuList = baseMapper.listMenuListByUserId(TenantConstant.DEFAULT_UAC_APP_ID, userId, false);
         List<String> menuPerms = sysMenuList.stream().map(SysMenu::getPermission).toList();
-        
+
         Set<String> permsSet = new HashSet<>();
         for (String perm : menuPerms) {
             if (StringUtil.hasText(perm)) {

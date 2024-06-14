@@ -23,6 +23,7 @@
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         :dialogForm="dialogForm"
         :exportFile
+        :disabled-button="!hasAuth('system:dict:export') ? ['export'] : []"
       ></ProTable>
     </div>
 
@@ -48,6 +49,7 @@ import { ElLink, ElMessageBox } from "element-plus";
 import { dictTypeElFormProps, useFormSchema } from "./useFormSchema";
 import { baseEnum } from "@work/constants";
 import { useDesign } from "@work/hooks";
+import { usePermission } from "@/hooks";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("dict-type");
@@ -106,6 +108,8 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: {
     elFormProps: dictTypeElFormProps,
@@ -118,6 +122,9 @@ const dialogForm: DialogForm = {
   addApi: addOne,
   editApi: editOne,
   removeApi: deleteOne,
+  disableAdd: !hasAuth("system:dict:add"),
+  disableEdit: !hasAuth("system:dict:edit"),
+  disableRemove: !hasAuth("system:dict:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

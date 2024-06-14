@@ -31,9 +31,16 @@
         :border="false"
         :pagination="false"
         :exportFile
+        :disabled-button="!hasAuth('system:menu:export') ? ['export'] : []"
       >
         <template #operationExtra="{ row, operate }">
-          <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.menuId })">
+          <el-button
+            v-auth="['system:menu:add']"
+            link
+            size="small"
+            :icon="Plus"
+            @click="operate?.handleAdd({ parentId: row.menuId })"
+          >
             新增
           </el-button>
         </template>
@@ -56,7 +63,7 @@ import {
 import { menuTypeEnum, elFormProps, useFormSchema } from "./useFormSchema";
 import { useLayoutStore } from "@/stores";
 import { Plus } from "@element-plus/icons-vue";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
@@ -129,6 +136,8 @@ const installMeta = (data: any) => {
   }
 };
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: {
     elFormProps,
@@ -159,6 +168,9 @@ const dialogForm: DialogForm = {
       form.path = form.path.split("//")[1];
     } else form.pathPrefix = "";
   },
+  disableAdd: !hasAuth("system:menu:add"),
+  disableEdit: !hasAuth("system:menu:edit"),
+  disableRemove: !hasAuth("system:menu:remove"),
   apiFilterKeys: ["pathPrefix"],
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),

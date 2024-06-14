@@ -9,6 +9,7 @@
       :border="false"
       @sort-change="sortChange"
       :default-sort="{ prop: 'loginTime', order: 'descending' }"
+      :disabled-button="!hasAuth('system:onlineUsers:export') ? ['export'] : []"
     ></ProTable>
   </div>
 </template>
@@ -20,9 +21,12 @@ import { type ProTableInstance, type TableColumnProps } from "@work/components";
 import { listDeptTreeList } from "@/api/system/dept";
 import { useDesign } from "@work/hooks";
 import { useUserStore } from "@/stores";
+import { usePermission } from "@/hooks";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("online-users");
+
+const { hasAuth } = usePermission();
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -55,7 +59,12 @@ const columns: TableColumnProps<OnlineUser.OnlineUserInfo>[] = [
       <el-popconfirm title={`你确定强制 ${row.nickname} 用户下线吗?`} onConfirm={() => forceLogout(row.username)}>
         {{
           reference: () => (
-            <el-button link type="danger" disabled={row.username === userInfo.username}>
+            <el-button
+              v-auth={["system:onlineUsers:forceLogout"]}
+              link
+              type="danger"
+              disabled={row.username === userInfo.username}
+            >
               强退{" "}
             </el-button>
           ),

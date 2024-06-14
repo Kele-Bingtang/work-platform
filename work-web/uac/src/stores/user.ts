@@ -34,7 +34,7 @@ export const useUserStore = defineStore(
     };
 
     const tryLogout = async () => {
-      if (token.value === "") throw Error("LogOut: token is undefined!");
+      if (unref(token) === "") throw Error("LogOut: token is undefined!");
       await logout();
       resetRouter();
       setToken("");

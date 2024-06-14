@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Kele-Bingtang
@@ -28,12 +28,12 @@ public class Meta {
     /**
      * 可访问该页面的权限数组
      */
-    private List<String> roles;
+    private Set<String> roles;
 
     /**
      * 路由内的按钮权限
      */
-    private List<String> auths;
+    private Set<String> auths;
 
     /**
      * 是否允许点击面包屑，如果为 true，则该路由无法在面包屑中被点击，默认为 false

@@ -69,7 +69,7 @@ public class SysMenu extends BaseDO {
     private String permission;
 
     /**
-     * 菜单类型（M目录 C菜单 F按钮）
+     * 菜单类型（C目录 M菜单 F按钮）
      */
     private String menuType;
 

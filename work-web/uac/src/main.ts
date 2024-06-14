@@ -5,6 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 import "@work/styles/normalize.css"; // CSS Reset
 import directives from "@work/directives";
+import localDirectives from "@/directives";
 import I18n from "@work/i18n";
 import "virtual:svg-icons-register";
 import { Icon } from "@work/components";
@@ -32,4 +33,4 @@ if (import.meta.env.VITE_LOAD_ALL_EP_COMPONENTS === "true") {
   });
 }
 
-app.use(I18n).use(pinia).use(router).use(directives).mount("#app");
+app.use(I18n).use(pinia).use(router).use(localDirectives).use(directives).mount("#app");

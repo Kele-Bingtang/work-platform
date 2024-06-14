@@ -2,7 +2,7 @@
   <div v-if="checkbox">
     <el-checkbox v-model="defaultExpandAll" label="展开/折叠" />
     <el-checkbox v-if="select" v-model="isSelectAll" :indeterminate="indeterminate" label="全选/全不选" />
-    <el-checkbox v-if="select" v-model="checkStrictly" label="父子联动" />
+    <el-checkbox v-if="select" v-model="checkStrictlyProp" label="父子联动" />
   </div>
   <el-input
     v-if="search"
@@ -15,8 +15,8 @@
     :show-checkbox="select"
     @check="handleCheck"
     :filter-node-method="filterNode"
-    :check-strictly="!checkStrictly"
     :default-expanded-keys="defaultExpandedKeys"
+    :check-strictly="!checkStrictlyProp"
     v-bind="$attrs"
     :data="data"
     :nodeKey="nodeKey"
@@ -40,6 +40,7 @@ export interface TreeProps {
   checkbox?: boolean; // 开启工具栏
   search?: boolean; // 开启搜索功能
   select?: boolean; // 开启全选/全不选功能
+  checkStrictly?: boolean; // 在显示复选框的情况下，是否严格的遵循父子不互相关联的做法
 }
 
 const props = withDefaults(defineProps<TreeProps>(), {
@@ -49,6 +50,7 @@ const props = withDefaults(defineProps<TreeProps>(), {
   checkbox: false,
   search: false,
   select: true,
+  checkStrictly: true,
 });
 
 const checkedList = defineModel<any[]>();
@@ -56,10 +58,17 @@ const checkedList = defineModel<any[]>();
 const defaultExpandAll = ref(false); // 展开/折叠状态
 const isSelectAll = ref(false); // 全选/全不选状态
 const indeterminate = ref(false); // 处于全选和全不选期间的状态
-const checkStrictly = ref(true); // 父子联动
+const checkStrictlyProp = ref(!props.checkStrictly); // 父子联动
 const defaultExpandedKeys = ref<string[]>([]); // 默认展开的节点 nodeKey
 const filterText = ref(""); // 搜索的文本
 const treeRef = ref<InstanceType<typeof ElTree>>();
+
+onMounted(() => {
+  // 解决初始化父节点下的所有子节点被选中问题
+  nextTick(() => {
+    checkStrictlyProp.value = !props.checkStrictly;
+  });
+});
 
 watch(defaultExpandAll, val => {
   const nodes = unref(treeRef)?.store._getAllNodes();

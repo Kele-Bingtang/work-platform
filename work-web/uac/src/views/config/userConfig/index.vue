@@ -43,10 +43,12 @@
             value="groupId"
             label="groupName"
             @edit="userGroupEdit"
-            @delete="userGroupDelete"
+            @remove="userGroupDelete"
+            :use-edit="hasAuth('system:user:edit')"
+            :use-remove="hasAuth('system:user:remove')"
           >
             <template #extra>
-              <el-button link :icon="Plus" @click="handleAddUserGroup">新增</el-button>
+              <el-button v-auth="['system:user:add']" link :icon="Plus" @click="handleAddUserGroup">新增</el-button>
             </template>
           </ListCard>
         </el-col>
@@ -60,10 +62,12 @@
             value="roleId"
             label="roleName"
             @edit="roleEdit"
-            @delete="roleDelete"
+            @remove="roleDelete"
+            :use-edit="hasAuth('system:user:edit')"
+            :use-remove="hasAuth('system:user:remove')"
           >
             <template #extra>
-              <el-button link :icon="Plus" @click="handleAddRole">新增</el-button>
+              <el-button v-auth="['system:user:add']" link :icon="Plus" @click="handleAddRole">新增</el-button>
             </template>
           </ListCard>
         </el-col>
@@ -115,9 +119,12 @@ import { Description, ListCard, type DescriptionProps, type ListCardInstance } f
 import DialogForm, { type DialogFormInstance } from "./components/dialogForm.vue";
 import { getAppTreeList, type App } from "@/api/application/app";
 import { useDesign } from "@work/hooks";
+import { usePermission } from "@/hooks";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("user-link");
+
+const { hasAuth } = usePermission();
 
 const userGroupListCardRef = shallowRef<ListCardInstance>();
 const roleListCardRef = shallowRef<ListCardInstance>();

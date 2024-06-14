@@ -8,9 +8,18 @@
     :pagination="!isCascade"
     :dialogForm="dialogForm"
     :exportFile
+    :disabled-button="!hasAuth('system:dict:export') ? ['export'] : []"
   >
     <template #operationExtra="{ row, operate }" v-if="isCascade">
-      <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.dataId })">新增</el-button>
+      <el-button
+        v-auth="['system:dict:add']"
+        link
+        size="small"
+        :icon="Plus"
+        @click="operate?.handleAdd({ parentId: row.dataId })"
+      >
+        新增
+      </el-button>
     </template>
   </ProTable>
 </template>
@@ -30,6 +39,7 @@ import { type DialogForm, type TableColumnProps } from "@work/components";
 import { dictDataElFormProps, useFormSchema } from "./useFormSchema";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessageBox } from "element-plus";
+import { usePermission } from "@/hooks";
 
 export interface DictDataProps {
   dictCode: string;
@@ -53,6 +63,8 @@ const columns: TableColumnProps<DictData.DictDataInfo>[] = [
   { prop: "operation", label: "操作", width: computed(() => (props.isCascade ? 200 : 160)) },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm = reactive<DialogForm>({
   formProps: {
     elFormProps: dictDataElFormProps,
@@ -69,6 +81,9 @@ const dialogForm = reactive<DialogForm>({
   beforeEdit: form => {
     if (form.tagEl === undefined) form.tagEl = "";
   },
+  disableAdd: !hasAuth("system:dict:add"),
+  disableEdit: !hasAuth("system:dict:edit"),
+  disableRemove: !hasAuth("system:dict:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

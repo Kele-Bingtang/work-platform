@@ -9,9 +9,18 @@
       :border="false"
       :pagination="false"
       :exportFile
+      :disabled-button="!hasAuth('system:dept:export') ? ['export'] : []"
     >
       <template #operationExtra="{ row, operate }">
-        <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.deptId })">新增</el-button>
+        <el-button
+          v-auth="['system:dept:add']"
+          link
+          size="small"
+          :icon="Plus"
+          @click="operate?.handleAdd({ parentId: row.deptId })"
+        >
+          新增
+        </el-button>
       </template>
     </ProTable>
   </div>
@@ -23,7 +32,7 @@ import { listDeptTreeTable, addOne, editOne, deleteOne, type Dept, exportExcel }
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import { useDesign } from "@work/hooks";
@@ -76,12 +85,17 @@ const columns: TableColumnProps<Dept.DeptTreeTable>[] = [
   { prop: "operation", label: "操作", width: 200, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
   id: ["id", "deptId"],
   addApi: addOne,
   editApi: editOne,
   removeApi: deleteOne,
+  disableAdd: !hasAuth("system:dept:add"),
+  disableEdit: !hasAuth("system:dept:edit"),
+  disableRemove: !hasAuth("system:dept:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

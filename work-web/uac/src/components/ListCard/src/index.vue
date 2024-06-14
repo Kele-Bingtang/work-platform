@@ -16,8 +16,13 @@
         </template>
 
         <template #extra="item">
-          <el-button :icon="Edit" link @click="emits('edit', item)"></el-button>
-          <el-popconfirm :title="`你确定移出该 ${title} 吗?`" @confirm="emits('delete', item)" :width="200">
+          <el-button v-if="useEdit" :icon="Edit" link @click="emits('edit', item)"></el-button>
+          <el-popconfirm
+            v-if="useRemove"
+            :title="`你确定移出该 ${title} 吗?`"
+            @confirm="emits('remove', item)"
+            :width="200"
+          >
             <template #reference>
               <el-button :icon="Delete" link></el-button>
             </template>
@@ -54,11 +59,13 @@ export interface ListCardProps {
   requestParams?: Record<string, any>;
   label?: string;
   value?: string;
+  useEdit?: boolean;
+  useRemove?: boolean;
 }
 
 type EmitProps = {
   (e: "edit", item: any): void;
-  (e: "delete", item: any): void;
+  (e: "remove", item: any): void;
 };
 
 const emits = defineEmits<EmitProps>();

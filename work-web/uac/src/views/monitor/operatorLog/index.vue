@@ -10,12 +10,22 @@
       @sort-change="sortChange"
       :default-sort="{ prop: 'loginTime', order: 'descending' }"
       :exportFile
+      :disabled-button="!hasAuth('system:operaLog:export') ? ['export'] : []"
     >
       <template #tableHeader="scope">
-        <el-button type="danger" :icon="Delete" plain @click="handleDeleteBatch(scope)" :disabled="!scope?.isSelected">
+        <el-button
+          v-auth="['system:operaLog:remove']"
+          type="danger"
+          :icon="Delete"
+          plain
+          @click="handleDeleteBatch(scope)"
+          :disabled="!scope?.isSelected"
+        >
           批量删除
         </el-button>
-        <el-button type="danger" :icon="Delete" plain @click="handleClean()">清除</el-button>
+        <el-button v-auth="['system:operaLog:clear']" type="danger" :icon="Delete" plain @click="handleClean()">
+          清除
+        </el-button>
       </template>
     </ProTable>
   </div>
@@ -29,9 +39,12 @@ import { useLayoutStore } from "@/stores";
 import { Delete } from "@element-plus/icons-vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { useDesign } from "@work/hooks";
+import { usePermission } from "@/hooks";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("operator-log");
+
+const { hasAuth } = usePermission();
 
 const proTableRef = shallowRef<ProTableInstance>();
 

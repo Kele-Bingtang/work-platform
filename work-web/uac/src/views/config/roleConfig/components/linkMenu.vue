@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; align-items: center; margin-bottom: 10px">
-    <el-button type="primary" @click="handleEdit">编辑</el-button>
+    <el-button v-auth="['system:role:linkMenu']" type="primary" @click="handleEdit">编辑</el-button>
     <el-button @click="initTreeData()">刷新</el-button>
     <el-alert title="蓝色代表已关联的菜单，黑色代表未关联的菜单" :closable="false" style="margin: 0 10px" />
   </div>
@@ -17,13 +17,13 @@ import { ProForm, Tree, useDialog } from "work";
 import type { FormSchemaProps } from "@work/components";
 import { addMenusToRole } from "@/api/system/role";
 
-export interface LinkUserProps {
+export interface LinkMenuProps {
   appId: string;
   id: number;
   roleId: string;
 }
 
-const props = defineProps<LinkUserProps>();
+const props = defineProps<LinkMenuProps>();
 
 const data = ref<Menu.MenuTreeList[]>([]);
 const form = ref<{ selectedMenuIds: string[] }>({ selectedMenuIds: [] });

@@ -9,6 +9,7 @@
       :dialogForm="dialogForm"
       :border="false"
       :exportFile
+      :disabled-button="!hasAuth('system:tenant:export') ? ['export'] : []"
     ></ProTable>
   </div>
 </template>
@@ -19,7 +20,7 @@ import { listPage, addOne, editOne, deleteOne, deleteBatch, type Tenant, exportE
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
@@ -72,6 +73,8 @@ const columns: TableColumnProps<Tenant.TenantInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
   id: ["id", "tenantId"],
@@ -79,6 +82,10 @@ const dialogForm: DialogForm = {
   editApi: editOne,
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
+  disableAdd: !hasAuth("system:tenant:add"),
+  disableEdit: !hasAuth("system:tenant:edit"),
+  disableRemove: !hasAuth("system:tenant:remove"),
+  disableRemoveBatch: !hasAuth("system:tenant:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

@@ -13,8 +13,8 @@ const rules = reactive<FormRules>({
 });
 
 export const menuTypeEnum = [
-  { value: "M", label: "目录" },
-  { value: "C", label: "菜单" },
+  { value: "C", label: "目录" },
+  { value: "M", label: "菜单" },
   { value: "F", label: "按钮" },
 ];
 
@@ -57,7 +57,7 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
     },
     {
       prop: "parentId",
-      label: model => (model.menuType === "M" ? `上级目录` : "上级菜单"),
+      label: model => (model.menuType === "C" ? `上级目录` : "上级菜单"),
       el: "el-tree-select",
       props: {
         placeholder: "请选择 上级",
@@ -113,7 +113,7 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       label: "权限标识",
       el: "el-input",
       props: { clearable: true, placeholder: "请输入 权限标识（system:user:list）" },
-      hidden: model => model.menuType === "M",
+      hidden: model => model.menuType === "C",
       col: { span: 24 },
     },
     {
@@ -121,7 +121,7 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       label: "组件路径",
       el: "el-input",
       props: { clearable: true, placeholder: "请输入 组件路径" },
-      hidden: model => model.menuType !== "C",
+      hidden: model => model.menuType !== "M",
     },
     {
       prop: "icon",
@@ -135,7 +135,7 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       label: "路由参数",
       el: "el-input",
       props: { clearable: true, placeholder: "请输入 路由参数" },
-      hidden: model => model.menuType !== "C",
+      hidden: model => model.menuType !== "M",
     },
     {
       prop: "orderNum",
@@ -171,8 +171,8 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
   ];
 
   const getLabel = (model: Menu.MenuInfo) => {
-    if (model.menuType === "M") return "目录";
-    else if (model.menuType === "C") return "菜单";
+    if (model.menuType === "C") return "目录";
+    else if (model.menuType === "M") return "菜单";
     else if (model.menuType === "F") return "按钮";
   };
 

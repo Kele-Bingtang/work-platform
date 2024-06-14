@@ -23,6 +23,7 @@
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         :dialogForm="dialogForm"
         :exportFile
+        :disabled-button="!hasAuth('system:app:export') ? ['export'] : []"
       ></ProTable>
     </div>
   </div>
@@ -40,7 +41,7 @@ import {
 } from "@work/components";
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
@@ -94,6 +95,8 @@ const columns: TableColumnProps<App.AppInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: {
     elFormProps,
@@ -102,15 +105,27 @@ const dialogForm: DialogForm = {
       computed(() => initRequestParam.clientId)
     ).schema,
   },
-  id: ["id", "clientId"],
+  id: ["id", "appId"],
   addApi: addOne,
+  beforeAdd: form => {
+    form.ownerId = form.user?.username;
+    form.ownerName = form.user?.nickname;
+  },
   editApi: data => editOne({ ...data, clientId: initRequestParam.clientId || data.clientId }),
+  beforeEdit: form => {
+    form.ownerId = form.user?.username;
+    form.ownerName = form.user?.nickname;
+  },
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
+  disableAdd: !hasAuth("system:app:add"),
+  disableEdit: !hasAuth("system:app:edit"),
+  disableRemove: !hasAuth("system:app:remove"),
+  disableRemoveBatch: !hasAuth("system:app:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
-    height: 200,
+    height: 250,
     top: "5vh",
     closeOnClickModal: false,
   },

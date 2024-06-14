@@ -19,7 +19,8 @@
       <!-- 表格头部 操作按钮 -->
       <TableMainHeader
         :columns="getProps.columns"
-        :toolButton="getProps.toolButton"
+        :useToolButton="getProps.useToolButton"
+        :disabledButton="getProps.disabledButton"
         :size="getProps.size"
         :showSearch="searchColumns ? searchColumns.length > 0 : false"
         :selectedList="selectedList"
@@ -86,7 +87,7 @@
       </slot>
     </div>
     <!-- 列设置 -->
-    <ColSetting v-if="getProps.toolButton" v-model="colSettingVisible" v-model:col-setting="colSetting" />
+    <ColSetting v-if="getProps.useToolButton" v-model="colSettingVisible" v-model:col-setting="colSetting" />
   </div>
 </template>
 
@@ -170,7 +171,8 @@ export interface ProTableProps extends /* @vue-ignore */ Partial<Omit<TableProps
   title?: string; // 表格标题，目前只在打印的时候用到 ==> 非必传
   pagination?: boolean | Table.PaginationProps; // 是否需要分页组件 ==> 非必传（默认为 true）
   border?: boolean; // 是否带有纵向边框 ==> 非必传（默认为 true）
-  toolButton?: ToolButton[] | boolean; // 是否显示表格功能按钮 ==> 非必传（默认为 true）
+  useToolButton?: ToolButton[] | boolean; // 是否显示表格功能按钮 ==> 非必传（默认为 true）
+  disabledButton?: ToolButton[]; // 指定禁用的表格功能按钮 ==> 非必传
   rowKey?: string; // 行数据的 Key，用来优化 Table 的渲染，当表格数据多选时，所指定的 id ==> 非必传（默认为 id）
   size?: CustomTableSize; // 表格密度
   exportKey?: "props" | "label" | "dataKey"; // 导出时的表头配置（prop 为使用  columns 的 props，label 为使用 columns 的 label，dataKey 为使用 data 的 key），默认为 dataKey
@@ -192,7 +194,7 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   pagination: true,
   initRequestParam: {},
   border: true,
-  toolButton: true,
+  useToolButton: true,
   rowKey: "id",
   size: "default",
   initShowSearch: true,
@@ -716,4 +718,3 @@ defineExpose(expose);
 <style lang="scss">
 @import "./index";
 </style>
-, isReactive, reactive

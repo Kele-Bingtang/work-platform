@@ -62,20 +62,20 @@
                   type="danger"
                   size="small"
                   :icon="Delete"
-                  :disabled="scope.row.disableRemove && !dialogForm?.disableRemove"
+                  :disabled="scope.row.disableRemove || dialogForm?.disableRemove"
                 >
                   删除
                 </el-button>
               </template>
             </el-popconfirm>
-            <slot name="operationExtra" v-bind="{ ...scope, operate: dialogFormRef }"></slot>
+            <slot name="operationExtra" v-bind="{ ...scope, operate: dialogFormRef }" />
           </slot>
         </template>
       </TableColumn>
     </template>
 
     <!-- 插入表格最后一行之后的插槽 -->
-    <template #append><slot name="append"></slot></template>
+    <template #append><slot name="append" /></template>
 
     <!-- 无数据 -->
     <template #empty>

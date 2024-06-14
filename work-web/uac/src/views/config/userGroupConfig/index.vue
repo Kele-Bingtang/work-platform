@@ -30,6 +30,7 @@
         :data-callback="dataCallback"
         highlight-current-row
         :exportFile
+        :disabled-button="!hasAuth('system:userGroup:export') ? ['export'] : []"
       ></ProTable>
     </div>
 
@@ -58,6 +59,7 @@ import LinkUser from "./components/linkUser.vue";
 import LinkRole from "./components/linkRole.vue";
 import { useDesign } from "@work/hooks";
 import { ElMessageBox } from "element-plus";
+import { usePermission } from "@/hooks";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("user-group");
@@ -105,6 +107,8 @@ const columns: TableColumnProps<UserGroup.UserGroupInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 // 新增、编辑弹框配置项
 const dialogForm: DialogForm = {
   formProps: {
@@ -122,6 +126,10 @@ const dialogForm: DialogForm = {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
   },
+  disableAdd: !hasAuth("system:userGroup:add"),
+  disableEdit: !hasAuth("system:userGroup:edit"),
+  disableRemove: !hasAuth("system:userGroup:remove"),
+  disableRemoveBatch: !hasAuth("system:userGroup:remove"),
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
   apiFilterKeys: ["user", "createTime"],

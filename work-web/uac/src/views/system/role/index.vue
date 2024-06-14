@@ -23,6 +23,7 @@
         :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
         :dialogForm="dialogForm"
         :exportFile
+        :disabled-button="!hasAuth('system:role:export') ? ['export'] : []"
       ></ProTable>
     </div>
   </div>
@@ -40,7 +41,7 @@ import {
 } from "@work/components";
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { useDesign } from "@work/hooks";
 
@@ -95,6 +96,8 @@ const columns: TableColumnProps<Role.RoleInfo>[] = [
   { prop: "operation", label: "操作", width: 160, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: {
     elFormProps,
@@ -108,6 +111,10 @@ const dialogForm: DialogForm = {
   editApi: editOne,
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
+  disableAdd: !hasAuth("system:role:add"),
+  disableEdit: !hasAuth("system:role:edit"),
+  disableRemove: !hasAuth("system:role:remove"),
+  disableRemoveBatch: !hasAuth("system:role:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

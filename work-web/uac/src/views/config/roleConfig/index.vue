@@ -30,6 +30,7 @@
         :data-callback="dataCallback"
         highlight-current-row
         :exportFile
+        :disabled-button="!hasAuth('system:role:export') ? ['export'] : []"
       ></ProTable>
     </div>
 
@@ -59,7 +60,7 @@ import {
 } from "@work/components";
 import { elFormProps, useFormSchema } from "@/views/system/role/useFormSchema";
 import { useLayoutStore } from "@/stores";
-import { useChange } from "@/hooks/useChange";
+import { useChange, usePermission } from "@/hooks";
 import { ElMessageBox, ElSwitch } from "element-plus";
 import { Description } from "@/components";
 import LinkUser from "./components/linkUser.vue";
@@ -128,6 +129,8 @@ const columns: TableColumnProps<Role.RoleInfo>[] = [
   { prop: "operation", label: "操作", width: 130, fixed: "right" },
 ];
 
+const { hasAuth } = usePermission();
+
 const dialogForm: DialogForm = {
   formProps: {
     elFormProps,
@@ -141,6 +144,10 @@ const dialogForm: DialogForm = {
   editApi: editOne,
   removeApi: deleteOne,
   removeBatchApi: deleteBatch,
+  disableAdd: !hasAuth("system:role:add"),
+  disableEdit: !hasAuth("system:role:edit"),
+  disableRemove: !hasAuth("system:role:remove"),
+  disableRemoveBatch: !hasAuth("system:role:remove"),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

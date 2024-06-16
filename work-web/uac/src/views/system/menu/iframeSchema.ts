@@ -10,7 +10,7 @@ export const metaEnumNo = [
   { value: "default", label: "否（默认）" },
 ];
 
-const destroy = (form: any) => form.useMeta === 0 || !form.useMeta;
+const destroy = (form: any) => form.useMeta === 0;
 
 export const iframeFormSchema: DialogFormSchemaProps[] = [
   {

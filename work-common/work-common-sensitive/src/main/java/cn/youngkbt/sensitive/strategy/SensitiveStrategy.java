@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/8 01:05:00
- * @note 脱敏策略，采用 hutool 的 DesensitizedUtil 工具类
+ * @note 脱敏策略，采用 hutool 的 DesensitizedUtil 工具类实现脱敏
  */
 @AllArgsConstructor
 @Getter
@@ -61,5 +61,4 @@ public enum SensitiveStrategy {
     BANK_CARD(DesensitizedUtil::bankCard);
 
     private final Function<String, String> desensitize;
-
 }

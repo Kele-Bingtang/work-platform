@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "packageManager": "pnpm@8.5.1",
+  "description": "Kbt Admin 后台管理系统",
+  "author": "YoungKbt <2456019588@qq.com>",
   "workspaces": [
     "packages/*",
     "docs",

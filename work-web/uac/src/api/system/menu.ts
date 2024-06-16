@@ -9,15 +9,12 @@ export namespace Menu {
     parentId: string; // 父级菜单 ID
     pathPrefix: string; // 菜单地址前缀
     path: string; // 菜单地址
-    param: string; // 路由参数
     icon: string; // 图标
     orderNum: number; // 显示顺序
+    permission: string; // 菜单权限
     menuType: string; // 菜单类型（C目录 M菜单 F按钮）
     component: string; // 组件路径
-    visible: number; // 显示状态（0 隐藏 1 显示）
-    isCache: number; // 是否缓存（0 不缓存 1 缓存）
-    isFrame: number; // 是否为外链（0 否 1 是）
-    useMeta: number; // 菜单前端额外配置
+    meta: MetaProp; // 菜单前端额外配置
     intro: string; // 菜单介绍
     appId: string; // 应用 ID
     status: number; // 状态

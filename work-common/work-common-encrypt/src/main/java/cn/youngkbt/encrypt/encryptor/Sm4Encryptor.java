@@ -8,7 +8,7 @@ import cn.youngkbt.encrypt.helper.EncryptHelper;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/8 22:37:31
- * @note
+ * @note SM4 算法
  */
 public class Sm4Encryptor extends AbstractEncryptor {
     private final EncryptContext context;

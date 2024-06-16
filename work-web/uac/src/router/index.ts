@@ -1,4 +1,4 @@
-import NProgress from "@work/utils/nprogress";
+import { NProgress } from "@work/utils";
 import settings from "@/config/settings";
 import { useRoutes } from "@/hooks/useRoutes";
 import { usePermissionStore, useUserStore } from "@/stores";

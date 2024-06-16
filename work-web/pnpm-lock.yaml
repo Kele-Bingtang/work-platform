@@ -229,6 +229,13 @@ importers:
       element-plus:
         specifier: ^2.3.3
         version: 2.7.4(vue@3.4.27)
+      qs:
+        specifier: ^6.12.1
+        version: 6.12.1
+    devDependencies:
+      '@types/qs':
+        specifier: ^6.9.15
+        version: 6.9.15
 
   packages/static: {}
 
@@ -323,7 +330,7 @@ importers:
         specifier: ^20.11.0
         version: 20.14.1
       '@types/qs':
-        specifier: ^6.9.11
+        specifier: ^6.9.15
         version: 6.9.15
       '@types/sortablejs':
         specifier: ^1.15.7

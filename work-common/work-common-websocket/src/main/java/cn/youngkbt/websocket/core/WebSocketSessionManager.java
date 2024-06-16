@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/9 19:35:59
- * @note
+ * @note WebSocketSession 用于保存当前所有在线的会话信息
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WebSocketSessionManager {

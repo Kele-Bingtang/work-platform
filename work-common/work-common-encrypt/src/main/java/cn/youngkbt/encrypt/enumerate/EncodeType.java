@@ -3,7 +3,7 @@ package cn.youngkbt.encrypt.enumerate;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/8 22:15:34
- * @note
+ * @note 编码类型
  */
 public enum EncodeType {
     /**

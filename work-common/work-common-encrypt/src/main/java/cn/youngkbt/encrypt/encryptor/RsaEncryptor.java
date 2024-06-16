@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/8 22:36:47
- * @note
+ * @note RSA 算法
  */
 public class RsaEncryptor extends AbstractEncryptor {
 

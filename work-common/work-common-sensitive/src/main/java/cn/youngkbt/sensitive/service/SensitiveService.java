@@ -3,7 +3,7 @@ package cn.youngkbt.sensitive.service;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/8 01:29:43
- * @note
+ * @note 自定义敏感服务
  */
 public interface SensitiveService {
     /**

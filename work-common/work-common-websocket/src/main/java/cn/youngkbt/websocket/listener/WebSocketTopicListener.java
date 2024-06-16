@@ -51,6 +51,5 @@ public class WebSocketTopicListener implements MessageListener {
                 });
             }
         }
-
     }
 }

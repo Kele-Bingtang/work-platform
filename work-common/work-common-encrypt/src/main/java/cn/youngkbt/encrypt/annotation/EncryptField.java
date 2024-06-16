@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/8 21:35:52
- * @note
+ * @note 数据库数据加解密注解
  */
 @Documented
 @Inherited

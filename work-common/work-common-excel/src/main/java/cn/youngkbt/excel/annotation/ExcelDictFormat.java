@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/10 17:08:44
- * @note 系统字典格式化
+ * @note 字典格式化
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

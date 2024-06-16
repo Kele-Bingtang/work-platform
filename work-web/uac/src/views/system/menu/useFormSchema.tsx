@@ -4,6 +4,7 @@ import { ElInput, ElOption, ElSelect, type FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 import { layoutFormSchema } from "./layoutSchema";
 import { iframeFormSchema } from "./iframeSchema";
+import { isObject } from "@work/utils";
 
 const rules = reactive<FormRules>({
   appId: [{ required: true, message: "请选择 App", trigger: "blur" }],
@@ -162,7 +163,17 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       el: "el-radio-group",
       destroy: model => model.menuType === "F",
       enum: commonEnum,
-      defaultValue: 0,
+      defaultValue: model => {
+        if (!model.meta) return 0;
+        const m = { ...model.meta };
+        ["title", "icon", "rank"].forEach(key => delete m[key]);
+
+        for (const key in m) {
+          const val = m[key];
+          if (val === "default") delete m[key];
+        }
+        return Object.keys(m).length ? 1 : 0;
+      },
       col: { span: 24 },
     },
 

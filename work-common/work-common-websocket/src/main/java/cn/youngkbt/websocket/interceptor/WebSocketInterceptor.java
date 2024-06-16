@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/9 19:26:32
- * @note
+ * @note WebSocket 握手请求的拦截器
  */
 public class WebSocketInterceptor implements HandshakeInterceptor {
 

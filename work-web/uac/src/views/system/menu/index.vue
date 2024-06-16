@@ -145,6 +145,7 @@ const dialogForm: DialogForm = {
       computed(() => treeFilterRef.value?.treeData),
       computed(() => initRequestParam.appId)
     ).schema,
+    includeModelKeys: ["meta"],
   },
   id: ["id", "menuId"],
   addApi: data =>

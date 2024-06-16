@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/9 19:38:28
- * @note
+ * @note WebSocketHandler 实现类
  */
 @Slf4j
 public class WebSocketHandler extends AbstractWebSocketHandler {

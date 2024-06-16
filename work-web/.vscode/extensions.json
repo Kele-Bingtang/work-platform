@@ -5,6 +5,7 @@
     "stylelint.vscode-stylelint",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
+    "aaron-bond.better-comments",
     "syler.sass-indented"
   ]
 }

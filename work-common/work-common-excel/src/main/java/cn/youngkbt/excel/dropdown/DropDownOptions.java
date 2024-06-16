@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/10 18:28:03
- * @note
+ * @note Excel下拉可选项。注意：为确保下拉框解析正确，传值务必使用 createOptionValue() 做为值的拼接
  */
 @Data
 @AllArgsConstructor

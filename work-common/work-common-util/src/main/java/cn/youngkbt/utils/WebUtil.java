@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -21,6 +23,7 @@ import java.util.Enumeration;
  * @note
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WebUtil {
     /**
      * 将字符串渲染到客户端

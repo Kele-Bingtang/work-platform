@@ -1,5 +1,8 @@
 package cn.youngkbt.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.UUID;
 
 /**
@@ -7,6 +10,7 @@ import java.util.UUID;
  * @date 2023/9/24 3:02
  * @note
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IdsUtil {
     public static String simpleUUID() {
         return UUID.randomUUID().toString().replace("-", "");

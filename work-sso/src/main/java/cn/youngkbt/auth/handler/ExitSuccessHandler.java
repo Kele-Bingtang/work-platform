@@ -1,7 +1,7 @@
 package cn.youngkbt.auth.handler;
 
 import cn.youngkbt.core.http.HttpResult;
-import cn.youngkbt.uac.sys.mapper.SysUserMapper;
+import cn.youngkbt.uac.system.mapper.SysUserMapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;

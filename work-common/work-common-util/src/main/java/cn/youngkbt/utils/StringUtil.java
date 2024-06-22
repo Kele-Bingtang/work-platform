@@ -28,6 +28,19 @@ public class StringUtil extends StringUtils {
         return true;
     }
 
+    public static boolean hasEmpty(String content) {
+        return !hasText();
+    }
+
+    public static boolean hasEmpty(String... content) {
+        for (String s : content) {
+            if (!hasEmpty(s)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean hasAnyText(String... content) {
         for (String s : content) {
             if (hasText(s)) {

@@ -1,9 +1,8 @@
 package cn.youngkbt.uac.core.helper;
 
+import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.utils.LoginHelper;
 import cn.youngkbt.uac.core.constant.TenantConstant;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 import java.util.Set;
@@ -11,11 +10,44 @@ import java.util.Set;
 /**
  * @author Kele-Bingtang
  * @date 2024/6/8 15:06:51
- * @note
+ * @note UAC 操作 Redis 工具类
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UacHelper extends LoginHelper {
 
+    static {
+        LoginHelper.prefixCacheKey = "uac";
+    }
+
+    /**
+     * 初始化 static 的代码
+     */
+    public static void init() {
+    }
+
+    public static String getTenantId() {
+        LoginUser userInfo = getLoginUser();
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return userInfo.getTenantId();
+    }
+
+    public static Set<String> getRoleCodes() {
+        LoginUser userInfo = getLoginUser();
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return userInfo.getRoleCodes();
+    }
+
+    public static Set<String> getMenuPermission() {
+        LoginUser userInfo = getLoginUser();
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return userInfo.getMenuPermission();
+    }
+    
     /**
      * 是否为管理员
      *

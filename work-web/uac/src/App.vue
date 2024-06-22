@@ -83,5 +83,5 @@ const versionCache = () => {
   }
 };
 
-log.success(__APP_INFO__.pkg.version, "欢迎使用 UAC 系统");
+if (import.meta.env.DEV) log.success(__APP_INFO__.pkg.version, "欢迎使用 UAC 系统");
 </script>

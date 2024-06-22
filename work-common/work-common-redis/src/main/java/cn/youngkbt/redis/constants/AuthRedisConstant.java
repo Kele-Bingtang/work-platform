@@ -7,7 +7,7 @@ package cn.youngkbt.redis.constants;
  */
 public interface AuthRedisConstant {
     
-    String PWD_ERR_CNT_KEY = "uac:pwd_err_cnt:";
+    String PWD_ERR_CNT_KEY = ":pwd_err_cnt:";
     
-    String USER_INFO_KEY = "uac:user:";
+    String USER_INFO_KEY = ":user:";
 }

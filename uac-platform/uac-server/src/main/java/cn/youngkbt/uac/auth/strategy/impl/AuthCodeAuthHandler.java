@@ -4,7 +4,7 @@ import cn.youngkbt.security.enumeration.AuthGrantTypeEnum;
 import cn.youngkbt.uac.auth.strategy.AuthHandler;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
-import cn.youngkbt.uac.sys.model.po.SysClient;
+import cn.youngkbt.uac.system.model.po.SysClient;
 
 /**
  * @author Kele-Bingtang

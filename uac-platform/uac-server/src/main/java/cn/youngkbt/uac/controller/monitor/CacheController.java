@@ -2,7 +2,7 @@ package cn.youngkbt.uac.controller.monitor;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
-import cn.youngkbt.uac.sys.model.vo.extra.CacheInfo;
+import cn.youngkbt.uac.system.model.vo.extra.CacheInfo;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.RedisServerCommands;

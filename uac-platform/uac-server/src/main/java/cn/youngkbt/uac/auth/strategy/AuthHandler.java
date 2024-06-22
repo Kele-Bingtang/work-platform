@@ -6,7 +6,7 @@ import cn.youngkbt.security.enumeration.AuthGrantTypeEnum;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.exception.AuthException;
-import cn.youngkbt.uac.sys.model.po.SysClient;
+import cn.youngkbt.uac.system.model.po.SysClient;
 
 import java.util.List;
 import java.util.Objects;

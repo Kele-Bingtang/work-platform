@@ -13,12 +13,12 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -28,25 +28,8 @@ import java.util.*;
  * @date 2022/12/10 21:37
  * @note JWT 工具类
  */
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtTokenUtils {
-
-    public static String AUTHORITIES;
-    /**
-     * 密钥，自定义，根据密钥生成 token，或还原 token
-     */
-    public static String SECRET_KEY;
-    /**
-     * 有效期 12 小时：12 * 60 * 60 * 1000
-     */
-    public static long EXPIRE_TIME;
-
-    public JwtTokenUtils(@Value("${jwt-token.authorities:authorities}") String authorities, @Value("${jwt.secret:work-uac-platform-abcdefghijklmnopqrstuvwxyz}") String secretKey,
-                         @Value("${jwt.expire-time:#{12 * 60 * 60 * 1000}}") Long expireTime) {
-        JwtTokenUtils.AUTHORITIES = authorities;
-        JwtTokenUtils.SECRET_KEY = secretKey;
-        JwtTokenUtils.EXPIRE_TIME = expireTime;
-    }
 
     /**
      * 生成令牌
@@ -55,7 +38,8 @@ public class JwtTokenUtils {
      * @return 令牌
      */
     public static String generateToken(Authentication authentication) {
-        return generateToken(authentication, EXPIRE_TIME, null);
+        JwtProperties jwtProperties = SpringHelper.getBean(JwtProperties.class);
+        return generateToken(authentication, jwtProperties.getExpireTime(), null);
     }
 
     /**
@@ -70,8 +54,10 @@ public class JwtTokenUtils {
     }
 
     public static String generateToken(Authentication authentication, Long expireTime, String namespace) {
+        JwtProperties jwtProperties = SpringHelper.getBean(JwtProperties.class);
         Map<String, Object> claims = new HashMap<>(2);
-        claims.put(AUTHORITIES, authentication.getAuthorities());
+        
+        claims.put(jwtProperties.getAuthoritiesKey(), authentication.getAuthorities());
         claims.put("expireTime", expireTime);
         if (StringUtil.hasText(namespace)) {
             claims.put("namespace", namespace);
@@ -105,7 +91,8 @@ public class JwtTokenUtils {
      * 加密明文密钥
      */
     public static SecretKey generateKey() {
-        byte[] decodeKey = Base64Decoder.decode(SECRET_KEY);
+        JwtProperties jwtProperties = SpringHelper.getBean(JwtProperties.class);
+        byte[] decodeKey = Base64Decoder.decode(jwtProperties.getSecretKey());
         return Keys.hmacShaKeyFor(decodeKey);
     }
 
@@ -165,7 +152,8 @@ public class JwtTokenUtils {
                 return null;
             }
             // 获取用户的权限列表
-            Object authors = claims.get(AUTHORITIES);
+            JwtProperties jwtProperties = SpringHelper.getBean(JwtProperties.class);
+            Object authors = claims.get(jwtProperties.getAuthoritiesKey());
             List<GrantedAuthority> authorities = new ArrayList<>();
             // 如果用户权限是集合，则存入新的集合里
             if (authors instanceof List authorList) {

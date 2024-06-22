@@ -10,9 +10,9 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.uac.core.log.annotation.OperateLog;
 import cn.youngkbt.uac.core.log.enums.BusinessType;
-import cn.youngkbt.uac.sys.model.dto.SysDictDataDTO;
-import cn.youngkbt.uac.sys.model.vo.SysDictDataVO;
-import cn.youngkbt.uac.sys.service.SysDictDataService;
+import cn.youngkbt.uac.system.model.dto.SysDictDataDTO;
+import cn.youngkbt.uac.system.model.vo.SysDictDataVO;
+import cn.youngkbt.uac.system.service.SysDictDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -84,7 +85,7 @@ public class SysDictDataController {
     @PreAuthorize("hasAuthority('system:dict:edit')")
     @PreventRepeatSubmit
     public Response<Boolean> updateOne(@Validated(RestGroup.EditGroup.class) @RequestBody SysDictDataDTO sysDictDataDTO) {
-        if (sysDictDataDTO.getParentId().equals(sysDictDataDTO.getDataId())) {
+        if (Objects.nonNull(sysDictDataDTO.getParentId()) && sysDictDataDTO.getParentId().equals(sysDictDataDTO.getDataId())) {
             return HttpResult.failMessage("修改字典数据「" + sysDictDataDTO.getDictLabel() + "」失败，上级字典数据不能是自己");
         }
         if (sysDictDataService.checkDictDataValueUnique(sysDictDataDTO)) {

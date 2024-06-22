@@ -31,47 +31,28 @@
  * @param meta.dynamicLevel ==> 动态路由可打开的最大数量，默认为空
  * @param meta.useI18n ==>  是否开启 i18n。默认读取全局的 routeUseI18n（src/config/settings.ts）
  * @param meta.useTooltip ==> 菜单的文字超出后，是否使用 el-toolTip 提示，仅针二级路由及以上生效。默认读取全局的 routeUseTooltip（src/config/settings.ts）
+ * @param render ==> 自定义 Render 菜单元素（TSX 语法）
  */
 
 import { HomeFilled, User } from "@element-plus/icons-vue";
+import { HOME_URL, HOME_NAME, LOGIN_URL, LOGIN_NAME, LAYOUT_NAME, REDIRECT_NAME, NOT_FOUND } from "@work/constants";
 
-export const HOME_URL = "/home";
-export const HOME_NAME = "Home";
-export const LOGIN_URL = "/login";
+export { HOME_URL, HOME_NAME, LOGIN_URL, LOGIN_NAME, LAYOUT_NAME, REDIRECT_NAME, NOT_FOUND };
 
 export const constantRoutes: RouterConfigRaw[] = [
-  {
-    path: LOGIN_URL,
-    name: "Login",
-    component: () => import("@/views/login/index.vue"),
-    meta: {
-      title: "登录",
-      hideInMenu: true,
-    },
-  },
-  {
-    path: "/redirect",
-    meta: { hideInMenu: true },
-    children: [
-      {
-        path: "/redirect/:path(.*)",
-        name: "Redirect",
-        component: () => import("@/layout/redirect.vue"),
-      },
-    ],
-  },
+  // 建议把 LAYOUT_NAME 路由放在第一位
   {
     path: "/",
-    name: "Layout",
+    name: LAYOUT_NAME,
     component: () => import("@/layout/index.vue"),
     redirect: HOME_URL,
-    meta: { hideInMenu: true, hideInBread: true },
+    meta: { hideInMenu: true, hideInBread: true, isFull: true },
     children: [
       {
         path: "/error-log",
         name: "ErrorLog",
         component: () => import("@/views/errorLog/index.vue"),
-        meta: { title: "错误日志", isKeepAlive: false, hideInMenu: true },
+        meta: { title: "错误日志", isKeepAlive: false },
       },
       {
         path: "/profile",
@@ -81,6 +62,23 @@ export const constantRoutes: RouterConfigRaw[] = [
       },
     ],
   },
+  {
+    path: LOGIN_URL,
+    name: LOGIN_NAME,
+    component: () => import("@/views/login/index.vue"),
+    meta: {
+      title: "登录",
+      hideInMenu: true,
+      hideInBread: true,
+      isFull: true,
+    },
+  },
+  {
+    path: "/redirect/:path(.*)",
+    name: REDIRECT_NAME,
+    meta: { hideInMenu: true, hideInBread: true, isFull: true },
+    component: () => import("@/layout/redirect.vue"),
+  },
 ];
 
 export const errorRouter: RouterConfigRaw[] = [
@@ -88,33 +86,29 @@ export const errorRouter: RouterConfigRaw[] = [
     path: "/403",
     name: "403",
     component: () => import("@work/components/error/src/403.vue"),
-    meta: {
-      title: "403 页面",
-    },
+    meta: { title: "403 页面", hideInMenu: true, hideInBread: true, isFull: true },
   },
   {
     path: "/404",
     name: "404",
     component: () => import("@work/components/error/src/404.vue"),
-    meta: {
-      title: "404 页面",
-    },
+    meta: { title: "404 页面", hideInMenu: true, hideInBread: true, isFull: true },
   },
   {
     path: "/500",
     name: "500",
     component: () => import("@work/components/error/src/500.vue"),
-    meta: {
-      title: "500 页面",
-    },
+    meta: { title: "500 页面", hideInMenu: true, hideInBread: true, isFull: true },
   },
 ];
+
 /**
  * notFoundRouter(找不到路由)
  */
 export const notFoundRouter = {
   path: "/:pathMatch(.*)*",
-  name: "notFound",
+  name: NOT_FOUND,
+  meta: { hideInMenu: true, hideInBread: true, isFull: true },
   redirect: { name: "404" },
 };
 

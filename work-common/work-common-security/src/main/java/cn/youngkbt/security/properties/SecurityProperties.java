@@ -12,6 +12,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "security")
 public class SecurityProperties {
     /**
+     * 是否禁用 Spring Security
+     */
+    private boolean enabled;
+    /**
      * 排除路径
      */
     private String[] excludes;

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.youngkbt.ag.system.mapper.ServiceColMapper">
+
+    <resultMap id="BaseResultMap" type="cn.youngkbt.ag.system.model.po.ServiceCol">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="colId" column="col_id" jdbcType="VARCHAR"/>
+            <result property="tableCol" column="table_col" jdbcType="VARCHAR"/>
+            <result property="jsonCol" column="json_col" jdbcType="VARCHAR"/>
+            <result property="reportCol" column="report_col" jdbcType="VARCHAR"/>
+            <result property="colType" column="col_type" jdbcType="VARCHAR"/>
+            <result property="colLength" column="col_length" jdbcType="INTEGER"/>
+            <result property="isWhereKey" column="is_where_key" jdbcType="TINYINT"/>
+            <result property="defaultValue" column="default_value" jdbcType="VARCHAR"/>
+            <result property="dataEncrypt" column="data_encrypt" jdbcType="TINYINT"/>
+            <result property="queryFilter" column="query_filter" jdbcType="TINYINT"/>
+            <result property="orderBy" column="order_by" jdbcType="INTEGER"/>
+            <result property="allowInsert" column="allow_insert" jdbcType="TINYINT"/>
+            <result property="allowUpdate" column="allow_update" jdbcType="TINYINT"/>
+            <result property="allowFilter" column="allow_filter" jdbcType="TINYINT"/>
+            <result property="allowRequest" column="allow_request" jdbcType="TINYINT"/>
+            <result property="allowShowInReport" column="allow_show_in_report" jdbcType="TINYINT"/>
+            <result property="allowShowInDetail" column="allow_show_in_detail" jdbcType="TINYINT"/>
+            <result property="displaySeq" column="display_seq" jdbcType="INTEGER"/>
+            <result property="reportColWidth" column="report_col_width" jdbcType="INTEGER"/>
+            <result property="detailColWidth" column="detail_col_width" jdbcType="INTEGER"/>
+            <result property="colAlign" column="col_align" jdbcType="TINYINT"/>
+            <result property="dropdownValue" column="dropdown_value" jdbcType="VARCHAR"/>
+            <result property="dropdownService" column="dropdown_service" jdbcType="VARCHAR"/>
+            <result property="dropdownSql" column="dropdown_sql" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateById" column="update_by_id" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="serviceId" column="service_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,col_id,table_col,
+        json_col,report_col,col_type,
+        col_length,is_where_key,default_value,
+        data_encrypt,query_filter,order_by,
+        allow_insert,allow_update,allow_filter,
+        allow_request,allow_show_in_report,allow_show_in_detail,
+        display_seq,report_col_width,detail_col_width,
+        col_align,dropdown_value,dropdown_service,
+        dropdown_sql,create_by,create_by_id,
+        create_time,update_by,update_by_id,
+        update_time,status,service_id
+    </sql>
+</mapper>

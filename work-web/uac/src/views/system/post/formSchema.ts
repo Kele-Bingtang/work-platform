@@ -29,7 +29,7 @@ export const schema: DialogFormSchemaProps<Post.PostInfo>[] = [
     prop: "orderNum",
     label: "显示顺序",
     el: "el-input-number",
-    defaultValue: 0,
+    defaultValue: 1,
   },
   {
     prop: "intro",

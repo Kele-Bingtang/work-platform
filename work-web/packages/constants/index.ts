@@ -2,11 +2,17 @@ export * from "./symbol";
 
 export const HOME_URL = "/home";
 export const HOME_NAME = "Home";
+export const LOGIN_URL = "/login";
+export const LOGIN_NAME = "Login";
+export const LAYOUT_NAME = "Layout";
+export const REDIRECT_NAME = "Redirect";
+export const NOT_FOUND = "NotFound";
 
 export const UAC_PREFIX = "uac";
 export const uacAppSecret = "1000000000000000000";
 export const uacAppGrantType = "password";
 
+export const AG_PREFIX = "ag";
 export const httpPrefix = "http://";
 export const httpsPrefix = "https://";
 

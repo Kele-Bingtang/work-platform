@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.youngkbt.ag.system.mapper.OperaLogMapper">
+
+    <resultMap id="BaseResultMap" type="cn.youngkbt.ag.system.model.po.OperaLog">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="operaId" column="opera_id" jdbcType="VARCHAR"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="businessType" column="business_type" jdbcType="TINYINT"/>
+            <result property="method" column="method" jdbcType="VARCHAR"/>
+            <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
+            <result property="operatorType" column="operator_type" jdbcType="TINYINT"/>
+            <result property="operaName" column="opera_name" jdbcType="VARCHAR"/>
+            <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+            <result property="operaUrl" column="opera_url" jdbcType="VARCHAR"/>
+            <result property="operaIp" column="opera_ip" jdbcType="VARCHAR"/>
+            <result property="operaLocation" column="opera_location" jdbcType="VARCHAR"/>
+            <result property="operaParam" column="opera_param" jdbcType="VARCHAR"/>
+            <result property="jsonResult" column="json_result" jdbcType="VARCHAR"/>
+            <result property="errorMsg" column="error_msg" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="operaTime" column="opera_time" jdbcType="TIMESTAMP"/>
+            <result property="costTime" column="cost_time" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,opera_id,title,
+        business_type,method,request_method,
+        operator_type,opera_name,dept_name,
+        opera_url,opera_ip,opera_location,
+        opera_param,json_result,error_msg,
+        status,opera_time,cost_time
+    </sql>
+</mapper>

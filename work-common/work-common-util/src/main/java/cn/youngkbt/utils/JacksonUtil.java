@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.lang.Nullable;
@@ -19,6 +21,7 @@ import java.util.Objects;
  * @date 2023/6/30 23:04
  * @note
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
 public class JacksonUtil {
 

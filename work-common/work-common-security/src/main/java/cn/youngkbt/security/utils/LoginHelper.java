@@ -13,14 +13,16 @@ import java.util.*;
  * @date 2024/1/25 1:28
  * @note
  */
-public class LoginHelper {
+public abstract class LoginHelper {
+
+    public static String prefixCacheKey = "";
 
     public static boolean isLogin() {
-        return RedisUtil.hasKey(AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
+        return RedisUtil.hasKey(prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
     }
 
     public static LoginUser getLoginUser() {
-        Object userInfo = RedisUtil.getForValue(AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
+        Object userInfo = RedisUtil.getForValue(prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername());
         if (Objects.isNull(userInfo)) {
             return null;
         }
@@ -28,7 +30,7 @@ public class LoginHelper {
     }
 
     public static LoginUser getLoginUser(String username) {
-        Object userInfo = RedisUtil.getForValue(AuthRedisConstant.USER_INFO_KEY + username);
+        Object userInfo = RedisUtil.getForValue(prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + username);
         if (Objects.isNull(userInfo)) {
             return null;
         }
@@ -37,7 +39,7 @@ public class LoginHelper {
 
     public static List<LoginUser> getAllLoginUser() {
         List<LoginUser> loginUserList = new ArrayList<>();
-        Set<String> keys = RedisUtil.keys(AuthRedisConstant.USER_INFO_KEY + "*");
+        Set<String> keys = RedisUtil.keys(prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + "*");
         for (String key : keys) {
             loginUserList.add((LoginUser) RedisUtil.getForValue(key));
         }
@@ -45,16 +47,16 @@ public class LoginHelper {
     }
 
     public static void cacheUserInfo(LoginUser loginUser, Long timeout) {
-        RedisUtil.setForValue(AuthRedisConstant.USER_INFO_KEY + loginUser.getUsername(), loginUser, Duration.ofMillis(timeout));
+        RedisUtil.setForValue(prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + loginUser.getUsername(), loginUser, Duration.ofMillis(timeout));
     }
 
     public static boolean updateUserInfo(LoginUser loginUser) {
-        String key = AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername();
+        String key = prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + SecurityUtils.getUsername();
         // 单位为秒
         Long expire = RedisUtil.getExpire(key);
         // 获取过期时间
         Date date = new Date(Instant.now().toEpochMilli() + expire * 1000);
-        RedisUtil.setForValue(AuthRedisConstant.USER_INFO_KEY + loginUser.getUsername(), loginUser);
+        RedisUtil.setForValue(prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + loginUser.getUsername(), loginUser);
         return RedisUtil.expireAt(key, date);
     }
 
@@ -74,30 +76,6 @@ public class LoginHelper {
         return userInfo.getUsername();
     }
 
-    public static String getTenantId() {
-        LoginUser userInfo = getLoginUser();
-        if (Objects.isNull(userInfo)) {
-            return null;
-        }
-        return userInfo.getTenantId();
-    }
-
-    public static Set<String> getRoleCodes() {
-        LoginUser userInfo = getLoginUser();
-        if (Objects.isNull(userInfo)) {
-            return null;
-        }
-        return userInfo.getRoleCodes();
-    }
-
-    public static Set<String> getMenuPermission() {
-        LoginUser userInfo = getLoginUser();
-        if (Objects.isNull(userInfo)) {
-            return null;
-        }
-        return userInfo.getMenuPermission();
-    }
-
 
     public static boolean logout() {
         LoginUser userInfo = getLoginUser();
@@ -108,6 +86,6 @@ public class LoginHelper {
     }
 
     public static boolean logout(String username) {
-        return RedisUtil.delete(AuthRedisConstant.USER_INFO_KEY + username);
+        return RedisUtil.delete(prefixCacheKey + AuthRedisConstant.USER_INFO_KEY + username);
     }
 }

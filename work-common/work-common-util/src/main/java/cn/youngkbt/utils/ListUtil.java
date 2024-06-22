@@ -1,5 +1,8 @@
 package cn.youngkbt.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.function.Function;
  * @date 2023/12/11 23:50
  * @note
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ListUtil {
 
     public static <T> boolean isEmpty(List<T> list) {

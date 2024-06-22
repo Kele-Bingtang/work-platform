@@ -3,10 +3,10 @@ package cn.youngkbt.uac.auth.strategy.impl;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import cn.youngkbt.core.validate.AuthGroup;
+import cn.youngkbt.jwt.properties.JwtProperties;
 import cn.youngkbt.security.JwtAuthenticationToken;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.enumeration.AuthGrantTypeEnum;
-import cn.youngkbt.security.utils.JwtTokenUtils;
 import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.tenant.helper.TenantHelper;
 import cn.youngkbt.uac.auth.strategy.AuthHandler;
@@ -14,10 +14,10 @@ import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.uac.core.helper.UacHelper;
-import cn.youngkbt.uac.sys.listen.LoginEventListen;
-import cn.youngkbt.uac.sys.model.po.SysClient;
-import cn.youngkbt.uac.sys.security.handler.LoginFailureHandler;
-import cn.youngkbt.uac.sys.security.handler.LoginSuccessHandler;
+import cn.youngkbt.uac.system.listen.LoginEventListen;
+import cn.youngkbt.uac.system.model.po.SysClient;
+import cn.youngkbt.uac.system.security.handler.LoginFailureHandler;
+import cn.youngkbt.uac.system.security.handler.LoginSuccessHandler;
 import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.ServletUtil;
@@ -42,7 +42,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Service("password" + AuthHandler.BASE_NAME)
 public class PasswordAuthHandler implements AuthHandler {
-
+    
+    private final JwtProperties jwtProperties;
     private final AuthenticationManager authenticationManager;
     private final LoginEventListen loginEventListen;
     private final LoginSuccessHandler loginSuccessHandler;
@@ -66,7 +67,7 @@ public class PasswordAuthHandler implements AuthHandler {
         Long timeout = sysClient.getTimeout();
 
         if (Objects.isNull(timeout)) {
-            timeout = JwtTokenUtils.EXPIRE_TIME;
+            timeout = jwtProperties.getExpireTime();
         } else {
             timeout = timeout * 1000;
         }

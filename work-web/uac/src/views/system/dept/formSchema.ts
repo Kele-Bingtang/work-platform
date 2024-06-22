@@ -61,7 +61,7 @@ export const schema: DialogFormSchemaProps<Dept.DeptTreeTable>[] = [
     prop: "orderNum",
     label: "显示顺序",
     el: "el-input-number",
-    defaultValue: 0,
+    defaultValue: 1,
   },
   {
     prop: "intro",

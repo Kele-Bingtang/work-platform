@@ -40,7 +40,7 @@ public class MyBatisPlusAutoConfiguration implements WebMvcConfigurer {
     }
 
     /**
-     * 分页插件, 对于单一数据库类型来说,都建议配置该值,避免每次分页都去抓取数据库类型
+     * 分页插件，对于单一数据库类型来说,都建议配置该值,避免每次分页都去抓取数据库类型
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
@@ -64,7 +64,7 @@ public class MyBatisPlusAutoConfiguration implements WebMvcConfigurer {
 
     /**
      * 使用网卡信息绑定雪花生成器
-     * 防止集群雪花ID重复
+     * 防止集群雪花 ID 重复
      */
     @Bean
     public IdentifierGenerator idGenerator() {

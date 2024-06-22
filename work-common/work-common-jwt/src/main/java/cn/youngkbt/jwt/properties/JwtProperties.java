@@ -17,9 +17,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
-    private String id;
+
     /**
-     * 有效期 12 小时：12 * 60 * 60 * 1000
+     * Token 密钥，自定义，根据密钥生成 token，或还原 token
      */
-    private long expireTime;
+    private String secretKey = "work-platform-abcdefghijklmnopqrstuvwxyz-kbt";
+
+    /**
+     * Token 有效期
+     */
+    private long expireTime = 12 * 60 * 60 * 1000;
+
+    /**
+     * Token 刷新时间
+     */
+    private long refreshTime = 2 * 60 * 60 * 1000;
+    
+    private String authoritiesKey = "authorities";
 }

@@ -68,7 +68,6 @@ import { getTimeState } from "@work/utils";
 import settings from "@/config/settings";
 import { ImageVerifyCode } from "@work/components";
 import { HOME_URL } from "@/router/routesConfig";
-import { useRoutes } from "@/hooks/useRoutes";
 import { User, Lock, WarnTriangleFilled, CircleClose, UserFilled, Histogram } from "@element-plus/icons-vue";
 import { getTenantSelectList, type Auth } from "@/api/auth";
 import { uacAppSecret, uacAppGrantType } from "@work/constants";
@@ -84,7 +83,6 @@ interface LoginForm extends Auth.LoginBody {
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
-const { initDynamicRouters } = useRoutes();
 const switchFormMode = inject("switchFormMode") as (mode: string) => {};
 
 const loginRules = {
@@ -194,8 +192,6 @@ const startLogin = () => {
         });
         return;
       }
-      // 加载动态路由
-      await initDynamicRouters();
 
       // 跳转到首页或者 URL 携带的 redirect 页（优先级高）
       let path = HOME_URL;

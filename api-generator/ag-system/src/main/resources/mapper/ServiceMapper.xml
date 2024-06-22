@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.youngkbt.ag.system.mapper.ServiceMapper">
+
+    <resultMap id="BaseResultMap" type="cn.youngkbt.ag.system.model.po.ServiceInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="serviceId" column="service_id" jdbcType="VARCHAR"/>
+            <result property="serviceName" column="service_name" jdbcType="VARCHAR"/>
+            <result property="serviceUrl" column="service_url" jdbcType="VARCHAR"/>
+            <result property="fullUrl" column="full_url" jdbcType="VARCHAR"/>
+            <result property="serviceStatus" column="service_status" jdbcType="TINYINT"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="selectSql" column="select_sql" jdbcType="VARCHAR"/>
+            <result property="selectTable" column="select_table" jdbcType="VARCHAR"/>
+            <result property="insertTable" column="insert_table" jdbcType="VARCHAR"/>
+            <result property="updateTable" column="update_table" jdbcType="VARCHAR"/>
+            <result property="deleteTable" column="delete_table" jdbcType="VARCHAR"/>
+            <result property="isAuth" column="is_auth" jdbcType="TINYINT"/>
+            <result property="reportTitle" column="report_title" jdbcType="VARCHAR"/>
+            <result property="serviceVersion" column="service_version" jdbcType="INTEGER"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateById" column="update_by_id" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+            <result property="projectId" column="project_id" jdbcType="BIGINT"/>
+            <result property="teamId" column="team_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,service_id,service_name,
+        service_url,full_url,service_status,
+        description,select_sql,select_table,
+        insert_table,update_table,delete_table,
+        is_auth,report_title,service_version,
+        create_by,create_by_id,create_time,
+        update_by,update_by_id,update_time,
+        status,is_deleted,category_id,
+        project_id,team_id
+    </sql>
+</mapper>

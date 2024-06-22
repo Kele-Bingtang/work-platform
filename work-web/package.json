@@ -8,10 +8,12 @@
   "workspaces": [
     "packages/*",
     "docs",
-    "uac"
+    "uac",
+    "api-generator"
   ],
   "scripts": {
     "uac": "pnpm -C uac",
+    "ag": "pnpm -C api-generator",
     "cloc": "NODE_OPTIONS=--max-old-space-size=4096 cloc . --exclude-dir=node_modules",
     "clean:cache": "rm -rf node_modules && rm -rf .eslintcache && yarn install",
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",

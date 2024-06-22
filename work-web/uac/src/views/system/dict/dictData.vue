@@ -65,7 +65,7 @@ const columns: TableColumnProps<DictData.DictDataInfo>[] = [
 
 const { hasAuth } = usePermission();
 
-const dialogForm = reactive<DialogForm>({
+const dialogForm: DialogForm = {
   formProps: {
     elFormProps: dictDataElFormProps,
     schema: useFormSchema(
@@ -74,7 +74,7 @@ const dialogForm = reactive<DialogForm>({
       computed(() => props.isCascade)
     ).dictDataSchema,
   },
-  id: ["id", "dictDataId"],
+  id: ["id", "dataId"],
   addApi: params => addOne({ ...params, appId: props.appId }),
   editApi: editOne,
   removeApi: removeOne,
@@ -91,7 +91,7 @@ const dialogForm = reactive<DialogForm>({
     top: "5vh",
     closeOnClickModal: false,
   },
-});
+};
 
 const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
   ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {

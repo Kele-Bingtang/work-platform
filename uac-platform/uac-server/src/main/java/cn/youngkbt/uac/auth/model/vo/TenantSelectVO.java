@@ -1,6 +1,6 @@
 package cn.youngkbt.uac.auth.model.vo;
 
-import cn.youngkbt.uac.sys.model.vo.SysTenantVO;
+import cn.youngkbt.uac.system.model.vo.SysTenantVO;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 

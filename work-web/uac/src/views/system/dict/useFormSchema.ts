@@ -113,7 +113,7 @@ export const useFormSchema = (
       prop: "dictSort",
       label: "字典排序",
       el: "el-input-number",
-      defaultValue: 0,
+      defaultValue: 1,
     },
     {
       prop: "tagEl",

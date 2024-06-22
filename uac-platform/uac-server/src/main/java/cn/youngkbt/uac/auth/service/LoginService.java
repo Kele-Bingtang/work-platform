@@ -1,7 +1,6 @@
 package cn.youngkbt.uac.auth.service;
 
 import cn.youngkbt.core.constants.ColumnConstant;
-import cn.youngkbt.core.event.LoginInfoEvent;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.tenant.helper.TenantHelper;
@@ -13,12 +12,13 @@ import cn.youngkbt.uac.auth.strategy.AuthHandler;
 import cn.youngkbt.uac.core.bo.LoginSuccessBO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.constant.AuthConstant;
+import cn.youngkbt.uac.core.event.LoginInfoEvent;
 import cn.youngkbt.uac.core.exception.TenantException;
 import cn.youngkbt.uac.core.helper.UacHelper;
-import cn.youngkbt.uac.sys.model.po.SysApp;
-import cn.youngkbt.uac.sys.model.po.SysClient;
-import cn.youngkbt.uac.sys.model.po.SysTenant;
-import cn.youngkbt.uac.sys.service.SysTenantService;
+import cn.youngkbt.uac.system.model.po.SysApp;
+import cn.youngkbt.uac.system.model.po.SysClient;
+import cn.youngkbt.uac.system.model.po.SysTenant;
+import cn.youngkbt.uac.system.service.SysTenantService;
 import cn.youngkbt.utils.ServletUtil;
 import cn.youngkbt.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 /**
  * @author Kele-Bingtang
@@ -71,14 +70,6 @@ public class LoginService {
             SpringHelper.publishEvent(loginInfoEvent);
         }
         return logout;
-    }
-
-    /**
-     * 检查登录
-     * 1、登录失败，记录失败次数，超出则锁定登录
-     * 2、登录成功，失败次数清 0
-     */
-    public void checkLogin(String tenantId, String username, Supplier<Boolean> checkPasswordResult) {
     }
 
     public void checkTenant(String tenantId) {

@@ -2,7 +2,7 @@ package cn.youngkbt.uac.auth.convertor;
 
 import cn.youngkbt.uac.auth.model.dto.LoginUserDTO;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
-import cn.youngkbt.uac.sys.model.po.SysApp;
+import cn.youngkbt.uac.system.model.po.SysApp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

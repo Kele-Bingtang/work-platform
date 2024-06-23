@@ -13,6 +13,10 @@ import java.io.Serializable;
 @Data
 public class TeamRouteVO implements Serializable {
     /**
+     * id
+     */
+    private String id;
+    /**
      * 团队 ID
      */
     private String teamId;

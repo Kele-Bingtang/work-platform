@@ -1,19 +1,22 @@
 package cn.youngkbt.ag.system.model.po;
 
+import cn.youngkbt.ag.system.model.vo.ProjectMemberVO;
 import cn.youngkbt.mp.base.BaseDO;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * @author Kele-Bingtang
  * @date 2024-06-23 01:07:11
- * @note 用户项目关联表
+ * @note 项目成员表
 */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "t_user_project_link")
+@TableName(value = "t_project_member")
 @Data
-public class UserProjectLink extends BaseDO {
+@AutoMapper(target = ProjectMemberVO.class, reverseConvertGenerate = false)
+public class ProjectMember extends BaseDO {
     /**
      * 用户名
      */

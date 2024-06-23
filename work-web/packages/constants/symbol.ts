@@ -1,6 +1,6 @@
 import type { InjectionKey, ComputedRef } from "vue";
 
-interface ConfigGlobal {
+export interface ConfigGlobal {
   size: ComputedRef<"default" | "small" | "large">;
 }
 

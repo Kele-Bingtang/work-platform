@@ -15,17 +15,13 @@ export namespace TeamMember {
 const baseUri = "/teamMember";
 
 export const listMembers = (params: Partial<TeamMember.TeamMemberInfo>) => {
+  return http.get<http.Response<TeamMember.TeamMemberInfo[]>>(`${baseUri}/listAll`, params);
+};
+
+export const listMembersPage = (params: Partial<TeamMember.TeamMemberInfo>) => {
   return http.get<http.Response<TeamMember.TeamMemberInfo[]>>(`${baseUri}/listPage`, params);
 };
 
-export const addTeam = (data: Record<string, any>) => {
-  return http.post<http.Response<Boolean>>(`${baseUri}/addTeam`, data);
-};
-
-export const updateTeam = (data: Record<string, any>) => {
-  return http.put<http.Response<Boolean>>(`${baseUri}/updateTeam`, data);
-};
-
-export const deleteTeam = (id: number) => {
-  return http.delete<http.Response<Boolean>>(`${baseUri}/deleteTeam/${id}`);
+export const leaveTeam = (teamId: string) => {
+  return http.delete<http.Response<Boolean>>(`${baseUri}/${teamId}`);
 };

@@ -8,10 +8,12 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -24,12 +26,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamMemberController {
     
     private final TeamMemberService teamMemberService;
+
+    @GetMapping("/listAll")
+    @Operation(summary = "团队成员查询", description = "查询团队成员")
+    public Response<List<TeamMemberVO>> listAll(@Validated(RestGroup.QueryGroup.class) TeamMemberDTO teamMemberDTO) {
+        List<TeamMemberVO> teamMemberVOList = teamMemberService.listAll(teamMemberDTO);
+
+        return HttpResult.ok(teamMemberVOList);
+
+    }
     
-    @RequestMapping("/listPage")
+    @GetMapping("/listPage")
+    @Operation(summary = "团队成员分页查询", description = "分页查询团队路由")
     public Response<TablePage<TeamMemberVO> > listPage(@Validated(RestGroup.QueryGroup.class) TeamMemberDTO teamMemberDTO, PageQuery pageQuery) {
         TablePage<TeamMemberVO> teamMemberVOList = teamMemberService.listPage(teamMemberDTO, pageQuery);
         
         return HttpResult.ok(teamMemberVOList);
-        
     }
+
+    @DeleteMapping("/{teamId}")
+    @Operation(summary = "团队退出", description = "退出团队")
+    public Response<Boolean> leaveTeam(@PathVariable String teamId) {
+        return HttpResult.ok(teamMemberService.leaveTeam(teamId));
+    }
+    
 }

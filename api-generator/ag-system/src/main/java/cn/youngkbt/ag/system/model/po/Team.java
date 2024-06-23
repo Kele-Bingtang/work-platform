@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  * @author Kele-Bingtang
  * @date 2024-04-23 01:04:36
  * @note 团队
-*/
+ */
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "t_team")
 @Data
@@ -37,7 +37,17 @@ public class Team extends BaseDO {
     private String description;
 
     /**
+     * 负责人 ID
+     */
+    private String ownerId;
+
+    /**
      * 负责人
      */
     private String ownerName;
+
+    /**
+     * 显示顺序
+     */
+    private Integer orderNum;
 }

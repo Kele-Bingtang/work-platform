@@ -15,6 +15,7 @@ import cn.youngkbt.ag.system.service.TeamService;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.utils.MapstructUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
         // 构建二级菜单
         List<RouterVO> routerVOList = new ArrayList<>();
 
-
         teamRouteVOList.forEach(item -> {
             String teamRoleLabel = "";
             Integer teamRoleValue = item.getTeamRole();
@@ -65,7 +65,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
                 }
             }
 
-
             RouterVO routerVO = new RouterVO()
                     .setPath(item.getTeamId())
                     .setName(item.getTeamName())
@@ -73,7 +72,12 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
                     .setMeta(new Meta()
                             .setTitle(item.getTeamName())
                             .setHideInTab(true)
-                            .setParams(Map.of("teamId", item.getTeamId(), "teamName", item.getTeamName(), "teamRole", teamRoleLabel))
+                            .setParams(Map.of(
+                                    "id", item.getId(),
+                                    "teamId", item.getTeamId(),
+                                    "teamName", item.getTeamName(),
+                                    "teamRole", teamRoleLabel
+                            ))
                     );
 
             routerVOList.add(routerVO);
@@ -91,6 +95,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
             throw new ServiceException("用户未登录");
         }
         Team team = MapstructUtil.convert(teamDTO, Team.class);
+        team.setOwnerId(loginUser.getUserId());
         team.setOwnerName(loginUser.getUsername());
         // ID 为自增，因此不需要设置
         team.setId(null);
@@ -108,6 +113,72 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
         teamMemberService.addTeamMember(teamMemberDTO);
 
         return result > 0;
+    }
+
+    @Override
+    public Boolean editTeam(TeamDTO teamDTO) {
+        Team team = MapstructUtil.convert(teamDTO, Team.class);
+        return baseMapper.updateById(team) > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean transferOwner(String teamId, String userId, String username) {
+        checkAllowed(teamId, userId, false);
+
+        Team team = new Team();
+        team.setTeamId(teamId);
+        team.setOwnerId(userId);
+        team.setOwnerName(username);
+        // 修改团队负责人
+        int result = baseMapper.update(team, Wrappers.<Team>lambdaUpdate()
+                .eq(Team::getTeamId, teamId)
+                .set(Team::getOwnerId, userId));
+
+        // 修改自己为普通成员
+        String operator = AgHelper.getUserId();
+        teamMemberService.editTeamMemberRole(teamId, operator, TeamMemberRole.MEMBER.ordinal());
+
+        // 修改团队成员的角色为所有者
+        teamMemberService.editTeamMemberRole(teamId, userId, TeamMemberRole.OWNER.ordinal());
+
+        return result > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean removeTeam(String teamId) {
+        checkAllowed(teamId, AgHelper.getUserId(), true);
+
+        // 删除所有的团队成员
+        teamMemberService.removeAllTeamMember(teamId);
+        // TODO 删除目录
+
+        // TODO 删除服务
+
+        // TODO 删除字段配置
+
+        // TODO 删除响应配置
+
+        // 删除团队信息
+        return baseMapper.delete(Wrappers.<Team>lambdaQuery()
+                .eq(Team::getTeamId, teamId)) > 0;
+    }
+
+    @Override
+    public void checkAllowed(String teamId, String userId, boolean userIdIsCache) {
+        if (!userIdIsCache && Objects.equals(userId, AgHelper.getUserId())) {
+            throw new ServiceException("不允许操作自己");
+        }
+
+        if (!teamMemberService.checkMemberExist(teamId, userId)) {
+            throw new ServiceException("用户不在团队中");
+        }
+
+        if (!teamMemberService.checkMemberRole(teamId, userId, TeamMemberRole.OWNER.ordinal())) {
+            throw new ServiceException("用户不是团队负责人");
+        }
+
     }
 }
 

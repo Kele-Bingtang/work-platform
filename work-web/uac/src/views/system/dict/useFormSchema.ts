@@ -96,6 +96,7 @@ export const useFormSchema = (
       el: "el-input",
       defaultValue: defaultValue,
       props: { disabled: true },
+      col: { span: 24 },
     },
     {
       prop: "dictValue",

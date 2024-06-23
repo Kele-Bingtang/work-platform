@@ -30,11 +30,21 @@ public class TeamVO implements Serializable {
      * 团队介绍
      */
     private String description;
+    
+    /**
+     * 负责人 ID
+     */
+    private String ownerId;
 
     /**
      * 负责人
      */
     private String ownerName;
+
+    /**
+     * 显示顺序
+     */
+    private Integer orderNum;
 
     /**
      * 创建人

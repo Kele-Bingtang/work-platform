@@ -29,7 +29,7 @@
     </sql>
     
     <select id="listMyAllTeam" resultType="cn.youngkbt.ag.system.model.vo.TeamRouteVO">
-        select tt.team_id, tt.team_name, ttm.team_role, ttm.belong_type 
+        select tt.id, tt.team_id, tt.team_name, ttm.team_role, ttm.belong_type 
         from t_team tt join t_team_member ttm on tt.team_id = ttm.team_id and ttm.is_deleted = 0
             and ttm.user_id = #{userId}
         where tt.status = 1 and tt.is_deleted = 0

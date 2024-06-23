@@ -8,7 +8,7 @@
     </template>
     <el-tabs v-model="teamTabActiveName">
       <el-tab-pane v-for="tab in teamTabList" :key="tab.name" :label="tab.label" :name="tab.name" :lazy="tab.lazy">
-        <component :is="tab.component"></component>
+        <component :is="tab.component" class="p-10"></component>
       </el-tab-pane>
     </el-tabs>
   </el-card>
@@ -18,6 +18,7 @@
 import { useDesign } from "@work/hooks";
 import Project from "./components/Project/index.vue";
 import Members from "./components/Members/index.vue";
+import TeamSetting from "./components/TeamSetting/index.vue";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("team");
@@ -29,7 +30,7 @@ const teamTabActiveName = ref("团队项目");
 const teamTabList = [
   { label: "团队项目", name: "团队项目", lazy: false, component: Project },
   { label: "成员/权限", name: "成员/权限", lazy: true, component: Members },
-  { label: "团队设置", name: "团队设置", lazy: true, component: "TeamProject" },
+  { label: "团队设置", name: "团队设置", lazy: true, component: TeamSetting },
 ];
 </script>
 
@@ -51,4 +52,3 @@ $prefix-class: #{$admin-namespace}-team;
   }
 }
 </style>
-./components/Project/index.vue

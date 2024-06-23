@@ -22,6 +22,7 @@ const prefixClass = getPrefixClass("work-drawer");
 let id = 0;
 
 let appContextConst: AppContext | undefined;
+let layoutSize: "default" | "small" | "large" | undefined;
 
 const getFather = (): Element => {
   const fullScreen = document.querySelector(":not(:root):fullscreen");
@@ -34,8 +35,10 @@ export interface WorkDrawerProps extends Partial<DrawerProps> {
   headerRender?: () => VNode; // 顶部渲染 TSX
   footerRender?: () => VNode; // 顶部渲染 TSX
   showFooter?: boolean; // 是否渲染顶部
-  onConfirm?: (closeDrawer: () => void) => void | boolean | Promise<void>; // 确认按钮点击事件
-  onClose?: (closeDrawer: () => void) => void | boolean | Promise<void>; // 关闭按钮点击事件
+  onConfirm?: (closeDrawer: () => void) => void | boolean | Promise<void> | any; // 确认按钮点击事件
+  onClose?: (closeDrawer: () => void) => void | boolean | Promise<void> | any; // 关闭按钮点击事件
+  confirmLabel?: string; // 确认按钮文字，默认 确认
+  closeLabel?: string; // 关闭按钮文字，默认 关闭
   fullscreen?: boolean; // 是否默认全屏，默认 false
   fullscreenIcon?: boolean; // 是否渲染全屏图标，默认 true
 }
@@ -45,20 +48,18 @@ export const closeDrawer = () => {
   vm && getFather().removeChild(vm);
 };
 
-const handleClose = (drawerProps: WorkDrawerProps) => {
-  if (drawerProps.onClose) {
-    const result = drawerProps.onClose(closeDrawer);
-    if (result === false) return;
-  }
-  return closeDrawer();
+const handleClose = async (drawerProps?: WorkDrawerProps) => {
+  if (!drawerProps?.onClose) return closeDrawer();
+
+  const result = await drawerProps?.onClose(closeDrawer);
+  if (result === true) return closeDrawer();
 };
 
-const handleConfirm = (drawerProps: WorkDrawerProps) => {
-  if (drawerProps.onConfirm) {
-    const result = drawerProps.onConfirm(closeDrawer);
-    if (result === false) return;
-  }
-  return closeDrawer();
+const handleConfirm = async (drawerProps?: WorkDrawerProps) => {
+  if (!drawerProps?.onConfirm) return closeDialog();
+
+  const result = await drawerProps?.onConfirm(closeDrawer);
+  if (result === true) return closeDrawer();
 };
 
 /**
@@ -69,8 +70,6 @@ const handleConfirm = (drawerProps: WorkDrawerProps) => {
  * 在第一个参数里写 headerRender 和 footerRender，可以自定义 el-drawer 的 header 和 footer
  */
 export const showDrawer = (drawerProps: WorkDrawerProps, component?: Component, componentsProps?: any) => {
-  const layoutSize = inject(ConfigGlobalKey);
-
   const isFullscreen = ref(false);
 
   const toggleFull = () => {
@@ -123,9 +122,9 @@ export const showDrawer = (drawerProps: WorkDrawerProps, component?: Component, 
             if (drawerProps.showFooter === false) return;
             return (
               <>
-                <ElButton onClick={() => handleClose(drawerProps)}>取 消</ElButton>
+                <ElButton onClick={() => handleClose(drawerProps)}>{drawerProps.closeLabel || "取 消"}</ElButton>
                 <ElButton type="primary" onClick={() => handleConfirm(drawerProps)}>
-                  确 定
+                  {drawerProps.confirmLabel || "确 定"}
                 </ElButton>
               </>
             );
@@ -151,6 +150,7 @@ export const showDrawer = (drawerProps: WorkDrawerProps, component?: Component, 
 export const initDrawer = (ctx?: ComponentInternalInstance) => {
   const { appContext } = ctx || getCurrentInstance() || {};
   appContextConst = appContext;
+  layoutSize = unref(inject(ConfigGlobalKey)?.size);
 
   return { showDrawer };
 };

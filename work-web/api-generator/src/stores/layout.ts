@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { DeviceType, type LanguageType, type LayoutSizeType, type TabProp, type Dict } from "./interface";
+import { DeviceType, type LanguageType, type LayoutSizeType, type TabProp } from "./interface";
 import { useSettingsStore } from "./settings";
 import defaultSettings from "@/config/settings";
 import type { Frame } from "@/layout/components/FrameLayout/useFrame";

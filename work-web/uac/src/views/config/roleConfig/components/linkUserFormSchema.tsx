@@ -45,7 +45,7 @@ export const useFormSchema = (requestParams: { roleId: string }) => {
       enum: () => getDictData("sys_expire_on"),
       render: ({ model, enumData }) => {
         return (
-          <ElRow gutter={10} class="flex1">
+          <ElRow gutter={10} class="flex-1">
             <ElCol span={12}>
               <ElSelect
                 v-model={model.expireOnNum}

@@ -7,6 +7,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024-06-22 00:15:48
@@ -16,6 +18,13 @@ public interface TeamMemberService extends IService<TeamMember> {
 
     /**
      * 查询团队成员
+     * @param teamMemberDTO 团队成员信息
+     * @return 团队成员列表
+     */
+    List<TeamMemberVO> listAll(TeamMemberDTO teamMemberDTO);
+    
+    /**
+     * 查询团队成员（分页）
      * @param teamMemberDTO 团队成员信息
      * @param pageQuery 分页信息
      * @return 团队成员列表
@@ -29,4 +38,43 @@ public interface TeamMemberService extends IService<TeamMember> {
      */
     boolean addTeamMember(TeamMemberDTO teamMemberDTO);
 
+    /**
+     * 修改团队成员的角色
+     * @param teamId 团队 ID
+     * @param userId 用户 ID
+     * @param ordinal 团队角色级别
+     * @return 是否修改成功
+     */
+    boolean editTeamMemberRole(String teamId, String userId, int ordinal);
+
+    /**
+     * 退出团队
+     * @param teamId 团队 ID
+     * @return 是否退出成功
+     */
+    boolean leaveTeam(String teamId);
+
+    /**
+     * 移除团队所有成员
+     * @param teamId 团队 ID
+     * @return 是否移除成功
+     */
+    boolean removeAllTeamMember(String teamId);
+    
+    /**
+     * 检查成员是否存在
+     * @param teamId 团队 ID
+     * @param userId 用户 ID
+     * @return 是否存在
+     */
+    boolean checkMemberExist(String teamId, String userId);
+
+    /**
+     * 检查成员的团队角色
+     * @param teamId 团队 ID
+     * @param userId 用户 ID
+     * @param ordinal 团队角色级别
+     * @return 是否为团队负责人
+     */
+    boolean checkMemberRole(String teamId, String userId, int ordinal);
 }

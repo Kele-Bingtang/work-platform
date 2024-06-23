@@ -15,13 +15,20 @@ export const listMyAllTeamRoute = () => {
 };
 
 export const addTeam = (data: Record<string, any>) => {
-  return http.post<http.Response<Boolean>>(`${baseUri}/addTeam`, data);
+  return http.post<http.Response<Boolean>>(baseUri, data);
 };
 
-export const updateTeam = (data: Record<string, any>) => {
-  return http.put<http.Response<Boolean>>(`${baseUri}/updateTeam`, data);
+export const editTeam = (data: Record<string, any>) => {
+  return http.put<http.Response<Boolean>>(baseUri, data);
 };
 
-export const deleteTeam = (id: number) => {
-  return http.delete<http.Response<Boolean>>(`${baseUri}/deleteTeam/${id}`);
+export const removeTeam = (teamId: string) => {
+  return http.delete<http.Response<Boolean>>(`${baseUri}/${teamId}`);
+};
+
+/**
+ * 移交团队负责人
+ */
+export const transferOwner = (data: { teamId: string; userId: string; username: string }) => {
+  return http.post<http.Response<Boolean>>(`${baseUri}/transferOwner/${data.teamId}/${data.userId}/${data.username}`);
 };

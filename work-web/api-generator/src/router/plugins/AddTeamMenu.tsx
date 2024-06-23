@@ -57,7 +57,7 @@ const openDialog = () => {
 
 const handleConfirm = async (model: Partial<TeamModel>) => {
   const res = await addTeam(model);
-  if (res.status === "success") {
+  if (res.code === 200) {
     useRoutes().initDynamicRouters(useUserStore().roles);
     message.success("团队新建成功");
   }

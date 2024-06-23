@@ -136,7 +136,7 @@ const schema: FormSchemaProps[] = [
     label: "过期时间",
     render: ({ model }) => {
       return (
-        <ElRow gutter={10} class="flex1">
+        <ElRow gutter={10} class="flex1-1">
           <ElCol span={12}>
             <ElSelect
               vModel={model.expireOnNum}

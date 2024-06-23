@@ -56,6 +56,7 @@ export interface ProFormProps {
   rowProps?: Partial<RowProps> & {
     col?: Partial<ColProps>;
   };
+  colRow?: boolean; // 每一个 Col 是否都独占一行（24 span）
   onlyRenderComponent?: boolean; // 是否只渲染 ProFormItem 组件，只使用表单组件
   dynamicModel?: boolean; // 动态 model，如果 schema 发生变化，则重新渲染 model 表单数据（将不存在 schema 的 prop 从 model 中去掉），默认启用 true
   includeModelKeys?: string[]; // 搭配 dynamicModel 使用，清除 model 不存在的 prop 时，指定保留 prop
@@ -206,9 +207,9 @@ const isDestroy = (item: FormSchemaProps) => {
   return destroy;
 };
 
-const parseLabel = (label: ValueType | ((model: Record<string, any>) => string)) => {
+const parseLabel = (label: ValueType | ((model: Record<string, any>) => string) | ComputedRef<ValueType>) => {
   if (typeof label === "function") return label(unref(model));
-  return label + "";
+  return unref(label) + "";
 };
 
 // 监听表单结构化数组，重新组装 schema
@@ -329,7 +330,8 @@ const RenderForm = () => {
 
 // 渲染 FormItem 上一层
 const renderFormItemWrap = () => {
-  const { schema = [], useCol, rowProps } = unref(getProps);
+  const { schema = [], useCol, rowProps, colRow } = unref(getProps);
+  const col = colRow ? { span: 24 } : {};
 
   return schema
     .filter(item => !isDestroy(item))
@@ -347,7 +349,7 @@ const renderFormItemWrap = () => {
         </>
       ) : useCol ? (
         // 如果需要栅格，需要包裹 ElCol
-        <ElCol {...setGridProp({ ...rowProps?.col, ...item.col })} v-show={!isHidden(item)}>
+        <ElCol {...setGridProp({ ...rowProps?.col, ...item.col, ...col })} v-show={!isHidden(item)}>
           {renderFormItem(item)}
         </ElCol>
       ) : (

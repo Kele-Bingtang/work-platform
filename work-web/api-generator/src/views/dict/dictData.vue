@@ -79,7 +79,7 @@ const dialogForm: DialogForm = {
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
-    height: 200,
+    height: 300,
     top: "5vh",
     closeOnClickModal: false,
   },

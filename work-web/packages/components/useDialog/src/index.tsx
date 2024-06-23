@@ -24,6 +24,7 @@ const prefixClass = getPrefixClass("work-dialog");
 let id = 0;
 
 let appContextConst: AppContext | undefined;
+let layoutSize: "default" | "small" | "large" | undefined;
 
 const getFather = (): Element => {
   const fullScreen = document.querySelector(":not(:root):fullscreen");
@@ -36,8 +37,10 @@ export interface WorkDialogProps extends Partial<DialogProps> {
   headerRender?: (scope: any) => VNode; // 头部渲染 TSX
   footerRender?: () => VNode; // 底部渲染 TSX
   showFooter?: boolean; // 是否渲染底部，默认 true
-  onConfirm?: (closeDialog: () => void) => void | boolean | Promise<void>; // 确认按钮点击事件
-  onClose?: (closeDialog: () => void) => void | boolean | Promise<void>; // 关闭按钮点击事件
+  onConfirm?: (closeDialog: () => void) => void | boolean | Promise<void> | any; // 确认按钮点击事件
+  onClose?: (closeDialog: () => void) => void | boolean | Promise<void> | any; // 关闭按钮点击事件
+  confirmLabel?: string; // 确认按钮文字，默认 确认
+  closeLabel?: string; // 关闭按钮文字，默认 关闭
   fullscreen?: boolean; // 是否默认全屏，默认 false
   fullscreenIcon?: boolean; // 是否渲染全屏图标，默认 true
   height?: string | number; // 内容高度，默认 400px
@@ -51,20 +54,18 @@ export const closeDialog = () => {
   vm && getFather().removeChild(vm);
 };
 
-const handleClose = (dialogProps?: WorkDialogProps) => {
-  if (dialogProps?.onClose) {
-    const result = dialogProps?.onClose(closeDialog);
-    if (result === false) return;
-  }
-  return closeDialog();
+const handleClose = async (dialogProps?: WorkDialogProps) => {
+  if (!dialogProps?.onClose) return closeDialog();
+
+  const result = await dialogProps?.onClose(closeDialog);
+  if (result === true) return closeDialog();
 };
 
-const handleConfirm = (dialogProps?: WorkDialogProps) => {
-  if (dialogProps?.onConfirm) {
-    const result = dialogProps?.onConfirm(closeDialog);
-    if (result === false) return;
-  }
-  return closeDialog();
+const handleConfirm = async (dialogProps?: WorkDialogProps) => {
+  if (!dialogProps?.onConfirm) return closeDialog();
+
+  const result = await dialogProps?.onConfirm(closeDialog);
+  if (result === true) return closeDialog();
 };
 
 /**
@@ -75,8 +76,6 @@ const handleConfirm = (dialogProps?: WorkDialogProps) => {
  * 在第一个参数里写 headerRender 和 footerRender，可以自定义 el-dialog 的 header 和 footer
  */
 export const showDialog = (dialogProps: WorkDialogProps, component?: Component, componentsProps?: any) => {
-  const layoutSize = inject(ConfigGlobalKey);
-
   const isFullscreen = ref(dialogProps.fullscreen || false);
 
   const toggleFull = () => {
@@ -167,9 +166,9 @@ export const showDialog = (dialogProps: WorkDialogProps, component?: Component, 
             if (dialogProps.showFooter === false) return;
             return (
               <>
-                <ElButton onClick={() => handleClose(dialogProps)}>取 消</ElButton>
+                <ElButton onClick={() => handleClose(dialogProps)}>{dialogProps.closeLabel || "取 消"}</ElButton>
                 <ElButton type="primary" onClick={() => handleConfirm(dialogProps)}>
-                  确 定
+                  {dialogProps.confirmLabel || "确 定"}
                 </ElButton>
               </>
             );
@@ -191,6 +190,7 @@ export const showDialog = (dialogProps: WorkDialogProps, component?: Component, 
 export const initDialog = (ctx?: ComponentInternalInstance) => {
   const { appContext } = ctx || getCurrentInstance() || {};
   appContextConst = appContext;
+  layoutSize = unref(inject(ConfigGlobalKey)?.size);
 
   return { showDialog };
 };

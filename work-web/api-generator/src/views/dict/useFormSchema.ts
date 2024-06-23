@@ -82,6 +82,7 @@ export const useFormSchema = (defaultValue: ComputedRef<string>, isCascade?: Com
       el: "el-input",
       defaultValue: defaultValue,
       props: { disabled: true },
+      col: { span: 24 },
     },
     {
       prop: "dictValue",

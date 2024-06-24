@@ -44,7 +44,12 @@ public class Category extends BaseDO {
     /**
      * 项目 id
      */
-    private Long projectId;
+    private String projectId;
+
+    /**
+     * 显示顺序
+     */
+    private Integer orderNum;
 
     /**
      * 团队 ID

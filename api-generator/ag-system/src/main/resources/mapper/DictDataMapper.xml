@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.youngkbt.uac.system.mapper.SysDictDataMapper">
+<mapper namespace="cn.youngkbt.ag.system.mapper.DictDataMapper">
 
     <resultMap id="BaseResultMap" type="cn.youngkbt.ag.system.model.po.DictData">
             <id property="id" column="id" jdbcType="BIGINT"/>
@@ -18,7 +18,6 @@
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
-            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
             <result property="dictCode" column="dict_code" jdbcType="VARCHAR"/>
     </resultMap>
 

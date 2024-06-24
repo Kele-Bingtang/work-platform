@@ -33,6 +33,14 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
         return baseMapper.listProjectRole(wrapper);
     }
 
+    @Override
+    public String listTeamId(String projectId) {
+        ProjectMember projectMember = baseMapper.selectOne(Wrappers.<ProjectMember>lambdaQuery()
+                .select(ProjectMember::getTeamId)
+                .eq(ProjectMember::getProjectId, projectId));
+        return projectMember.getTeamId();
+    }
+
     private LambdaQueryWrapper<ProjectMember> buildQueryWrapper(ProjectMemberDTO projectMemberDTO) {
         return Wrappers.<ProjectMember>lambdaQuery()
                 .eq(StringUtil.hasText(projectMemberDTO.getTeamId()), ProjectMember::getTeamId, projectMemberDTO.getTeamId())
@@ -44,9 +52,43 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
     }
 
     @Override
+    public boolean addProjectMember(ProjectMemberDTO projectMemberDTO) {
+        ProjectMember projectMember = MapstructUtil.convert(projectMemberDTO, ProjectMember.class);
+        return baseMapper.insert(projectMember) > 0;
+    }
+
+    @Override
+    public boolean addBatchProjectMember(List<ProjectMemberDTO> projectMemberDTOList) {
+        List<ProjectMember> projectMemberList = MapstructUtil.convert(projectMemberDTOList, ProjectMember.class);
+        return saveBatch(projectMemberList);
+    }
+
+    @Override
     public boolean editProjectMember(ProjectMemberDTO projectMemberDTO) {
         ProjectMember projectMember = MapstructUtil.convert(projectMemberDTO, ProjectMember.class);
         return baseMapper.updateById(projectMember) > 0;
+    }
+
+    @Override
+    public boolean checkMemberRole(String project, String userId, List<Integer> ordinal) {
+        return baseMapper.exists(Wrappers.<ProjectMember>lambdaQuery()
+                .eq(ProjectMember::getProjectId, project)
+                .eq(ProjectMember::getUserId, userId)
+                .in(ProjectMember::getProjectRole, ordinal));
+    }
+
+    @Override
+    public boolean removeAllMember(String projectId) {
+        return baseMapper.delete(Wrappers.<ProjectMember>lambdaQuery()
+                .eq(ProjectMember::getProjectId, projectId)) > 0;
+    }
+
+    @Override
+    public boolean checkMemberUnique(ProjectMemberDTO projectMemberDTO) {
+        return baseMapper.exists(Wrappers.<ProjectMember>lambdaQuery()
+                .eq(ProjectMember::getTeamId, projectMemberDTO.getTeamId())
+                .eq(ProjectMember::getUserId, projectMemberDTO.getUserId())
+                .eq(ProjectMember::getProjectId, projectMemberDTO.getProjectId()));
     }
 }
 

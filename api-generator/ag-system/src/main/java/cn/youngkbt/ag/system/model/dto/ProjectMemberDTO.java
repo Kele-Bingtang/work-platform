@@ -6,6 +6,7 @@ import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author Kele-Bingtang
@@ -14,6 +15,7 @@ import lombok.Data;
  */
 @Data
 @AutoMapper(target = ProjectMember.class, reverseConvertGenerate = false)
+@Accessors(chain = true)
 public class ProjectMemberDTO {
     /**
      * 主键
@@ -29,7 +31,7 @@ public class ProjectMemberDTO {
     /**
      * 项目 ID
      */
-    private Long projectId;
+    private String projectId;
 
     /**
      * 项目角色（1 管理员 2 普通成员 3 只读成员 4 禁止访问）

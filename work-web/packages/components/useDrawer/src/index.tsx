@@ -56,7 +56,7 @@ const handleClose = async (drawerProps?: WorkDrawerProps) => {
 };
 
 const handleConfirm = async (drawerProps?: WorkDrawerProps) => {
-  if (!drawerProps?.onConfirm) return closeDialog();
+  if (!drawerProps?.onConfirm) return closeDrawer();
 
   const result = await drawerProps?.onConfirm(closeDrawer);
   if (result === true) return closeDrawer();

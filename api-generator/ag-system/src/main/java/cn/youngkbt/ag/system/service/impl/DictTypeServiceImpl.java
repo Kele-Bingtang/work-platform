@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -90,7 +91,7 @@ public class DictTypeServiceImpl extends ServiceImpl<DictTypeMapper, DictType> i
     public boolean checkDictCodeUnique(DictTypeDTO dictTypeDTO) {
         return baseMapper.exists(Wrappers.<DictType>lambdaQuery()
                 .eq(DictType::getDictCode, dictTypeDTO.getDictCode())
-                .ne(StringUtil.hasText(dictTypeDTO.getDictId()), DictType::getDictId, dictTypeDTO.getDictId()));
+                .ne(Objects.nonNull(dictTypeDTO.getId()), DictType::getId, dictTypeDTO.getId()));
     }
 }
 

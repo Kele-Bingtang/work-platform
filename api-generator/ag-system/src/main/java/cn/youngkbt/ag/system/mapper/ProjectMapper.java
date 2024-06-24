@@ -1,7 +1,12 @@
 package cn.youngkbt.ag.system.mapper;
 
 import cn.youngkbt.ag.system.model.po.Project;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,6 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ProjectMapper extends BaseMapper<Project> {
 
+    List<Project> listProject(@Param("belongType") Integer belongType, @Param("userId") String userId, @Param(Constants.WRAPPER) Wrapper<Project> queryWrapper);
 }
 
 

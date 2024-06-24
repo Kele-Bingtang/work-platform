@@ -13,11 +13,7 @@
 
     <BasicDrawer v-model="drawer" size="55%" title="字典数据配置">
       <div :class="`${prefixClass}__drawer-content`">
-        <DictData
-          :dict-code="dictInfo?.dictCode || ''"
-          :app-id="dictInfo?.appId || ''"
-          :is-cascade="dictInfo?.isCascade || 0"
-        />
+        <DictData :dict-code="dictInfo?.dictCode || ''" :is-cascade="dictInfo?.isCascade || 0" />
       </div>
     </BasicDrawer>
   </div>
@@ -72,7 +68,7 @@ const columns: TableColumnProps<DictType.DictTypeInfo>[] = [
     width: 110,
     enum: baseEnum,
     search: { el: "el-input" },
-    render: ({ row }) => {
+    render: ({ row }: any) => {
       return <Point color={isCascadeColorMap[row.isCascade]}>{row._enum.isCascade}</Point>;
     },
   },
@@ -86,7 +82,7 @@ const dialogForm: DialogForm = {
     elFormProps: dictTypeElFormProps,
     schema: useFormSchema(computed(() => "")).dictTypeSchema,
   },
-  id: ["id", "dictTypeId"],
+  id: ["id"],
   addApi: addDictType,
   editApi: editDictType,
   removeApi: deleteDictType,

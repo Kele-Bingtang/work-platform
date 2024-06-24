@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.TeamDTO;
 import cn.youngkbt.ag.system.model.vo.router.RouterVO;
+import cn.youngkbt.ag.system.service.TeamMemberService;
 import cn.youngkbt.ag.system.service.TeamService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
@@ -24,6 +25,7 @@ import java.util.List;
 public class TeamController {
 
     private final TeamService teamService;
+    private final TeamMemberService teamMemberService;
 
     @GetMapping("/listMyAllTeamRoute")
     @Operation(summary = "团队路由查询", description = "查询团队路由")
@@ -35,12 +37,20 @@ public class TeamController {
     @PostMapping
     @Operation(summary = "团队新增", description = "新增团队")
     public Response<Boolean> addTeam(@Validated(RestGroup.AddGroup.class) @RequestBody TeamDTO teamDTO) {
+        if (teamService.checkTeamNameUnique(teamDTO)) {
+            return HttpResult.failMessage("新增团队「" + teamDTO.getTeamName() + "」失败，团队名称已存在");
+        }
+        
         return HttpResult.ok(teamService.addTeam(teamDTO));
     }
 
     @PutMapping
     @Operation(summary = "团队编辑", description = "编辑团队")
     public Response<Boolean> editTeam(@Validated(RestGroup.EditGroup.class) @RequestBody TeamDTO teamDTO) {
+        if (teamService.checkTeamNameUnique(teamDTO)) {
+            return HttpResult.failMessage("编辑团队「" + teamDTO.getTeamName() + "」失败，团队名称已存在");
+        }
+        
         return HttpResult.ok(teamService.editTeam(teamDTO));
     }
 

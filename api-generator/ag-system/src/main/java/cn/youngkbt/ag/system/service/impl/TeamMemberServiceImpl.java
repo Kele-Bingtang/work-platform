@@ -90,16 +90,16 @@ public class TeamMemberServiceImpl extends ServiceImpl<TeamMemberMapper, TeamMem
 
     @Override
     public boolean checkMemberExist(String teamId, String userId) {
-        return baseMapper.selectCount(Wrappers.<TeamMember>lambdaQuery()
+        return baseMapper.exists(Wrappers.<TeamMember>lambdaQuery()
                 .eq(TeamMember::getTeamId, teamId)
-                .eq(TeamMember::getUserId, userId)) > 0;
+                .eq(TeamMember::getUserId, userId));
     }
 
     @Override
-    public boolean checkMemberRole(String teamId, String userId, int ordinal) {
-        return baseMapper.selectCount(Wrappers.<TeamMember>lambdaQuery()
+    public boolean checkMemberRole(String teamId, String userId, List<Integer> ordinal) {
+        return baseMapper.exists(Wrappers.<TeamMember>lambdaQuery()
                 .eq(TeamMember::getTeamId, teamId)
                 .eq(TeamMember::getUserId, userId)
-                .eq(TeamMember::getTeamRole, ordinal)) > 0;
+                .in(TeamMember::getTeamRole, ordinal));
     }
 }

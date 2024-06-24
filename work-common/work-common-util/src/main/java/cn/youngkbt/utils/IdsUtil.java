@@ -12,11 +12,12 @@ import java.util.UUID;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IdsUtil {
+    public static String UUID() {
+        return UUID.randomUUID().toString();
+    }
+    
     public static String simpleUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    public static String UUID() {
-        return UUID.randomUUID().toString();
-    }
 }

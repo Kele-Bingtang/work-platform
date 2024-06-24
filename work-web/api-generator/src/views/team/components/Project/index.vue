@@ -17,7 +17,7 @@
               <template #header>
                 <span>{{ item.projectName }}</span>
               </template>
-              <div :class="`${prefixClass}__url`">{{ item.baseUrl }}</div>
+              <div class="mt-0 mb-2.5" :class="`${prefixClass}__url`">{{ item.baseUrl }}</div>
               <div :class="`${prefixClass}__description`">{{ item.description }}</div>
               <template #footer>
                 <el-button link type="primary" :icon="View" @click="handleHeaderClick(item)"></el-button>
@@ -27,8 +27,13 @@
             </ProjectCard>
           </el-col>
           <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="4">
-            <project-card :only-body="true" :class="`${prefixClass}__plus`" @click="addProject">
-              <el-icon class="action"><Plus /></el-icon>
+            <project-card
+              :only-body="true"
+              class="text-neutral-400 cursor-pointer text-center hover:!bg-zinc-200 leading-[220px]"
+              :class="`${prefixClass}__plus`"
+              @click="addProject"
+            >
+              <el-icon class="inline-block !text-[60px]"><Plus /></el-icon>
             </project-card>
           </el-col>
         </el-row>
@@ -91,7 +96,7 @@ onMounted(() => {
 
 const initProject = (condition?: UserProjectSearch) => {
   queryProjectListOwner(condition).then(res => {
-    if (res.status === "success") {
+    if (res.code === 200) {
       projectList.value = res.data;
     }
   });
@@ -128,31 +133,6 @@ $prefix-class: #{$admin-namespace}-project;
 
 .#{$prefix-class} {
   &__tabs {
-    width: 100%;
-    height: 100%;
-
-    .#{$prefix-class}__plus {
-      line-height: 220px;
-      color: #999999;
-      text-align: center;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #f2f2f2;
-      }
-
-      .action {
-        display: inline-block;
-        font-size: 60px;
-        font-style: normal;
-        color: inherit;
-        text-align: center;
-        text-transform: none;
-        text-rendering: optimizelegibility;
-        -webkit-font-smoothing: antialiased;
-      }
-    }
-
     .#{$prefix-class}__url {
       margin-top: 0;
       margin-bottom: 10px;

@@ -6,6 +6,16 @@ package cn.youngkbt.ag.core.enums;
  * @note 团队成员类型
  */
 public enum BelongType {
+    /**
+     * 占位符
+     */
+    ZERO(),
+    /**
+     * 创建者
+     */
     CREATE,
+    /**
+     * 加入者
+     */
     JOINER;
 }

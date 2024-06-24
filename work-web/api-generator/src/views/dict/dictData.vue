@@ -41,7 +41,6 @@ import { ElMessageBox } from "element-plus";
 
 export interface DictDataProps {
   dictCode: string;
-  appId: string;
   isCascade: number;
 }
 
@@ -69,8 +68,8 @@ const dialogForm: DialogForm = {
       computed(() => props.isCascade)
     ).dictDataSchema,
   },
-  id: ["id", "dataId"],
-  addApi: params => addDictData({ ...params, appId: props.appId }),
+  id: ["id"],
+  addApi: params => addDictData({ ...params }),
   editApi: editDictData,
   removeApi: removeDictData,
   beforeEdit: form => {

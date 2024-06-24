@@ -3,7 +3,7 @@
     <el-descriptions title="基础信息" :column="1">
       <el-descriptions-item label="团队名称" label-class-name="w-125 " class-name="flex-1 flx-justify-between">
         <span>{{ teamName }}</span>
-        <el-button v-if="isTeamOwner || isTeamAdmin" plain auto-insert-space @click="handleEdit">编辑</el-button>
+        <el-button v-if="isTeamOwner" plain auto-insert-space @click="handleEdit">编辑</el-button>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -62,8 +62,6 @@ const members = ref<{ value: string; label: string; disabled: boolean }[]>([]);
 
 // 是否是团队所有者
 const isTeamOwner = computed(() => route.meta.params?.teamRole === "所有者");
-// 是否是团队管理者
-const isTeamAdmin = computed(() => route.meta.params?.teamRole === "管理者");
 
 /**
  * 修改按钮事件

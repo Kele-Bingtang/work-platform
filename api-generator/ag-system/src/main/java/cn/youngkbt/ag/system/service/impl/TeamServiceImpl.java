@@ -21,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Kele-Bingtang
@@ -117,38 +114,16 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
 
     @Override
     public Boolean editTeam(TeamDTO teamDTO) {
+        checkTeamOwnerAllowed(teamDTO.getTeamId(), AgHelper.getUserId());
+
         Team team = MapstructUtil.convert(teamDTO, Team.class);
         return baseMapper.updateById(team) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean transferOwner(String teamId, String userId, String username) {
-        checkAllowed(teamId, userId, false);
-
-        Team team = new Team();
-        team.setTeamId(teamId);
-        team.setOwnerId(userId);
-        team.setOwnerName(username);
-        // 修改团队负责人
-        int result = baseMapper.update(team, Wrappers.<Team>lambdaUpdate()
-                .eq(Team::getTeamId, teamId)
-                .set(Team::getOwnerId, userId));
-
-        // 修改自己为普通成员
-        String operator = AgHelper.getUserId();
-        teamMemberService.editTeamMemberRole(teamId, operator, TeamMemberRole.MEMBER.ordinal());
-
-        // 修改团队成员的角色为所有者
-        teamMemberService.editTeamMemberRole(teamId, userId, TeamMemberRole.OWNER.ordinal());
-
-        return result > 0;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public Boolean removeTeam(String teamId) {
-        checkAllowed(teamId, AgHelper.getUserId(), true);
+        checkTeamOwnerAllowed(teamId, AgHelper.getUserId());
 
         // 删除所有的团队成员
         teamMemberService.removeAllTeamMember(teamId);
@@ -166,19 +141,56 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
     }
 
     @Override
-    public void checkAllowed(String teamId, String userId, boolean userIdIsCache) {
-        if (!userIdIsCache && Objects.equals(userId, AgHelper.getUserId())) {
+    public void checkTeamOwnerAllowed(String teamId, String userId) {
+        if (!teamMemberService.checkMemberRole(teamId, userId, Collections.singletonList(TeamMemberRole.OWNER.ordinal()))) {
+            throw new ServiceException("操作用户不是团队负责人");
+        }
+    }
+
+    @Override
+    public void checkTeamOperatorAllowed(String teamId, String userId) {
+        if (!teamMemberService.checkMemberRole(teamId, userId, List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {
+            throw new ServiceException("操作用户不是团队负责人");
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean transferOwner(String teamId, String userId, String username) {
+        if (Objects.equals(userId, AgHelper.getUserId())) {
             throw new ServiceException("不允许操作自己");
         }
 
+        String operator = AgHelper.getUserId();
+        checkTeamOwnerAllowed(teamId, operator);
+
         if (!teamMemberService.checkMemberExist(teamId, userId)) {
-            throw new ServiceException("用户不在团队中");
+            throw new ServiceException("移交用户不在团队中");
         }
 
-        if (!teamMemberService.checkMemberRole(teamId, userId, TeamMemberRole.OWNER.ordinal())) {
-            throw new ServiceException("用户不是团队负责人");
-        }
+        Team team = new Team();
+        team.setTeamId(teamId);
+        team.setOwnerId(userId);
+        team.setOwnerName(username);
+        // 修改团队负责人
+        int result = baseMapper.update(team, Wrappers.<Team>lambdaUpdate()
+                .eq(Team::getTeamId, teamId)
+                .set(Team::getOwnerId, userId));
 
+        // 修改自己为普通成员
+        teamMemberService.editTeamMemberRole(teamId, operator, TeamMemberRole.MEMBER.ordinal());
+
+        // 修改团队成员的角色为所有者
+        teamMemberService.editTeamMemberRole(teamId, userId, TeamMemberRole.OWNER.ordinal());
+
+        return result > 0;
+    }
+
+    @Override
+    public boolean checkTeamNameUnique(TeamDTO teamDTO) {
+        return baseMapper.exists(Wrappers.<Team>lambdaQuery()
+                .eq(Team::getTeamName, teamDTO.getTeamName())
+                .ne(Objects.nonNull(teamDTO.getId()), Team::getId, teamDTO.getId()));
     }
 }
 

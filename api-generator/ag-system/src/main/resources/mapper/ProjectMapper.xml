@@ -31,4 +31,10 @@
         update_time,status,is_deleted,
         team_id
     </sql>
+    
+    <select id="listProject" resultType="cn.youngkbt.ag.system.model.po.Project">
+        select <include refid="Base_Column_List"/>
+        from t_project tp join t_project_member tpm on tp.project_id = tpm.project_id and tpm.user_id = #{userId} and tpm.belong_type = #{belongType} and tpm.is_deleted = 0
+        ${ew.getCustomSqlSegment}
+    </select>
 </mapper>

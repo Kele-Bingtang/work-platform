@@ -134,7 +134,7 @@ public class DictDataServiceImpl extends ServiceImpl<DictDataMapper, DictData> i
                 .eq(DictData::getDictValue, dictDataDTO.getDictValue())
                 .eq(DictData::getDictCode, dictDataDTO.getDictCode())
                 .eq(StringUtil.hasText(dictDataDTO.getParentId()), DictData::getParentId, dictDataDTO.getParentId())
-                .ne(StringUtil.hasText(dictDataDTO.getDataId()), DictData::getDataId, dictDataDTO.getDataId()));
+                .ne(Objects.nonNull(dictDataDTO.getId()), DictData::getId, dictDataDTO.getId()));
     }
 
     @Override

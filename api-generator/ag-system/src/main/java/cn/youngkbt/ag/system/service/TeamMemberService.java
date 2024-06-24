@@ -76,5 +76,5 @@ public interface TeamMemberService extends IService<TeamMember> {
      * @param ordinal 团队角色级别
      * @return 是否为团队负责人
      */
-    boolean checkMemberRole(String teamId, String userId, int ordinal);
+    boolean checkMemberRole(String teamId, String userId, List<Integer> ordinal);
 }

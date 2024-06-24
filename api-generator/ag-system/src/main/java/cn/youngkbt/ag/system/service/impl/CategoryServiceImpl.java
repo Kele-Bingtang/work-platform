@@ -1,5 +1,8 @@
 package cn.youngkbt.ag.system.service.impl;
 
+import cn.youngkbt.ag.system.model.dto.CategoryDTO;
+import cn.youngkbt.utils.MapstructUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.youngkbt.ag.system.model.po.Category;
 import cn.youngkbt.ag.system.service.CategoryService;
@@ -14,6 +17,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
 
+    @Override
+    public boolean addCategory(CategoryDTO categoryDTO) {
+        Category category = MapstructUtil.convert(categoryDTO, Category.class);
+        return baseMapper.insert(category) > 0;
+    }
+
+    @Override
+    public boolean removeAllCategory(String projectId) {
+        return baseMapper.delete(Wrappers.<Category>lambdaQuery()
+                .eq(Category::getProjectId, projectId)) > 0;
+    }
 }
 
 

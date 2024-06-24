@@ -80,7 +80,15 @@ const columns: TableColumnProps<TeamMember.TeamMemberInfo>[] = [
     prop: "operation",
     label: "设置",
     render: ({ row }) => {
-      return <ElButton icon={Setting} link type="primary" onClick={() => handleSetting(row)} />;
+      return (
+        <ElButton
+          icon={Setting}
+          link
+          type="primary"
+          onClick={() => handleSetting(row)}
+          disabled={row.teamRole === 1 || row.teamRole === 2}
+        />
+      );
     },
   },
 ];

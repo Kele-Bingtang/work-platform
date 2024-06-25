@@ -33,14 +33,6 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
         return baseMapper.listProjectRole(wrapper);
     }
 
-    @Override
-    public String listTeamId(String projectId) {
-        ProjectMember projectMember = baseMapper.selectOne(Wrappers.<ProjectMember>lambdaQuery()
-                .select(ProjectMember::getTeamId)
-                .eq(ProjectMember::getProjectId, projectId));
-        return projectMember.getTeamId();
-    }
-
     private LambdaQueryWrapper<ProjectMember> buildQueryWrapper(ProjectMemberDTO projectMemberDTO) {
         return Wrappers.<ProjectMember>lambdaQuery()
                 .eq(StringUtil.hasText(projectMemberDTO.getTeamId()), ProjectMember::getTeamId, projectMemberDTO.getTeamId())
@@ -48,7 +40,7 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
                 .eq(Objects.nonNull(projectMemberDTO.getProjectId()), ProjectMember::getProjectId, projectMemberDTO.getProjectId())
                 .eq(Objects.nonNull(projectMemberDTO.getProjectRole()), ProjectMember::getProjectRole, projectMemberDTO.getProjectRole())
                 .eq(Objects.nonNull(projectMemberDTO.getBelongType()), ProjectMember::getBelongType, projectMemberDTO.getBelongType())
-                .orderByAsc(ProjectMember::getId);
+                .orderByDesc(ProjectMember::getCreateTime);
     }
 
     @Override
@@ -70,11 +62,18 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
     }
 
     @Override
-    public boolean checkMemberRole(String project, String userId, List<Integer> ordinal) {
+    public boolean checkMemberRole(String projectId, String userId, List<Integer> ordinal) {
         return baseMapper.exists(Wrappers.<ProjectMember>lambdaQuery()
-                .eq(ProjectMember::getProjectId, project)
+                .eq(ProjectMember::getProjectId, projectId)
                 .eq(ProjectMember::getUserId, userId)
                 .in(ProjectMember::getProjectRole, ordinal));
+    }
+
+    @Override
+    public boolean checkMemberExist(String projectId, String userId) {
+        return baseMapper.exists(Wrappers.<ProjectMember>lambdaQuery()
+                .eq(ProjectMember::getProjectId, projectId)
+                .eq(ProjectMember::getUserId, userId));
     }
 
     @Override

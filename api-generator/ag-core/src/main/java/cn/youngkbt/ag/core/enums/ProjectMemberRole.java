@@ -18,7 +18,7 @@ public enum ProjectMemberRole {
     ADMIN("管理员"),
     MEMBER("普通成员"),
     READONLY("只读成员"),
-    PREVENT("普通成员")
+    PREVENT("禁止访问")
     ;
 
     private final String label;

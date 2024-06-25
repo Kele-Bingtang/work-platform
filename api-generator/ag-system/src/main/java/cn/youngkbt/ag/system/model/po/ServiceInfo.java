@@ -1,11 +1,13 @@
 package cn.youngkbt.ag.system.model.po;
 
+import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "t_service")
 @Data
+@AutoMapper(target = ServiceInfoVO.class, reverseConvertGenerate = false)
 public class ServiceInfo extends BaseDO {
     /**
      * 服务 ID
@@ -39,11 +42,6 @@ public class ServiceInfo extends BaseDO {
      * 服务完整地址
      */
     private String fullUrl;
-
-    /**
-     * 服务状态（0 禁用 1 启用）
-     */
-    private Integer serviceStatus;
 
     /**
      * 服务描述
@@ -91,14 +89,14 @@ public class ServiceInfo extends BaseDO {
     private Integer serviceVersion;
 
     /**
-     * 目录的 ID
+     * 目录 ID
      */
-    private Long categoryId;
+    private String categoryId;
 
     /**
      * 项目 ID
      */
-    private Long projectId;
+    private String projectId;
 
     /**
      * 团队 ID

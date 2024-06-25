@@ -5,6 +5,7 @@ import cn.youngkbt.excel.convert.ExcelDictConvert;
 import cn.youngkbt.utils.TreeBuildUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,10 +16,9 @@ import java.time.LocalDateTime;
  * @date 2023-21-12 00:21:40
  * @note 字典数据
 */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class DictDataVO extends TreeBuildUtil.TreeBO<DictDataVO> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
     
     /**
      * id
@@ -99,4 +99,6 @@ public class DictDataVO extends TreeBuildUtil.TreeBO<DictDataVO> implements Seri
     @ExcelProperty("创建时间")
     private LocalDateTime createTime;
 
+    @Serial
+    private static final long serialVersionUID = 1L;
 }

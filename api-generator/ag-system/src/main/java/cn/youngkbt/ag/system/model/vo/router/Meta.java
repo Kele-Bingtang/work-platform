@@ -134,6 +134,6 @@ public class Meta {
     /**
      * 携带参数
      */
-    private Map<String, String> params;
+    private Map<String, Object> params;
 
 }

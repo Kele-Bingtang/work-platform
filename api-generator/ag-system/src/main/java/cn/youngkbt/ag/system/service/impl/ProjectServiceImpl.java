@@ -5,7 +5,10 @@ import cn.youngkbt.ag.core.enums.ProjectMemberRole;
 import cn.youngkbt.ag.core.enums.TeamMemberRole;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ProjectMapper;
-import cn.youngkbt.ag.system.model.dto.*;
+import cn.youngkbt.ag.system.model.dto.CategoryDTO;
+import cn.youngkbt.ag.system.model.dto.ProjectDTO;
+import cn.youngkbt.ag.system.model.dto.ProjectMemberDTO;
+import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
 import cn.youngkbt.ag.system.model.po.Project;
 import cn.youngkbt.ag.system.model.vo.ProjectVO;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
@@ -54,6 +57,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
     @Override
     public List<ProjectVO> listProject(ProjectDTO projectDTO) {
+        if (!teamMemberService.checkMemberExist(projectDTO.getTeamId(), AgHelper.getUserId())) {
+            throw new ServiceException("用户不在团队中，无法查看项目");
+        }
+        
         LambdaQueryWrapper<Project> wrapper = buildQueryWrapper(projectDTO);
         String userId = AgHelper.getUserId();
 
@@ -69,13 +76,13 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .eq(StringUtil.hasText(projectDTO.getDatabaseName()), Project::getDatabaseName, projectDTO.getDatabaseName())
                 .eq(Objects.nonNull(projectDTO.getStatus()), Project::getStatus, projectDTO.getStatus())
                 .eq(Project::getIsDeleted, 0)
-                .orderByAsc(Project::getCreateTime);
+                .orderByDesc(Project::getCreateTime);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean addProject(ProjectDTO projectDTO) {
-        checkProjectAllowed(projectDTO.getTeamId(), projectDTO.getProjectId(), AgHelper.getUserId());
+        checkProjectAllowed(projectDTO.getTeamId(), projectDTO.getProjectId(), AgHelper.getUserId(), true, false);
 
         Project project = MapstructUtil.convert(projectDTO, Project.class);
         // 不带 - 的 UUID 作为项目密钥
@@ -93,14 +100,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
         categoryService.addCategory(categoryDTO);
 
-        // 添加成员角色 - 创建人为管理员
-        ProjectMemberDTO projectMemberDTO = new ProjectMemberDTO()
-                .setProjectId(project.getProjectId())
-                .setUserId(AgHelper.getUserId())
-                .setProjectRole(ProjectMemberRole.ADMIN.ordinal())
-                .setBelongType(BelongType.CREATE.ordinal())
-                .setTeamId(project.getTeamId());
-
         // 团队的所有成员都可以看到项目
         List<TeamMemberVO> teamMemberVOList = teamMemberService.listAll(new TeamMemberDTO().setTeamId(project.getTeamId()));
 
@@ -108,21 +107,19 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                         new ProjectMemberDTO()
                                 .setProjectId(project.getProjectId())
                                 .setUserId(teamMember.getUserId())
-                                // 团队所有者 & 管理者默认是项目的管理者，团队普通成员默认是团队的普通成员
-                                .setProjectRole(teamMember.getTeamRole() != 3 ? ProjectMemberRole.ADMIN.ordinal() : ProjectMemberRole.MEMBER.ordinal())
+                                // 团队所有者 & 管理者默认是项目的管理者，团队普通成员默认是项目的普通成员
+                                .setProjectRole(teamMember.getTeamRole() != TeamMemberRole.MEMBER.ordinal() ? ProjectMemberRole.ADMIN.ordinal() : ProjectMemberRole.MEMBER.ordinal())
                                 .setBelongType(BelongType.JOINER.ordinal())
                                 .setTeamId(teamMember.getTeamId())
                 , ProjectMemberDTO.class);
 
-        projectMemberDTOList.add(projectMemberDTO);
         projectMemberService.addBatchProjectMember(projectMemberDTOList);
-        
         return result > 0;
     }
 
     @Override
     public boolean editProject(ProjectDTO projectDTO) {
-        checkProjectAllowed(projectDTO.getTeamId(), projectDTO.getProjectId(), AgHelper.getUserId());
+        checkProjectAllowed(projectDTO.getTeamId(), projectDTO.getProjectId(), AgHelper.getUserId(), false, true);
 
         Project project = MapstructUtil.convert(projectDTO, Project.class);
         return baseMapper.updateById(project) > 0;
@@ -131,8 +128,11 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeProject(String projectId) {
-        String teamId = projectMemberService.listTeamId(projectId);
-        checkProjectAllowed(teamId, projectId, AgHelper.getUserId());
+        Project project = baseMapper.selectOne(Wrappers.<Project>lambdaQuery()
+                .select(Project::getTeamId)
+                .eq(Project::getProjectId, projectId));
+
+        checkProjectAllowed(project.getTeamId(), projectId, AgHelper.getUserId(), false, true);
 
         // 删除项目的目录
         categoryService.removeAllCategory(projectId);
@@ -144,14 +144,20 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    public void checkProjectAllowed(String teamId, String project, String userId) {
+    public boolean removeAllProject(String teamId) {
+        return baseMapper.delete(Wrappers.<Project>lambdaQuery()
+                .eq(Project::getTeamId, teamId)) > 0;
+    }
+
+    @Override
+    public void checkProjectAllowed(String teamId, String project, String userId, boolean checkTeamRole, boolean checkProjectRole) {
         // 检查是否为团队操作人（所有者 | 管理员）
-        if (teamMemberService.checkMemberRole(teamId, userId, List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {
+        if (checkTeamRole && teamMemberService.checkMemberRole(teamId, userId, List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {
             return;
         }
 
         // 检查是否为项目管理员
-        if (projectMemberService.checkMemberRole(project, userId, Collections.singletonList(ProjectMemberRole.ADMIN.ordinal()))) {
+        if (checkProjectRole && projectMemberService.checkMemberRole(project, userId, Collections.singletonList(ProjectMemberRole.ADMIN.ordinal()))) {
             return;
         }
 

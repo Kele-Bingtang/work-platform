@@ -10,6 +10,7 @@ import cn.youngkbt.ag.system.model.po.Team;
 import cn.youngkbt.ag.system.model.vo.TeamRouteVO;
 import cn.youngkbt.ag.system.model.vo.router.Meta;
 import cn.youngkbt.ag.system.model.vo.router.RouterVO;
+import cn.youngkbt.ag.system.service.ProjectService;
 import cn.youngkbt.ag.system.service.TeamMemberService;
 import cn.youngkbt.ag.system.service.TeamService;
 import cn.youngkbt.core.exception.ServiceException;
@@ -33,6 +34,7 @@ import java.util.*;
 public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements TeamService {
 
     private final TeamMemberService teamMemberService;
+    private final ProjectService projectService;
 
     @Override
     public List<RouterVO> listMyAllTeamRoute() {
@@ -127,14 +129,8 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
 
         // 删除所有的团队成员
         teamMemberService.removeAllTeamMember(teamId);
-        // TODO 删除目录
-
-        // TODO 删除服务
-
-        // TODO 删除字段配置
-
-        // TODO 删除响应配置
-
+        // 删除所有项目
+        projectService.removeAllProject(teamId);
         // 删除团队信息
         return baseMapper.delete(Wrappers.<Team>lambdaQuery()
                 .eq(Team::getTeamId, teamId)) > 0;

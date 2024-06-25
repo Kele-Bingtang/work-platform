@@ -41,8 +41,8 @@ public class ProjectMemberController {
             return HttpResult.failMessage("新增项目成员失败，项目成员已存在");
         }
 
-        // 检查是否有项目操作权限
-        projectService.checkProjectAllowed(projectMemberDTO.getTeamId(), projectMemberDTO.getProjectId(), projectMemberDTO.getUserId());
+        // 检查是否有项目成员添加权限（只有团队所有者 | 管理员可以添加项目成员）
+        projectService.checkProjectAllowed(projectMemberDTO.getTeamId(), projectMemberDTO.getProjectId(), projectMemberDTO.getUserId(), true, true);
 
         return HttpResult.okOrFail(projectMemberService.addProjectMember(projectMemberDTO));
     }
@@ -50,8 +50,8 @@ public class ProjectMemberController {
     @PutMapping
     @Operation(summary = "项目成员编辑", description = "编辑项目成员")
     public Response<Boolean> editProjectMember(@Validated(RestGroup.EditGroup.class) @RequestBody ProjectMemberDTO projectMemberDTO) {
-        // 检查是否有项目操作权限
-        projectService.checkProjectAllowed(projectMemberDTO.getTeamId(), projectMemberDTO.getProjectId(), projectMemberDTO.getUserId());
+        // 检查是否有项目成员编辑权限（只有团队所有者 | 管理员可以编辑项目成员）
+        projectService.checkProjectAllowed(projectMemberDTO.getTeamId(), projectMemberDTO.getProjectId(), projectMemberDTO.getUserId(), true, true);
         
         return HttpResult.okOrFail(projectMemberService.editProjectMember(projectMemberDTO));
     }

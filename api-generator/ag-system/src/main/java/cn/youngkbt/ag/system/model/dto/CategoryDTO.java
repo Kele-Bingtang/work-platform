@@ -20,7 +20,7 @@ public class CategoryDTO {
     /**
      * id
      */
-    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class})
     private Integer id;
     /**
      * 分类 ID
@@ -58,6 +58,6 @@ public class CategoryDTO {
     /**
      * 团队 ID
      */
-    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
     private String teamId;
 }

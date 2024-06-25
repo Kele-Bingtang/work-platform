@@ -17,9 +17,6 @@ import java.time.LocalDateTime;
 @Data
 public class DictTypeVO implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
-    
     /**
      * id
      */
@@ -63,4 +60,6 @@ public class DictTypeVO implements Serializable {
     @ExcelProperty("创建时间")
     private LocalDateTime createTime;
 
+    @Serial
+    private static final long serialVersionUID = 1L;
 }

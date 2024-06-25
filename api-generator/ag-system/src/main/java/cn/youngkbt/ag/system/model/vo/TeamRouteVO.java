@@ -13,9 +13,9 @@ import java.io.Serializable;
 @Data
 public class TeamRouteVO implements Serializable {
     /**
-     * id
+     * 主键
      */
-    private String id;
+    private Long id;
     /**
      * 团队 ID
      */

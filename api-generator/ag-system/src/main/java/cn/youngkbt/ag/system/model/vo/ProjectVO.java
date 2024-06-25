@@ -2,17 +2,20 @@ package cn.youngkbt.ag.system.model.vo;
 
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/6/24 22:36:18
  * @note
  */
 @Data
-public class ProjectVO {
+public class ProjectVO implements Serializable {
     /**
      * 主键
      */
-    private Integer id;
+    private Long id;
     /**
      * 项目 ID
      */
@@ -41,4 +44,7 @@ public class ProjectVO {
      * 团队 ID
      */
     private String teamId;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 }

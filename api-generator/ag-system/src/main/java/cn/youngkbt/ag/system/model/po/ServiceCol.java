@@ -1,22 +1,25 @@
 package cn.youngkbt.ag.system.model.po;
 
+import cn.youngkbt.ag.system.model.vo.ServiceColVO;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * @author Kele-Bingtang
  * @date 2024-04-23 01:04:02
- * @note 服务字段配置
+ * @note 服务列配置项
 */
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "t_service_col")
 @Data
+@AutoMapper(target = ServiceColVO.class, reverseConvertGenerate = false)
 public class ServiceCol extends BaseDO {
 
     /**
@@ -153,7 +156,12 @@ public class ServiceCol extends BaseDO {
     private String dropdownSql;
 
     /**
-     * 接口 ID
+     * 项目 ID
      */
-    private Long serviceId;
+    private String projectId;
+    
+    /**
+     * 服务 ID
+     */
+    private String serviceId;
 }

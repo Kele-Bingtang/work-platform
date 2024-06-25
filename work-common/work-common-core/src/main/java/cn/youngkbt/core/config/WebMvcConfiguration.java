@@ -1,11 +1,16 @@
 package cn.youngkbt.core.config;
 
 import cn.youngkbt.core.date.DatePatternPlus;
+import cn.youngkbt.core.http.annotation.resolver.RequestUriArgumentResolver;
+import cn.youngkbt.core.http.annotation.resolver.RequestUrlArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -45,4 +50,14 @@ public class WebMvcConfiguration  implements WebMvcConfigurer {
         registrar.registerFormatters(registry);
     }
 
+    /**
+     * 添加自定义注解
+     *
+     * @param resolvers initially an empty list
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new RequestUrlArgumentResolver());
+        resolvers.add(new RequestUriArgumentResolver());
+    }
 }

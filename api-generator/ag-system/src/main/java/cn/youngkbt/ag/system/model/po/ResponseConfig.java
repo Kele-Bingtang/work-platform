@@ -1,11 +1,13 @@
 package cn.youngkbt.ag.system.model.po;
 
+import cn.youngkbt.ag.system.model.vo.ResponseConfigVO;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "t_response_config")
 @Data
+@AutoMapper(target = ResponseConfigVO.class, reverseConvertGenerate = false)
 public class ResponseConfig extends BaseDO {
     /**
      * 响应配置 ID
@@ -36,7 +39,12 @@ public class ResponseConfig extends BaseDO {
     private Integer responseArray;
 
     /**
-     * 接口 ID
+     * 项目 ID
+     */
+    private String projectId;
+
+    /**
+     * 服务 ID
      */
     private Long serviceId;
 }

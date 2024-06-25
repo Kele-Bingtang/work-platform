@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @date 2024-23-22 00:23:11
  * @note 针对表「t_service（服务表）」的数据库操作 Mapper
  */
-public interface ServiceMapper extends BaseMapper<ServiceInfo> {
+public interface ServiceInfoMapper extends BaseMapper<ServiceInfo> {
 
 }
 

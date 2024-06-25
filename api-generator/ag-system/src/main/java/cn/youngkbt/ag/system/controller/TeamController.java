@@ -41,7 +41,7 @@ public class TeamController {
             return HttpResult.failMessage("新增团队「" + teamDTO.getTeamName() + "」失败，团队名称已存在");
         }
         
-        return HttpResult.ok(teamService.addTeam(teamDTO));
+        return HttpResult.okOrFail(teamService.addTeam(teamDTO));
     }
 
     @PutMapping
@@ -51,20 +51,20 @@ public class TeamController {
             return HttpResult.failMessage("编辑团队「" + teamDTO.getTeamName() + "」失败，团队名称已存在");
         }
         
-        return HttpResult.ok(teamService.editTeam(teamDTO));
+        return HttpResult.okOrFail(teamService.editTeam(teamDTO));
     }
 
     @DeleteMapping("/{teamId}")
     @Operation(summary = "团队解散", description = "解散团队")
     public Response<Boolean> removeTeam(@PathVariable String teamId) {
-        return HttpResult.ok(teamService.removeTeam(teamId));
+        return HttpResult.okOrFail(teamService.removeTeam(teamId));
     }
 
     @PostMapping("/transferOwner/{teamId}/{userId}/{username}")
     @Operation(summary = "团队负责人移交", description = "移交团队负责人")
     public Response<Boolean> transferOwner(@PathVariable String teamId, @PathVariable String userId, @PathVariable String username) {
         boolean result = teamService.transferOwner(teamId, userId, username);
-        return HttpResult.ok(result);
+        return HttpResult.okOrFail(result);
     }
 
 }

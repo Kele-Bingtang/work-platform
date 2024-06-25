@@ -23,14 +23,6 @@ public interface ProjectMemberService extends IService<ProjectMember> {
     List<ProjectMemberVO> listProjectRole(String teamId, String userId);
 
     /**
-     * 查询项目所在的 TeamId
-     *
-     * @param projectId 项目 ID
-     * @return 项目所在的 TeamId
-     */
-    String listTeamId(String projectId);
-
-    /**
      * 添加项目成员
      *
      * @param projectMemberDTO 项目成员信息
@@ -57,12 +49,20 @@ public interface ProjectMemberService extends IService<ProjectMember> {
     /**
      * 检查成员角色
      *
-     * @param project 项目 ID
+     * @param projectId 项目 ID
      * @param userId  用户 ID
      * @param ordinal 角色序号
      * @return 是否成功
      */
-    boolean checkMemberRole(String project, String userId, List<Integer> ordinal);
+    boolean checkMemberRole(String projectId, String userId, List<Integer> ordinal);
+
+    /**
+     * 检查项目是否存在成员
+     * @param projectId 项目 ID
+     * @param userId 用户 ID
+     * @return 项目是否存在成员
+     */
+    boolean checkMemberExist(String projectId, String userId);
 
     /**
      * 移除所有成员

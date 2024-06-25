@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.youngkbt.ag.system.mapper.ServiceMapper">
+<mapper namespace="cn.youngkbt.ag.system.mapper.ServiceInfoMapper">
 
     <resultMap id="BaseResultMap" type="cn.youngkbt.ag.system.model.po.ServiceInfo">
             <id property="id" column="id" jdbcType="BIGINT"/>

@@ -18,12 +18,13 @@ public class TeamDTO {
     /**
      * 主键
      */
-    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
+    @NotNull(message = "id 不能为空", groups = {RestGroup.EditGroup.class})
     private Long id;
 
     /**
      * 团队 ID
      */
+    @NotNull(message = "id 不能为空", groups = {RestGroup.DeleteGroup.class})
     private String teamId;
 
     /**

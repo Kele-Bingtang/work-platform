@@ -2,7 +2,10 @@ package cn.youngkbt.ag.system.service;
 
 import cn.youngkbt.ag.system.model.dto.CategoryDTO;
 import cn.youngkbt.ag.system.model.po.Category;
+import cn.youngkbt.ag.system.model.vo.CategoryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,6 +13,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @note 针对表「t_category（目录表）」的数据库操作 Service
  */
 public interface CategoryService extends IService<Category> {
+
+    /**
+     * 根据条件查询目录列表
+     *
+     * @param categoryDTO 目录信息
+     * @return 目录列表
+     */
+    List<CategoryVO> listAll(CategoryDTO categoryDTO);
 
     /**
      * 新增目录
@@ -20,10 +31,42 @@ public interface CategoryService extends IService<Category> {
     boolean addCategory(CategoryDTO categoryDTO);
 
     /**
-     * 删除所有目录
+     * 修改目录
+     *
+     * @param categoryDTO 目录信息
+     * @return 是否修改成功
+     */
+    boolean editCategory(CategoryDTO categoryDTO);
+
+    /**
+     * 删除目录
+     *
+     * @param categoryId 目录 ID
+     * @return 是否删除成功
+     */
+    boolean removeCategory(String categoryId);
+
+    /**
+     * 根据项目名删除所有目录
      *
      * @param projectId 目录 ID
      * @return 是否删除成功
      */
     boolean removeAllCategory(String projectId);
+
+    /**
+     * 校验目录编码是否唯一
+     *
+     * @param categoryDTO 目录信息
+     * @return 是否唯一
+     */
+    boolean checkCategoryCodeUnique(CategoryDTO categoryDTO);
+
+    /**
+     * 检查是否有分类权限操作
+     *
+     * @param projectId 项目 ID
+     * @param userId    用户 ID
+     */
+    void checkCategoryAllowed(String projectId, String userId);
 }

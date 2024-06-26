@@ -133,7 +133,7 @@ public class RateLimitAspect {
     private String getSpeElValue(String key, JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method targetMethod = signature.getMethod();
-        // 方法的参数
+        // 方法的参数值
         Object[] args = joinPoint.getArgs();
 
         // 创建 MethodBasedEvaluationContext
@@ -144,8 +144,7 @@ public class RateLimitAspect {
 
         Expression expression = null;
         // 如果 key 为 SpEl 表达式
-        if (StringUtils.startsWith(key, TEMPLATE_PARSER_CONTEXT.getExpressionPrefix())
-                && StringUtils.endsWith(key, TEMPLATE_PARSER_CONTEXT.getExpressionSuffix())) {
+        if (StringUtils.startsWith(key, TEMPLATE_PARSER_CONTEXT.getExpressionPrefix()) && StringUtils.endsWith(key, TEMPLATE_PARSER_CONTEXT.getExpressionSuffix())) {
             expression = EXPRESSION_PARSER.parseExpression(key, TEMPLATE_PARSER_CONTEXT);
         } else if (StringUtils.startsWith(key, "#")) {
             expression = EXPRESSION_PARSER.parseExpression(key);

@@ -19,6 +19,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Kele-Bingtang
@@ -44,14 +45,12 @@ public class ExcelDictConvert implements Converter<Object> {
         Field field = contentProperty.getField();
         ExcelDictFormat excelDictFormat = getAnnotation(field);
         String originValue = cellData.getStringValue();
-        // 先从 Spring 容器获取
-        ExcelDictHandler excelDictHandler = SpringHelper.getBean(excelDictFormat.handler());
-        if(Objects.isNull(excelDictHandler)) {
-            // Spring 容器获取失败，则手动调用无参构造器创建
-            excelDictHandler = ReflectUtil.newInstance(excelDictFormat.handler());
-        }
 
-        if (Objects.isNull(excelDictHandler)) {
+        ExcelDictHandler excelDictHandlerBean = SpringHelper.getBeanIfPresent(excelDictFormat.handler());
+        // 先从 Spring 容器获取
+        ExcelDictHandler excelDictHandler = Optional.of(excelDictHandlerBean).orElse(ReflectUtil.newInstance(excelDictFormat.handler()));
+
+        if (!(excelDictHandler instanceof DefaultExcelDictHandler)) {
             String value = ExcelHelper.reverseValueByExp(originValue, excelDictFormat.readExp(), excelDictFormat.mappingKey(), excelDictFormat.separator());
             return Convert.convert(field.getType(), value);
         }
@@ -96,7 +95,7 @@ public class ExcelDictConvert implements Converter<Object> {
         String originValue = Convert.toStr(value);
         // 先从 Spring 容器获取
         ExcelDictHandler excelDictHandler = SpringHelper.getBeanIfPresent(excelDictFormat.handler());
-        if(Objects.isNull(excelDictHandler)) {
+        if (Objects.isNull(excelDictHandler)) {
             // Spring 容器获取失败，则手动调用无参构造器创建
             excelDictHandler = ReflectUtil.newInstance(excelDictFormat.handler());
         }

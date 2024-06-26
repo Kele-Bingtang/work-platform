@@ -20,7 +20,7 @@ public class CacheHelper {
     private static final CacheManager CACHE_MANAGER = SpringHelper.getBean(CacheManager.class);
 
     /**
-     * 获取缓存组内所有的KEY
+     * 获取缓存组内所有的 KEY
      *
      * @param cacheNames 缓存组名称
      */
@@ -33,7 +33,7 @@ public class CacheHelper {
      * 获取缓存值
      *
      * @param cacheNames 缓存组名称
-     * @param key        缓存key
+     * @param key        缓存 key
      */
     public static <T> T get(String cacheNames, Object key) {
         Cache.ValueWrapper wrapper = CACHE_MANAGER.getCache(cacheNames).get(key);
@@ -44,7 +44,7 @@ public class CacheHelper {
      * 保存缓存值
      *
      * @param cacheNames 缓存组名称
-     * @param key        缓存key
+     * @param key        缓存 key
      * @param value      缓存值
      */
     public static void put(String cacheNames, Object key, Object value) {
@@ -55,7 +55,7 @@ public class CacheHelper {
      * 删除缓存值
      *
      * @param cacheNames 缓存组名称
-     * @param key        缓存key
+     * @param key        缓存 key
      */
     public static void evict(String cacheNames, Object key) {
         CACHE_MANAGER.getCache(cacheNames).evict(key);

@@ -9,13 +9,18 @@ import cn.youngkbt.core.constants.GlobalConstant;
  */
 public interface CacheNameConstant {
     /**
+     * 项目缓存前缀
+     */
+    String PREFIX = GlobalConstant.GLOBAL_REDIS_KEY + "ag:";
+    
+    /**
      * 数据字典
      */
-    String SYS_DICT = GlobalConstant.GLOBAL_REDIS_KEY + "sys_dict";
+    String SYS_DICT = PREFIX + "sys_dict";
 
     /**
      * 租户
      */
-    String SYS_TENANT = GlobalConstant.GLOBAL_REDIS_KEY + "sys_tenant#30d";
+    String SYS_TENANT = PREFIX + "sys_tenant#30d";
 
 }

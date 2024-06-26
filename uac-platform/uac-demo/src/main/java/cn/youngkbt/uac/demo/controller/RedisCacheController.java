@@ -23,20 +23,20 @@ public class RedisCacheController {
     @Cacheable(cacheNames = "demo:cache#60s", key = "#key", condition = "#key != null")
     @GetMapping("/test1")
     public Response<String> test1(String key, String value) {
-        return HttpResult.ok("操作成功："+ value);
+        return HttpResult.ok("操作成功：" + value);
     }
 
     @CachePut(cacheNames = "demo:cache#60s", key = "#key", condition = "#key != null")
     @GetMapping("/test2")
     public Response<String> test2(String key, String value) {
-        return HttpResult.ok("操作成功："+ value);
+        return HttpResult.ok("操作成功：" + value);
     }
 
 
     @CacheEvict(cacheNames = "demo:cache#60s", key = "#key", condition = "#key != null")
     @GetMapping("/test3")
     public Response<String> test3(String key, String value) {
-        return HttpResult.ok("操作成功："+ value);
+        return HttpResult.ok("操作成功：" + value);
     }
 
 }

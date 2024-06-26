@@ -57,10 +57,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
     @Override
     public List<ProjectVO> listProject(ProjectDTO projectDTO) {
-        if (!teamMemberService.checkMemberExist(projectDTO.getTeamId(), AgHelper.getUserId())) {
-            throw new ServiceException("用户不在团队中，无法查看项目");
-        }
-        
         LambdaQueryWrapper<Project> wrapper = buildQueryWrapper(projectDTO);
         String userId = AgHelper.getUserId();
 
@@ -150,14 +146,14 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    public void checkProjectAllowed(String teamId, String project, String userId, boolean checkTeamRole, boolean checkProjectRole) {
+    public void checkProjectAllowed(String teamId, String projectId, String userId, boolean checkTeamRole, boolean checkProjectRole) {
         // 检查是否为团队操作人（所有者 | 管理员）
         if (checkTeamRole && teamMemberService.checkMemberRole(teamId, userId, List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {
             return;
         }
 
         // 检查是否为项目管理员
-        if (checkProjectRole && projectMemberService.checkMemberRole(project, userId, Collections.singletonList(ProjectMemberRole.ADMIN.ordinal()))) {
+        if (checkProjectRole && projectMemberService.checkMemberRole(projectId, userId, Collections.singletonList(ProjectMemberRole.ADMIN.ordinal()))) {
             return;
         }
 

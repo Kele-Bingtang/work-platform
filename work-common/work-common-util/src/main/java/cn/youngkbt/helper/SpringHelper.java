@@ -2,7 +2,7 @@ package cn.youngkbt.helper;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
@@ -30,7 +30,7 @@ public class SpringHelper extends SpringUtil {
         try {
             getBeanFactory().getBean(clazz);
             return true;
-        } catch (BeansException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -41,7 +41,18 @@ public class SpringHelper extends SpringUtil {
     public static <T> T getBeanIfPresent(Class<T> clazz) {
         try {
             return getBeanFactory().getBean(clazz);
-        } catch (BeansException e) {
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 如果 BeanFactory 存在，则返回，否则返回 null
+     */
+    public static ListableBeanFactory getBeanFactoryIfPresent() {
+        try {
+            return getBeanFactory();
+        } catch (Exception e) {
             return null;
         }
     }

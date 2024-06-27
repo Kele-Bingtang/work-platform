@@ -117,6 +117,7 @@ import {
   type ProFormInstance,
   type ProSearchExpose,
   type ProSearchProps,
+  setProp,
 } from "@work/components";
 import {
   type TableColumnProps,
@@ -132,15 +133,7 @@ import {
   type FilterRule,
   editKey,
 } from "./interface";
-import {
-  filterEnum,
-  filterEnumLabel,
-  handleRowAccordingToProp,
-  setColumnProp,
-  lastProp,
-  frontFilter,
-  exportExcel,
-} from "./helper";
+import { filterEnum, filterEnumLabel, handleRowAccordingToProp, lastProp, frontFilter, exportExcel } from "./helper";
 import ColSetting from "./components/ColSetting.vue";
 import TableMain from "./components/TableMain.vue";
 import TableMainHeader, { type CustomTableSize, type ElTableSize } from "./components/TableMainHeader.vue";
@@ -184,7 +177,7 @@ export interface ProTableProps extends /* @vue-ignore */ Partial<Omit<TableProps
   filterRule?: "front" | "back"; // 过滤规则：前端筛选还是后端筛选，默认后端筛选
   editRow?: number; // 允许最大编辑的行数，默认 undefined，没有限制
   rowClickEdit?: boolean; // 单击行激活行内编辑
-  dialogForm?: DialogForm; // 新增、编辑、删除表单配置
+  dialogForm?: DialogFormProps; // 新增、编辑、删除表单配置
 }
 
 // 接受父组件参数，配置默认值
@@ -653,7 +646,7 @@ const setColumn = (columnSet: TableSetProps[], columnsChildren?: TableColumnProp
   for (const column of columnsChildren || columns) {
     for (const item of columnSet) {
       if (column.prop === item.prop) {
-        setColumnProp(column, item.field, item.value);
+        setProp(column, item.field, item.value);
       } else if (column._children?.length) {
         setColumn(columnSet, column._children);
       }

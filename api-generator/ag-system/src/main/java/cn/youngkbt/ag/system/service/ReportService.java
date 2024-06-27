@@ -44,6 +44,28 @@ public interface ReportService extends IService<Report> {
     boolean removeReport(String serviceId);
 
     /**
+     * 根据分类 ID 删除报表
+     *
+     * @param categoryId 分类 ID
+     * @return 是否删除成功
+     */
+    boolean removeReportByCategoryId(String categoryId);
+
+    /**
+     * 根据项目 ID 删除报表
+     * @param projectId 项目 ID
+     * @return 是否删除成功
+     */
+    boolean removeReportByProjectIdId(String projectId);
+
+    /**
+     * 根据团队 ID 删除报表
+     * @param teamId 团队 ID
+     * @return 是否删除成功
+     */
+    boolean removeReportByTeamId(String teamId);
+
+    /**
      * 检查报表标题是否唯一
      *
      * @param reportDTO 报表信息
@@ -51,11 +73,4 @@ public interface ReportService extends IService<Report> {
      */
     boolean checkReportTitleUnique(ReportDTO reportDTO);
     
-    /**
-     * 检查报表是否允许操作
-     *
-     * @param projectId 项目 ID
-     * @param userId    用户 ID
-     */
-    void checkReportAllowed(String projectId, String userId);
 }

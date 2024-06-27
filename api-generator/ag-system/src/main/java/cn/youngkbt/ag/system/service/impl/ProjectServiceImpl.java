@@ -23,6 +23,7 @@ import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -57,15 +58,13 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
     @Override
     public List<ProjectVO> listProject(ProjectDTO projectDTO) {
-        LambdaQueryWrapper<Project> wrapper = buildQueryWrapper(projectDTO);
-        String userId = AgHelper.getUserId();
-
-        List<Project> projectList = baseMapper.listProject(projectDTO.getBelongType(), userId, wrapper);
+        QueryWrapper<Project> wrapper = buildQueryWrapper(projectDTO);
+        List<Project> projectList = baseMapper.listProject(wrapper);
 
         return MapstructUtil.convert(projectList, ProjectVO.class);
     }
 
-    private LambdaQueryWrapper<Project> buildQueryWrapper(ProjectDTO projectDTO) {
+    private LambdaQueryWrapper<Project> buildLambdaQueryWrapper(ProjectDTO projectDTO) {
         return Wrappers.<Project>lambdaQuery()
                 .eq(StringUtil.hasText(projectDTO.getTeamId()), Project::getTeamId, projectDTO.getTeamId())
                 .eq(StringUtil.hasText(projectDTO.getProjectName()), Project::getProjectName, projectDTO.getProjectName())
@@ -75,6 +74,23 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .orderByDesc(Project::getCreateTime);
     }
 
+    private QueryWrapper<Project> buildQueryWrapper(ProjectDTO projectDTO) {
+        final String projectTablePrefix = "tp.";
+        final String projectMemberTablePrefix = "tpm.";
+        return Wrappers.<Project>query()
+                // project 表条件
+                .eq(projectTablePrefix + "team_id", projectDTO.getTeamId())
+                .eq(StringUtil.hasText(projectDTO.getProjectName()), projectTablePrefix + "project_name", projectDTO.getProjectName())
+                .eq(StringUtil.hasText(projectDTO.getDatabaseName()), projectTablePrefix + "database_name", projectDTO.getDatabaseName())
+                .eq(Objects.nonNull(projectDTO.getStatus()), projectTablePrefix + "status", projectDTO.getStatus())
+                .eq(projectTablePrefix + "is_deleted", 0)
+                .orderByDesc(projectTablePrefix + "create_time")
+                // project_member 表条件
+                .eq(projectMemberTablePrefix + "user_id", AgHelper.getUserId())
+                .eq(Objects.nonNull(projectDTO.getBelongType()) && projectDTO.getBelongType() != 0, projectMemberTablePrefix + "belong_type", projectDTO.getBelongType());
+
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean addProject(ProjectDTO projectDTO) {
@@ -82,8 +98,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
         Project project = MapstructUtil.convert(projectDTO, Project.class);
         // 不带 - 的 UUID 作为项目密钥
-        String simpleUUID = IdsUtil.simpleUUID();
-        project.setSecretKey(simpleUUID);
+        project.setSecretKey(IdsUtil.simpleUUID());
         int result = baseMapper.insert(project);
 
         // 生成默认目录
@@ -105,7 +120,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                                 .setUserId(teamMember.getUserId())
                                 // 团队所有者 & 管理者默认是项目的管理者，团队普通成员默认是项目的普通成员
                                 .setProjectRole(teamMember.getTeamRole() != TeamMemberRole.MEMBER.ordinal() ? ProjectMemberRole.ADMIN.ordinal() : ProjectMemberRole.MEMBER.ordinal())
-                                .setBelongType(BelongType.JOINER.ordinal())
+                                .setBelongType(BelongType.CREATE.ordinal())
                                 .setTeamId(teamMember.getTeamId())
                 , ProjectMemberDTO.class);
 
@@ -128,9 +143,11 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .select(Project::getTeamId)
                 .eq(Project::getProjectId, projectId));
 
+        Assert.nonNull(project, "删除的项目不存在");
+
         checkProjectAllowed(project.getTeamId(), projectId, AgHelper.getUserId(), false, true);
 
-        // 删除项目的目录
+        // 删除项目目录
         categoryService.removeAllCategory(projectId);
         // 删除项目成员
         projectMemberService.removeAllMember(projectId);
@@ -140,7 +157,13 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean removeAllProject(String teamId) {
+        // 删除团队下所有项目目录
+        categoryService.removeAllCategoryByTeamId(teamId);
+        // 删除团队下所有项目成员
+        projectMemberService.removeAllMemberByTeamId(teamId);
+        
         return baseMapper.delete(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getTeamId, teamId)) > 0;
     }

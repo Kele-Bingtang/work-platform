@@ -37,8 +37,8 @@ export interface WorkDialogProps extends Partial<DialogProps> {
   headerRender?: (scope: any) => VNode; // 头部渲染 TSX
   footerRender?: () => VNode; // 底部渲染 TSX
   showFooter?: boolean; // 是否渲染底部，默认 true
-  onConfirm?: (closeDialog: () => void) => void | boolean | Promise<void> | any; // 确认按钮点击事件
-  onClose?: (closeDialog: () => void) => void | boolean | Promise<void> | any; // 关闭按钮点击事件
+  onConfirm?: (closeDialog: () => void) => any; // 确认按钮点击事件
+  onClose?: (closeDialog: () => void) => any; // 关闭按钮点击事件
   confirmLabel?: string; // 确认按钮文字，默认 确认
   closeLabel?: string; // 关闭按钮文字，默认 关闭
   fullscreen?: boolean; // 是否默认全屏，默认 false
@@ -58,14 +58,14 @@ const handleClose = async (dialogProps?: WorkDialogProps) => {
   if (!dialogProps?.onClose) return closeDialog();
 
   const result = await dialogProps?.onClose(closeDialog);
-  if (result === true) return closeDialog();
+  if (result || result === 0) return closeDialog();
 };
 
 const handleConfirm = async (dialogProps?: WorkDialogProps) => {
   if (!dialogProps?.onConfirm) return closeDialog();
 
   const result = await dialogProps?.onConfirm(closeDialog);
-  if (result === true) return closeDialog();
+  if (result || result === 0) return closeDialog();
 };
 
 /**

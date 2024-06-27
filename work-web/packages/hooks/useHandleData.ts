@@ -1,4 +1,4 @@
-import { ElMessageBox, ElMessage } from "element-plus";
+import { ElMessageBox } from "element-plus";
 
 export namespace HandleData {
   export type MessageType = "" | "success" | "warning" | "info" | "error";
@@ -13,22 +13,18 @@ export namespace HandleData {
  * @returns {Promise}
  */
 export const useHandleData = (
+  messageTip: string,
   fallback: () => void,
-  message: string,
   confirmType: HandleData.MessageType = "warning"
 ) => {
   return new Promise(resolve => {
-    ElMessageBox.confirm(`${message}?`, "温馨提示", {
+    ElMessageBox.confirm(messageTip, "温馨提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: confirmType,
       draggable: true,
     }).then(async () => {
       fallback();
-      ElMessage({
-        type: "success",
-        message: `${message}成功!`,
-      });
       resolve(true);
     });
   });

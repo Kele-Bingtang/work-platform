@@ -9,7 +9,7 @@ public enum BelongType {
     /**
      * 占位符
      */
-    ZERO(),
+    ZERO,
     /**
      * 创建者
      */

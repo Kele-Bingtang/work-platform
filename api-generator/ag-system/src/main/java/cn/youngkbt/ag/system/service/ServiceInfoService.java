@@ -56,6 +56,22 @@ public interface ServiceInfoService extends IService<ServiceInfo> {
     boolean removeAllServiceInfo(String categoryId);
 
     /**
+     * 根据项目 ID 删除所有服务
+     *
+     * @param projectId 项目 ID
+     * @return 是否删除成功
+     */
+    boolean removeAllServiceInfoByProjectId(String projectId);
+
+    /**
+     * 根据团队 ID 删除所有服务
+     *
+     * @param teamId 团队 ID
+     * @return 是否删除成功
+     */
+    boolean removeAllServiceInfoByTeamId(String teamId);
+
+    /**
      * 检查服务名称是否唯一
      *
      * @param serviceInfoDTO 服务信息
@@ -80,4 +96,5 @@ public interface ServiceInfoService extends IService<ServiceInfo> {
     void checkServiceAllowed(String projectId, String userId);
 
     ServiceInfo listOneByServiceId(String serviceId);
+
 }

@@ -1,28 +1,22 @@
 <template>
   <div :class="prefixClass">
-    <el-tabs type="border-card" v-model="activeName" :class="`${prefixClass}__tabs`" :before-leave="switchTab">
+    <ProSearch v-model="searchModel" :schema="searchSchema" @search="handleSearch" @reset="handleReset" />
+    <el-tabs type="border-card" v-model="activeName" @tab-change="switchTab">
       <el-tab-pane v-for="item in tabs" :key="item.name" :label="item.label" :name="item.name" :lazy="true">
         <el-row :gutter="10">
-          <el-col
-            :xs="12"
-            :sm="12"
-            :md="6"
-            :lg="6"
-            :xl="4"
-            v-for="item in projectList"
-            :key="item.id"
-            style="margin-bottom: 10px"
-          >
+          <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="4" v-for="item in projectList" :key="item.id">
             <ProjectCard @header-click="handleHeaderClick(item)">
               <template #header>
                 <span>{{ item.projectName }}</span>
               </template>
-              <div class="mt-0 mb-2.5" :class="`${prefixClass}__url`">{{ item.baseUrl }}</div>
-              <div :class="`${prefixClass}__description`">{{ item.description }}</div>
+              <div class="mt-0 mb-2.5 font-medium sle">{{ item.baseUrl }}</div>
+              <div class="line-clamp-3 text-neutral-400">
+                {{ item.description }}
+              </div>
               <template #footer>
                 <el-button link type="primary" :icon="View" @click="handleHeaderClick(item)"></el-button>
-                <el-button link type="danger" :icon="Delete" @click="removeProject(item)"></el-button>
-                <el-button link type="warning" :icon="Setting" @click="editProject(item)"></el-button>
+                <el-button link type="danger" :icon="Delete" @click="handleRemoveProject(item)"></el-button>
+                <el-button link type="warning" :icon="Setting" @click="handleEditProject(item)"></el-button>
               </template>
             </ProjectCard>
           </el-col>
@@ -30,8 +24,7 @@
             <project-card
               :only-body="true"
               class="text-neutral-400 cursor-pointer text-center hover:!bg-zinc-200 leading-[220px]"
-              :class="`${prefixClass}__plus`"
-              @click="addProject"
+              @click="handleAddProject"
             >
               <el-icon class="inline-block !text-[60px]"><Plus /></el-icon>
             </project-card>
@@ -44,17 +37,19 @@
 
 <script setup lang="tsx" name="Project">
 import { ProjectCard } from "@/components";
-import { queryProjectListOwner, type ProjectModule } from "@/api/project";
-import { type TabPaneName } from "element-plus";
+import { listProject, addProject, editProject, removeProject, type Project } from "@/api/project";
 import { View, Delete, Setting, Plus } from "@element-plus/icons-vue";
-import { useDesign } from "@work/hooks";
-import { useDialog, ProForm } from "work";
-import { schema } from "./formSchema";
+import { useDesign, useHandleData } from "@work/hooks";
+import { useDialog, ProForm, ProSearch, message } from "work";
+import { rules, schema } from "./formSchema";
+import { searchSchema } from "./searchSchema";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("project");
 
 const { open } = useDialog();
+
+const route = useRoute();
 
 export interface CommonTab {
   id?: number;
@@ -62,10 +57,7 @@ export interface CommonTab {
   name: string;
 }
 
-type Project = ProjectModule.Project;
-
-type UserProjectSearch = ProjectModule.UserProjectSearch;
-
+// ElTabs 组件配置项
 const tabs: CommonTab[] = [
   {
     label: "我的项目",
@@ -73,84 +65,116 @@ const tabs: CommonTab[] = [
   },
   {
     label: "我创建的",
-    name: "create",
+    name: "creator",
   },
   {
     label: "我加入的",
-    name: "join",
+    name: "joiner",
   },
 ];
 
+// 项目分类
+enum belongType {
+  all = 0,
+  creator = 1,
+  joiner = 2,
+}
+
 const activeName = ref("all");
-const projectList = ref<Project[]>([]);
-const model = ref<Record<string, any>>();
+const projectList = ref<Project.ProjectInfo[]>([]);
+const formModel = ref<Record<string, any>>({});
+const searchModel = reactive<Record<string, any>>({});
 
 const dialogTitle: { [propName: string]: string } = {
   add: "添加项目",
   edit: "编辑项目",
 };
 
+const teamId = computed(() => route.meta.params?.teamId);
+
 onMounted(() => {
-  // initProject();
+  initProject();
 });
 
-const initProject = (condition?: UserProjectSearch) => {
-  queryProjectListOwner(condition).then(res => {
+// 初始化项目
+const initProject = (params?: Project.ProjectSearch) => {
+  listProject({ ...params, belongType: belongType[unref(activeName)], teamId: unref(teamId) }).then(res => {
+    if (res.code === 200) projectList.value = res.data;
+  });
+};
+
+// 查询事件
+const handleSearch = () => {
+  initProject(searchModel);
+};
+
+// 重置事件
+const handleReset = () => {
+  initProject();
+};
+
+// 切换标签事件
+const switchTab = () => {
+  initProject();
+};
+
+const dialogForm = (api: (data: any) => Promise<http.Response<string>>, status: string, successMessage: string) => {
+  open({
+    title: dialogTitle[status],
+    height: 300,
+    onConfirm: async () => {
+      const res = await api({ ...unref(formModel), teamId: unref(teamId) } as Project.ProjectInsert);
+      if (res.code === 200) {
+        initProject();
+        return message.success(successMessage);
+      }
+    },
+    render: () => (
+      <ProForm
+        v-model={formModel.value}
+        el-form-props={{ rules }}
+        schema={schema}
+        row-props={{ col: { span: 24 } }}
+        includeModelKeys={["id", "projectId"]}
+      />
+    ),
+  });
+};
+
+const handleAddProject = () => {
+  formModel.value = {};
+  dialogForm(addProject, "add", "新增成功");
+};
+
+const handleEditProject = (item: Project.ProjectInfo) => {
+  formModel.value = { ...item };
+  dialogForm(editProject, "edit", "编辑成功");
+};
+
+const handleRemoveProject = (item: Project.ProjectInfo) => {
+  useHandleData("此操作将永久删除该项目，是否继续？", async () => {
+    const res = await removeProject({ projectId: item.projectId });
     if (res.code === 200) {
-      projectList.value = res.data;
+      initProject();
+      return message.success("删除成功");
     }
   });
 };
 
-const switchTab = (activeName: TabPaneName, oldActiveName: TabPaneName) => {
-  if (activeName === oldActiveName) {
-    return;
-  }
-  if (activeName === "create") {
-    initProject({ enterType: 0 });
-  } else if (activeName === "join") {
-    initProject({ enterType: 1 });
-  } else {
-    initProject();
-  }
+const handleHeaderClick = (item: Project.ProjectInfo) => {
+  console.log(item.projectName);
 };
-
-const addProject = () => {
-  open({
-    title: dialogTitle["add"],
-    height: 300,
-    render: () => <ProForm vModel={model.value} schema={schema} row-props={{ col: { span: 24 } }} />,
-  });
-};
-
-const handleHeaderClick = (item: Project) => {};
-const removeProject = (item: Project) => {};
-const editProject = (item: Project) => {};
 </script>
 
 <style lang="scss" scoped>
 $prefix-class: #{$admin-namespace}-project;
 
 .#{$prefix-class} {
-  &__tabs {
-    .#{$prefix-class}__url {
-      margin-top: 0;
-      margin-bottom: 10px;
-      overflow: hidden;
-      font-size: 16px;
-      font-weight: 500;
-      color: rgb(0 0 0 / 85%);
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .#{$prefix-class}__description {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      overflow: hidden;
-      color: #999999;
-    }
+  :deep(.k-search-form) {
+    padding: 10px 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
   }
 
   :deep(.el-dialog .item-base-url label) {

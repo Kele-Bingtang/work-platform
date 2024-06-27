@@ -1,7 +1,7 @@
 import { ElConfigProvider, type FormInstance } from "element-plus";
 import type { FormSchemaProps, FormSetProps, ProFormInstance } from "../interface";
 import ProForm, { type ProFormOnEmits, type ProFormProps } from "../index.vue";
-import { isObject } from "../helper";
+import { isObject } from "@work/utils";
 import {
   type Ref,
   createVNode,

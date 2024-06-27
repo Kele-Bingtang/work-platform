@@ -56,16 +56,14 @@ import {
   type BreakPoint,
   useProForm,
   type FormSetProps,
-  setFormProp,
+  setProp,
   type GridInstance,
   type GridItemProps,
-  isEmptyVal,
-  isObject,
 } from "@work/components";
 import { Delete, Search, ArrowDown, ArrowUp } from "@element-plus/icons-vue";
 import { useDesign } from "@work/hooks";
 import { ElFormItem, ElButton, ElIcon, type FormItemProp } from "element-plus";
-import { isString } from "@work/components/ProForm/src/helper";
+import { isString, isEmpty, isObject } from "@work/utils";
 
 defineOptions({ name: "ProSearch" });
 
@@ -233,7 +231,7 @@ const filterModel = async () => {
     // 使用 reduce 过滤空值，并返回一个新对象
     return Object.keys(model).reduce((prev: any, next: any) => {
       const value = model[next];
-      if (!isEmptyVal(value)) {
+      if (!isEmpty(value)) {
         if (isObject(value)) {
           if (Object.keys(value).length > 0) prev[next] = value;
         } else prev[next] = value;
@@ -290,7 +288,7 @@ const setSchema = (schemaProps: FormSetProps[]) => {
   for (const v of schema) {
     for (const item of schemaProps) {
       if (v.prop === item.prop) {
-        setFormProp(v, item.field, item.value);
+        setProp(v, item.field, item.value);
       }
     }
   }

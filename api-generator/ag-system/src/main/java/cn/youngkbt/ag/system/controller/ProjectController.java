@@ -36,7 +36,7 @@ public class ProjectController {
         return HttpResult.ok(project);
     }
 
-    @GetMapping
+    @GetMapping("/list")
     @Operation(summary = "个人项目列表查询", description = "查询个人项目列表")
     public Response<List<ProjectVO>> listProject(@Validated(RestGroup.QueryGroup.class) ProjectDTO projectDTO) {
         List<ProjectVO> projectVOList = projectService.listProject(projectDTO);
@@ -46,7 +46,7 @@ public class ProjectController {
     @PostMapping
     @Operation(summary = "项目新增", description = "新增项目")
     public Response<Boolean> addProject(@Validated(RestGroup.AddGroup.class) @RequestBody ProjectDTO projectDTO) {
-        if (!projectService.checkProjectNameUnique(projectDTO)) {
+        if (projectService.checkProjectNameUnique(projectDTO)) {
             return HttpResult.failMessage("新增项目「" + projectDTO.getProjectName() + "」失败，项目名称已存在");
         }
 
@@ -57,7 +57,7 @@ public class ProjectController {
     @PutMapping
     @Operation(summary = "项目编辑", description = "编辑项目")
     public Response<Boolean> editProject(@Validated(RestGroup.EditGroup.class) @RequestBody ProjectDTO projectDTO) {
-        if (!projectService.checkProjectNameUnique(projectDTO)) {
+        if (projectService.checkProjectNameUnique(projectDTO)) {
             return HttpResult.failMessage("编辑项目「" + projectDTO.getProjectName() + "」失败，项目名称已存在");
         }
 

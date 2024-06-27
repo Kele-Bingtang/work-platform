@@ -33,7 +33,7 @@ import java.util.Objects;
 public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, ServiceCol> implements ServiceColService {
 
     private final ProjectMemberService projectMemberService;
-    
+
     @Override
     public TablePage<ServiceColVO> listPage(ServiceColDTO serviceColDTO, PageQuery pageQuery) {
         LambdaQueryWrapper<ServiceCol> wrapper = buildQueryWrapper(serviceColDTO);
@@ -52,16 +52,12 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
 
     @Override
     public boolean addServiceCol(ServiceColDTO serviceColDTO) {
-        checkReportAllowed(serviceColDTO.getProjectId(), AgHelper.getUserId());
-        
         ServiceCol serviceCol = MapstructUtil.convert(serviceColDTO, ServiceCol.class);
         return baseMapper.insert(serviceCol) > 0;
     }
 
     @Override
     public boolean editServiceCol(ServiceColDTO serviceColDTO) {
-        checkReportAllowed(serviceColDTO.getProjectId(), AgHelper.getUserId());
-        
         ServiceCol serviceCol = MapstructUtil.convert(serviceColDTO, ServiceCol.class);
         return baseMapper.updateById(serviceCol) > 0;
     }
@@ -69,8 +65,8 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     @Override
     public boolean removeServiceColById(String id) {
         ServiceCol serviceCol = baseMapper.selectById(id);
-        checkReportAllowed(serviceCol.getProjectId(), AgHelper.getUserId());
-        
+        checkServiceColAllowed(serviceCol.getProjectId(), AgHelper.getUserId());
+
         return baseMapper.deleteById(id) > 0;
     }
 
@@ -78,6 +74,24 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     public boolean removeAllServiceColByServiceId(String serviceId) {
         return baseMapper.delete(Wrappers.<ServiceCol>lambdaQuery()
                 .eq(ServiceCol::getServiceId, serviceId)) > 0;
+    }
+
+    @Override
+    public boolean removeAllServiceColByServiceIdByCategoryId(String categoryId) {
+        return baseMapper.delete(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, categoryId)) > 0;
+    }
+
+    @Override
+    public boolean removeAllServiceColByServiceIdByProjectIdId(String projectId) {
+        return baseMapper.delete(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, projectId)) > 0;
+    }
+
+    @Override
+    public boolean removeAllServiceColByServiceIdByTeamId(String teamId) {
+        return baseMapper.delete(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, teamId)) > 0;
     }
 
     @Override
@@ -89,9 +103,9 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     }
 
     @Override
-    public void checkReportAllowed(String projectId, String userId) {
+    public void checkServiceColAllowed(String projectId, String userId) {
         if (!projectMemberService.checkMemberRole(projectId, userId, List.of(ProjectMemberRole.ADMIN.ordinal(), ProjectMemberRole.MEMBER.ordinal()))) {
-            throw new ServiceException("用户没有报表操作权限");
+            throw new ServiceException("用户没有列配置项操作权限");
         }
     }
 
@@ -109,7 +123,7 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     public Integer removeInvalidCol(String serviceId, String selectSql) {
         return 0;
     }
-    
+
 }
 
 

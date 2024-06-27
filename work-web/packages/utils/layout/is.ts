@@ -1,5 +1,5 @@
 /**
- * @description 是否为合法的前缀
+ * @description 是否为合法的 URL 前缀
  */
 export const isExternal = (path: string) => /^(http?:|https?:|mailto:|tel:)/.test(path);
 
@@ -31,14 +31,14 @@ export function is(val: unknown, type: string) {
 }
 
 /**
- * @description  是否为函数
+ * @description 是否为函数
  */
 export function isFunction<T = Function>(val: unknown): val is T {
   return is(val, "Function");
 }
 
 /**
- * @description 是否已定义
+ * @description:是否已定义
  */
 export const isDef = <T = unknown>(val?: T): val is T => {
   return typeof val !== "undefined";
@@ -56,14 +56,14 @@ export const isObject = (val: any): val is Record<any, any> => {
 };
 
 /**
- * @description  是否为时间
+ * @description 是否为时间
  */
 export function isDate(val: unknown): val is Date {
   return is(val, "Date");
 }
 
 /**
- * 是否是有效的数字（包含正负整数，0以及正负浮点数）
+ * 是否是有效的数字（包含正负整数，0 以及正负浮点数）
  */
 export const isNumber = (val: string) => {
   const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
@@ -76,14 +76,14 @@ export const isNumber = (val: string) => {
 };
 
 /**
- * @description  是否为AsyncFunction
+ * @description  是否为 AsyncFunction
  */
 export function isAsyncFunction<T = any>(val: unknown): val is Promise<T> {
   return is(val, "AsyncFunction");
 }
 
 /**
- * @description  是否为promise
+ * @description  是否为 promise
  */
 export function isPromise<T = any>(val: unknown): val is Promise<T> {
   return is(val, "Promise") && isObject(val) && isFunction(val.then) && isFunction(val.catch);
@@ -153,3 +153,30 @@ export function isNullOrUnDef(val: unknown): val is null | undefined {
 export function isPhone(val: string) {
   return /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(val);
 }
+
+/**
+ * 是否是图片链接
+ */
+export const isImgPath = (path: string): boolean => {
+  return /(https?:\/\/|data:image\/).*?\.(png|jpg|jpeg|gif|svg|webp|ico)/gi.test(path);
+};
+
+/**
+ * @description 是否为空值项（包含数组、对象判断）
+ * @param checkFull 是否检查数组、对象是否为空。默认 true
+ */
+export const isEmpty = (val: any, checkFull = true): boolean => {
+  // 检查空字符串、null 和 undefined
+  if (val === "" || val === null || val === undefined) return true;
+
+  if (checkFull) return false;
+
+  // 检查是不是数组并且长度为 0
+  if (isArray(val) && val.length === 0) return true;
+
+  // 检查是不是对象并且没有自身可枚举属性
+  if (isObject(val) && Object.keys(val).length === 0) return true;
+
+  // 如果以上都不是，则不为空
+  return false;
+};

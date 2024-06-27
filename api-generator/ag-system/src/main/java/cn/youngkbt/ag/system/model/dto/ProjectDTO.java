@@ -44,11 +44,6 @@ public class ProjectDTO {
     private String description;
 
     /**
-     * 项目密钥，唯一
-     */
-    private String secretKey;
-
-    /**
      * 数据库名称
      */
     private String databaseName;
@@ -56,6 +51,7 @@ public class ProjectDTO {
     /**
      * 0 项目创建者 1 项目加入者
      */
+    @NotNull(message = "项目所属类型不能为空", groups = {RestGroup.QueryGroup.class})
     private Integer belongType;
 
     /**

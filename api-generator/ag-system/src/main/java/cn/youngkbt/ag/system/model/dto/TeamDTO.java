@@ -42,9 +42,4 @@ public class TeamDTO {
      * 显示顺序
      */
     private Integer orderNum;
-
-    /**
-     * 状态（0 异常 1 正常 ）
-     */
-    private Integer status;
 }

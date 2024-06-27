@@ -7,7 +7,7 @@ export namespace TeamMember {
     username: string; // 用户名
     nickname: string; // 团队内昵称
     teamRole: number; // 团队角色（1 所有者 2 管理员 3 普通成员）
-    belongType: number; // 0 团队创建者 1 团队加入者
+    belongType: number; // 1 团队创建者 2 团队加入者
     teamId: string; // 团队 ID
   }
 }

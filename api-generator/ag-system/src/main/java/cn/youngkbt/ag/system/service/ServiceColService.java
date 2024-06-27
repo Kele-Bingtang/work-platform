@@ -40,7 +40,7 @@ public interface ServiceColService extends IService<ServiceCol> {
     boolean editServiceCol(ServiceColDTO serviceColDTO);
 
     /**
-     * 根据主键删除列配置西信息
+     * 根据主键删除列配置项信息
      *
      * @param id 列配置项主键
      * @return 是否删除成功
@@ -48,12 +48,36 @@ public interface ServiceColService extends IService<ServiceCol> {
     boolean removeServiceColById(String id);
 
     /**
-     * 根据服务 ID 删除所有的列配置西信息
+     * 根据服务 ID 删除所有的列配置项信息
      *
      * @param serviceId 服务 ID
      * @return 是否删除成功
      */
     boolean removeAllServiceColByServiceId(String serviceId);
+
+    /**
+     * 根据分类 ID 删除所有的列配置项信息
+     *
+     * @param categoryId 分类 ID
+     * @return 是否删除成功
+     */
+    boolean removeAllServiceColByServiceIdByCategoryId(String categoryId);
+
+    /**
+     * 根据项目 ID 删除所有的列配置项信息
+     *
+     * @param projectId 项目 ID
+     * @return 是否删除成功
+     */
+    boolean removeAllServiceColByServiceIdByProjectIdId(String projectId);
+
+    /**
+     * 根据团队 ID 删除所有的列配置项信息
+     *
+     * @param teamId 团队 ID
+     * @return 是否删除成功
+     */
+    boolean removeAllServiceColByServiceIdByTeamId(String teamId);
 
     /**
      * 校验列配置项是否唯一
@@ -69,10 +93,10 @@ public interface ServiceColService extends IService<ServiceCol> {
      * @param projectId 项目 ID
      * @param userId    用户 ID
      */
-    void checkReportAllowed(String projectId, String userId);
+    void checkServiceColAllowed(String projectId, String userId);
 
     /**
-     * 根据 SQL 查询出表所有的列配置西信息，并新增到数据库
+     * 根据 SQL 查询出表所有的列配置项信息，并新增到数据库
      *
      * @param selectSql SQL
      * @param serviceId 服务 ID

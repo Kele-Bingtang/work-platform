@@ -88,14 +88,14 @@ const handleEdit = () => {
  */
 const editConfirm = async () => {
   const id = route.meta.params?.id;
-  if (!id) return message.warning("编辑失败，项目不存在");
-  const res = await editTeam({ ...unref(teamModel), id });
+  const teamId = route.meta.params?.teamId;
+
+  const res = await editTeam({ ...unref(teamModel), id, teamId });
 
   if (res.code === 200) {
     useRoutes().initDynamicRouters(useUserStore().roles);
     teamName.value = teamModel.teamName;
-    message.success("编辑成功");
-    return true;
+    return message.success("编辑成功");
   }
 };
 
@@ -133,8 +133,6 @@ const transferModel = reactive<{ ownerName?: string }>({});
  * 转移按钮事件
  */
 const handleTransfer = async () => {
-  if (!route.meta.params?.teamId) return message.warning("项目不存在");
-
   open({
     title: "移交团队",
     width: 400,
@@ -149,16 +147,16 @@ const handleTransfer = async () => {
  */
 const transferConfirm = async () => {
   const teamId = route.meta.params?.teamId;
-  if (!teamId) return message.warning("项目不存在");
-
   const userInfo = transferModel.ownerName?.split("-");
-  if (userInfo?.length !== 2) return message.warning("请选择接收人");
+  if (userInfo?.length !== 2) {
+    message.warning("请选择接收人");
+    return false;
+  }
 
   const res = await transferOwner({ teamId, userId: userInfo[0], username: userInfo[1] });
   if (res.code === 200) {
     useRoutes().initDynamicRouters(useUserStore().roles);
-    message.success("移交成功");
-    return true;
+    return message.success("移交成功");
   }
 };
 
@@ -168,8 +166,6 @@ const confirmInput = ref("");
  * 退出按钮事件
  */
 const handleExitTeam = () => {
-  if (!route.meta.params?.teamId) return message.warning("项目不存在");
-
   open({
     title: "危险提醒",
     width: 600,
@@ -177,7 +173,7 @@ const handleExitTeam = () => {
     confirmLabel: "我已了解后果，确定退出",
     render: () => (
       <el-space fill>
-        <div>退出「{route.meta.params?.teamName}」团队后，您将失去该团队内所有项目的访问权限。</div>
+        <div>退出「{unref(teamName)}」团队后，您将失去该团队内所有项目的访问权限。</div>
         <div class="flx-center">
           <span>请输入团队名确定操作：</span>
           <el-input v-model={confirmInput.value} class="flex-1" />
@@ -193,16 +189,16 @@ const handleExitTeam = () => {
  */
 const exitTeamConfirm = async () => {
   const teamId = route.meta.params?.teamId;
-  if (!teamId) return message.warning("项目不存在");
-
-  if (unref(confirmInput) !== route.meta.params?.teamName) return message.warning("团队名称不正确");
+  if (unref(confirmInput) !== unref(teamName)) {
+    message.warning("团队名称不正确");
+    return false;
+  }
 
   const res = await leaveTeam(teamId);
   if (res.code === 200) {
     router.push({ name: HOME_NAME });
     useRoutes().initDynamicRouters(useUserStore().roles);
-    message.success("退出成功");
-    return true;
+    return message.success("退出成功");
   }
 };
 
@@ -210,8 +206,6 @@ const exitTeamConfirm = async () => {
  * 解散按钮事件
  */
 const handleRemoveTeam = () => {
-  if (!route.meta.params?.teamId) return message.warning("项目不存在");
-
   open({
     title: "危险提醒",
     width: 600,
@@ -219,7 +213,7 @@ const handleRemoveTeam = () => {
     confirmLabel: "我已了解后果，确定解散",
     render: () => (
       <el-space fill>
-        <div>解散「{route.meta.params?.teamName}」团队后，该团队下的所有项目都将被同步删除，且不可恢复！</div>
+        <div>解散「{unref(teamName)}」团队后，该团队下的所有项目都将被同步删除，且不可恢复！</div>
         <div class="flx-center">
           <span>请输入团队名确定操作：</span>
           <el-input v-model={confirmInput.value} class="flex-1" />
@@ -235,16 +229,17 @@ const handleRemoveTeam = () => {
  */
 const removeTeamConfirm = async () => {
   const teamId = route.meta.params?.teamId;
-  if (!teamId) return message.warning("项目不存在");
 
-  if (unref(confirmInput) !== route.meta.params?.teamName) return message.warning("团队名称不正确");
+  if (unref(confirmInput) !== unref(teamName)) {
+    message.warning("团队名称不正确");
+    return false;
+  }
 
   const res = await removeTeam(teamId);
   if (res.code === 200) {
     router.push({ name: HOME_NAME });
     useRoutes().initDynamicRouters(useUserStore().roles);
-    message.success("解散成功");
-    return true;
+    return message.success("解散成功");
   }
 };
 </script>

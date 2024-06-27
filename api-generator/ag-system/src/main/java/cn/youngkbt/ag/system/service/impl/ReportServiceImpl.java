@@ -1,14 +1,10 @@
 package cn.youngkbt.ag.system.service.impl;
 
-import cn.youngkbt.ag.core.enums.ProjectMemberRole;
-import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ReportMapper;
 import cn.youngkbt.ag.system.model.dto.ReportDTO;
 import cn.youngkbt.ag.system.model.po.Report;
 import cn.youngkbt.ag.system.model.vo.ReportVO;
-import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ReportService;
-import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -17,7 +13,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,8 +23,6 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> implements ReportService {
-
-    private final ProjectMemberService projectMemberService;
 
     @Override
     public ReportVO listOne(ReportDTO reportDTO) {
@@ -53,8 +46,6 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
 
     @Override
     public boolean editReport(ReportDTO reportDTO) {
-        checkReportAllowed(reportDTO.getProjectId(), AgHelper.getUserId());
-        
         Report report = MapstructUtil.convert(reportDTO, Report.class);
         return baseMapper.updateById(report) > 0;
     }
@@ -66,18 +57,31 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
     }
 
     @Override
+    public boolean removeReportByCategoryId(String categoryId) {
+        // return baseMapper.delete(Wrappers.<Report>lambdaQuery()
+        //         .eq(Report::getCategoryId, categoryId)) > 0;
+        return false;
+    }
+
+    @Override
+    public boolean removeReportByProjectIdId(String projectId) {
+        return baseMapper.delete(Wrappers.<Report>lambdaQuery()
+                .eq(Report::getProjectId, projectId)) > 0;
+    }
+
+    @Override
+    public boolean removeReportByTeamId(String teamId) {
+        // return baseMapper.delete(Wrappers.<Report>lambdaQuery()
+        //         .eq(Report::getTeamId, teamId)) > 0;
+        return false;
+    }
+
+    @Override
     public boolean checkReportTitleUnique(ReportDTO reportDTO) {
         return baseMapper.exists(Wrappers.<Report>lambdaQuery()
                 .eq(Report::getReportTitle, reportDTO.getReportTitle())
                 .eq(Report::getProjectId, reportDTO.getProjectId())
                 .ne(Objects.nonNull(reportDTO.getId()), Report::getId, reportDTO.getId()));
-    }
-
-    @Override
-    public void checkReportAllowed(String projectId, String userId) {
-        if (!projectMemberService.checkMemberRole(projectId, userId, List.of(ProjectMemberRole.ADMIN.ordinal(), ProjectMemberRole.MEMBER.ordinal()))) {
-            throw new ServiceException("用户没有报表操作权限");
-        }
     }
 }
 

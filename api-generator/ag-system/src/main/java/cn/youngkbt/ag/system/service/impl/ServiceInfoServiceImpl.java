@@ -66,8 +66,6 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean addService(ServiceInfoDTO serviceInfoDTO) {
-        checkServiceAllowed(serviceInfoDTO.getProjectId(), AgHelper.getUserId());
-
         ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoDTO, ServiceInfo.class);
         // 如果没有设置报表标题，则默认为服务名称
         if (StringUtil.hasEmpty(serviceInfo.getReportTitle())) {
@@ -93,8 +91,6 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
 
     @Override
     public boolean editService(ServiceInfoDTO serviceInfoDTO) {
-        checkServiceAllowed(serviceInfoDTO.getProjectId(), AgHelper.getUserId());
-
         ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoDTO, ServiceInfo.class);
         return baseMapper.updateById(serviceInfo) > 0;
     }
@@ -116,9 +112,39 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean removeAllServiceInfo(String categoryId) {
+        // 删除目录下所有报表
+        reportService.removeReportByCategoryId(categoryId);
+        // 删除目录下所有所有列配置项
+        serviceColService.removeAllServiceColByServiceIdByCategoryId(categoryId);
+        
         return baseMapper.delete(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getCategoryId, categoryId)) > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeAllServiceInfoByProjectId(String projectId) {
+        // 删除项目下所有报表
+        reportService.removeReportByProjectIdId(projectId);
+        // 删除项目下所有所有列配置项
+        serviceColService.removeAllServiceColByServiceIdByProjectIdId(projectId);
+        
+        return baseMapper.delete(Wrappers.<ServiceInfo>lambdaQuery()
+                .eq(ServiceInfo::getProjectId, projectId)) > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeAllServiceInfoByTeamId(String teamId) {
+        // 删除目录下所有报表
+        reportService.removeReportByTeamId(teamId);
+        // 删除目录下所有所有列配置项
+        serviceColService.removeAllServiceColByServiceIdByTeamId(teamId);
+        
+        return baseMapper.delete(Wrappers.<ServiceInfo>lambdaQuery()
+                .eq(ServiceInfo::getTeamId, teamId)) > 0;
     }
 
     @Override

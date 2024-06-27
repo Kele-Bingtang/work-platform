@@ -52,16 +52,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public boolean addCategory(CategoryDTO categoryDTO) {
-        checkCategoryAllowed(categoryDTO.getProjectId(), AgHelper.getUserId());
-
         Category category = MapstructUtil.convert(categoryDTO, Category.class);
         return baseMapper.insert(category) > 0;
     }
 
     @Override
     public boolean editCategory(CategoryDTO categoryDTO) {
-        checkCategoryAllowed(categoryDTO.getProjectId(), AgHelper.getUserId());
-
         Category category = MapstructUtil.convert(categoryDTO, Category.class);
         return baseMapper.updateById(category) > 0;
     }
@@ -82,9 +78,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean removeAllCategory(String projectId) {
+        // 删除项目下所有接口
+        serviceInfoService.removeAllServiceInfoByProjectId(projectId);
+        
         return baseMapper.delete(Wrappers.<Category>lambdaQuery()
                 .eq(Category::getProjectId, projectId)) > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeAllCategoryByTeamId(String teamId) {
+        // 删除团队下所有接口
+        serviceInfoService.removeAllServiceInfoByTeamId(teamId);
+        
+        return baseMapper.delete(Wrappers.<Category>lambdaQuery()
+                .eq(Category::getTeamId, teamId)) > 0;
     }
 
     @Override

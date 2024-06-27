@@ -55,6 +55,14 @@ public interface CategoryService extends IService<Category> {
     boolean removeAllCategory(String projectId);
 
     /**
+     * 根据团队 ID 删除所有目录
+     *
+     * @param teamId 团队 ID
+     * @return 是否删除成功
+     */
+    boolean removeAllCategoryByTeamId(String teamId);
+
+    /**
      * 校验目录编码是否唯一
      *
      * @param categoryDTO 目录信息
@@ -69,4 +77,5 @@ public interface CategoryService extends IService<Category> {
      * @param userId    用户 ID
      */
     void checkCategoryAllowed(String projectId, String userId);
+
 }

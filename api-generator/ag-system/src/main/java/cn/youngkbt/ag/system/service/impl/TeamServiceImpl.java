@@ -63,13 +63,14 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
                     teamRoleLabel = teamMemberRole.getLabel();
                 }
             }
+            String belong = item.getBelongType() == BelongType.CREATE.ordinal() ? "创建" : "加入";
 
             RouterVO routerVO = new RouterVO()
                     .setPath(item.getTeamId())
                     .setName(item.getTeamName())
                     .setComponent("/team/index")
                     .setMeta(new Meta()
-                            .setTitle(item.getTeamName())
+                            .setTitle(item.getTeamName() + " (" + belong + ")")
                             .setHideInTab(true)
                             .setParams(Map.of(
                                     "id", item.getId(),
@@ -146,7 +147,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
     @Override
     public void checkTeamOperatorAllowed(String teamId, String userId) {
         if (!teamMemberService.checkMemberRole(teamId, userId, List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {
-            throw new ServiceException("操作用户不是团队负责人");
+            throw new ServiceException("操作用户不是团队操作者");
         }
     }
 

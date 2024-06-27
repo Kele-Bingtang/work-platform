@@ -83,6 +83,12 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
     }
 
     @Override
+    public boolean removeAllMemberByTeamId(String teamId) {
+        return baseMapper.delete(Wrappers.<ProjectMember>lambdaQuery()
+                .eq(ProjectMember::getTeamId, teamId)) > 0;
+    }
+
+    @Override
     public boolean checkMemberUnique(ProjectMemberDTO projectMemberDTO) {
         return baseMapper.exists(Wrappers.<ProjectMember>lambdaQuery()
                 .eq(ProjectMember::getTeamId, projectMemberDTO.getTeamId())

@@ -45,7 +45,7 @@ public class TeamMemberDTO {
 
 
     /**
-     * 0 团队创建者 1 团队加入者
+     * 1 团队创建者 2 团队加入者
      */
     private Integer belongType;
 

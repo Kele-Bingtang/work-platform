@@ -62,8 +62,6 @@ const initTableData = async () => {
   const teamId = route.meta.params?.teamId;
   const res = await listProjectRole(teamId, props.userId);
   tableData.value = res.data;
-
-  tableData.value = [{ id: 1, projectName: "1", projectRole: "1" }];
 };
 </script>
 

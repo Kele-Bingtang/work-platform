@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.controller;
 
+import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
 import cn.youngkbt.ag.system.service.TeamMemberService;
@@ -32,7 +33,7 @@ public class TeamMemberController {
     @GetMapping("/listAll")
     @Operation(summary = "团队成员查询", description = "查询团队成员")
     public Response<List<TeamMemberVO>> listAll(@Validated(RestGroup.QueryGroup.class) TeamMemberDTO teamMemberDTO) {
-        teamService.checkTeamOperatorAllowed(teamMemberDTO.getTeamId(), teamMemberDTO.getUserId());
+        teamService.checkTeamOperatorAllowed(teamMemberDTO.getTeamId(), AgHelper.getUserId());
         
         List<TeamMemberVO> teamMemberVOList = teamMemberService.listAll(teamMemberDTO);
         return HttpResult.ok(teamMemberVOList);
@@ -41,8 +42,8 @@ public class TeamMemberController {
     @GetMapping("/listPage")
     @Operation(summary = "团队成员分页查询", description = "分页查询团队路由")
     public Response<TablePage<TeamMemberVO>> listPage(@Validated(RestGroup.QueryGroup.class) TeamMemberDTO teamMemberDTO, PageQuery pageQuery) {
-        teamService.checkTeamOperatorAllowed(teamMemberDTO.getTeamId(), teamMemberDTO.getUserId());
-        
+        teamService.checkTeamOperatorAllowed(teamMemberDTO.getTeamId(), AgHelper.getUserId());
+
         TablePage<TeamMemberVO> teamMemberVOList = teamMemberService.listPage(teamMemberDTO, pageQuery);
         return HttpResult.ok(teamMemberVOList);
     }

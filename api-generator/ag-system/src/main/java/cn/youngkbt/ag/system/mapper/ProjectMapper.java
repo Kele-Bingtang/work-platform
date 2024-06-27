@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ProjectMapper extends BaseMapper<Project> {
 
-    List<Project> listProject(@Param("belongType") Integer belongType, @Param("userId") String userId, @Param(Constants.WRAPPER) Wrapper<Project> queryWrapper);
+    List<Project> listProject(@Param(Constants.WRAPPER) Wrapper<Project> queryWrapper);
 }
 
 

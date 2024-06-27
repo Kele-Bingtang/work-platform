@@ -86,7 +86,7 @@ const columns: TableColumnProps<TeamMember.TeamMemberInfo>[] = [
           link
           type="primary"
           onClick={() => handleSetting(row)}
-          disabled={row.teamRole === 1 || row.teamRole === 2}
+          disabled={row.teamRole !== 1 && row.teamRole !== 2}
         />
       );
     },

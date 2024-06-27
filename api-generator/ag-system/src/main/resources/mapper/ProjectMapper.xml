@@ -24,17 +24,13 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,project_id,project_name,
-        base_url,description,secret_key,
-        database_name,create_by,create_by_id,
-        create_time,update_by,update_by_id,
-        update_time,status,is_deleted,
-        team_id
+        tp.id, tp.project_id, tp.project_name, tp.base_url, tp.description, tp.secret_key, tp.database_name, tp.create_by, tp.create_by_id,
+        tp.create_time, tp.update_by, tp.update_by_id, tp.update_time, tp.status, tp.team_id
     </sql>
     
     <select id="listProject" resultType="cn.youngkbt.ag.system.model.po.Project">
         select <include refid="Base_Column_List"/>
-        from t_project tp join t_project_member tpm on tp.project_id = tpm.project_id and tpm.user_id = #{userId} and tpm.belong_type = #{belongType} and tpm.is_deleted = 0
+        from t_project tp join t_project_member tpm on tp.project_id = tpm.project_id and tpm.is_deleted = 0
         ${ew.getCustomSqlSegment}
     </select>
 </mapper>

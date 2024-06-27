@@ -1,5 +1,11 @@
 import type { FormSchemaProps } from "work";
 import { QuestionFilled } from "@element-plus/icons-vue";
+import type { FormRules } from "element-plus";
+
+export const rules: FormRules = {
+  projectName: [{ required: true, message: "请输入 项目名称", trigger: "blur" }],
+  baseUrl: [{ required: true, message: "请输入 接口基础路径", trigger: "blur" }],
+};
 
 export const schema: FormSchemaProps[] = [
   {
@@ -14,20 +20,8 @@ export const schema: FormSchemaProps[] = [
     el: "el-input",
     props: { placeholder: "请输入 接口基础路径" },
     tip: {
-      // effect: "dark",
-      // placement: "right",
       icon: QuestionFilled,
-      contentRender: () => {
-        return (
-          <div style="line-height: 1.5715">
-            接口基础路径为 '/' 开头有字母或 数
-            <br />
-            字 组成的字符串如：'/shop01' 不能
-            <br />
-            有多个 '/'
-          </div>
-        );
-      },
+      content: "接口基础路径为「/」开头，由「字母」或「数字」组成字符串，如「/api01」。不能有多个「/」，如「/api01/」",
     },
   },
   {

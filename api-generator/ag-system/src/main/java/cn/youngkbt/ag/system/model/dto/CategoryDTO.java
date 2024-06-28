@@ -45,19 +45,19 @@ public class CategoryDTO {
     private Integer isMain;
 
     /**
-     * 项目 id
-     */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
-    private String projectId;
-
-    /**
      * 显示顺序
      */
     private Integer orderNum;
+    
+    /**
+     * 项目 id
+     */
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String projectId;
 
     /**
      * 团队 ID
      */
-    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String teamId;
 }

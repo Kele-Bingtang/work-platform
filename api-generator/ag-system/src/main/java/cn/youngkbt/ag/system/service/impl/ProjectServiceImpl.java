@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.service.impl;
 
+import cn.youngkbt.ag.core.constant.ColumnConstant;
 import cn.youngkbt.ag.core.enums.BelongType;
 import cn.youngkbt.ag.core.enums.ProjectMemberRole;
 import cn.youngkbt.ag.core.enums.TeamMemberRole;
@@ -103,8 +104,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
         // 生成默认目录
         CategoryDTO categoryDTO = new CategoryDTO()
-                .setCategoryCode("default")
-                .setCategoryName("默认目录")
+                .setCategoryCode(ColumnConstant.DEFAULT_CATEGORY_CODE)
+                .setCategoryName(ColumnConstant.DEFAULT_CATEGORY_NAME)
                 .setProjectId(project.getProjectId())
                 .setIsMain(1)
                 .setTeamId(project.getTeamId());

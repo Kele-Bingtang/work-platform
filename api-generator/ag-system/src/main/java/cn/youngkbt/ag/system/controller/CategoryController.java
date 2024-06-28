@@ -6,6 +6,8 @@ import cn.youngkbt.ag.system.service.CategoryService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -32,9 +34,16 @@ public class CategoryController {
         return HttpResult.ok(categoryVOList);
     }
 
+    @GetMapping("/listPage")
+    @Operation(summary = "目录列表查询（分页）", description = "通过条件查询目录列表（分页）")
+    public Response<TablePage<CategoryVO>> listPage(@Validated(RestGroup.QueryGroup.class) CategoryDTO categoryDTO, PageQuery pageQuery) {
+        TablePage<CategoryVO> categoryVOTablePage = categoryService.listPage(categoryDTO, pageQuery);
+        return HttpResult.ok(categoryVOTablePage);
+    }
+
     @PostMapping
     @Operation(summary = "目录新增", description = "新增目录")
-    public Response<Boolean> addCategory(@Validated(RestGroup.AddGroup.class) CategoryDTO categoryDTO) {
+    public Response<Boolean> addCategory(@Validated(RestGroup.AddGroup.class) @RequestBody CategoryDTO categoryDTO) {
         if (categoryService.checkCategoryCodeUnique(categoryDTO)) {
             return HttpResult.failMessage("新增目录「" + categoryDTO.getCategoryName() + "」失败，目录编码已存在");
         }
@@ -45,7 +54,7 @@ public class CategoryController {
 
     @PutMapping
     @Operation(summary = "目录修改", description = "修改目录")
-    public Response<Boolean> editCategory(@Validated(RestGroup.EditGroup.class) CategoryDTO categoryDTO) {
+    public Response<Boolean> editCategory(@Validated(RestGroup.EditGroup.class) @RequestBody CategoryDTO categoryDTO) {
         if (categoryService.checkCategoryCodeUnique(categoryDTO)) {
             return HttpResult.failMessage("新增目录「" + categoryDTO.getCategoryName() + "」失败，目录编码已存在");
         }

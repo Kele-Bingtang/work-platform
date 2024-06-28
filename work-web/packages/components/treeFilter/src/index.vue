@@ -81,11 +81,16 @@ const treeAllData = ref<Record<string, any>[]>([]);
 // 选中的值
 const selected = ref();
 
-onBeforeMount(async () => {
+onBeforeMount(() => {
   // 重新接收一下默认值
   if (props.multiple) selected.value = Array.isArray(props.defaultValue) ? props.defaultValue : [props.defaultValue];
   else selected.value = typeof props.defaultValue === "string" ? props.defaultValue : "";
 
+  initTreeData();
+});
+
+// 初始化树形数据
+const initTreeData = async () => {
   // 有数据就直接赋值，没有数据就执行请求函数
   if (props.data?.length) {
     treeData.value = props.data;
@@ -103,7 +108,7 @@ onBeforeMount(async () => {
       emit("change", firstData[props.id], firstData);
     });
   }
-});
+};
 
 watch(filterText, val => {
   unref(treeRef)!.filter(val);
@@ -141,7 +146,7 @@ const handleCheckChange = () => {
 };
 
 // 暴露给父组件使用
-defineExpose({ treeData, treeAllData });
+defineExpose({ treeData, treeAllData, initTreeData });
 </script>
 
 <style lang="scss" scoped>

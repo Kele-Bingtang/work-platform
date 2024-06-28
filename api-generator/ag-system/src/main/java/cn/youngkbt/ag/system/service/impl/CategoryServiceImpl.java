@@ -10,10 +10,13 @@ import cn.youngkbt.ag.system.service.CategoryService;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
 import cn.youngkbt.core.exception.ServiceException;
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,17 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         LambdaQueryWrapper<Category> wrapper = buildQueryWrapper(categoryDTO);
         List<Category> categoryList = baseMapper.selectList(wrapper);
         return MapstructUtil.convert(categoryList, CategoryVO.class);
+    }
+
+    @Override
+    public TablePage<CategoryVO> listPage(CategoryDTO categoryDTO, PageQuery pageQuery) {
+        LambdaQueryWrapper<Category> wrapper = buildQueryWrapper(categoryDTO);
+        Page<Category> categoryPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        TablePage<CategoryVO> categoryVOTablePage = TablePage.build(categoryPage, CategoryVO.class);
+
+        // 主目录不允许删除
+        categoryVOTablePage.getList().forEach(categoryVO -> categoryVO.setDisableRemove(categoryVO.getIsMain() == 1));
+        return categoryVOTablePage;
     }
 
     private LambdaQueryWrapper<Category> buildQueryWrapper(CategoryDTO categoryDTO) {
@@ -82,7 +96,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public boolean removeAllCategory(String projectId) {
         // 删除项目下所有接口
         serviceInfoService.removeAllServiceInfoByProjectId(projectId);
-        
+
         return baseMapper.delete(Wrappers.<Category>lambdaQuery()
                 .eq(Category::getProjectId, projectId)) > 0;
     }
@@ -92,7 +106,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public boolean removeAllCategoryByTeamId(String teamId) {
         // 删除团队下所有接口
         serviceInfoService.removeAllServiceInfoByTeamId(teamId);
-        
+
         return baseMapper.delete(Wrappers.<Category>lambdaQuery()
                 .eq(Category::getTeamId, teamId)) > 0;
     }

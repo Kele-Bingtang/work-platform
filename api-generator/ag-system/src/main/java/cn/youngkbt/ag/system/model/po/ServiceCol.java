@@ -3,7 +3,7 @@ package cn.youngkbt.ag.system.model.po;
 import cn.youngkbt.ag.system.model.vo.ServiceColVO;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
-import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.mp.base.BaseNoLogicDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @TableName(value = "t_service_col")
 @Data
 @AutoMapper(target = ServiceColVO.class, reverseConvertGenerate = false)
-public class ServiceCol extends BaseDO {
+public class ServiceCol extends BaseNoLogicDO {
 
     /**
      * 字段 ID
@@ -164,4 +164,5 @@ public class ServiceCol extends BaseDO {
      * 服务 ID
      */
     private String serviceId;
+
 }

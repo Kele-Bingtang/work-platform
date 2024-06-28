@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
@@ -13,15 +16,15 @@ import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
- * @date 2023/7/4 23:03
- * @note 基础 DO
+ * @date 2024/6/28 21:55:06
+ * @note 没有逻辑删除的 BaseDO
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public abstract class BaseDO implements Serializable {
+public abstract class BaseNoLogicDO implements Serializable {
 
     @Serial
     @TableField(exist = false)
@@ -83,12 +86,4 @@ public abstract class BaseDO implements Serializable {
     @Schema(description = "状态（1 正常 2 异常）")
     @TableField(value = "status", fill = FieldFill.INSERT)
     public Integer status;
-
-    /**
-     * 是否删除 0否 1是
-     */
-    @Schema(description = "是否删除（0 否 1 是）")
-    @TableField(value = "is_deleted", fill = FieldFill.INSERT)
-    @TableLogic
-    public Integer isDeleted;
 }

@@ -175,7 +175,7 @@ const handleAdd = async (row?: any) => {
  */
 const handleEdit = async (row: any) => {
   // 过滤掉 Event 类型
-  if (!(row instanceof Event)) return;
+  if (row instanceof Event) return;
 
   const { clickEdit } = props;
 
@@ -281,6 +281,8 @@ const handleDoEdit = (data: any) => {
           if (!cache) model.value = {};
           dialogFormVisible.value = false;
           // 回调
+          console.log(afterConfirm);
+
           afterConfirm && afterConfirm(unref(status), res);
         },
         () => afterConfirm && afterConfirm(unref(status), false)
@@ -401,4 +403,3 @@ const executeApi = (
 
 defineExpose({ handleAdd, handleEdit, handleRemove, handleRemoveBatch });
 </script>
-, unref

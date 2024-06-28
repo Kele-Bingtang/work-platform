@@ -3,6 +3,8 @@ package cn.youngkbt.ag.system.service;
 import cn.youngkbt.ag.system.model.dto.CategoryDTO;
 import cn.youngkbt.ag.system.model.po.Category;
 import cn.youngkbt.ag.system.model.vo.CategoryVO;
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -21,6 +23,15 @@ public interface CategoryService extends IService<Category> {
      * @return 目录列表
      */
     List<CategoryVO> listAll(CategoryDTO categoryDTO);
+
+    /**
+     * 根据条件查询目录列表（分页）
+     *
+     * @param categoryDTO 目录信息
+     * @param pageQuery   分页信息
+     * @return 目录列表
+     */
+    TablePage<CategoryVO> listPage(CategoryDTO categoryDTO, PageQuery pageQuery);
 
     /**
      * 新增目录

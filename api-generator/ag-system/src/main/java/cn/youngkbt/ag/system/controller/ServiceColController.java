@@ -37,7 +37,7 @@ public class ServiceColController {
 
     @PostMapping
     @Operation(summary = "服务列配置项新增", description = "新增服务列配置项")
-    public Response<Boolean> addServiceCol(@Validated(RestGroup.AddGroup.class) ServiceColDTO serviceColDTO) {
+    public Response<Boolean> addServiceCol(@Validated(RestGroup.AddGroup.class) @RequestBody ServiceColDTO serviceColDTO) {
         if(serviceColService.checkServiceColUnique(serviceColDTO)) {
             return HttpResult.failMessage("新增列配置项失败，字段名称已存在");
         }
@@ -48,7 +48,7 @@ public class ServiceColController {
 
     @PutMapping
     @Operation(summary = "服务列配置项修改", description = "修改服务列配置项")
-    public Response<Boolean> editServiceCol(@Validated(RestGroup.EditGroup.class) ServiceColDTO serviceColDTO) {
+    public Response<Boolean> editServiceCol(@Validated(RestGroup.EditGroup.class) @RequestBody ServiceColDTO serviceColDTO) {
         if(serviceColService.checkServiceColUnique(serviceColDTO)) {
             return HttpResult.failMessage("新增列配置项失败，字段名称已存在");
         }

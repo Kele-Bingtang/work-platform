@@ -35,7 +35,6 @@
  */
 
 import { HomeFilled } from "@element-plus/icons-vue";
-import { AddTeamMenu } from "./plugins/AddTeamMenu";
 import { HOME_URL, HOME_NAME, LOGIN_URL, LOGIN_NAME, LAYOUT_NAME, REDIRECT_NAME, NOT_FOUND } from "@work/constants";
 
 export { HOME_URL, HOME_NAME, LOGIN_URL, LOGIN_NAME, LAYOUT_NAME, REDIRECT_NAME, NOT_FOUND };
@@ -118,48 +117,50 @@ export const homeRouter = {
   },
 };
 
-export const dictRouter = {
-  path: "dict-manage",
-  name: "DictManage",
-  component: "/dict/index",
-  meta: {
-    title: "字典管理",
-    icon: HomeFilled,
-  },
-};
 export const rolesRoutes: RouterConfigRaw[] = [
   {
-    path: HOME_URL,
-    name: HOME_NAME,
-    component: "/home/index",
+    path: "/project/:projectId/:projectName",
+    name: "Project",
+    component: "/projectContent/index",
     meta: {
-      isAffix: true,
-      title: "首页",
+      title: route => route.params.projectName + "",
+      hideInMenu: true,
       icon: HomeFilled,
     },
   },
+
   {
-    path: "/team",
-    name: "Team",
+    path: "dict-manage",
+    name: "DictManage",
+    component: "/dict/index",
     meta: {
-      title: "团队管理",
+      title: "字典管理",
       icon: HomeFilled,
     },
-    children: [
-      {
-        path: "/my-team1",
-        name: "myTeam1",
-        meta: {
-          title: "我的团队1",
-          icon: HomeFilled,
-        },
-      },
-      {
-        path: "/add-team",
-        meta: {
-          render: () => AddTeamMenu(),
-        },
-      },
-    ],
   },
+
+  // {
+  //   path: "/team",
+  //   name: "Team",
+  //   meta: {
+  //     title: "团队管理",
+  //     icon: HomeFilled,
+  //   },
+  //   children: [
+  //     {
+  //       path: "/my-team1",
+  //       name: "myTeam1",
+  //       meta: {
+  //         title: "我的团队1",
+  //         icon: HomeFilled,
+  //       },
+  //     },
+  //     {
+  //       path: "/add-team",
+  //       meta: {
+  //         render: () => AddTeamMenu(),
+  //       },
+  //     },
+  //   ],
+  // },
 ];

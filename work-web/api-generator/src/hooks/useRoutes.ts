@@ -1,5 +1,5 @@
 import router from "@/router";
-import { HOME_NAME, LAYOUT_NAME, LOGIN_URL, dictRouter, homeRouter, notFoundRouter } from "@/router/routesConfig";
+import { HOME_NAME, LAYOUT_NAME, LOGIN_URL, rolesRoutes, homeRouter, notFoundRouter } from "@/router/routesConfig";
 import { usePermissionStore, useUserStore } from "@/stores";
 import { isExternal, isType } from "@work/utils";
 import { ElNotification } from "element-plus";
@@ -7,7 +7,7 @@ import type { RouteRecordRaw } from "vue-router";
 import settings from "@/config/settings";
 import { useLayoutNoSetup } from "./useLayout";
 import { listMyAllTeamRoute } from "@/api/team";
-import { AddTeamMenu } from "@/router/plugins/AddTeamMenu";
+import { AddTeamMenu } from "@/views/teamAdd/index";
 
 const modules = import.meta.glob("@/views/**/*.vue");
 const FrameView = () => import("@/layout/components/FrameLayout/FrameView.vue");
@@ -50,7 +50,7 @@ export const useRoutes = () => {
           render: () => AddTeamMenu(),
         },
       });
-      routeList = [homeRouter, ...teamRoute, dictRouter];
+      routeList = [homeRouter, ...teamRoute, ...rolesRoutes];
     }
 
     // 缓存后台路由

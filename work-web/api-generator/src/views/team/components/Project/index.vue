@@ -161,8 +161,11 @@ const handleRemoveProject = (item: Project.ProjectInfo) => {
   });
 };
 
+const router = useRouter();
 const handleHeaderClick = (item: Project.ProjectInfo) => {
-  console.log(item.projectName);
+  const { projectId, projectName } = item;
+
+  router.push(`/project/${projectId}/:${projectName}`);
 };
 </script>
 

@@ -21,7 +21,7 @@ export declare namespace Project {
 const baseUri = "/project";
 
 export const listProject = (params?: Project.ProjectSearch) => {
-  return http.get<http.Response<Project.ProjectInfo[]>>("/project/list", params);
+  return http.get<http.Response<Project.ProjectInfo[]>>(`${baseUri}/list`, params);
 };
 
 export const addProject = (data: Project.ProjectInsert) => {
@@ -37,6 +37,6 @@ export const removeProject = (data: Project.ProjectDelete) => {
 };
 
 export const queryDatabaseName = (databaseName?: string) => {
-  const url = databaseName ? `/project/queryDatabaseName/${databaseName}` : "/project/queryDatabaseName";
+  const url = databaseName ? `${baseUri}/queryDatabaseName/${databaseName}` : `${baseUri}/queryDatabaseName`;
   return http.get<http.Response<string[]>>(url);
 };

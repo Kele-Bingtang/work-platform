@@ -3,7 +3,7 @@ package cn.youngkbt.ag.system.model.po;
 import cn.youngkbt.ag.system.model.vo.ResponseConfigVO;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
-import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.mp.base.BaseNoLogicDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @TableName(value = "t_response_config")
 @Data
 @AutoMapper(target = ResponseConfigVO.class, reverseConvertGenerate = false)
-public class ResponseConfig extends BaseDO {
+public class ResponseConfig extends BaseNoLogicDO {
     /**
      * 响应配置 ID
      */
@@ -47,4 +47,5 @@ public class ResponseConfig extends BaseDO {
      * 服务 ID
      */
     private Long serviceId;
+
 }

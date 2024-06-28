@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ServiceInfoService extends IService<ServiceInfo> {
 
     /**
-     * 分页查询服务列表
+     * 分页查询服务列表（分页）
      *
      * @param serviceInfoDTO 服务信息
      * @param pageQuery      分页查询

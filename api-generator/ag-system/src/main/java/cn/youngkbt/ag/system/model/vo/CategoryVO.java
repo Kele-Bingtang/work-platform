@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
@@ -47,10 +48,20 @@ public class CategoryVO implements Serializable {
     private Integer orderNum;
 
     /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
      * 团队 ID
      */
     private String teamId;
-    
+
+    /**
+     * 是否禁用删除（主目录会禁用）
+     */
+    private boolean disableRemove;
+
     @Serial
     private static final long serialVersionUID = 1L;
 }

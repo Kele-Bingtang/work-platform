@@ -15,7 +15,7 @@ export declare namespace Team {
   }
 
   type TeamSearch = Partial<TeamInfo>;
-  type TeamInsert = Omit<TeamInfo, "id" | "teamId">;
+  type TeamInsert = RequiredKeyPartialOther<Omit<TeamInfo, "id" | "teamId">, "teamName">;
   type TeamUpdate = RequiredKeyPartialOther<TeamInfo, "id" | "teamName">;
   type TeamDelete = RequiredKeyPartialOther<TeamInfo, "teamId">;
 }

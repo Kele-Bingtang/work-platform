@@ -10,6 +10,7 @@ export * from "./settings";
 export * from "./user";
 export * from "./websocket";
 export * from "./dict";
+export * from "./data";
 
 const customStorage = {
   getItem: (key: string) => {

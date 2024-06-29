@@ -10,18 +10,19 @@
 
 <script setup lang="ts" name="Category">
 import { listCategoryPage, addCategory, editCategory, removeCategory } from "@/api/category";
+import { ProjectKey } from "@/config/symbol";
 import { ProTable, type DialogForm, type TableColumnProps, type FormSchemaProps, mittBus } from "work";
 
-const route = useRoute();
+const projectInfo = inject(ProjectKey);
 
-const teamId = computed(() => route.meta.params?.teamId);
-const projectId = computed(() => route.params?.projectId);
+const teamId = computed(() => unref(projectInfo)?.teamId);
+const projectId = computed(() => unref(projectInfo)?.projectId);
 
 const initRequestParam = reactive({ teamId: unref(teamId), projectId: unref(projectId) });
 
 const columns: TableColumnProps[] = [
   { type: "index", label: "#", width: 80 },
-  { prop: "categoryName", label: "目录名称" },
+  { prop: "categoryName", label: "目录名称", search: { el: "el-input" } },
   { prop: "categoryCode", label: "目录编码", search: { el: "el-input" } },
   {
     prop: "isMain",

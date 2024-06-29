@@ -62,6 +62,7 @@ export enum ComponentNameEnum {
   TINYMCE = "Tinymce",
   USER_SELECT = "UserSelect",
   ICON_PICKER = "IconPicker",
+  CODE_MIRROR = "CodeMirror",
 }
 
 /**

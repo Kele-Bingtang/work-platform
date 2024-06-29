@@ -41,7 +41,9 @@ const permissionStore = usePermissionStore();
 const { getMenuListByRouter } = useLayout();
 
 const activeMenu = computed(() =>
-  props.activeMenu ? props.activeMenu : ((route.meta.activeMenu || route.meta._fullPath || route.path) as string)
+  props.activeMenu
+    ? props.activeMenu
+    : ((route.meta.activeMenu || route.meta.hideInMenu ? "" : route.meta._fullPath || route.path) as string)
 );
 const isCollapse = computed(() => (props.isCollapse === undefined ? settingsStore.isCollapse : props.isCollapse));
 const primaryTheme = computed(() => settingsStore.primaryTheme);

@@ -165,7 +165,7 @@ const router = useRouter();
 const handleHeaderClick = (item: Project.ProjectInfo) => {
   const { projectId, projectName } = item;
 
-  router.push(`/project/${projectId}/:${projectName}`);
+  router.push(`/project/${projectId}/${projectName}`);
 };
 </script>
 

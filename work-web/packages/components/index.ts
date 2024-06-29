@@ -17,3 +17,4 @@ export * from "./useDialog";
 export * from "./useDrawer";
 export * from "./point";
 export * from "./iconPicker";
+export * from "./codeMirror";

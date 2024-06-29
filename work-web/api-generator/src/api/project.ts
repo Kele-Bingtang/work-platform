@@ -20,6 +20,10 @@ export declare namespace Project {
 
 const baseUri = "/project";
 
+export const getProjectByProjectId = (projectId: string) => {
+  return http.get<http.Response<Project.ProjectInfo>>(`${baseUri}/getByProjectId/${projectId}`);
+};
+
 export const listProject = (params?: Project.ProjectSearch) => {
   return http.get<http.Response<Project.ProjectInfo[]>>(`${baseUri}/list`, params);
 };

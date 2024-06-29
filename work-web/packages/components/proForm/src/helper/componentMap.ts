@@ -28,6 +28,7 @@ import { WangEditor } from "@work/components/WangEditor";
 import { Tinymce } from "@work/components/Tinymce";
 import { UserSelect } from "@work/components/UserSelect";
 import { IconPicker } from "@work/components/iconPicker";
+import { CodeMirror } from "@work/components/codeMirror";
 
 const componentMap: Record<PascalCaseComponentName, Component> = {
   ElInput,
@@ -58,6 +59,7 @@ const componentMap: Record<PascalCaseComponentName, Component> = {
   Tinymce,
   UserSelect,
   IconPicker,
+  CodeMirror,
 };
 
 export { componentMap };

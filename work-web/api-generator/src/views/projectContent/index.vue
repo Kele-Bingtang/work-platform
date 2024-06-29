@@ -13,12 +13,30 @@ import Service from "./components/Service/index.vue";
 import Category from "./components/Category/index.vue";
 import Overview from "./components/Overview/index.vue";
 import ProjectSetting from "./components/ProjectSetting/index.vue";
-import { useDesign } from "work";
+import { message, useDesign } from "work";
+import { getProjectByProjectId, type Project } from "@/api/project";
+import { ProjectKey } from "@/config/symbol";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("project-main");
 
+const route = useRoute();
+
 const serviceTabActiveName = ref("服务管理");
+
+const projectInfo = ref<Project.ProjectInfo>();
+
+onMounted(async () => {
+  const projectId = route.params.projectId as string;
+  const res = await getProjectByProjectId(projectId);
+  if (!res.data) return message.error("项目不存在");
+
+  projectInfo.value = res.data;
+
+  route.meta.activeMenu = "/team/1804535966066860034";
+});
+
+provide(ProjectKey, projectInfo);
 
 const teamTabList = [
   { label: "服务管理", name: "服务管理", lazy: false, component: Service },

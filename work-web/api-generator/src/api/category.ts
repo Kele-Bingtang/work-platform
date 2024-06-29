@@ -37,5 +37,5 @@ export const editCategory = (data: Category.CategoryUpdate) => {
 };
 
 export const removeCategory = (data: Category.CategoryDelete) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.projectId}`);
+  return http.delete<http.Response<string>>(`${baseUri}/${data.categoryId}`);
 };

@@ -15,6 +15,7 @@ import { TransferSelect } from "@work/components/transferSelect";
 import { Tinymce } from "@work/components/tinymce";
 import { Point } from "@work/components/point";
 import { IconPicker } from "@work/components/iconPicker";
+import { CodeMirror } from "@work/components/codeMirror";
 import { Plugin } from "vue";
 
 export default [
@@ -36,4 +37,5 @@ export default [
   Tinymce,
   Point,
   IconPicker,
+  CodeMirror,
 ] as Plugin[];

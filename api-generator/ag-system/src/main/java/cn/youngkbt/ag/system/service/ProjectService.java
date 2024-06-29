@@ -15,11 +15,11 @@ import java.util.List;
 public interface ProjectService extends IService<Project> {
 
     /**
-     * 根据项目的密钥查询项目信息
+     * 通过项目 ID 查询一笔项目数据
      *
      * @return 项目信息
      */
-    ProjectVO listProjectBySecretKey(String secretKey);
+    ProjectVO listProjectByProjectId(String projectId);
 
     /**
      * 查询个人的所有项目

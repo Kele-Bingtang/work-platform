@@ -148,10 +148,10 @@ export const rolesRoutes: RouterConfigRaw[] = [
   //   },
   //   children: [
   //     {
-  //       path: "/my-team1",
-  //       name: "myTeam1",
+  //       path: "/my-team",
+  //       name: "myTeam",
   //       meta: {
-  //         title: "我的团队1",
+  //         title: "我的团队",
   //         icon: HomeFilled,
   //       },
   //     },

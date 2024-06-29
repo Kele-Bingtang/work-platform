@@ -21,16 +21,19 @@ export const schema: DialogFormSchemaProps<Service.ServiceInfo>[] = [
     props: { placeholder: "请输入 服务名称" },
   },
   {
-    prop: "serviceUrl",
-    label: "服务地址",
-    el: "el-input",
-    props: { placeholder: "请输入 服务名称" },
-  },
-  {
     prop: "reportTitle",
     label: "报表名称",
     el: "el-input",
     props: { placeholder: "请输入 报表名称" },
+  },
+  {
+    prop: "serviceUrl",
+    label: "服务地址",
+    el: "el-input",
+    props: { placeholder: "请输入 服务名称" },
+		slots: {
+			prepend:() =>{};
+		}
   },
   {
     prop: "status",

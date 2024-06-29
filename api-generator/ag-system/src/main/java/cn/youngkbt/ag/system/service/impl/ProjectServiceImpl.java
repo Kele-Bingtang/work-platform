@@ -50,10 +50,11 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
 
     @Override
-    public ProjectVO listProjectBySecretKey(String secretKey) {
+    public ProjectVO listProjectByProjectId(String projectId) {
         Project project = baseMapper.selectOne(Wrappers.<Project>lambdaQuery()
-                .eq(Project::getSecretKey, secretKey));
-        Assert.isTrue(Objects.nonNull(project), "密钥或者项目不存在");
+                .eq(Project::getProjectId, projectId));
+        Assert.isTrue(Objects.nonNull(project), "项目不存在");
+        
         return MapstructUtil.convert(project, ProjectVO.class);
     }
 

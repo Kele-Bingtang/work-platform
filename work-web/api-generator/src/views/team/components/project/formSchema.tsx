@@ -36,11 +36,4 @@ export const schema: FormSchemaProps[] = [
       },
     },
   },
-  {
-    prop: "databaseName",
-    label: "数据库",
-    el: "el-select",
-    enum: [{ value: "mysql", label: "mysql" }],
-    props: { placeholder: "请选择 数据库" },
-  },
 ];

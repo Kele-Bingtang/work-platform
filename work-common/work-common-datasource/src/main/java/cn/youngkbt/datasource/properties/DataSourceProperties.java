@@ -1,6 +1,8 @@
 package cn.youngkbt.datasource.properties;
 
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -8,13 +10,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @date 2023/12/26 21:06
  * @note
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ConfigurationProperties(prefix = "spring.datasource")
-public class DataSourceProperties {
-    private String username;
-    private String password;
-    private String url;
-    private String driverClassName;
-    private String dbName;
-    private String queryDsSql = "select * from rpt_db.datasource_conf where is_delete = 1";
+public class DataSourceProperties extends DataSourceProperty {
+    /**
+     * 存储数据源的表，自动生成 queryDsSql
+     */
+    private String dsName;
+    /**
+     * 查询数据源的 sql，优先级高于 dsName
+     */
+    private String selectSql;
 }

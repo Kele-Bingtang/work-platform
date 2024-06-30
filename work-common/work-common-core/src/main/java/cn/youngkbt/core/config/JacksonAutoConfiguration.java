@@ -16,8 +16,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,10 +31,10 @@ import java.time.format.DateTimeFormatter;
  * @note
  */
 @Slf4j
-@Configuration
+@AutoConfiguration
 public class JacksonAutoConfiguration {
     @Bean
-    public BeanPostProcessor objectMapperBeanPostProcessor() {
+    public static BeanPostProcessor objectMapperBeanPostProcessor() {
         return new BeanPostProcessor() {
             @Override
             public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

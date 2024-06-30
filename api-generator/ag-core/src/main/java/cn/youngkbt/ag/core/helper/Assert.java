@@ -52,25 +52,25 @@ public class Assert {
     }
 
     public static void hasText(String text, String message) {
-        if (StringUtil.hasText(text)) {
+        if (StringUtil.hasEmpty(text)) {
             throw new ApiGeneratorException(ResponseStatusEnum.ERROR.getCode(), ResponseStatusEnum.ERROR.getStatus(), message);
         }
     }
 
     public static void hasText(String text, ResponseStatusEnum responseStatusEnum) {
-        if (StringUtil.hasText(text)) {
+        if (StringUtil.hasEmpty(text)) {
             throw new ApiGeneratorException(responseStatusEnum);
         }
     }
 
     public static void hasEmpty(String text, String message) {
-        if (StringUtil.hasEmpty(text)) {
+        if (StringUtil.hasText(text)) {
             throw new ApiGeneratorException(ResponseStatusEnum.ERROR.getCode(), ResponseStatusEnum.ERROR.getStatus(), message);
         }
     }
 
     public static void hasEmpty(String text, ResponseStatusEnum responseStatusEnum) {
-        if (StringUtil.hasEmpty(text)) {
+        if (StringUtil.hasText(text)) {
             throw new ApiGeneratorException(responseStatusEnum);
         }
     }

@@ -90,6 +90,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-datasource</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>

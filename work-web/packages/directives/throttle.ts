@@ -19,7 +19,7 @@ const throttle: Directive = {
     if (typeof binding.value !== "function") {
       throw Error("callback must be a function");
     }
-    let timer: number | null = null;
+    let timer: NodeJS.Timeout | null = null;
     el.__handleClick__ = function () {
       if (timer) {
         clearTimeout(timer);
@@ -29,7 +29,7 @@ const throttle: Directive = {
         binding.value();
         timer = setTimeout(() => {
           el.disabled = false;
-        }, 1000);
+        }, 2000);
       }
     };
     el.addEventListener("click", el.__handleClick__);

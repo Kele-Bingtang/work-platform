@@ -8,7 +8,7 @@ export declare namespace Project {
     baseUrl: string; // 接口基础路径
     description: string; // 项目描述
     secretKey: string; // 项目密钥，唯一
-    databaseName: string; // 数据库名称
+    dataSourceId: string; // 数据库名称
     teamId: string; // 团队 ID
   }
 
@@ -38,9 +38,4 @@ export const editProject = (data: Project.ProjectUpdate) => {
 
 export const removeProject = (data: Project.ProjectDelete) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.projectId}`);
-};
-
-export const queryDatabaseName = (databaseName?: string) => {
-  const url = databaseName ? `${baseUri}/queryDatabaseName/${databaseName}` : `${baseUri}/queryDatabaseName`;
-  return http.get<http.Response<string[]>>(url);
 };

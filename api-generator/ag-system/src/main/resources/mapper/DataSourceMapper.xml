@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.youngkbt.ag.system.mapper.DataSourceMapper">
+
+    <resultMap id="BaseResultMap" type="cn.youngkbt.ag.system.model.po.DataSource">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="dataSourceId" column="data_source_id" jdbcType="VARCHAR"/>
+            <result property="dataSourceName" column="data_source_name" jdbcType="VARCHAR"/>
+            <result property="dataSourceType" column="data_source_type" jdbcType="VARCHAR"/>
+            <result property="jdbcUrl" column="jdbc_url" jdbcType="VARCHAR"/>
+            <result property="host" column="host" jdbcType="VARCHAR"/>
+            <result property="port" column="port" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="secretKey" column="secret_key" jdbcType="VARCHAR"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateById" column="update_by_id" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,datasource_id,datasource_name,
+        datasource_type,jdbc_url,host,
+        port,username,password,
+        description,secret_key,create_by,
+        create_by_id,create_time,update_by,
+        update_by_id,update_time,status,
+        is_deleted
+    </sql>
+</mapper>

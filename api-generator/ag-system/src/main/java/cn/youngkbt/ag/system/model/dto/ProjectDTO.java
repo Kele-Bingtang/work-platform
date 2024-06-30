@@ -46,7 +46,7 @@ public class ProjectDTO {
     /**
      * 数据库名称
      */
-    private String databaseName;
+    private String dataSourceId;
 
     /**
      * 0 项目创建者 1 项目加入者

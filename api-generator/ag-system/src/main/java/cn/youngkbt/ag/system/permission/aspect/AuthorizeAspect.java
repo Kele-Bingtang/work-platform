@@ -81,7 +81,7 @@ public class AuthorizeAspect {
     private boolean isProjectAdmin(String userId, String projectId, String cacheName, String cacheTime) {
         String adminKey = projectId + ":admin";
         // 先从缓存读取，如果存在，则有权限
-        if (Objects.nonNull(CacheHelper.get(cacheTime, adminKey))) {
+        if (Objects.nonNull(CacheHelper.get(cacheName, adminKey))) {
             return true;
         }
 
@@ -99,7 +99,7 @@ public class AuthorizeAspect {
     private boolean isProjectMember(String userId, String projectId, String cacheName, String cacheTime) {
         String readAndWriteKey = projectId + ":readAndWrite";
         // 先从缓存读取，如果存在，则有权限
-        if (Objects.nonNull(CacheHelper.get(cacheTime, readAndWriteKey))) {
+        if (Objects.nonNull(CacheHelper.get(cacheName, readAndWriteKey))) {
             return true;
         }
 
@@ -117,7 +117,7 @@ public class AuthorizeAspect {
     private boolean isProjectReader(String userId, String projectId, String cacheName, String cacheTime) {
         String readKey = projectId + ":read";
         // 先从缓存读取，如果存在，则有权限
-        if (Objects.nonNull(CacheHelper.get(cacheTime, readKey))) {
+        if (Objects.nonNull(CacheHelper.get(cacheName, readKey))) {
             return true;
         }
 
@@ -154,7 +154,7 @@ public class AuthorizeAspect {
         if (checkOwner) {
             String readKey = teamId + ":owner";
             // 先从缓存读取，如果存在，则有权限
-            if (Objects.nonNull(CacheHelper.get(cacheTime, readKey))) {
+            if (Objects.nonNull(CacheHelper.get(cacheName, readKey))) {
                 return;
             }
             if (!teamMemberService.checkMemberRole(teamId, AgHelper.getUserId(), Collections.singletonList(TeamMemberRole.OWNER.ordinal()))) {
@@ -169,7 +169,7 @@ public class AuthorizeAspect {
         if (checkOwnerAndAdmin) {
             String readKey = teamId + ":ownerAndAdmin";
             // 先从缓存读取，如果存在，则有权限
-            if (Objects.nonNull(CacheHelper.get(cacheTime, readKey))) {
+            if (Objects.nonNull(CacheHelper.get(cacheName, readKey))) {
                 return;
             }
             if (!teamMemberService.checkMemberRole(teamId, AgHelper.getUserId(), List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {

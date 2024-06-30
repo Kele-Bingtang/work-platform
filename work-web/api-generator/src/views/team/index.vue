@@ -7,9 +7,11 @@
       </el-space>
     </template>
     <el-tabs v-model="teamTabActiveName">
-      <el-tab-pane v-for="tab in teamTabList" :key="tab.name" :label="tab.label" :name="tab.name" :lazy="tab.lazy">
-        <component :is="tab.component" class="p-10"></component>
-      </el-tab-pane>
+      <template v-for="tab in teamTabList" :key="tab.name">
+        <el-tab-pane v-if="!tab.hidden" :label="tab.label" :name="tab.name" :lazy="tab.lazy">
+          <component :is="tab.component" class="p-10"></component>
+        </el-tab-pane>
+      </template>
     </el-tabs>
   </el-card>
 </template>
@@ -19,6 +21,7 @@ import { useDesign } from "@work/hooks";
 import Project from "./components/Project/index.vue";
 import Members from "./components/Members/index.vue";
 import TeamSetting from "./components/TeamSetting/index.vue";
+import DataSource from "./components/DataSource/index.vue";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("team");
@@ -31,6 +34,13 @@ const teamTabList = [
   { label: "团队项目", name: "团队项目", lazy: false, component: Project },
   { label: "成员/权限", name: "成员/权限", lazy: true, component: Members },
   { label: "团队设置", name: "团队设置", lazy: true, component: TeamSetting },
+  {
+    label: "数据源设置",
+    name: "数据源设置",
+    lazy: true,
+    component: DataSource,
+    hidden: route.meta.params?.teamRole !== "所有者",
+  },
 ];
 </script>
 

@@ -1,6 +1,7 @@
 package cn.youngkbt.ag;
 
 import cn.youngkbt.ag.core.helper.AgHelper;
+import cn.youngkbt.datasource.annotation.EnableDynamicDataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
  * @note
  */
 @SpringBootApplication(scanBasePackages = "cn.youngkbt.ag")
+@EnableDynamicDataSource
 public class ApiGeneratorApplication {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(ApiGeneratorApplication.class);

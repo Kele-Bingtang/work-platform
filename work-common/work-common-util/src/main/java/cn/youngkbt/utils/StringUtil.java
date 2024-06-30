@@ -29,7 +29,7 @@ public class StringUtil extends StringUtils {
     }
 
     public static boolean hasEmpty(String content) {
-        return !hasText();
+        return !hasText(content);
     }
 
     public static boolean hasEmpty(String... content) {
@@ -44,6 +44,15 @@ public class StringUtil extends StringUtils {
     public static boolean hasAnyText(String... content) {
         for (String s : content) {
             if (hasText(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasAnyEmpty(String... content) {
+        for (String s : content) {
+            if (hasEmpty(s)) {
                 return true;
             }
         }

@@ -51,7 +51,7 @@ public class Project extends BaseDO {
     /**
      * 数据库名称
      */
-    private String databaseName;
+    private String dataSourceId;
 
     /**
      * 团队 ID

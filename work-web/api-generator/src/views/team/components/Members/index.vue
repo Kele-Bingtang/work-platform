@@ -1,7 +1,6 @@
 <template>
   <div :class="prefixClass">
     <ProTable
-      ref="proTableRef"
       :request-api="listMembersPage"
       :initRequestParam
       :columns

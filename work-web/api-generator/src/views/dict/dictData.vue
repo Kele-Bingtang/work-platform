@@ -10,15 +10,7 @@
     :exportFile
   >
     <template #operationExtra="{ row, operate }" v-if="isCascade">
-      <el-button
-        v-auth="['system:dict:add']"
-        link
-        size="small"
-        :icon="Plus"
-        @click="operate?.handleAdd({ parentId: row.dataId })"
-      >
-        新增
-      </el-button>
+      <el-button link size="small" :icon="Plus" @click="operate?.handleAdd({ parentId: row.dataId })">新增</el-button>
     </template>
   </ProTable>
 </template>

@@ -8,7 +8,7 @@
           <el-option
             v-for="item in projectRoleEnum"
             :key="item.dictValue"
-            :value="item.dictValue"
+            :value="Number(item.dictValue)"
             :label="item.dictLabel"
           />
         </el-select>

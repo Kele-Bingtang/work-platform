@@ -8,7 +8,7 @@ export const searchSchema: FormSchemaProps[] = [
     props: { placeholder: "请输入 项目名称" },
   },
   {
-    prop: "databaseName",
+    prop: "dataSourceId",
     label: "数据库名称",
     el: "el-input",
     props: { placeholder: "请输入 数据库名称" },

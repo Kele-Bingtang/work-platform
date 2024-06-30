@@ -114,7 +114,7 @@ const schema: DialogFormSchemaProps<Service.ServiceInfo>[] = [
     props: {
       placeholder: "请选择接支持插入的表名",
       fetchSuggestions: (queryString: string, cb: any) => {
-        if (!unref(projectInfo)?.databaseName) return cb([]);
+        if (!unref(projectInfo)?.dataSourceId) return cb([]);
         cb([{ value: "Table1", label: "Table1" }]);
       },
     },
@@ -127,7 +127,7 @@ const schema: DialogFormSchemaProps<Service.ServiceInfo>[] = [
     props: {
       placeholder: "请选择接支持更新的表名",
       fetchSuggestions: (queryString: string, cb: any) => {
-        if (!unref(projectInfo)?.databaseName) return cb([]);
+        if (!unref(projectInfo)?.dataSourceId) return cb([]);
         cb([{ value: "Table1", label: "Table1" }]);
       },
     },
@@ -140,7 +140,7 @@ const schema: DialogFormSchemaProps<Service.ServiceInfo>[] = [
     props: {
       placeholder: "请选择接支持删除的表名",
       fetchSuggestions: (queryString: string, cb: any) => {
-        if (!unref(projectInfo)?.databaseName) return cb([]);
+        if (!unref(projectInfo)?.dataSourceId) return cb([]);
         cb([{ value: "Table1", label: "Table1" }]);
       },
     },

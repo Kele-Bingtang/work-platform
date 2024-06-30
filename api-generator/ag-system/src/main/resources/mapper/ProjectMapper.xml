@@ -11,7 +11,7 @@
             <result property="baseUrl" column="base_url" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="secretKey" column="secret_key" jdbcType="VARCHAR"/>
-            <result property="databaseName" column="database_name" jdbcType="VARCHAR"/>
+            <result property="dataSourceId" column="data_source_id" jdbcType="VARCHAR"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -24,7 +24,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        tp.id, tp.project_id, tp.project_name, tp.base_url, tp.description, tp.secret_key, tp.database_name, tp.create_by, tp.create_by_id,
+        tp.id, tp.project_id, tp.project_name, tp.base_url, tp.description, tp.secret_key, tp.data_source_id, tp.create_by, tp.create_by_id,
         tp.create_time, tp.update_by, tp.update_by_id, tp.update_time, tp.status, tp.team_id
     </sql>
     

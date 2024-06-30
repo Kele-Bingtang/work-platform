@@ -43,6 +43,7 @@ import { useDesign, useHandleData } from "@work/hooks";
 import { useDialog, ProForm, ProSearch, message } from "work";
 import { rules, schema } from "./formSchema";
 import { searchSchema } from "./searchSchema";
+import { listSelectDataSource, type DataSource } from "@/api/dataSource";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("project");
@@ -117,6 +118,25 @@ const handleReset = () => {
 const switchTab = () => {
   initProject();
 };
+
+// 缓存查询的数据源列表
+const selectDataSource = ref<DataSource.DataSourceInfo[]>([]);
+
+if (schema[schema.length - 1].prop !== "dataSourceId") {
+  schema.push({
+    prop: "dataSourceId",
+    label: "数据源",
+    el: "el-select",
+    enum: async () => {
+      if (unref(selectDataSource).length) return { data: selectDataSource };
+      const res = await listSelectDataSource(unref(teamId));
+      selectDataSource.value = res.data;
+      return res;
+    },
+    fieldNames: { value: "dataSourceId", label: "dataSourceName" },
+    props: { placeholder: "请选择 数据库" },
+  });
+}
 
 const dialogForm = (api: (data: any) => Promise<http.Response<string>>, status: string, successMessage: string) => {
   open({

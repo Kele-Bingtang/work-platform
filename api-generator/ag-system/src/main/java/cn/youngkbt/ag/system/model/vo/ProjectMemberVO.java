@@ -26,12 +26,12 @@ public class ProjectMemberVO implements Serializable {
     /**
      * 项目 ID
      */
-    private Long projectId;
+    private String projectId;
     
     /**
      * 项目名称
      */
-    private Long projectName;
+    private String projectName;
 
     /**
      * 项目角色（1 管理员 2 普通成员 3 只读成员 4 禁止访问）

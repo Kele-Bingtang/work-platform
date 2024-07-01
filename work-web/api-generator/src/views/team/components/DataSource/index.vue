@@ -136,9 +136,22 @@ const dialogForm: DialogFormProps = {
 </script>
 
 <style lang="scss" scoped>
-$prefix-class: #{$admin-namespace}-members;
+$prefix-class: #{$admin-namespace}-dataSource;
 
 .#{$prefix-class} {
   flex: 1;
+
+  :deep(.#{$admin-namespace}-search-form) {
+    padding: 10px 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  :deep(.#{$admin-namespace}-pro-table__main) {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+  }
 }
 </style>

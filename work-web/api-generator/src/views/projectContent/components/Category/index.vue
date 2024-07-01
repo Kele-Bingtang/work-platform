@@ -70,5 +70,3 @@ const dialogForm: DialogForm = {
   },
 };
 </script>
-
-<style lang="scss" scoped></style>

@@ -15,6 +15,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ServiceInfoService extends IService<ServiceInfo> {
 
     /**
+     * 根据服务 ID 查询服务信息
+     *
+     * @param serviceId 服务 ID
+     * @return 服务信息
+     */
+    ServiceInfoVO getByServiceId(String serviceId);
+    
+    /**
      * 分页查询服务列表（分页）
      *
      * @param serviceInfoDTO 服务信息

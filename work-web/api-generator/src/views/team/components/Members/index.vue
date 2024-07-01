@@ -168,14 +168,14 @@ $prefix-class: #{$admin-namespace}-members;
 .#{$prefix-class} {
   flex: 1;
 
-  :deep(.k-search-form) {
+  :deep(.#{$admin-namespace}-search-form) {
     padding: 10px 0;
     margin: 0;
     border: none;
     box-shadow: none;
   }
 
-  :deep(.k-pro-table__main) {
+  :deep(.#{$admin-namespace}-pro-table__main) {
     padding: 0;
     border: none;
     box-shadow: none;

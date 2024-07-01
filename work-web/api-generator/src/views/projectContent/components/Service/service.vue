@@ -15,20 +15,29 @@ import { listServicePage, addService, editService, removeService, type Service }
 import { ProjectKey } from "@/config/symbol";
 import { ElTooltip, ElTag } from "element-plus";
 import { ProTable, useDesign, type DialogForm, type DialogFormSchemaProps, type TableColumnProps } from "work";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { sql } from "@codemirror/lang-sql";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("service");
 
 const props = defineProps<{ categoryId: string }>();
 
+const router = useRouter();
+
 const projectInfo = inject(ProjectKey);
 const initRequestParam = computed(() => ({ categoryId: props.categoryId }));
 
 const columns: TableColumnProps[] = [
   { type: "index", label: "#", width: 80 },
-  { prop: "serviceName", label: "接口名称", width: 180, search: { el: "el-input" } },
+  {
+    prop: "serviceName",
+    label: "接口名称",
+    width: 180,
+    search: { el: "el-input" },
+    link: true,
+    linkProps: {
+      onClick: ({ row }) => router.push(`/service/${row.serviceId}/${row.serviceName}`),
+    },
+  },
   { prop: "reportTitle", label: "报表名称", width: 180 },
   { prop: "status", label: "接口状态", width: 100 },
   {
@@ -36,10 +45,7 @@ const columns: TableColumnProps[] = [
     label: "接口地址",
     render: ({ row }) => (
       <ElTooltip effect="dark" content="复制接口相对地址" placement="top">
-        <ElTag type="info">
-          {row.serviceUrl}
-          <i class="DocumentCopy" />
-        </ElTag>
+        <ElTag type="primary">{row.serviceUrl}</ElTag>
       </ElTooltip>
     ),
   },
@@ -94,57 +100,11 @@ const schema: DialogFormSchemaProps<Service.ServiceInfo>[] = [
     props: { placeholder: "请选择 是否认证" },
   },
   {
-    prop: "selectSql",
-    label: "SQL",
-    el: "code-mirror",
-    props: { localTheme: oneDark, lang: sql(), height: 200, fullScreen: true },
-    col: { span: 24 },
-  },
-  {
     prop: "description",
     label: "服务描述",
     el: "el-input",
     props: { type: "textarea" },
     col: { span: 24 },
-  },
-  {
-    prop: "insertTable",
-    label: "Insert Table",
-    el: "el-autocomplete",
-    props: {
-      placeholder: "请选择接支持插入的表名",
-      fetchSuggestions: (queryString: string, cb: any) => {
-        if (!unref(projectInfo)?.dataSourceId) return cb([]);
-        cb([{ value: "Table1", label: "Table1" }]);
-      },
-    },
-    formItem: { labelWidth: 100 },
-  },
-  {
-    prop: "updateTable",
-    label: "Update Table",
-    el: "el-autocomplete",
-    props: {
-      placeholder: "请选择接支持更新的表名",
-      fetchSuggestions: (queryString: string, cb: any) => {
-        if (!unref(projectInfo)?.dataSourceId) return cb([]);
-        cb([{ value: "Table1", label: "Table1" }]);
-      },
-    },
-    formItem: { labelWidth: 100 },
-  },
-  {
-    prop: "deleteTable",
-    label: "Delete Table",
-    el: "el-autocomplete",
-    props: {
-      placeholder: "请选择接支持删除的表名",
-      fetchSuggestions: (queryString: string, cb: any) => {
-        if (!unref(projectInfo)?.dataSourceId) return cb([]);
-        cb([{ value: "Table1", label: "Table1" }]);
-      },
-    },
-    formItem: { labelWidth: 100 },
   },
 ];
 
@@ -162,13 +122,25 @@ const dialogForm: DialogForm = {
     schema: schema,
   },
   id: ["id", "serviceId"],
-  addApi: addService,
-  editApi: editService,
+  addApi: data =>
+    addService({
+      ...data,
+      categoryId: props.categoryId,
+      projectId: unref(projectInfo)?.projectId,
+      teamId: unref(projectInfo)?.teamId,
+    }),
+  editApi: data =>
+    editService({
+      ...data,
+      categoryId: props.categoryId,
+      projectId: unref(projectInfo)?.projectId,
+      teamId: unref(projectInfo)?.teamId,
+    }),
   removeApi: removeService,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",
-    height: 600,
+    height: 250,
     top: "5vh",
     closeOnClickModal: false,
   },

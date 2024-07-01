@@ -24,6 +24,13 @@ import org.springframework.web.bind.annotation.*;
 public class ServiceInfoController {
     
     private final ServiceInfoService serviceInfoService;
+
+    @GetMapping("/getByServiceId/{serviceId}")
+    @Operation(summary = "根据服务 ID 查询服务", description = "根据服务 ID 查询服务")
+    public Response<ServiceInfoVO> getByServiceId(@PathVariable String serviceId) {
+        ServiceInfoVO serviceInfoVO = serviceInfoService.getByServiceId(serviceId);
+        return HttpResult.ok(serviceInfoVO);
+    }
     
     @GetMapping("/listPage")
     @Operation(summary = "服务列表查询（分页）", description = "通过条件查询服务列表（分页）")

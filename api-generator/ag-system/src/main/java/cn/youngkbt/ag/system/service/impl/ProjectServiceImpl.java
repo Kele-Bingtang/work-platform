@@ -50,7 +50,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
 
     @Override
-    public ProjectVO listProjectByProjectId(String projectId) {
+    public ProjectVO getByProjectId(String projectId) {
         Project project = baseMapper.selectOne(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getProjectId, projectId));
         Assert.isTrue(Objects.nonNull(project), "项目不存在");

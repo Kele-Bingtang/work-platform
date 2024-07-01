@@ -147,15 +147,26 @@ public class ServiceColVO implements Serializable {
      */
     private String dropdownSql;
 
-    /**
-     * 项目 ID
-     */
-    private String projectId;
-    
+
     /**
      * 服务 ID
      */
     private String serviceId;
+
+    /**
+     * 分类 ID
+     */
+    private String categoryId;
+
+    /**
+     * 项目 ID
+     */
+    private String projectId;
+
+    /**
+     * 团队 ID
+     */
+    private String teamId;
 
     @Serial
     private static final long serialVersionUID = 1L;

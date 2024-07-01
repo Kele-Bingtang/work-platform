@@ -3,7 +3,7 @@ import { ElPopover, ElIcon, ElButton } from "element-plus";
 import { filterKey, type TableColumnProps } from "../../interface";
 import { Filter } from "@element-plus/icons-vue";
 import { lastProp } from "../../helper";
-import { computed, inject } from "vue";
+import { computed, inject, withModifiers } from "vue";
 import { isEmpty } from "@work/utils";
 import { useDesign } from "@work/hooks";
 
@@ -83,7 +83,8 @@ export const useHeaderFilter = (column: TableColumnProps) => {
             <ElIcon
               style="vertical-align: -2px; margin-left: 2px; cursor: pointer;"
               class="theme-color-hover"
-              color={!propIsEmpty() ? `var(--${useDesign().variables.elNamespace}-color-primary)` : ""}
+              color={!propIsEmpty() ? `var(--${useDesign().variables.elNamespace}-color-primary)` : "inherit"}
+              onClick={withModifiers(() => {}, ["stop"])}
             >
               <Filter />
             </ElIcon>

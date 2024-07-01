@@ -11,6 +11,7 @@ import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ReportService;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
+import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -39,6 +40,15 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
     private final ProjectMemberService projectMemberService;
     private final ReportService reportService;
     private final ServiceColService serviceColService;
+
+    @Override
+    public ServiceInfoVO getByServiceId(String serviceId) {
+        ServiceInfo serviceInfo = baseMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
+                .eq(ServiceInfo::getServiceId, serviceId));
+        Assert.isTrue(Objects.nonNull(serviceInfo), "服务不存在");
+        
+        return MapstructUtil.convert(serviceInfo, ServiceInfoVO.class);
+    }
 
     @Override
     public ServiceInfo listOneByServiceId(String serviceId) {
@@ -118,7 +128,7 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
         reportService.removeReportByCategoryId(categoryId);
         // 删除目录下所有所有列配置项
         serviceColService.removeAllServiceColByServiceIdByCategoryId(categoryId);
-        
+
         return baseMapper.delete(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getCategoryId, categoryId)) > 0;
     }
@@ -130,7 +140,7 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
         reportService.removeReportByProjectIdId(projectId);
         // 删除项目下所有所有列配置项
         serviceColService.removeAllServiceColByServiceIdByProjectIdId(projectId);
-        
+
         return baseMapper.delete(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getProjectId, projectId)) > 0;
     }
@@ -142,7 +152,7 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
         reportService.removeReportByTeamId(teamId);
         // 删除目录下所有所有列配置项
         serviceColService.removeAllServiceColByServiceIdByTeamId(teamId);
-        
+
         return baseMapper.delete(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getTeamId, teamId)) > 0;
     }

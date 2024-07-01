@@ -79,19 +79,19 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     @Override
     public boolean removeAllServiceColByServiceIdByCategoryId(String categoryId) {
         return baseMapper.delete(Wrappers.<ServiceCol>lambdaQuery()
-                .eq(ServiceCol::getServiceId, categoryId)) > 0;
+                .eq(ServiceCol::getCategoryId, categoryId)) > 0;
     }
 
     @Override
     public boolean removeAllServiceColByServiceIdByProjectIdId(String projectId) {
         return baseMapper.delete(Wrappers.<ServiceCol>lambdaQuery()
-                .eq(ServiceCol::getServiceId, projectId)) > 0;
+                .eq(ServiceCol::getProjectId, projectId)) > 0;
     }
 
     @Override
     public boolean removeAllServiceColByServiceIdByTeamId(String teamId) {
         return baseMapper.delete(Wrappers.<ServiceCol>lambdaQuery()
-                .eq(ServiceCol::getServiceId, teamId)) > 0;
+                .eq(ServiceCol::getTeamId, teamId)) > 0;
     }
 
     @Override

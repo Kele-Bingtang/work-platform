@@ -165,6 +165,19 @@ public class ServiceColDTO {
      */
     private String dropdownSql;
 
+
+    /**
+     * 服务 ID
+     */
+    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    private String serviceId;
+
+    /**
+     * 分类 ID
+     */
+    @NotBlank(message = "分类 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    private String categoryId;
+
     /**
      * 项目 ID
      */
@@ -172,8 +185,9 @@ public class ServiceColDTO {
     private String projectId;
 
     /**
-     * 服务 ID
+     * 团队 ID
      */
-    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
-    private String serviceId;
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    private String teamId;
+
 }

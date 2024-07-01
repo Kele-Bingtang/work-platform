@@ -31,8 +31,8 @@ public class ProjectController {
 
     @GetMapping("/getByProjectId/{projectId}")
     @Operation(summary = "通过项目 ID 查询一笔项目数据", description = "通过项目 ID 查询一笔项目数据")
-    public Response<ProjectVO> listProjectByProjectId(@NotBlank(message = "无效参数") @PathVariable String projectId) {
-        ProjectVO project = projectService.listProjectByProjectId(projectId);
+    public Response<ProjectVO> getByProjectId(@PathVariable String projectId) {
+        ProjectVO project = projectService.getByProjectId(projectId);
         return HttpResult.ok(project);
     }
 

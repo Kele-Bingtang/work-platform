@@ -19,7 +19,7 @@ public interface ProjectService extends IService<Project> {
      *
      * @return 项目信息
      */
-    ProjectVO listProjectByProjectId(String projectId);
+    ProjectVO getByProjectId(String projectId);
 
     /**
      * 查询个人的所有项目

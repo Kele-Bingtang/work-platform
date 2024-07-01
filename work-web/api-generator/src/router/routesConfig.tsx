@@ -130,6 +130,17 @@ export const rolesRoutes: RouterConfigRaw[] = [
   },
 
   {
+    path: "/service/:serviceId/:serviceName",
+    name: "Service",
+    component: "/serviceContent/index",
+    meta: {
+      title: route => route.params.serviceName + "",
+      hideInMenu: true,
+      icon: HomeFilled,
+    },
+  },
+
+  {
     path: "dict-manage",
     name: "DictManage",
     component: "/dict/index",

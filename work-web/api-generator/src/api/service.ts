@@ -38,6 +38,10 @@ export const listServicePage = (params?: http.PageData<Service.ServiceSearch>) =
   return http.get<http.Response<Service.ServiceInfo[]>>(`${baseUri}/listPage`, params);
 };
 
+export const getServiceByServiceId = (serviceId: string) => {
+  return http.get<http.Response<Service.ServiceInfo>>(`${baseUri}/getByServiceId/${serviceId}`);
+};
+
 export const addService = (data: Service.ServiceInsert) => {
   return http.post<http.Response<string>>(baseUri, data);
 };

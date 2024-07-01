@@ -18,10 +18,7 @@
 
 <script setup lang="ts" name="Team">
 import { useDesign } from "@work/hooks";
-import Project from "./components/Project/index.vue";
-import Members from "./components/Members/index.vue";
-import TeamSetting from "./components/TeamSetting/index.vue";
-import DataSource from "./components/DataSource/index.vue";
+import { DataSource, Members, Project, TeamSetting } from "./components";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("team");

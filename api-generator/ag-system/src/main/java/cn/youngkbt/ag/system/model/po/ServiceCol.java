@@ -156,13 +156,23 @@ public class ServiceCol extends BaseNoLogicDO {
     private String dropdownSql;
 
     /**
+     * 服务 ID
+     */
+    private String serviceId;
+
+    /**
+     * 分类 ID
+     */
+    private String categoryId;
+    
+    /**
      * 项目 ID
      */
     private String projectId;
     
     /**
-     * 服务 ID
+     * 团队 ID
      */
-    private String serviceId;
-
+    private String teamId;
+    
 }

@@ -1,12 +1,15 @@
 package cn.youngkbt.ag.system.service;
 
 import cn.youngkbt.ag.system.model.dto.DataSourceDTO;
+import cn.youngkbt.ag.system.model.dto.SqlDTO;
 import cn.youngkbt.ag.system.model.po.DataSource;
+import cn.youngkbt.ag.system.model.vo.DataSourceTable;
 import cn.youngkbt.ag.system.model.vo.DataSourceVO;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -32,6 +35,14 @@ public interface DataSourceService extends IService<DataSource> {
      * @return 数据源列表
      */
     List<DataSourceVO> listSelect(String teamId);
+
+    /**
+     * 通过项目 ID 获取数据源列表
+     *
+     * @param projectId 项目 ID
+     * @return 数据源列表
+     */
+    List<DataSourceVO> listByProjectId(String projectId);
 
     /**
      * 新增数据源
@@ -73,4 +84,28 @@ public interface DataSourceService extends IService<DataSource> {
      */
     boolean testConnect(DataSourceDTO dataSourceDTO);
 
+    /**
+     * 通过数据源 ID 获取数据源 Schema 列表
+     *
+     * @param dataSourceId 数据源 ID
+     * @return 数据源 Schema 列表
+     */
+    List<String> listSchemaByDataSource(String dataSourceId);
+
+    /**
+     * 通过 Schema 获取数据源 Table 列表
+     *
+     * @param dataSourceId 数据源 ID
+     * @param schema       Schema
+     * @return 数据源 Table 列表
+     */
+    List<DataSourceTable> listTableBySchema(String dataSourceId, String schema);
+
+    /**
+     * 执行查询语句
+     *
+     * @param sqlDTO 查询语句
+     * @return 查询结果
+     */
+    List<LinkedHashMap<String, Object>> executeSelect(SqlDTO sqlDTO);
 }

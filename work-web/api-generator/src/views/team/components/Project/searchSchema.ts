@@ -9,8 +9,8 @@ export const searchSchema: FormSchemaProps[] = [
   },
   {
     prop: "dataSourceId",
-    label: "数据库名称",
+    label: "数据源",
     el: "el-input",
-    props: { placeholder: "请输入 数据库名称" },
+    props: { placeholder: "请选择 数据源" },
   },
 ];

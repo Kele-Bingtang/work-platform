@@ -1,6 +1,8 @@
 package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.DataSourceDTO;
+import cn.youngkbt.ag.system.model.dto.SqlDTO;
+import cn.youngkbt.ag.system.model.vo.DataSourceTable;
 import cn.youngkbt.ag.system.model.vo.DataSourceVO;
 import cn.youngkbt.ag.system.permission.annotation.TeamAuthorize;
 import cn.youngkbt.ag.system.service.DataSourceService;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -39,6 +42,13 @@ public class DataSourceController {
     @TeamAuthorize(value = "#teamId", checkOwnerAndAdmin = true)
     public Response<List<DataSourceVO>> listSelect(@PathVariable String teamId) {
         List<DataSourceVO> dataSourceVOList = dataSourceService.listSelect(teamId);
+        return HttpResult.ok(dataSourceVOList);
+    }
+
+    @GetMapping("/listByProjectId/{projectId}")
+    @Operation(summary = "通过项目 ID 查询数据源列表", description = "通过项目 ID 查询数据源列表")
+    public Response<List<DataSourceVO>> listByProjectId(@PathVariable String projectId) {
+        List<DataSourceVO> dataSourceVOList = dataSourceService.listByProjectId(projectId);
         return HttpResult.ok(dataSourceVOList);
     }
 
@@ -71,5 +81,23 @@ public class DataSourceController {
     @Operation(summary = "数据源连接测试", description = "连接测试数据源")
     public Response<Boolean> testConnect(@RequestBody DataSourceDTO dataSourceDTO) {
         return HttpResult.okOrFail(dataSourceService.testConnect(dataSourceDTO));
+    }
+
+    @GetMapping("/listSchemaByDataSource/{dataSourceId}")
+    @Operation(summary = "通过数据源 ID 查询数据源 Schema", description = "通过数据源 ID 查询数据源 Schema")
+    public Response<List<String>> listSchemaByDataSource(@PathVariable String dataSourceId) {
+        return HttpResult.ok(dataSourceService.listSchemaByDataSource(dataSourceId));
+    }
+
+    @GetMapping("/listTableBySchema/{dataSourceId}/{schema}")
+    @Operation(summary = "通过 Schema 获取数据源 Table 列表", description = "通过 Schema 获取数据源 Table 列表")
+    public Response<List<DataSourceTable>> listTableBySchema(@PathVariable String dataSourceId, @PathVariable String schema) {
+        return HttpResult.ok(dataSourceService.listTableBySchema(dataSourceId, schema));
+    }
+    
+    @PostMapping("/executeSelect")
+    @Operation(summary = "执行查询语句", description = "执行查询语句")
+    public Response<List<LinkedHashMap<String, Object>>> executeSelect(@Validated @RequestBody SqlDTO sqlDTO) {
+        return HttpResult.ok(dataSourceService.executeSelect(sqlDTO));
     }
 }

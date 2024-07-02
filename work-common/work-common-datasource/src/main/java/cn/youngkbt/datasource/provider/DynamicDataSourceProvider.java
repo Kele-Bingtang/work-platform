@@ -55,7 +55,7 @@ public class DynamicDataSourceProvider extends AbstractJdbcDataSourceProvider {
 
         ResultSet rs = statement.executeQuery(queryDsSql);
         while (rs.next()) {
-            String name = rs.getString(DataSourceConstant.DS_NAME);
+            String name = rs.getString(DataSourceConstant.DS_ID);
             // 不加载 master 数据源
             if (!name.equals(DataSourceConstant.DS_MASTER)) {
                 String username = rs.getString(DataSourceConstant.DS_USER_NAME);

@@ -9,7 +9,7 @@ public interface DataSourceConstant {
     /**
      * 数据源名称（存储数据源名称的字段名）
      */
-    String DS_NAME = "data_source_name";
+    String DS_ID = "data_source_id";
 
     /**
      * 数据源名称（存储数据源名称的字段名）

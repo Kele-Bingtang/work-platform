@@ -19,8 +19,8 @@ import java.util.List;
 public class JdbcMetaData implements MetaData {
 
     @Override
-    public List<Schema> getCatalogs(String dataSourceName) {
-        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceName);
+    public List<Schema> getCatalogs(String dataSourceId) {
+        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceId);
 
         try (Connection connection = dataSource.getConnection()) {
             ResultSet resultSet = connection.getMetaData().getCatalogs();
@@ -33,7 +33,7 @@ public class JdbcMetaData implements MetaData {
                     continue;
                 }
                 Schema schema = new Schema();
-                schema.setDataSourceName(dataSourceName);
+                schema.setDataSourceId(dataSourceId);
                 schema.setSchema(schemaName);
                 schema.setCatalog(schemaName);
                 catalogList.add(schema);
@@ -45,8 +45,8 @@ public class JdbcMetaData implements MetaData {
     }
 
     @Override
-    public List<Schema> getSchemas(String dataSourceName, String catalog) {
-        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceName);
+    public List<Schema> getSchemas(String dataSourceId, String catalog) {
+        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceId);
 
         try (Connection connection = dataSource.getConnection()) {
             ResultSet resultSet = connection.getMetaData().getSchemas();
@@ -59,7 +59,7 @@ public class JdbcMetaData implements MetaData {
                     continue;
                 }
                 Schema schema = new Schema();
-                schema.setDataSourceName(dataSourceName);
+                schema.setDataSourceId(dataSourceId);
                 schema.setSchema(schemaName);
                 schema.setCatalog(schemaName);
                 schemaList.add(schema);
@@ -71,8 +71,8 @@ public class JdbcMetaData implements MetaData {
     }
 
     @Override
-    public List<Table> getTables(String dataSourceName, String catalog, String schema) {
-        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceName);
+    public List<Table> getTables(String dataSourceId, String catalog, String schema) {
+        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceId);
 
         try (Connection connection = dataSource.getConnection()) {
             String[] tableType = {"TABLE", "VIEW"};
@@ -88,7 +88,7 @@ public class JdbcMetaData implements MetaData {
                 table.setRemarks(resultSet.getString("REMARKS"));
                 table.setTableType(resultSet.getString("TABLE_TYPE"));
                 table.setCatalog(resultSet.getString("TABLE_CAT"));
-                table.setDataSourceName(dataSourceName);
+                table.setDataSourceId(dataSourceId);
                 table.setSchema(schema);
                 tableList.add(table);
             }
@@ -101,7 +101,7 @@ public class JdbcMetaData implements MetaData {
                 table.setRemarks(procedures.getString("REMARKS"));
                 table.setTableType("PROCEDURE");
                 table.setCatalog(procedures.getString("PROCEDURE_CAT"));
-                table.setDataSourceName(dataSourceName);
+                table.setDataSourceId(dataSourceId);
                 table.setSchema(schema);
                 tableList.add(table);
             }
@@ -112,8 +112,8 @@ public class JdbcMetaData implements MetaData {
     }
 
     @Override
-    public List<Column> getColumns(String dataSourceName, String catalog, String schema, String table) {
-        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceName);
+    public List<Column> getColumns(String dataSourceId, String catalog, String schema, String table) {
+        DataSource dataSource = DataSourceHelper.getDataSource(dataSourceId);
 
         try (Connection connection = dataSource.getConnection()) {
             ResultSet resultSet = connection.getMetaData().getColumns(catalog, schema, table, null);
@@ -121,7 +121,7 @@ public class JdbcMetaData implements MetaData {
             List<Column> columnList = new ArrayList<>();
             while (resultSet.next()) {
                 Column column = new Column();
-                column.setDataSourceName(dataSourceName);
+                column.setDataSourceId(dataSourceId);
                 column.setColumnName(resultSet.getString("COLUMN_NAME"));
                 column.setRemarks(resultSet.getString("REMARKS"));
                 column.setColumnType(resultSet.getString("TYPE_NAME"));

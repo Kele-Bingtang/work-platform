@@ -70,7 +70,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         return Wrappers.<Project>lambdaQuery()
                 .eq(StringUtil.hasText(projectDTO.getTeamId()), Project::getTeamId, projectDTO.getTeamId())
                 .eq(StringUtil.hasText(projectDTO.getProjectName()), Project::getProjectName, projectDTO.getProjectName())
-                .eq(StringUtil.hasText(projectDTO.getDataSourceId()), Project::getDataSourceId, projectDTO.getDataSourceId())
                 .eq(Objects.nonNull(projectDTO.getStatus()), Project::getStatus, projectDTO.getStatus())
                 .eq(Project::getIsDeleted, 0)
                 .orderByDesc(Project::getCreateTime);
@@ -83,7 +82,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 // project 表条件
                 .eq(projectTablePrefix + "team_id", projectDTO.getTeamId())
                 .eq(StringUtil.hasText(projectDTO.getProjectName()), projectTablePrefix + "project_name", projectDTO.getProjectName())
-                .eq(StringUtil.hasText(projectDTO.getDataSourceId()), projectTablePrefix + "data_source_id", projectDTO.getDataSourceId())
                 .eq(Objects.nonNull(projectDTO.getStatus()), projectTablePrefix + "status", projectDTO.getStatus())
                 .eq(projectTablePrefix + "is_deleted", 0)
                 .orderByDesc(projectTablePrefix + "create_time")

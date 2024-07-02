@@ -1,6 +1,7 @@
 package cn.youngkbt.ag.system.mapper.base;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  * @date 2024/6/30 01:12:19
  * @note
  */
+@Mapper
 public interface SQLExecuteMapper {
 
     /**

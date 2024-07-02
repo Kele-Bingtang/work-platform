@@ -11,7 +11,7 @@
             <result property="baseUrl" column="base_url" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="secretKey" column="secret_key" jdbcType="VARCHAR"/>
-            <result property="dataSourceId" column="data_source_id" jdbcType="VARCHAR"/>
+            <result property="dataSourceId" column="data_source_id" jdbcType="VARCHAR" typeHandler="cn.youngkbt.mp.type.ListStringTypeHandler"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -28,7 +28,7 @@
         tp.create_time, tp.update_by, tp.update_by_id, tp.update_time, tp.status, tp.team_id
     </sql>
     
-    <select id="listProject" resultType="cn.youngkbt.ag.system.model.po.Project">
+    <select id="listProject" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/>
         from t_project tp join t_project_member tpm on tp.project_id = tpm.project_id and tpm.is_deleted = 0
         ${ew.getCustomSqlSegment}

@@ -1,12 +1,17 @@
 package cn.youngkbt.ag.system.service.impl;
 
 import cn.youngkbt.ag.system.mapper.DataSourceMapper;
+import cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper;
 import cn.youngkbt.ag.system.model.dto.DataSourceDTO;
+import cn.youngkbt.ag.system.model.dto.SqlDTO;
 import cn.youngkbt.ag.system.model.po.DataSource;
+import cn.youngkbt.ag.system.model.vo.DataSourceTable;
 import cn.youngkbt.ag.system.model.vo.DataSourceVO;
 import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
+import cn.youngkbt.datasource.meta.Schema;
+import cn.youngkbt.datasource.meta.Table;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.utils.MapstructUtil;
@@ -16,13 +21,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author admin
@@ -30,7 +35,10 @@ import java.util.Objects;
  * @note 针对表「t_data_source（数据源配置表）」的数据库操作 Service 实现
  */
 @Service
+@RequiredArgsConstructor
 public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSource> implements DataSourceService {
+    
+    private final SQLExecuteMapper sqlExecuteMapper;
 
     @Override
     public TablePage<DataSourceVO> listPage(DataSourceDTO dataSourceDTO, PageQuery pageQuery) {
@@ -49,6 +57,12 @@ public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSou
                 .select(DataSource::getDataSourceId, DataSource::getDataSourceName)
                 .eq(DataSource::getTeamId, teamId));
 
+        return MapstructUtil.convert(dataSourceList, DataSourceVO.class);
+    }
+
+    @Override
+    public List<DataSourceVO> listByProjectId(String projectId) {
+        List<DataSource> dataSourceList = baseMapper.listByProjectId(projectId);
         return MapstructUtil.convert(dataSourceList, DataSourceVO.class);
     }
 
@@ -122,6 +136,39 @@ public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSou
             hikariDataSource.setDriverClassName(DataSourceHelper.getDriverClass(dataSourceDTO.getDataSourceType()));
         }
         return DataSourceHelper.connect(hikariDataSource);
+    }
+
+    @Override
+    public List<String> listSchemaByDataSource(String dataSourceId) {
+        List<Schema> catalogs = DataSourceHelper.getCatalogs(dataSourceId);
+        return catalogs.stream().map(Schema::getSchema).toList();
+    }
+
+    @Override
+    public List<DataSourceTable> listTableBySchema(String dataSourceId, String schema) {
+        List<Table> tableList = DataSourceHelper.getTables(dataSourceId, schema, null);
+        Map<String, List<String>> tableMap = tableList.stream()
+                .collect(Collectors.groupingBy(Table::getTableType, Collectors.mapping(Table::getTableName, Collectors.toList())));
+
+        List<DataSourceTable> dataSourceTableList = new ArrayList<>();
+        tableMap.forEach((key, value) -> {
+            // 不添加存储过程
+            if (!"PROCEDURE".equals(key)) {
+                DataSourceTable dataSourceTable = new DataSourceTable();
+                dataSourceTable.setTableType(key);
+                dataSourceTable.setTableNameList(value);
+                dataSourceTableList.add(dataSourceTable);
+            }
+        });
+        return dataSourceTableList;
+    }
+
+    @Override
+    public List<LinkedHashMap<String, Object>> executeSelect(SqlDTO sqlDTO) {
+        // 切换数据源
+        DataSourceHelper.use(sqlDTO.getDataSourceId());
+        List<LinkedHashMap<String, Object>> resultMapList = sqlExecuteMapper.executeSelectList(sqlDTO.getSql(), null);
+        return resultMapList;
     }
 }
 

@@ -2,7 +2,7 @@
   <div :class="prefixClass">
     <el-select-v2
       v-model="selectValue"
-      :options="userData"
+      :option="userData"
       placeholder="请选择用户"
       :props="{ value: id, label: 'nickname' }"
       :multiple="multiple"

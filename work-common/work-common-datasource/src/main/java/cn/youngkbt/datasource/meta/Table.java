@@ -15,9 +15,9 @@ import java.util.Date;
 public class Table implements Serializable {
 
     /**
-     * 数据源名称
+     * 数据源 ID
      */
-    private String dataSourceName;
+    private String dataSourceId;
     /**
      * 库
      */

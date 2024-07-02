@@ -23,6 +23,17 @@ export declare namespace DataSource {
   type DataSourceInsert = RequiredKeyPartialOther<Omit<DataSourceInfo, "id">, "teamId">;
   type DataSourceUpdate = RequiredKeyPartialOther<DataSourceInfo, "id" | "dataSourceId">;
   type DataSourceDelete = RequiredKeyPartialOther<DataSourceInfo, "dataSourceId">;
+
+  interface Table {
+    tableType: string; // Table 类型，1 表，2 视图
+    tableNameList: string[]; // 表名列表或者视图列表
+  }
+
+  interface SqlExecute {
+    dataSourceId: string; // 数据源 ID
+    schema: string; // Schema
+    sql: string; // SQL 语句
+  }
 }
 
 const baseUri = "/dataSource";
@@ -33,6 +44,18 @@ export const listDataSourcePage = (params?: http.PageData<DataSource.DataSourceS
 
 export const listSelectDataSource = (teamId: string) => {
   return http.get<http.Response<DataSource.DataSourceInfo[]>>(`${baseUri}/listSelect/${teamId}`);
+};
+
+export const listByProjectId = (projectId: string) => {
+  return http.get<http.Response<DataSource.DataSourceInfo[]>>(`${baseUri}/listByProjectId/${projectId}`);
+};
+
+export const listSchemaByDataSource = (dataSourceId: string) => {
+  return http.get<http.Response<string[]>>(`${baseUri}/listSchemaByDataSource/${dataSourceId}`);
+};
+
+export const listTableBySchema = (dataSourceId: string, schema: string) => {
+  return http.get<http.Response<DataSource.Table[]>>(`${baseUri}/listTableBySchema/${dataSourceId}/${schema}`);
 };
 
 export const addDataSource = (data: DataSource.DataSourceInsert) => {
@@ -49,4 +72,8 @@ export const removeDataSource = (data: DataSource.DataSourceDelete) => {
 
 export const testConnect = (data: DataSource.DataSourceSearch) => {
   return http.post<http.Response<string>>(`${baseUri}/testConnect`, data);
+};
+
+export const executeSelect = (data: DataSource.SqlExecute) => {
+  return http.post<http.Response<Record<string, any>[]>>(`${baseUri}/executeSelect`, data);
 };

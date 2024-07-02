@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/6/24 22:39:58
@@ -44,9 +46,9 @@ public class ProjectDTO {
     private String description;
 
     /**
-     * 数据库名称
+     * 数据源 ID
      */
-    private String dataSourceId;
+    private List<String> dataSourceId;
 
     /**
      * 0 项目创建者 1 项目加入者

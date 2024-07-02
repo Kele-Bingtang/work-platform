@@ -36,11 +36,11 @@ public class DataSourceHelper {
     /**
      * 获取指定的数据源信息
      *
-     * @param dataSourceName 数据源名字
+     * @param dataSourceId 数据源名字
      */
-    public static DataSource getDataSource(String dataSourceName) {
+    public static DataSource getDataSource(String dataSourceId) {
         DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
-        return ds.getDataSource(dataSourceName);
+        return ds.getDataSource(dataSourceId);
     }
 
     /**
@@ -63,18 +63,18 @@ public class DataSourceHelper {
     /**
      * 删除一个数据源
      */
-    public static void removeDataSource(String dataSourceName) {
+    public static void removeDataSource(String dataSourceId) {
         DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
-        ds.removeDataSource(dataSourceName);
+        ds.removeDataSource(dataSourceId);
     }
 
     /**
      * 设置当前线程数据源，与数据库交互前可以切换数据源
      *
-     * @param dataSourceName 数据源名字
+     * @param dataSourceId 数据源名字
      */
-    public static void use(String dataSourceName) {
-        DynamicDataSourceContextHolder.push(dataSourceName);
+    public static void use(String dataSourceId) {
+        DynamicDataSourceContextHolder.push(dataSourceId);
     }
 
     /**
@@ -128,46 +128,46 @@ public class DataSourceHelper {
     /**
      * 获取数据源 Catalog
      *
-     * @param dataSourceName 数据源名称
+     * @param dataSourceId 数据源 ID
      * @return 数据源 Catalog
      */
-    public static List<Schema> getCatalogs(String dataSourceName) {
-        return jdbcMetaData.getCatalogs(dataSourceName);
+    public static List<Schema> getCatalogs(String dataSourceId) {
+        return jdbcMetaData.getCatalogs(dataSourceId);
     }
 
     /**
      * 获取数据源 Schema
      *
-     * @param dataSourceName 数据源名称
+     * @param dataSourceId 数据源 ID
      * @param catalog        Catalog
      * @return 数据源 Schema
      */
-    public static List<Schema> getSchemas(String dataSourceName, String catalog) {
-        return jdbcMetaData.getSchemas(dataSourceName, catalog);
+    public static List<Schema> getSchemas(String dataSourceId, String catalog) {
+        return jdbcMetaData.getSchemas(dataSourceId, catalog);
     }
 
     /**
      * 获取数据表列表
      *
-     * @param dataSourceName 数据源名称
+     * @param dataSourceId 数据源 ID
      * @param catalog        Catalog
      * @param schema         模式
      * @return 数据表列表
      */
-    public static List<Table> getTables(String dataSourceName, String catalog, String schema) {
-        return jdbcMetaData.getTables(dataSourceName, catalog, schema);
+    public static List<Table> getTables(String dataSourceId, String catalog, String schema) {
+        return jdbcMetaData.getTables(dataSourceId, catalog, schema);
     }
 
     /**
      * 获取数据表字段列表
      *
-     * @param dataSourceName 数据源名称
+     * @param dataSourceId 数据源 ID
      * @param catalog        Catalog
      * @param schema         模式
      * @param table          表名
      * @return 数据表字段列表
      */
-    public static List<Column> getColumns(String dataSourceName, String catalog, String schema, String table) {
-        return jdbcMetaData.getColumns(dataSourceName, catalog, schema, table);
+    public static List<Column> getColumns(String dataSourceId, String catalog, String schema, String table) {
+        return jdbcMetaData.getColumns(dataSourceId, catalog, schema, table);
     }
 }

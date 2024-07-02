@@ -27,12 +27,21 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,datasource_id,datasource_name,
-        datasource_type,jdbc_url,host,
+        id,data_source_id,data_source_name,
+        data_source_type,jdbc_url,host,
         port,username,password,
         description,secret_key,create_by,
         create_by_id,create_time,update_by,
         update_by_id,update_time,status,
         is_deleted
     </sql>
+    
+    <select id="listByProjectId" resultType="cn.youngkbt.ag.system.model.po.DataSource">
+        select
+        <include refid="Base_Column_List"/>
+        from t_data_source tds
+        where (select data_source_id from t_project where project_id = #{projectId} and is_deleted = 0) like
+        tds.data_source_id
+        and tds.is_deleted = 0
+    </select>
 </mapper>

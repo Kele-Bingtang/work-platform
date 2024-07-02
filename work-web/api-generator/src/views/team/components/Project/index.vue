@@ -134,7 +134,7 @@ if (schema[schema.length - 1].prop !== "dataSourceId") {
       return res;
     },
     fieldNames: { value: "dataSourceId", label: "dataSourceName" },
-    props: { placeholder: "请选择 数据库" },
+    props: { multiple: true, placeholder: "请选择 数据库" },
   });
 }
 

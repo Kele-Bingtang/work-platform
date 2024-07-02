@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -37,9 +38,9 @@ public class ProjectVO implements Serializable {
      */
     private String secretKey;
     /**
-     * 数据库名称
+     * 数据源 ID
      */
-    private String dataSourceId;
+    private List<String> dataSourceId;
     /**
      * 团队 ID
      */

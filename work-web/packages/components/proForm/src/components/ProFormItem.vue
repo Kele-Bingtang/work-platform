@@ -193,7 +193,7 @@ const RenderElComponents = () => {
         {...unref(formProps)}
         {...unref(placeholder)}
         data={rootEl === ComponentNameEnum.EL_TREE_SELECT ? unref(columnEnum) : []}
-        options={
+        option={
           [ComponentNameEnum.EL_CASCADER, ComponentNameEnum.EL_SELECT_V2].includes(rootEl as ComponentNameEnum)
             ? unref(columnEnum)
             : []

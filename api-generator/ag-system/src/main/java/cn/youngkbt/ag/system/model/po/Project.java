@@ -4,12 +4,15 @@ import cn.youngkbt.ag.system.model.vo.ProjectVO;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import cn.youngkbt.mp.type.ListStringTypeHandler;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -18,7 +21,7 @@ import lombok.EqualsAndHashCode;
 */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName(value = "t_project")
+@TableName(value = "t_project", autoResultMap = true)
 @AutoMapper(target = ProjectVO.class, reverseConvertGenerate = false)
 public class Project extends BaseDO {
     /**
@@ -47,11 +50,12 @@ public class Project extends BaseDO {
      * 项目密钥，唯一
      */
     private String secretKey;
-
+    
     /**
-     * 数据库名称
+     * 数据源 ID
      */
-    private String dataSourceId;
+    @TableField(typeHandler = ListStringTypeHandler.class)
+    private List<String> dataSourceId;
 
     /**
      * 团队 ID

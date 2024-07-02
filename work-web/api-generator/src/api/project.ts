@@ -8,7 +8,7 @@ export declare namespace Project {
     baseUrl: string; // 接口基础路径
     description: string; // 项目描述
     secretKey: string; // 项目密钥，唯一
-    dataSourceId: string; // 数据库名称
+    dataSourceId: string[]; // 数据源
     teamId: string; // 团队 ID
   }
 

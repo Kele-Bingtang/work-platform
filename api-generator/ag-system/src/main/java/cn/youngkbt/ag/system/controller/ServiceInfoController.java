@@ -75,5 +75,4 @@ public class ServiceInfoController {
         boolean removeService = serviceInfoService.removeService(serviceId);
         return HttpResult.okOrFail(removeService);
     }
-    
 }

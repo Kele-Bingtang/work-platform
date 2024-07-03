@@ -34,7 +34,7 @@ public class ServiceColController {
         TablePage<ServiceColVO> serviceColVOTablePage = serviceColService.listPage(serviceColDTO, pageQuery);
         return HttpResult.ok(serviceColVOTablePage);
     }
-
+    
     @PostMapping
     @Operation(summary = "服务列配置项新增", description = "新增服务列配置项")
     public Response<Boolean> addServiceCol(@Validated(RestGroup.AddGroup.class) @RequestBody ServiceColDTO serviceColDTO) {

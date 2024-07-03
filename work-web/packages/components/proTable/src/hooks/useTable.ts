@@ -48,6 +48,7 @@ export const useTable = (
   api?: (params: any) => Promise<any>,
   initRequestParam: object = {},
   openPage: boolean | Table.PaginationProps = true,
+  pageConfig?: Partial<Table.Paging>,
   beforeSearch?: (searchParam: any) => any,
   dataCallBack?: (data: any) => any,
   requestError?: (error: any) => void,
@@ -66,6 +67,7 @@ export const useTable = (
       pageSizes: [10, 20, 50, 100, 200],
       // 总条数
       total: 0,
+      ...pageConfig,
     },
     // 查询参数（只包括查询）
     searchParam: {},

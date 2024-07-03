@@ -28,5 +28,10 @@
             <artifactId>work-common-security</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-doc</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>

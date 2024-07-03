@@ -96,12 +96,12 @@ public class ReportDTO {
     /**
      * 项目 ID
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String projectId;
-    
+
     /**
      * 服务 ID
      */
-    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
     private String serviceId;
 }

@@ -129,13 +129,7 @@ const dialogForm: DialogForm = {
       projectId: unref(projectInfo)?.projectId,
       teamId: unref(projectInfo)?.teamId,
     }),
-  editApi: data =>
-    editService({
-      ...data,
-      categoryId: props.categoryId,
-      projectId: unref(projectInfo)?.projectId,
-      teamId: unref(projectInfo)?.teamId,
-    }),
+  editApi: editService,
   removeApi: removeService,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),

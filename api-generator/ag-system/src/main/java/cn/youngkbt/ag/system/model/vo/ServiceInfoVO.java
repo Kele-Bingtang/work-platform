@@ -44,6 +44,11 @@ public class ServiceInfoVO implements Serializable {
     private String description;
 
     /**
+     * 数据源 ID
+     */
+    private String dataSourceId;
+
+    /**
      * 接口的查询 SQL 语句
      */
     private String selectSql;

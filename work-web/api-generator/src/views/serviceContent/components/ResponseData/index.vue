@@ -9,7 +9,7 @@
     </el-alert>
     <el-space wrap class="bg-white p-2.5">
       <el-select
-        v-model="dataSourceType"
+        v-model="selected.dataSourceId"
         placeholder="请选择数据源（必选）"
         style="width: 240px"
         @change="handleDataSourceTypeChange"
@@ -24,7 +24,7 @@
         />
       </el-select>
       <el-select
-        v-model="schema"
+        v-model="selected.schema"
         placeholder="请选择 Schema（可选）"
         style="width: 240px"
         @change="handleSchemaChange"
@@ -34,7 +34,7 @@
         <el-option v-for="item in schemaList" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select
-        v-model="table"
+        v-model="selected.tableName"
         placeholder="请选择 Table（可选）"
         style="width: 240px"
         @change="handleTableChange"
@@ -47,7 +47,7 @@
 
       <el-select
         v-model="sqlTemplate"
-        placeholder="请选择生成模板类型"
+        placeholder="请选择模板生成类型（可选）"
         style="width: 240px"
         @change="handleSqlTemplateChange"
         clearable
@@ -58,20 +58,18 @@
 
       <div class="flex-1 text-right">
         <el-button>格式化</el-button>
-        <el-button type="primary" @click="handleRun">运 行</el-button>
+        <el-button type="primary" v-throttle="{ onClick: handleRun, time: 4000 }">运 行</el-button>
       </div>
     </el-space>
 
-    <CodeMirror v-model="code" :localTheme="oneDark" :lang="sql()" :height="500" fullScreen />
+    <SqlForm ref="sqlFormRef" :tableNameList :dataSourceId="selected.dataSourceId" />
 
-    <DataTable v-if="data" :data />
+    <DataTable v-if="data?.length" :data />
   </el-space>
 </template>
 
 <script setup lang="ts" name="ResponseData">
-import { CodeMirror, useDesign } from "work";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { sql } from "@codemirror/lang-sql";
+import { message, useDesign } from "work";
 import { ServiceKey } from "@/config/symbol";
 import {
   executeSelect,
@@ -81,14 +79,12 @@ import {
   type DataSource,
 } from "@/api/dataSource";
 import DataTable from "./dataTable.vue";
+import SqlForm from "./sqlForm.vue";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("response-data");
 
-const code = ref("");
-const dataSourceType = ref("");
-const schema = ref("");
-const table = ref("");
+const sqlFormRef = shallowRef<InstanceType<typeof SqlForm>>();
 const sqlTemplate = ref("");
 const serviceInfo = inject(ServiceKey);
 
@@ -97,6 +93,13 @@ const dataSourceList = ref<DataSource.DataSourceInfo[]>([]);
 const schemaList = ref<string[]>([]);
 const tableList = ref<DataSource.Table[]>([]);
 
+// 表名列表
+const tableNameList = computed(() => {
+  let tableNameList: string[] = [];
+  unref(tableList).forEach(item => (tableNameList = [...tableNameList, ...item.tableNameList]));
+  return tableNameList;
+});
+
 // 缓存选中的值
 const selected = reactive({
   dataSourceId: "",
@@ -104,16 +107,22 @@ const selected = reactive({
   tableName: "",
 });
 
-watchEffect(async () => {
-  const projectId = unref(serviceInfo)?.projectId as string;
-  const res = await listByProjectId(projectId);
-  if (res.code === 200) dataSourceList.value = res.data;
-});
+watch(
+  () => unref(serviceInfo),
+  async () => {
+    const { projectId = "", dataSourceId = "" } = unref(serviceInfo) || {};
+    selected.dataSourceId = dataSourceId;
+    dataSourceId && handleDataSourceTypeChange(dataSourceId);
+
+    const res = await listByProjectId(projectId);
+    if (res.code === 200) dataSourceList.value = res.data;
+  }
+);
 
 const handleDataSourceTypeChange = async (value: string) => {
   if (!value) {
-    schema.value = "";
-    table.value = "";
+    selected.schema = "";
+    selected.tableName = "";
     schemaList.value = [];
     tableList.value = [];
     return;
@@ -125,12 +134,12 @@ const handleDataSourceTypeChange = async (value: string) => {
 
 const handleSchemaChange = async (value: string) => {
   if (!value) {
-    table.value = "";
+    selected.tableName = "";
     tableList.value = [];
     return;
   }
   selected.schema = value;
-  const res = await listTableBySchema(unref(selected.dataSourceId), value);
+  const res = await listTableBySchema(selected.dataSourceId, value);
   if (res.code === 200) tableList.value = res.data;
 };
 
@@ -151,13 +160,20 @@ const handleSqlTemplateChange = (value: string) => {
 };
 
 const data = ref<Record<string, any>[]>([]);
+
 const handleRun = async () => {
+  const sql = unref(sqlFormRef)?.model.selectSql;
+  if (!sql) return message.error("请输入 SQL");
+
   const res = await executeSelect({
     dataSourceId: selected.dataSourceId,
     schema: selected.schema,
-    sql: unref(code),
+    sql,
   });
-  if (res.code === 200) data.value = res.data;
+  if (res.code === 200) {
+    data.value = res.data;
+    message.success("执行成功，4 秒内无法再次点击");
+  }
 };
 </script>
 

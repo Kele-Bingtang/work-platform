@@ -5,6 +5,7 @@ import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.core.validate.annotation.IncludeValid;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -30,19 +31,25 @@ public class ServiceInfoDTO {
     /**
      * 服务名
      */
-    @NotBlank(message = "服务名称不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "服务名称不能为空", groups = {RestGroup.AddGroup.class})
     private String serviceName;
 
     /**
      * 服务地址
      */
-    @NotBlank(message = "接口地址不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotEmpty(message = "接口地址不能为空", groups = {RestGroup.AddGroup.class})
     private String serviceUrl;
 
     /**
      * 服务描述
      */
     private String description;
+
+    /**
+     * 数据源 ID
+     */
+    @NotBlank(message = "数据源不能为空", groups = {RestGroup.AddGroup.class})
+    private String dataSourceId;
 
     /**
      * 接口的查询 SQL 语句
@@ -93,18 +100,18 @@ public class ServiceInfoDTO {
     /**
      * 目录 ID
      */
-    @NotBlank(message = "目录 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "目录 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
     private String categoryId;
 
     /**
      * 项目 ID
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String projectId;
 
     /**
      * 团队 ID
      */
-    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class, RestGroup.DeleteGroup.class})
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.DeleteGroup.class})
     private String teamId;
 }

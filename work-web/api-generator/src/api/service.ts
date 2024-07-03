@@ -8,6 +8,7 @@ export declare namespace Service {
     serviceUrl: string; // 服务地址
     fullUrl: string; // 服务完整地址
     description: string; // 服务描述
+    dataSourceId: string; // 数据源 ID
     selectSql: string; // 接口的查询 SQL 语句
     selectTable: string; // 执行查询语句的表名
     updateTable: string; // 执行插入语句的表名

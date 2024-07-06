@@ -20,4 +20,7 @@ public interface RestGroup {
     interface QueryGroup {
     }
 
+    interface OtherGroup {
+    }
+
 }

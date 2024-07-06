@@ -22,14 +22,15 @@ export declare namespace Service {
     categoryId: string; // 目录 ID
     projectId: string; // 项目 ID
     teamId: string; // 团队 ID
+    exitCol: boolean; // 是否存在列配置项
   }
 
   type ServiceSearch = Partial<ServiceInfo>;
   type ServiceInsert = RequiredKeyPartialOther<
     Omit<ServiceInfo, "id">,
-    "serviceName" | "serviceUrl" | "projectId" | "teamId"
+    "serviceName" | "serviceUrl" | "categoryId" | "projectId" | "teamId"
   >;
-  type ServiceUpdate = RequiredKeyPartialOther<Omit<ServiceInfo, "projectId" | "categoryId">, "id">;
+  type ServiceUpdate = RequiredKeyPartialOther<ServiceInfo, "id">;
   type ServiceDelete = RequiredKeyPartialOther<ServiceInfo, "serviceId">;
 }
 
@@ -53,4 +54,8 @@ export const editService = (data: Service.ServiceUpdate) => {
 
 export const removeService = (data: Service.ServiceDelete) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.projectId}`);
+};
+
+export const generateCol = (data: Service.ServiceUpdate) => {
+  return http.post<http.Response<string>>(`${baseUri}/generateCol`, data);
 };

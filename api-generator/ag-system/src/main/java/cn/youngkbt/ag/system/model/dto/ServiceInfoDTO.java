@@ -26,6 +26,7 @@ public class ServiceInfoDTO {
     /**
      * 服务 ID
      */
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.OtherGroup.class})
     private String serviceId;
 
     /**
@@ -100,18 +101,18 @@ public class ServiceInfoDTO {
     /**
      * 目录 ID
      */
-    @NotBlank(message = "目录 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
+    @NotBlank(message = "目录 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.OtherGroup.class})
     private String categoryId;
 
     /**
      * 项目 ID
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.OtherGroup.class})
     private String projectId;
 
     /**
      * 团队 ID
      */
-    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.DeleteGroup.class})
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.DeleteGroup.class, RestGroup.OtherGroup.class})
     private String teamId;
 }

@@ -113,6 +113,11 @@ public class ServiceInfoVO implements Serializable {
      */
     private String teamId;
 
+    /**
+     * 是否存在列配置项
+     */
+    private boolean exitCol;
+
     @Serial
     private static final long serialVersionUID = 1L;
 }

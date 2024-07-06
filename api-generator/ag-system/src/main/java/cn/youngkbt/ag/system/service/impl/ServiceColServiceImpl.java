@@ -1,14 +1,21 @@
 package cn.youngkbt.ag.system.service.impl;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.youngkbt.ag.core.enums.ProjectMemberRole;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ServiceColMapper;
+import cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper;
 import cn.youngkbt.ag.system.model.dto.ServiceColDTO;
+import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
+import cn.youngkbt.ag.system.model.po.DataSource;
 import cn.youngkbt.ag.system.model.po.ServiceCol;
+import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceColVO;
+import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.core.exception.ServiceException;
+import cn.youngkbt.datasource.helper.DataSourceHelper;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.utils.MapstructUtil;
@@ -17,9 +24,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,9 +43,13 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, ServiceCol> implements ServiceColService {
 
     private final ProjectMemberService projectMemberService;
+    private final DataSourceService dataSourceService;
+    private final SQLExecuteMapper sqlExecuteMapper;
+    private final SqlSessionFactory sqlSessionFactory;
 
     @Override
     public TablePage<ServiceColVO> listPage(ServiceColDTO serviceColDTO, PageQuery pageQuery) {
@@ -97,9 +114,11 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     @Override
     public boolean checkServiceColUnique(ServiceColDTO serviceColDTO) {
         return baseMapper.exists(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, serviceColDTO.getServiceId())
                 .eq(ServiceCol::getTableCol, serviceColDTO.getTableCol())
                 .or()
-                .eq(ServiceCol::getJsonCol, serviceColDTO.getJsonCol()));
+                .eq(ServiceCol::getJsonCol, serviceColDTO.getJsonCol())
+                .ne(Objects.nonNull(serviceColDTO.getId()), ServiceCol::getId, serviceColDTO.getId()));
     }
 
     @Override
@@ -109,21 +128,165 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
         }
     }
 
-    @Override
-    public boolean listColumnThenInsert(String serviceId, String selectSql) {
-        return false;
+    /**
+     * 添加 LIMIT 到 SQL
+     *
+     * @param selectSql 查询 SQL
+     * @param limit     limit 数量
+     * @param dbType    数据源类型
+     * @return 添加了 limit 的 SQL
+     */
+    private String addLimitToSql(String selectSql, int limit, String dbType) {
+        String finalSql = "";
+
+        if ("MySQL".equalsIgnoreCase(dbType) || "MariaDB".equalsIgnoreCase(dbType) || "PostgreSQL".equalsIgnoreCase(dbType) || "SQLite".equalsIgnoreCase(dbType)) {
+            finalSql = "SELECT * FROM (" + selectSql + ") t LIMIT " + limit;
+        } else if ("Oracle".equalsIgnoreCase(dbType)) {
+            // Oracle 使用 ROW_NUMBER() OVER() 来实现 LIMIT，注意这需要原 SQL 有明确的排序规则
+            finalSql = "SELECT * FROM (SELECT t.*, ROW_NUMBER() OVER (ORDER BY some_column) AS rn FROM (" + selectSql + ") t) WHERE rn <= " + limit;
+        } else if ("SQLServer".equalsIgnoreCase(dbType)) {
+            finalSql = "SELECT TOP (" + limit + ") * FROM (" + selectSql + ") AS limiter";
+        } else {
+            throw new ServiceException("不支持数据源类型: " + dbType);
+        }
+
+        return finalSql;
+    }
+
+    /**
+     * 构建列配置项信息
+     *
+     * @param resultSetMetaData SQL 返回的 ResultSetMetaData
+     * @param serviceInfo       服务信息
+     * @return 列配置项信息
+     */
+    private List<ServiceCol> buildServiceCol(ResultSetMetaData resultSetMetaData, ServiceInfo serviceInfo) {
+        try {
+            List<ServiceCol> serviceColList = new ArrayList<>();
+
+            for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                ServiceCol serviceCol = new ServiceCol();
+                serviceCol.setTableCol(resultSetMetaData.getColumnName(i));
+                String columnType = DataSourceHelper.jdbcMetaData.getTypeNameByColumn(resultSetMetaData.getColumnTypeName(i).toUpperCase());
+                serviceCol.setColType(columnType);
+                serviceCol.setColLength(resultSetMetaData.getPrecision(i));
+                // 转为小驼峰
+                String lowerCamelCase = CharSequenceUtil.toCamelCase(resultSetMetaData.getColumnName(i));
+                serviceCol.setJsonCol(lowerCamelCase);
+                serviceCol.setReportCol(lowerCamelCase);
+                serviceCol.setTeamId(serviceInfo.getTeamId());
+                serviceCol.setProjectId(serviceInfo.getProjectId());
+                serviceCol.setCategoryId(serviceInfo.getCategoryId());
+                serviceCol.setServiceId(serviceInfo.getServiceId());
+                serviceColList.add(serviceCol);
+            }
+            return serviceColList;
+        } catch (SQLException e) {
+            throw new ServiceException("解析字段失败");
+        }
     }
 
     @Override
-    public Integer regenCol(String serviceId, String selectSql) {
-        return 0;
+    public Integer listColumnThenInsert(ServiceInfoDTO serviceInfoDTO) {
+        // 切换数据源
+        DataSourceHelper.use(serviceInfoDTO.getDataSourceId());
+        ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoDTO, ServiceInfo.class);
+        
+        // 获取 SQL 返回的 ResultSetMetaData，目的是获取每个字段的信息
+        ResultSetMetaData resultSetMetaData = getResultSetMetaData(serviceInfo);
+        // 构建列配置项信息
+        List<ServiceCol> serviceColList = buildServiceCol(resultSetMetaData, serviceInfo);
+
+        Db.saveBatch(serviceColList);
+
+        DataSourceHelper.close();
+        return serviceColList.size();
     }
 
     @Override
-    public Integer removeInvalidCol(String serviceId, String selectSql) {
-        return 0;
+    public Integer reGenCol(ServiceInfo serviceInfo) {
+        if (StringUtil.hasEmpty(serviceInfo.getSelectSql())) {
+            return -1;
+        }
+        DataSourceHelper.use(serviceInfo.getDataSourceId());
+        ResultSetMetaData resultSetMetaData = getResultSetMetaData(serviceInfo);
+        List<ServiceCol> newServiceColList = buildServiceCol(resultSetMetaData, serviceInfo);
+        // 查询目前的列配置信息
+        List<ServiceCol> oldServiceColList = baseMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, serviceInfo.getServiceId()));
+        // 获取新增的列
+        List<ServiceCol> difference = newServiceColList.stream().filter(s -> !oldServiceColList.contains(s)).toList();
+        if (difference.isEmpty()) {
+            return 0;
+        }
+        Db.saveBatch(difference);
+
+        DataSourceHelper.close();
+        return difference.size();
     }
 
+    @Override
+    public Integer removeInvalidCol(ServiceInfo serviceInfo) {
+        if (StringUtil.hasEmpty(serviceInfo.getSelectSql())) {
+            return -1;
+        }
+        DataSourceHelper.use(serviceInfo.getDataSourceId());
+        ResultSetMetaData resultSetMetaData = getResultSetMetaData(serviceInfo);
+        List<ServiceCol> newServiceColList = buildServiceCol(resultSetMetaData, serviceInfo);
+        // 查询目前的列配置信息
+        List<ServiceCol> oldServiceColList = baseMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, serviceInfo.getServiceId()));
+        // 获取失效列配置项的 ID
+        List<Long> ids = oldServiceColList.stream().filter(s -> !newServiceColList.contains(s)).map(ServiceCol::getId).toList();
+        if (ids.isEmpty()) {
+            return 0;
+        }
+        // 删除不存在的 ID
+        Db.removeByIds(ids, ServiceCol.class);
+
+        DataSourceHelper.close();
+        return ids.size();
+    }
+
+    /**
+     * 获取 ResultSetMetaData
+     *
+     * @param serviceInfo 服务信息
+     * @return ResultSetMetaData
+     */
+    private ResultSetMetaData getResultSetMetaData(ServiceInfo serviceInfo) {
+        // 查询数据源信息
+        DataSource dataSource = dataSourceService.getOne(Wrappers.<DataSource>lambdaQuery()
+                .eq(DataSource::getDataSourceId, serviceInfo.getDataSourceId()));
+        // SQL 添加 LIMIT 1，防止数据量过多导致查询效率慢
+        String limitSql = addLimitToSql(serviceInfo.getSelectSql(), 1, dataSource.getDataSourceType());
+        return getResultSetMetaData(limitSql);
+    }
+
+    /**
+     * 获取 ResultSetMetaData
+     *
+     * @param selectSql 查询 SQL
+     * @return ResultSetMetaData
+     */
+    private ResultSetMetaData getResultSetMetaData(String selectSql) {
+        ResultSetMetaData metaData;
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(); Connection connection = sqlSession.getConnection();
+             Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(selectSql)) {
+            metaData = resultSet.getMetaData();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new ServiceException("SQL 无法执行，请检查 SQL 语法、表是否存在、表名前是否加上数据库名");
+        }
+        return metaData;
+    }
+
+
+    @Override
+    public boolean checkExitCol(String serviceId) {
+        return baseMapper.exists(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, serviceId));
+    }
 }
 
 

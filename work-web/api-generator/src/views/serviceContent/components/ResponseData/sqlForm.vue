@@ -29,7 +29,7 @@
           :trigger-on-focus="false"
         />
       </el-form-item>
-      <el-button type="primary">保存并生成/更新列配置项</el-button>
+      <el-button v-if="!serviceInfo?.exitCol" type="primary" @click="handleGenerateCol">保存并生成列配置项</el-button>
       <el-button type="primary" v-throttle="{ onClick: handleSave, time: 4000 }">保 存</el-button>
     </el-form>
   </div>
@@ -40,7 +40,7 @@ import { CodeMirror, message } from "work";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { sql } from "@codemirror/lang-sql";
 import { ServiceKey } from "@/config/symbol";
-import { editService } from "@/api/service";
+import { editService, generateCol } from "@/api/service";
 
 const props = defineProps<{
   tableNameList: string[];
@@ -86,6 +86,27 @@ const handleSave = async () => {
 
   const res = await editService({ id, dataSourceId: props.dataSourceId, ...unref(model) });
   if (res.code === 200) message.success("保存成功，4s 内无法再次点击");
+};
+
+const handleGenerateCol = async () => {
+  if (!props.dataSourceId) return message.warning("数据源必选");
+  const service = unref(serviceInfo);
+  if (!service) return message.warning("服务不存在");
+
+  const { id } = service;
+
+  const res = await generateCol({
+    id,
+    dataSourceId: props.dataSourceId,
+    ...unref(model),
+    serviceId: unref(serviceInfo)?.serviceId || "",
+    categoryId: unref(serviceInfo)?.categoryId || "",
+    projectId: unref(serviceInfo)?.projectId || "",
+    teamId: unref(serviceInfo)?.teamId || "",
+  });
+  unref(serviceInfo)!.exitCol = true;
+
+  if (res.code === 200) message.success(res.message);
 };
 
 defineExpose({ model });

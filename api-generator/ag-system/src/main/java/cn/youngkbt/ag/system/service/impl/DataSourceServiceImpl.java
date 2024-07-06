@@ -167,8 +167,7 @@ public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSou
     public List<LinkedHashMap<String, Object>> executeSelect(SqlDTO sqlDTO) {
         // 切换数据源
         DataSourceHelper.use(sqlDTO.getDataSourceId());
-        List<LinkedHashMap<String, Object>> resultMapList = sqlExecuteMapper.executeSelectList(sqlDTO.getSql(), null);
-        return resultMapList;
+        return sqlExecuteMapper.executeSelectList(sqlDTO.getSql(), null);
     }
 }
 

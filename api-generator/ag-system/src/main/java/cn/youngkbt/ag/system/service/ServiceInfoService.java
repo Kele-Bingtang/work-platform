@@ -21,7 +21,7 @@ public interface ServiceInfoService extends IService<ServiceInfo> {
      * @return 服务信息
      */
     ServiceInfoVO getByServiceId(String serviceId);
-    
+
     /**
      * 分页查询服务列表（分页）
      *
@@ -103,6 +103,11 @@ public interface ServiceInfoService extends IService<ServiceInfo> {
      */
     void checkServiceAllowed(String projectId, String userId);
 
-    ServiceInfo listOneByServiceId(String serviceId);
-
+    /**
+     * 生成列配置项
+     *
+     * @param serviceInfoDTO 服务信息
+     * @return 成功失败信息
+     */
+    Integer generateCol(ServiceInfoDTO serviceInfoDTO);
 }

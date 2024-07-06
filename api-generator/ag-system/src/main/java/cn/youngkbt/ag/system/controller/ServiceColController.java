@@ -3,6 +3,7 @@ package cn.youngkbt.ag.system.controller;
 import cn.youngkbt.ag.system.model.dto.ServiceColDTO;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceColVO;
+import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
 import cn.youngkbt.core.http.HttpResult;
@@ -10,6 +11,7 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.utils.MapstructUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -34,14 +36,14 @@ public class ServiceColController {
         TablePage<ServiceColVO> serviceColVOTablePage = serviceColService.listPage(serviceColDTO, pageQuery);
         return HttpResult.ok(serviceColVOTablePage);
     }
-    
+
     @PostMapping
     @Operation(summary = "服务列配置项新增", description = "新增服务列配置项")
     public Response<Boolean> addServiceCol(@Validated(RestGroup.AddGroup.class) @RequestBody ServiceColDTO serviceColDTO) {
-        if(serviceColService.checkServiceColUnique(serviceColDTO)) {
+        if (serviceColService.checkServiceColUnique(serviceColDTO)) {
             return HttpResult.failMessage("新增列配置项失败，字段名称已存在");
         }
-        
+
         boolean result = serviceColService.addServiceCol(serviceColDTO);
         return HttpResult.okOrFail(result);
     }
@@ -49,10 +51,10 @@ public class ServiceColController {
     @PutMapping
     @Operation(summary = "服务列配置项修改", description = "修改服务列配置项")
     public Response<Boolean> editServiceCol(@Validated(RestGroup.EditGroup.class) @RequestBody ServiceColDTO serviceColDTO) {
-        if(serviceColService.checkServiceColUnique(serviceColDTO)) {
+        if (serviceColService.checkServiceColUnique(serviceColDTO)) {
             return HttpResult.failMessage("新增列配置项失败，字段名称已存在");
         }
-        
+
         boolean result = serviceColService.editServiceCol(serviceColDTO);
         return HttpResult.okOrFail(result);
     }
@@ -63,28 +65,30 @@ public class ServiceColController {
         boolean result = serviceColService.removeServiceColById(id);
         return HttpResult.okOrFail(result);
     }
-    
-    @PostMapping("/regenCol/{serviceId}")
+
+    @PostMapping("/reGenCol/{serviceId}")
     @Operation(summary = "重新生成新加入的列配置项", description = "重新生成新加入的列配置项")
-    public Response<String> regenCol(@PathVariable String serviceId) {
-        // 获取 SQL
-        ServiceInfo serviceInfo = serviceInfoService.listOneByServiceId(serviceId);
-        
-        Integer length = serviceColService.regenCol(serviceInfo.getSelectSql(), serviceId);
+    public Response<String> reGenCol(@PathVariable String serviceId) {
+        // 获取服务信息
+        ServiceInfoVO serviceInfoVO = serviceInfoService.getByServiceId(serviceId);
+        ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoVO, ServiceInfo.class);
+
+        Integer length = serviceColService.reGenCol(serviceInfo);
         if (length > 0) {
-            return HttpResult.okMessage("删除了 " + length + " 条数据");
+            return HttpResult.okMessage("更新了 " + length + " 条数据");
         } else {
-            return HttpResult.okMessage("不需要删除，没有失效的字段");
+            return HttpResult.okMessage("不需要更新，没有新增的字段");
         }
     }
 
-    @DeleteMapping("/removeInvalidCol/{serviceId}")
+    @PostMapping("/removeInvalidCol/{serviceId}")
     @Operation(summary = "删除不存在的列配置项", description = "删除不存在的列配置项")
     public Response<String> removeInvalidCol(@PathVariable String serviceId) {
-        // 获取 SQL
-        ServiceInfo serviceInfo = serviceInfoService.listOneByServiceId(serviceId);
-        
-        Integer length = serviceColService.removeInvalidCol(serviceInfo.getSelectSql(), serviceId);
+        // 获取服务信息
+        ServiceInfoVO serviceInfoVO = serviceInfoService.getByServiceId(serviceId);
+        ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoVO, ServiceInfo.class);
+
+        Integer length = serviceColService.removeInvalidCol(serviceInfo);
         if (length > 0) {
             return HttpResult.okMessage("删除了 " + length + " 条数据");
         } else {

@@ -50,6 +50,7 @@ $prefix-class: #{$admin-namespace}-project-main;
   .el-tabs {
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     :deep(.el-tabs__content, .el-tab-pane) {
       flex: 1;

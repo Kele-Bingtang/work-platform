@@ -141,9 +141,9 @@ public class JdbcMetaData implements MetaData {
         }
     }
 
-    private String getTypeNameByColumn(String columnType) {
-        List<String> IntegerType = Arrays.asList("INT", "INTEGER", "TINYINT", "SMALLINT", "MEDIUMINT", "BIGINT", "NUMBER");
-        if (IntegerType.contains(columnType)) {
+    public String getTypeNameByColumn(String columnType) {
+        List<String> integerType = Arrays.asList("INT", "INTEGER", "TINYINT", "SMALLINT", "MEDIUMINT", "BIGINT", "NUMBER");
+        if (integerType.contains(columnType)) {
             return "Integer";
         } else if (columnType.contains("DOUBLE")) {
             return "Double";

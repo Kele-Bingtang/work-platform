@@ -11,6 +11,8 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Objects;
+
 /**
  * @author Kele-Bingtang
  * @date 2024-04-23 01:04:02
@@ -174,5 +176,21 @@ public class ServiceCol extends BaseNoLogicDO {
      * 团队 ID
      */
     private String teamId;
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (null == o || getClass() != o.getClass()) {
+            return false;
+        }
+        ServiceCol serviceCol = (ServiceCol) o;
+        return Objects.equals(this.tableCol, serviceCol.tableCol) && this.serviceId.equals(serviceCol.getServiceId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tableCol, serviceId);
+    }
 }

@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "t_service")
 @Data
-@AutoMapper(target = ServiceInfoVO.class, reverseConvertGenerate = false)
+@AutoMapper(target = ServiceInfoVO.class)
 public class ServiceInfo extends BaseDO {
     /**
      * 服务 ID

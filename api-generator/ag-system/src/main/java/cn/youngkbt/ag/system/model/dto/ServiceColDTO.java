@@ -169,25 +169,25 @@ public class ServiceColDTO {
     /**
      * 服务 ID
      */
-    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
     private String serviceId;
 
     /**
      * 分类 ID
      */
-    @NotBlank(message = "分类 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "分类 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String categoryId;
 
     /**
      * 项目 ID
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String projectId;
 
     /**
      * 团队 ID
      */
-    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class, RestGroup.EditGroup.class})
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class})
     private String teamId;
 
 }

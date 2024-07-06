@@ -46,14 +46,11 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
         ServiceInfo serviceInfo = baseMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getServiceId, serviceId));
         Assert.isTrue(Objects.nonNull(serviceInfo), "服务不存在");
-        
-        return MapstructUtil.convert(serviceInfo, ServiceInfoVO.class);
-    }
 
-    @Override
-    public ServiceInfo listOneByServiceId(String serviceId) {
-        return baseMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
-                .eq(ServiceInfo::getServiceId, serviceId));
+        ServiceInfoVO serviceInfoVO = MapstructUtil.convert(serviceInfo, ServiceInfoVO.class);
+        boolean checkExitCol = serviceColService.checkExitCol(serviceId);
+        serviceInfoVO.setExitCol(checkExitCol);
+        return serviceInfoVO;
     }
 
     @Override
@@ -91,9 +88,6 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
             reportDTO.setServiceId(serviceInfo.getServiceId());
 
             reportService.addReport(reportDTO);
-
-            // 生成列配置项
-            serviceColService.listColumnThenInsert(serviceInfo.getSelectSql(), serviceInfo.getServiceId());
         }
 
         return result > 0;
@@ -178,6 +172,14 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
         if (!projectMemberService.checkMemberRole(projectId, userId, List.of(ProjectMemberRole.ADMIN.ordinal(), ProjectMemberRole.MEMBER.ordinal()))) {
             throw new ServiceException("用户没有服务操作权限");
         }
+    }
+
+    @Override
+    public Integer generateCol(ServiceInfoDTO serviceInfoDTO) {
+        // 保存服务信息
+        editService(serviceInfoDTO);
+        // 生成列配置项
+        return serviceColService.listColumnThenInsert(serviceInfoDTO);
     }
 }
 

@@ -31,7 +31,7 @@ import java.util.Map;
 public class DataSourceHelper {
     private static final DataSource dataSource = SpringHelper.getBean(DataSource.class);
     private static final DefaultDataSourceCreator defaultDataSourceCreator = SpringHelper.getBean(DefaultDataSourceCreator.class);
-    private static final JdbcMetaData jdbcMetaData = new JdbcMetaData();
+    public static final JdbcMetaData jdbcMetaData = new JdbcMetaData();
 
     /**
      * 获取指定的数据源信息

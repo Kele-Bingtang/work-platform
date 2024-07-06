@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
 import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
+import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class ServiceInfoController {
     
     private final ServiceInfoService serviceInfoService;
+    private final ServiceColService serviceColService;
 
     @GetMapping("/getByServiceId/{serviceId}")
     @Operation(summary = "根据服务 ID 查询服务", description = "根据服务 ID 查询服务")
@@ -74,5 +76,15 @@ public class ServiceInfoController {
     public Response<Boolean> removeService(@PathVariable String serviceId) {
         boolean removeService = serviceInfoService.removeService(serviceId);
         return HttpResult.okOrFail(removeService);
+    }
+
+    @PostMapping("/generateCol")
+    @Operation(summary = "列配置项生成", description = "生成列配置项")
+    public Response<String> generateCol(@Validated(RestGroup.OtherGroup.class) @RequestBody ServiceInfoDTO serviceInfoDTO) {
+        if(serviceColService.checkExitCol(serviceInfoDTO.getServiceId())) {
+            return HttpResult.failMessage("生成列配置项失败，列配置已生成");
+        }
+        Integer result = serviceInfoService.generateCol(serviceInfoDTO);
+        return HttpResult.okMessage("生成了 " + result + " 个列配置项");
     }
 }

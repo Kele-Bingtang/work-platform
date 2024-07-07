@@ -37,7 +37,7 @@ public class MybatisDecryptInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        // 获取执行 mysql 执行结果
+        // 执行 sql 获取结果
         Object result = invocation.proceed();
         if (result == null) {
             return null;

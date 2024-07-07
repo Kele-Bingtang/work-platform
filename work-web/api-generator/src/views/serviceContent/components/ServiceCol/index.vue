@@ -12,12 +12,12 @@
     <template #tableHeaderExtra>
       <el-button v-waves type="primary" plain :icon="Pointer" @click="handleRegenerate">生成新增字段</el-button>
       <el-button v-waves type="danger" plain :icon="Delete" @click="handleDeleteInvalid">删除失效字段</el-button>
-      <el-button v-waves type="success" plain :icon="Files">批量操作</el-button>
+      <el-button v-waves type="success" plain :icon="Files" @click="handleBatchOperate">批量操作</el-button>
     </template>
   </ProTable>
 </template>
 
-<script setup lang="ts" name="ServiceCol">
+<script setup lang="tsx" name="ServiceCol">
 import {
   listServiceColPage,
   addServiceCol,
@@ -26,6 +26,7 @@ import {
   type ServiceCol,
   reGenCol,
   removeInvalidCol,
+  editBatch,
 } from "@/api/serviceCol";
 import { ServiceKey } from "@/config/symbol";
 import { colTypeComponentForm, queryFilter } from "@/config/constant";
@@ -36,10 +37,13 @@ import {
   type FormSchemaProps,
   message,
   type ProTableInstance,
+  useDialog,
 } from "work";
 import { Pointer, Delete, Files } from "@element-plus/icons-vue";
+import BatchOperate from "./batchOperate.vue";
 
 const serviceInfo = inject(ServiceKey);
+const { open } = useDialog();
 
 const initRequestParam = reactive({ serviceId: unref(serviceInfo)?.serviceId });
 
@@ -75,6 +79,27 @@ const handleDeleteInvalid = async () => {
   }
 };
 
+const batchOperate = shallowRef<typeof BatchOperate>();
+
+const handleBatchOperate = () => {
+  open({
+    title: "批量操作",
+    height: 300,
+    render: () => <BatchOperate ref={batchOperate} data={unref(proTableRef)?.tableData} />,
+    onConfirm: async () => {
+      const data = await unref(batchOperate)?.getData();
+
+      if (data) {
+        const res = await editBatch(data);
+        if (res.code === 200) {
+          unref(proTableRef)?.getTableList();
+          return message.success("批量更新成功");
+        }
+      }
+    },
+  });
+};
+
 const commonEnum = [
   { label: "不允许", value: 0 },
   { label: "允许", value: 1 },
@@ -96,7 +121,6 @@ const columns: TableColumnProps[] = [
   },
   { prop: "allowInsert", label: "新增", enum: commonEnum, width: 100 },
   { prop: "allowUpdate", label: "更新", enum: commonEnum, width: 100 },
-  { prop: "allowFilter", label: "查询", enum: commonEnum, width: 100 },
   { prop: "allowRequest", label: "请求", enum: commonEnum, width: 100 },
   { prop: "orderBy", label: "排序", width: 100 },
   { prop: "displaySeq", label: "返回顺序", width: 100 },
@@ -124,7 +148,6 @@ const schema: FormSchemaProps[] = [
   },
   { prop: "allowInsert", label: "新增", el: "el-select", defaultValue: 1, enum: commonEnum },
   { prop: "allowUpdate", label: "更新", el: "el-select", defaultValue: 1, enum: commonEnum },
-  { prop: "allowFilter", label: "查询", el: "el-select", defaultValue: 1, enum: commonEnum },
   { prop: "allowRequest", label: "请求", el: "el-select", defaultValue: 1, enum: commonEnum },
   { prop: "queryFilter", label: "筛选条件", el: "el-select", defaultValue: "关闭", enum: unref(queryFilterOptions) },
   { prop: "orderBy", label: "排序顺序", el: "el-input-number", defaultValue: 99 },

@@ -80,6 +80,7 @@ security:
     - /actuator
     - /actuator/**
     - /ai/**
+    - /generic-api/**
 
 # 用户配置
 login:

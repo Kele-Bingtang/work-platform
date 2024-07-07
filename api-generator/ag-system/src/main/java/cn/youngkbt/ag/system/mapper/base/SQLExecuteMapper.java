@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.mapper.base;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,16 +17,6 @@ import java.util.Map;
  */
 @Mapper
 public interface SQLExecuteMapper {
-
-    /**
-     * 查询单个对象
-     *
-     * @param sql 查询 sql
-     * @return 查询出的数据
-     */
-    @Select("${sql}")
-    LinkedHashMap<String, Object> executeSelectOne(@Param("sql") String sql, Map<String, Object> params);
-
     /**
      * 查询对象列表
      *
@@ -34,6 +25,15 @@ public interface SQLExecuteMapper {
      */
     @Select("${sql}")
     List<LinkedHashMap<String, Object>> executeSelectList(@Param("sql") String sql, Map<String, Object> params);
+
+    /**
+     * 查询对象列表
+     *
+     * @param sql 查询 sql
+     * @return 查询出的数据
+     */
+    @Select("${sql}")
+    Page<LinkedHashMap<String, Object>> executeSelectPage(Page<LinkedHashMap<String, Object>> page, @Param("sql") String sql, Map<String, Object> params);
 
     /**
      * 增删改操作

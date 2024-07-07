@@ -23,4 +23,13 @@ public interface RestGroup {
     interface OtherGroup {
     }
 
+    interface AddBatchGroup {
+    }
+
+    interface EditBatchGroup {
+    }
+    
+    interface DeleteBatchGroup {
+    }
+
 }

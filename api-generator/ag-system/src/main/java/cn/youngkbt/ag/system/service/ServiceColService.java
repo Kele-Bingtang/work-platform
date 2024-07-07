@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.service;
 
+import cn.youngkbt.ag.system.model.dto.ServiceColBatchUpdateDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceColDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
 import cn.youngkbt.ag.system.model.po.ServiceCol;
@@ -128,4 +129,12 @@ public interface ServiceColService extends IService<ServiceCol> {
      * @return 是否存在
      */
     boolean checkExitCol(String serviceId);
+
+    /**
+     * 批量修改列配置项
+     *
+     * @param batchUpdateDTO 批量修改列配置项
+     * @return 是否成功
+     */
+    boolean editBatchServiceCol(ServiceColBatchUpdateDTO batchUpdateDTO);
 }

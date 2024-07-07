@@ -19,7 +19,6 @@
             <result property="orderBy" column="order_by" jdbcType="INTEGER"/>
             <result property="allowInsert" column="allow_insert" jdbcType="TINYINT"/>
             <result property="allowUpdate" column="allow_update" jdbcType="TINYINT"/>
-            <result property="allowFilter" column="allow_filter" jdbcType="TINYINT"/>
             <result property="allowRequest" column="allow_request" jdbcType="TINYINT"/>
             <result property="allowShowInReport" column="allow_show_in_report" jdbcType="TINYINT"/>
             <result property="allowShowInDetail" column="allow_show_in_detail" jdbcType="TINYINT"/>

@@ -17,6 +17,7 @@ public interface ProjectService extends IService<Project> {
     /**
      * 通过项目 ID 查询一笔项目数据
      *
+     * @param projectId 项目 ID
      * @return 项目信息
      */
     ProjectVO getByProjectId(String projectId);

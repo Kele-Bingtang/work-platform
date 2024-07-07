@@ -30,7 +30,6 @@ export declare namespace ServiceCol {
     orderBy: number; // 排序，负数表示 desc，正数表示 asc
     allowInsert: number; // 是否允许插入（0 不允许 1 允许）
     allowUpdate: number; // 是否允许更新（0 不允许 1 允许）
-    allowFilter: number; // 是否允许查询（0 不允许 1 允许）
     allowRequest: number; // 是否允许返回在请求里（0 不允许 1 允许）
     allowShowInReport: number; // 是否允许出现在报表（0 不允许 1 允许）
     allowShowInDetail: number; // 是否允许出现在报表的增删改弹出框（0 不允许 1 允许）
@@ -57,6 +56,12 @@ export declare namespace ServiceCol {
     "id"
   >;
   type ServiceColDelete = RequiredKeyPartialOther<ServiceColInfo, "id">;
+
+  interface ServiceColUpdateBatch {
+    operateType: number[];
+    operateValue: string;
+    jsonColList: string[];
+  }
 }
 
 const baseUri = "/serviceCol";
@@ -82,4 +87,8 @@ export const reGenCol = (serviceId: string) => {
 };
 export const removeInvalidCol = (serviceId: string) => {
   return http.post<http.Response<string>>(`${baseUri}/removeInvalidCol/${serviceId}`);
+};
+
+export const editBatch = (data: ServiceCol.ServiceColUpdateBatch) => {
+  return http.put<http.Response<string>>(`${baseUri}/editBatch`, data);
 };

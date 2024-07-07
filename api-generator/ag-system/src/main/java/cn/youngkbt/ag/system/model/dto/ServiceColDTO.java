@@ -106,12 +106,6 @@ public class ServiceColDTO {
     private Integer allowUpdate;
 
     /**
-     * 是否允许查询（0 不允许 1 允许）
-     */
-    @IncludeValid(value = {"0", "1"}, message = "是否允许查询不能为空", groups = {RestGroup.EditGroup.class})
-    private Integer allowFilter;
-
-    /**
      * 是否允许返回在请求里（0 不允许 1 允许）
      */
     @IncludeValid(value = {"0", "1"}, message = "是否允许返回在请求里不能为空", groups = {RestGroup.EditGroup.class})

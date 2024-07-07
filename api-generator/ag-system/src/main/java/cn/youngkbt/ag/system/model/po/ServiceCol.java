@@ -103,11 +103,6 @@ public class ServiceCol extends BaseNoLogicDO {
     private Integer allowUpdate;
 
     /**
-     * 是否允许查询（0 不允许 1 允许）
-     */
-    private Integer allowFilter;
-
-    /**
      * 是否允许返回在请求里（0 不允许 1 允许）
      */
     private Integer allowRequest;

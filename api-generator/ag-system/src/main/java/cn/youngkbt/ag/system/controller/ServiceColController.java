@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.controller;
 
+import cn.youngkbt.ag.system.model.dto.ServiceColBatchUpdateDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceColDTO;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceColVO;
@@ -11,6 +12,7 @@ import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +58,17 @@ public class ServiceColController {
         }
 
         boolean result = serviceColService.editServiceCol(serviceColDTO);
+        return HttpResult.okOrFail(result);
+    }
+
+    @PutMapping("/editBatch")
+    @Operation(summary = "服务列配置项批量修改", description = "批量修改服务列配置项")
+    public Response<String> editServiceCol(@Validated @RequestBody ServiceColBatchUpdateDTO batchUpdateDTO) {
+        if (ListUtil.isEmpty(batchUpdateDTO.getJsonColList())) {
+            return HttpResult.errorMessage("批量修改的字段不能为空");
+        }
+
+        boolean result = serviceColService.editBatchServiceCol(batchUpdateDTO);
         return HttpResult.okOrFail(result);
     }
 

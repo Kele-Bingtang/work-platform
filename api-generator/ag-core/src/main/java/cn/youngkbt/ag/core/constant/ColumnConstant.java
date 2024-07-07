@@ -15,4 +15,13 @@ public interface ColumnConstant {
      * 默认生成目录的 Name
      */
     String DEFAULT_CATEGORY_NAME = "默认目录";
+    
+    String AND = " AND ";
+    String WHERE = " WHERE ";
+    String LIMIT = " LIMIT ";
+    String ORDER_BY = " ORDER BY ";
+    String LIKE = " LIKE ";
+    String BETWEEN = " BETWEEN ";
+    String VALUE = "value";
+    String LABEL = "label";
 }

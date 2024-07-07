@@ -3,8 +3,9 @@ package cn.youngkbt.ag.system.service.impl;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.youngkbt.ag.core.enums.ProjectMemberRole;
 import cn.youngkbt.ag.core.helper.AgHelper;
+import cn.youngkbt.ag.core.helper.SqlHelper;
 import cn.youngkbt.ag.system.mapper.ServiceColMapper;
-import cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper;
+import cn.youngkbt.ag.system.model.dto.ServiceColBatchUpdateDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceColDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
 import cn.youngkbt.ag.system.model.po.DataSource;
@@ -15,12 +16,17 @@ import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.core.exception.ServiceException;
+import cn.youngkbt.core.validate.validator.ValidList;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.enums.SqlMethod;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,9 +38,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author Kele-Bingtang
@@ -48,7 +53,6 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
 
     private final ProjectMemberService projectMemberService;
     private final DataSourceService dataSourceService;
-    private final SQLExecuteMapper sqlExecuteMapper;
     private final SqlSessionFactory sqlSessionFactory;
 
     @Override
@@ -129,31 +133,6 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     }
 
     /**
-     * 添加 LIMIT 到 SQL
-     *
-     * @param selectSql 查询 SQL
-     * @param limit     limit 数量
-     * @param dbType    数据源类型
-     * @return 添加了 limit 的 SQL
-     */
-    private String addLimitToSql(String selectSql, int limit, String dbType) {
-        String finalSql = "";
-
-        if ("MySQL".equalsIgnoreCase(dbType) || "MariaDB".equalsIgnoreCase(dbType) || "PostgreSQL".equalsIgnoreCase(dbType) || "SQLite".equalsIgnoreCase(dbType)) {
-            finalSql = "SELECT * FROM (" + selectSql + ") t LIMIT " + limit;
-        } else if ("Oracle".equalsIgnoreCase(dbType)) {
-            // Oracle 使用 ROW_NUMBER() OVER() 来实现 LIMIT，注意这需要原 SQL 有明确的排序规则
-            finalSql = "SELECT * FROM (SELECT t.*, ROW_NUMBER() OVER (ORDER BY some_column) AS rn FROM (" + selectSql + ") t) WHERE rn <= " + limit;
-        } else if ("SQLServer".equalsIgnoreCase(dbType)) {
-            finalSql = "SELECT TOP (" + limit + ") * FROM (" + selectSql + ") AS limiter";
-        } else {
-            throw new ServiceException("不支持数据源类型: " + dbType);
-        }
-
-        return finalSql;
-    }
-
-    /**
      * 构建列配置项信息
      *
      * @param resultSetMetaData SQL 返回的 ResultSetMetaData
@@ -191,7 +170,7 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
         // 切换数据源
         DataSourceHelper.use(serviceInfoDTO.getDataSourceId());
         ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoDTO, ServiceInfo.class);
-        
+
         // 获取 SQL 返回的 ResultSetMetaData，目的是获取每个字段的信息
         ResultSetMetaData resultSetMetaData = getResultSetMetaData(serviceInfo);
         // 构建列配置项信息
@@ -259,7 +238,7 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
         DataSource dataSource = dataSourceService.getOne(Wrappers.<DataSource>lambdaQuery()
                 .eq(DataSource::getDataSourceId, serviceInfo.getDataSourceId()));
         // SQL 添加 LIMIT 1，防止数据量过多导致查询效率慢
-        String limitSql = addLimitToSql(serviceInfo.getSelectSql(), 1, dataSource.getDataSourceType());
+        String limitSql = SqlHelper.addLimitToSql(serviceInfo.getSelectSql(), 1, dataSource.getDataSourceType());
         return getResultSetMetaData(limitSql);
     }
 
@@ -286,6 +265,37 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     public boolean checkExitCol(String serviceId) {
         return baseMapper.exists(Wrappers.<ServiceCol>lambdaQuery()
                 .eq(ServiceCol::getServiceId, serviceId));
+    }
+
+
+    @Override
+    public boolean editBatchServiceCol(ServiceColBatchUpdateDTO batchUpdateDTO) {
+        ValidList<String> jsonColList = batchUpdateDTO.getJsonColList();
+        // 转换成 MP 需要的批量更新的格式
+        List<ServiceCol> serviceColList = new ArrayList<>();
+        jsonColList.forEach(jsonCol -> {
+            ServiceCol serviceCol = new ServiceCol();
+            serviceCol.setJsonCol(jsonCol);
+            serviceCol.setAllowInsert(batchUpdateDTO.getAllowInsert());
+            serviceCol.setAllowUpdate(batchUpdateDTO.getAllowUpdate());
+            serviceCol.setAllowRequest(batchUpdateDTO.getAllowRequest());
+            serviceColList.add(serviceCol);
+        });
+        return updateBatchByColumn(serviceColList, serviceCol -> {
+            LambdaUpdateWrapper<ServiceCol> updateWrapper = Wrappers.lambdaUpdate();
+            updateWrapper.eq(ServiceCol::getJsonCol, serviceCol.getJsonCol());
+            return updateWrapper;
+        });
+    }
+
+    private boolean updateBatchByColumn(Collection<ServiceCol> entityList, Function<ServiceCol, LambdaUpdateWrapper<ServiceCol>> queryWrapperFunction) {
+        String sqlStatement = getSqlStatement(SqlMethod.UPDATE);
+        return executeBatch(entityList, (sqlSession, entity) -> {
+            Map<String, Object> param = CollectionUtils.newHashMapWithExpectedSize(8);
+            param.put(Constants.ENTITY, entity);
+            param.put(Constants.WRAPPER, queryWrapperFunction.apply(entity));
+            sqlSession.update(sqlStatement, param);
+        });
     }
 }
 

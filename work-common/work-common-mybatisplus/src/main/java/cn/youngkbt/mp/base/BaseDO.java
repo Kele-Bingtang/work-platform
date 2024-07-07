@@ -78,9 +78,9 @@ public abstract class BaseDO implements Serializable {
     public LocalDateTime updateTime;
 
     /**
-     * 状态 1正常 2异常
+     * 状态 1 正常 0 异常
      */
-    @Schema(description = "状态（1 正常 2 异常）")
+    @Schema(description = "状态（1 正常 0 异常）")
     @TableField(value = "status", fill = FieldFill.INSERT)
     public Integer status;
 

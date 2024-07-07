@@ -65,6 +65,7 @@ const handleConfirm = async (dialogProps?: WorkDialogProps) => {
   if (!dialogProps?.onConfirm) return closeDialog();
 
   const result = await dialogProps?.onConfirm(closeDialog);
+
   if (result || result === 0) return closeDialog();
 };
 

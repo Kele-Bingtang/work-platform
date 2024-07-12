@@ -19,5 +19,5 @@ public interface ApiService {
 
     TablePage<LinkedHashMap<String, Object>> page(String apiUri, String secretKey, Map<String, Object> requestParamsMap, PageQuery pageQuery);
 
-    String operate(String operateType, String apiUri, String secretKey, Map<String, Object> dataMap, List<Map<String, Object>> jsonList);
+    Integer operate(String operateType, String apiUri, String secretKey, Map<String, Object> dataMap, List<Map<String, Object>> jsonList);
 }

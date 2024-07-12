@@ -9,7 +9,7 @@ export declare namespace ServiceCol {
     reportCol: string; // 报表字段名称
     colType: string; // 字段类型
     colLength: number; // 字段类型长度
-    isWhereKey: number; // 增删改时，是否作为 where 条件的主键，0 不作为，1 作为（值为空传）2 作为（值为空不传）
+    isWhereKey: number; // 增删改时，是否作为 where 条件的主键，0 不作为，1 作为
     defaultValue: string; // 字段默认值
     dataEncrypt: number; // 数据是否加密（0 不加密 1 加密）
     /**
@@ -58,7 +58,7 @@ export declare namespace ServiceCol {
   type ServiceColDelete = RequiredKeyPartialOther<ServiceColInfo, "id">;
 
   interface ServiceColUpdateBatch {
-    operateType: number[];
+    operateType: string[];
     operateValue: string;
     jsonColList: string[];
   }

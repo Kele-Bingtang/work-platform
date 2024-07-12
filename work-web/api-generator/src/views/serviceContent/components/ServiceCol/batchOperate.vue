@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts" name="ServiceColBatchProps">
-import { type FormSchemaProps, ProForm, message } from "work";
+import { type FormSchemaProps, ProForm } from "work";
 import { type ServiceCol } from "@/api/serviceCol";
 
 interface ServiceColBatchProps {
@@ -21,7 +21,7 @@ const model = reactive<ServiceCol.ServiceColUpdateBatch>({
   jsonColList: [],
 });
 
-const columnList = ref<ServiceCol.ServiceColInfo[]>();
+const columnList = ref<ServiceCol.ServiceColInfo[]>([]);
 
 const handleFocus = () => {
   const { operateType, operateValue } = model;
@@ -68,7 +68,7 @@ const schema: FormSchemaProps[] = [
     label: "请求名称",
     el: "el-select",
     props: { multiple: true, onFocus: handleFocus },
-    enum: columnList,
+    enum: computed(() => unref(columnList)),
     fieldNames: { label: "jsonCol", value: "jsonCol" },
   },
 ];

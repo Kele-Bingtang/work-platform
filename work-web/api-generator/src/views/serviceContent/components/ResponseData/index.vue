@@ -172,7 +172,8 @@ const handleRun = async () => {
   });
   if (res.code === 200) {
     data.value = res.data;
-    message.success("执行成功，4 秒内无法再次点击");
+    if (res.data?.length) message.success("执行成功，4 秒内无法再次点击");
+    else message.success("执行成功，数据为空，4 秒内无法再次点击");
   }
 };
 </script>

@@ -115,8 +115,7 @@ const columns: TableColumnProps[] = [
     label: "主键",
     enum: [
       { label: "不作为", value: 0 },
-      { label: "作为（值为空传）", value: 1 },
-      { label: "作为（值为空不传）", value: 2 },
+      { label: "作为", value: 1 },
     ],
   },
   { prop: "allowInsert", label: "新增", enum: commonEnum, width: 100 },
@@ -142,8 +141,7 @@ const schema: FormSchemaProps[] = [
     defaultValue: 0,
     enum: [
       { label: "不作为", value: 0 },
-      { label: "作为（值为空传）", value: 1 },
-      { label: "作为（值为空不传）", value: 2 },
+      { label: "作为", value: 1 },
     ],
   },
   { prop: "allowInsert", label: "新增", el: "el-select", defaultValue: 1, enum: commonEnum },

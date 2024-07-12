@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.controller;
 
+import cn.youngkbt.ag.core.constant.ColumnConstant;
 import cn.youngkbt.ag.system.service.ApiService;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.core.http.HttpResult;
@@ -82,8 +83,8 @@ public class ApiController {
     }
 
     @PostMapping("/{operateType}/**")
-    public Response<String> operate(@PathVariable String operateType, @RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
-                                    HttpServletRequest request) {
+    public Response<Integer> operate(@PathVariable String operateType, @RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
+                                     HttpServletRequest request) {
         Map<String, Object> dataMap = this.getParameterMap(request);
         String secretKeyParam = (String) dataMap.get("secretKey");
 
@@ -94,8 +95,14 @@ public class ApiController {
         }
         List<Map<String, Object>> jsonList = getJson(request);
         String apiUri = requestUri.substring("/generic-api/".length() + operateType.length());
-        String result = apiService.operate(operateType, apiUri, secretKey, dataMap, jsonList);
-        return HttpResult.okMessage(result);
+        dataMap.remove("secretKey");
+        Integer result = apiService.operate(operateType, apiUri, secretKey, dataMap, jsonList);
+
+        // 新增返回主键
+        if (ColumnConstant.INSERT.equalsIgnoreCase(operateType)) {
+            return HttpResult.ok(result);
+        }
+        return HttpResult.okMessage(operateType + " 了 " + result + " 笔数据");
     }
 
     /**
@@ -147,6 +154,7 @@ public class ApiController {
         } catch (IOException e) {
             throw new ServiceException("解析 JSON 失败");
         }
-        return JacksonUtil.toListMap(sb.toString());
+        String json = sb.toString();
+        return json.startsWith("[") ? JacksonUtil.toListMap(json) : Collections.singletonList(JacksonUtil.toJson(json, Map.class));
     }
 }

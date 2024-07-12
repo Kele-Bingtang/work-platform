@@ -457,7 +457,7 @@ CREATE TABLE `t_service_col` (
   `report_col` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '报表字段名称',
   `col_type` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '字段类型',
   `col_length` int DEFAULT NULL COMMENT '字段类型长度',
-  `is_where_key` tinyint DEFAULT '0' COMMENT '增删改时，是否作为 where 条件的主键，0 不作为，1 作为（值为空传）2 作为（值为空不传）',
+  `is_where_key` tinyint DEFAULT '0' COMMENT '增删改时，是否作为 where 条件的主键，0 不作为，1 作为',
   `default_value` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '字段默认值',
   `data_encrypt` tinyint DEFAULT '0' COMMENT '数据是否加密（0 不加密 1 加密）',
   `query_filter` tinyint DEFAULT '0' COMMENT 'Select 时的条件筛选，如 where 字段 = xx、like %xx%。\r\n0 为不筛选\r\n1 为 =，精准匹配\r\n2 为 !=，不等于\r\n3 为 like %xx\r\n4 为 like xx%\r\n5 为 like %xx%\r\n6 为 lt，即小于\r\n7 为 gt，即大于\r\n8 为 le，即小于等于\r\n9 为 ge，即大于等于\r\n10 为 value range，即值范围查询',

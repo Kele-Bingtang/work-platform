@@ -5,7 +5,7 @@ package cn.youngkbt.ag.core.constant;
  * @date 2024/6/29 01:26:35
  * @note
  */
-public interface ColumnConstant {
+public interface ColumnConstant extends cn.youngkbt.core.constants.ColumnConstant {
     /**
      * 默认生成目录的 Code
      */
@@ -15,6 +15,10 @@ public interface ColumnConstant {
      * 默认生成目录的 Name
      */
     String DEFAULT_CATEGORY_NAME = "默认目录";
+    
+    String INSERT = "add";
+    String UPDATE = "edit";
+    String DELETE = "remove";
     
     String AND = " AND ";
     String WHERE = " WHERE ";

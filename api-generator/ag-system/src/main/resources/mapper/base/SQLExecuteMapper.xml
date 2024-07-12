@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper">
+
+    <insert id="executeInsert" parameterType="cn.youngkbt.ag.system.model.bo.BatchOperateBO" useGeneratedKeys="true" keyProperty="data.id">
+        INSERT INTO ${tableName}
+        <foreach item="item" collection="data.getColumnList()" separator="," open="(" close=")">
+            ${item.column}
+        </foreach>
+        VALUES
+        <foreach item="item" collection="data.getColumnList()" separator="," open="(" close=")">
+            #{item.value}
+        </foreach>
+    </insert>
+
+    <insert id="executeInsertBatch">
+        start transaction;
+        <foreach item="data" collection="dataList" separator=";">
+            INSERT INTO ${tableName}
+            <foreach item="item" collection="data.getColumnList()" separator="," open="(" close=")">
+                ${item.column}
+            </foreach>
+            VALUES
+            <foreach item="item" collection="data.getColumnList()" separator="," open="(" close=")">
+                #{item.value}
+            </foreach>
+        </foreach>
+        ;
+        commit;
+    </insert>
+
+    <update id="executeUpdate">
+        UPDATE ${tableName} SET
+        <foreach item="item" collection="data.getColumnList()" separator=",">
+            ${item.column} = #{item.value}
+        </foreach>
+        <where>
+            <foreach item="item" collection="data.getWhereList()" separator=" AND ">
+                ${item.key} = #{item.value}
+            </foreach>
+        </where>
+    </update>
+
+    <update id="executeUpdateBatch">
+        start transaction;
+        <foreach item="data" collection="dataList" separator=";">
+            UPDATE ${tableName} SET
+            <foreach item="item" collection="data.getColumnList()" separator=",">
+                ${item.column} = #{item.value}
+            </foreach>
+            <where>
+                <foreach item="item" collection="data.getWhereList()" separator=" AND ">
+                    ${item.key} = #{item.value}
+                </foreach>
+            </where>
+        </foreach>
+        ;
+        commit;
+    </update>
+
+    <delete id="executeDelete">
+        DELETE FROM ${tableName} WHERE
+        <foreach item="item" collection="data.getWhereList()" separator=" AND ">
+            ${item.key} = #{item.value}
+        </foreach>
+    </delete>
+
+    <delete id="executeDeleteBatch">
+        start transaction;
+        <foreach item="data" collection="dataList" separator=";">
+            DELETE FROM ${tableName} WHERE
+            <foreach item="item" collection="data.getWhereList()" separator=" AND ">
+                ${item.key} = #{item.value}
+            </foreach>
+        </foreach>
+        ;
+        commit;
+    </delete>
+</mapper>

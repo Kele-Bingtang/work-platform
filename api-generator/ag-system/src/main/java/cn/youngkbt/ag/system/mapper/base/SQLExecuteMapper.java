@@ -1,7 +1,7 @@
 package cn.youngkbt.ag.system.mapper.base;
 
+import cn.youngkbt.ag.system.model.bo.BatchOperateBO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -36,11 +36,56 @@ public interface SQLExecuteMapper {
     Page<LinkedHashMap<String, Object>> executeSelectPage(Page<LinkedHashMap<String, Object>> page, @Param("sql") String sql, Map<String, Object> params);
 
     /**
-     * 增删改操作
+     * 新增操作
      *
-     * @param sql 增删改 sql
+     * @param tableName 表名
+     * @param data      数据
      * @return 增删改操作成功条数
      */
-    @Insert("${sql}")
-    Integer executeOperate(@Param("sql") String sql, Map<String, Object> params);
+    Integer executeInsert(@Param("tableName") String tableName, @Param("data") BatchOperateBO data);
+
+    /**
+     * 修改操作
+     *
+     * @param tableName 表名
+     * @param data      数据
+     * @return 增删改操作成功条数
+     */
+    Integer executeUpdate(@Param("tableName") String tableName, @Param("data") BatchOperateBO data);
+
+    /**
+     * 删除操作
+     *
+     * @param tableName 表名
+     * @param data      数据
+     * @return 增删改操作成功条数
+     */
+    Integer executeDelete(@Param("tableName") String tableName, @Param("data") BatchOperateBO data);
+
+    /**
+     * 批量新增操作
+     *
+     * @param tableName 表名
+     * @param dataList  数据列表
+     * @return 增删改操作成功条数
+     */
+    Integer executeInsertBatch(@Param("tableName") String tableName, @Param("dataList") List<BatchOperateBO> dataList);
+
+    /**
+     * 批量修改操作
+     *
+     * @param tableName 表名
+     * @param dataList  数据列表
+     * @return 增删改操作成功条数
+     */
+    Integer executeUpdateBatch(@Param("tableName") String tableName, @Param("dataList") List<BatchOperateBO> dataList);
+
+    /**
+     * 批量删除操作
+     *
+     * @param tableName 表名
+     * @param dataList  数据列表
+     * @return 增删改操作成功条数
+     */
+    Integer executeDeleteBatch(@Param("tableName") String tableName, @Param("dataList") List<BatchOperateBO> dataList);
 }

@@ -3,6 +3,9 @@ package cn.youngkbt.ag.system.service.impl;
 import cn.youngkbt.ag.core.enums.QueryFilterType;
 import cn.youngkbt.ag.core.helper.SqlHelper;
 import cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper;
+import cn.youngkbt.ag.system.model.bo.BatchOperateBO;
+import cn.youngkbt.ag.system.model.bo.ColumnBO;
+import cn.youngkbt.ag.system.model.bo.WhereBO;
 import cn.youngkbt.ag.system.model.po.DataSource;
 import cn.youngkbt.ag.system.model.po.Project;
 import cn.youngkbt.ag.system.model.po.ServiceCol;
@@ -11,8 +14,8 @@ import cn.youngkbt.ag.system.service.ApiService;
 import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.ag.system.service.ProjectService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
-import cn.youngkbt.core.constants.ColumnConstant;
 import cn.youngkbt.core.error.Assert;
+import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
@@ -122,20 +125,26 @@ public class ApiServiceImpl implements ApiService {
     private ServiceInfo checkThenGetService(String requestUri, String secretKey) {
         Project project = projectService.getOne(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getSecretKey, secretKey));
-        Assert.isTrue(Objects.equals(project.getStatus(), ColumnConstant.STATUS_NORMAL), "该项目已被禁用");
+        Assert.nonNull(project, "项目不存在");
+        Assert.isTrue(Objects.nonNull(project) && Objects.equals(project.getStatus(), STATUS_NORMAL), "该项目已被禁用");
 
         String baseUrl = project.getBaseUrl();
+        if (requestUri.length() < baseUrl.length()) {
+            throw new ServerException("服务链接和项目密钥不匹配");
+        }
+
         String projectUrl = requestUri.substring(0, baseUrl.length());
         String serviceUrl = requestUri.substring(baseUrl.length());
 
-        Assert.isTrue(projectUrl.equals(baseUrl), "接口链接和项目密钥不匹配");
+        Assert.isTrue(projectUrl.equals(baseUrl), "服务链接和项目密钥不匹配");
 
         ServiceInfo serviceInfo = serviceInfoService.getOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getProjectId, project.getProjectId())
                 .eq(ServiceInfo::getServiceUrl, serviceUrl)
         );
 
-        Assert.isTrue(Objects.equals(serviceInfo.getStatus(), ColumnConstant.STATUS_NORMAL), "该接口已被禁用");
+        Assert.nonNull(serviceInfo, "服务不存在");
+        Assert.isTrue(Objects.equals(serviceInfo.getStatus(), STATUS_NORMAL), "该服务已被禁用");
         return serviceInfo;
     }
 
@@ -252,7 +261,7 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public String operate(String operateType, String apiUri, String secretKey, Map<String, Object> dataMap, List<Map<String, Object>> jsonList) {
+    public Integer operate(String operateType, String apiUri, String secretKey, Map<String, Object> dataMap, List<Map<String, Object>> jsonList) {
         // 验证项目，获取服务信息
         ServiceInfo serviceInfo = checkThenGetService(apiUri, secretKey);
         DataSourceHelper.use(serviceInfo.getDataSourceId());
@@ -265,88 +274,258 @@ public class ApiServiceImpl implements ApiService {
         String selectSql = serviceInfo.getSelectSql();
         Assert.notBlank(selectSql, "SQL 为空，因此不存在数据返回");
 
-        // x-www-form-urlencoded 模式
+        if (dataMap.isEmpty() && ListUtil.isEmpty(jsonList)) {
+            throw new ServerException("数据为空");
+        }
 
-        // application/json 模式
+        // 默认值数据
+        Map<String, String> defaultValueMap = serviceColList.stream().filter(serviceCol -> serviceCol.getDefaultValue() != null)
+                .collect(Collectors.toMap(ServiceCol::getJsonCol, ServiceCol::getDefaultValue, (k1, k2) -> k1));
 
-        return "";
+        // 单个数据模式，如 x-www-form-urlencoded、application/json 对象
+        if (ListUtil.isEmpty(jsonList) || jsonList.size() == 1) {
+            return processOneData(operateType, serviceInfo, serviceColList, ListUtil.isEmpty(jsonList) ? dataMap : jsonList.get(0), defaultValueMap);
+        }
+
+        // 批量模式，仅限 application/json 数组
+        return processMultipleData(operateType, serviceInfo, serviceColList, jsonList, defaultValueMap);
     }
 
     /**
-     * 处理增删改的映射关系
+     * 处理一笔数据的增删改
+     *
+     * @param operateType     操作类型
+     * @param serviceInfo     服务信息
+     * @param serviceColList  类配置信息
+     * @param dataMap         数据
+     * @param defaultValueMap 默认值
+     * @return 影响行数
      */
-    private String processWwwForm(String operateType, List<ServiceCol> serviceColList, List<Map<String, Object>> dataListMap) {
-        // 过滤不需要操作的列配置项，并将需要过滤的列配置项转为 Map
-        Map<String, ServiceCol> cacheNeedMapping = serviceColList.stream().filter(serviceCol -> ("insert".equalsIgnoreCase(operateType) && serviceCol.getAllowInsert() != 0) ||
-                        ("update".equalsIgnoreCase(operateType) && serviceCol.getAllowUpdate() != 0 && serviceCol.getIsWhereKey() != 0))
-                .collect(Collectors.toMap(ServiceCol::getJsonCol, serviceCol -> serviceCol, (k1, k2) -> k1));
-
-        // 数据
-        List<HashMap<String, Object>> newDataListMap = new ArrayList<>(dataListMap.size());
-        // 主键数据
-        HashMap<String, Object> keyMap = new HashMap<>(16);
-        // 类型数据
-        HashMap<String, Object> typeMap = new HashMap<>(16);
-        // 默认值数据
-        HashMap<String, Object> defaultValueMap = new HashMap<>(16);
-        // 记录没有完成匹配的 cacheNeedMapping
-        HashMap<String, ServiceCol> cacheHasNeedMapping = new HashMap<>(newDataListMap.size());
-        // 是否完成第一轮循环
-        boolean isLoadOneFor = false;
-        for (Map<String, Object> dataMap : dataListMap) {
-            HashMap<String, Object> newDataMap = new HashMap<>(16);
-            for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
-                if (!cacheNeedMapping.containsKey(entry.getKey())) {
-                    continue;
-                }
-                ServiceCol serviceCol = cacheNeedMapping.get(entry.getKey());
-                // 因为每次循环都是重复的 Key，所以执行一次循环的缓存即可
-                if (!isLoadOneFor) {
-                    cacheHasNeedMapping.put(entry.getKey(), serviceCol);
-                }
-                Object value = entry.getValue();
-                // 最终的 value
-                String finalValue = "";
-                if (value instanceof String) {
-                    finalValue = (String) value;
-                } else if (value instanceof String[] s) {
-                    if (s.length > 0) {
-                        // 转 JSON 字符串
-                        finalValue = JacksonUtil.toJsonStr(s);
-                    }
-                }
-                // 值不能为空
-                if (StringUtil.hasText(finalValue)) {
-                    // 1 代表一定添加到 keyMap，2 代表如果值为空，则不添加到 keyMap，0 代表不添加
-                    if (serviceCol.getIsWhereKey() == 1) {
-                        keyMap.put(serviceCol.getTableCol(), finalValue);
-                    } else if (serviceCol.getIsWhereKey() == 2 && !finalValue.isEmpty()) {
-                        keyMap.put(serviceCol.getTableCol(), finalValue);
-                    } else if (serviceCol.getIsWhereKey() == 0) {
-                        // 不是 where 条件，那么就是需要操作的数据
-                        newDataMap.put(serviceCol.getTableCol(), finalValue);
-                    }
-                }
-                typeMap.put(serviceCol.getTableCol(), serviceCol.getColType());
+    private Integer processOneData(String operateType, ServiceInfo serviceInfo, List<ServiceCol> serviceColList, Map<String, Object> dataMap, Map<String, String> defaultValueMap) {
+        return switch (operateType) {
+            case INSERT -> {
+                // 过滤不需要操作的列配置项
+                Map<String, ServiceCol> cacheNeedMapping = serviceColList.stream().filter(serviceCol -> (serviceCol.getAllowInsert() != 0))
+                        .collect(Collectors.toMap(ServiceCol::getJsonCol, serviceCol -> serviceCol, (k1, k2) -> k1));
+                BatchOperateBO operateDataList = getAddDataList(dataMap, cacheNeedMapping, defaultValueMap);
+                sqlExecuteMapper.executeInsert(serviceInfo.getInsertTable(), operateDataList);
+                // 返回新增后的主键
+                Integer id = operateDataList.getId();
+                yield Objects.nonNull(id) ? id : 1;
             }
-            isLoadOneFor = true;
-            newDataListMap.add(newDataMap);
-        }
-
-        // 获取 cacheHasNeedMapping 和 cacheNeedMapping 的差异 Key
-        Set<String> cacheMappingKey = cacheNeedMapping.keySet();
-        Set<String> cacheHasMappingKey = cacheHasNeedMapping.keySet();
-        Set<String> differenceKey = cacheMappingKey.stream().filter(s -> !cacheHasMappingKey.contains(s)).collect(Collectors.toSet());
-
-        for (String key : differenceKey) {
-            ServiceCol serviceCol = cacheNeedMapping.get(key);
-            if (StringUtil.hasText(serviceCol.getDefaultValue()) && serviceCol.getIsWhereKey() == 0) {
-                defaultValueMap.put(serviceCol.getTableCol(), serviceCol.getDefaultValue());
+            case UPDATE -> {
+                // 过滤不需要操作的列配置项
+                Map<String, ServiceCol> cacheNeedMapping = serviceColList.stream().filter(serviceCol -> (serviceCol.getAllowUpdate() != 0 || serviceCol.getIsWhereKey() == 1))
+                        .collect(Collectors.toMap(ServiceCol::getJsonCol, serviceCol -> serviceCol, (k1, k2) -> k1));
+                yield sqlExecuteMapper.executeUpdate(serviceInfo.getUpdateTable(), getEditDataList(dataMap, cacheNeedMapping));
             }
-        }
-
-        return "";
+            case DELETE -> {
+                // 过滤不需要操作的列配置项，并将需要过滤的列配置项转为 Map
+                Map<String, ServiceCol> cacheNeedMapping = serviceColList.stream().filter(serviceCol -> (serviceCol.getIsWhereKey() == 1))
+                        .collect(Collectors.toMap(ServiceCol::getJsonCol, serviceCol -> serviceCol, (k1, k2) -> k1));
+                yield sqlExecuteMapper.executeDelete(serviceInfo.getDeleteTable(), getRemoveDataList(dataMap, cacheNeedMapping));
+            }
+            default -> throw new ServerException("不支持的操作类型");
+        };
     }
 
+    /**
+     * 处理多笔数据的增删改
+     *
+     * @param operateType     操作类型
+     * @param serviceInfo     服务信息
+     * @param serviceColList  类配置信息
+     * @param dataMapList     数据列表
+     * @param defaultValueMap 默认值
+     * @return 影响行数
+     */
+    private Integer processMultipleData(String operateType, ServiceInfo serviceInfo, List<ServiceCol> serviceColList, List<Map<String, Object>> dataMapList, Map<String, String> defaultValueMap) {
+        return switch (operateType) {
+            case INSERT -> {
+                // 过滤不需要操作的列配置项
+                Map<String, ServiceCol> cacheNeedMapping = serviceColList.stream().filter(serviceCol -> (serviceCol.getAllowInsert() != 0))
+                        .collect(Collectors.toMap(ServiceCol::getJsonCol, serviceCol -> serviceCol, (k1, k2) -> k1));
+                List<BatchOperateBO> operateBatchDataList = getAddBatchDataList(dataMapList, cacheNeedMapping, defaultValueMap);
+                sqlExecuteMapper.executeInsertBatch(serviceInfo.getInsertTable(), operateBatchDataList);
+                yield operateBatchDataList.size();
+            }
+            case UPDATE -> {
+                // 过滤不需要操作的列配置项
+                Map<String, ServiceCol> cacheNeedMapping = serviceColList.stream().filter(serviceCol -> (serviceCol.getAllowUpdate() != 0 || serviceCol.getIsWhereKey() == 1))
+                        .collect(Collectors.toMap(ServiceCol::getJsonCol, serviceCol -> serviceCol, (k1, k2) -> k1));
+                List<BatchOperateBO> operateBatchDataList = getEditBatchDataList(dataMapList, cacheNeedMapping);
+                sqlExecuteMapper.executeUpdateBatch(serviceInfo.getUpdateTable(), operateBatchDataList);
+                yield operateBatchDataList.size();
+            }
+            case DELETE -> {
+                // 过滤不需要操作的列配置项，并将需要过滤的列配置项转为 Map
+                Map<String, ServiceCol> cacheNeedMapping = serviceColList.stream().filter(serviceCol -> (serviceCol.getIsWhereKey() == 1))
+                        .collect(Collectors.toMap(ServiceCol::getJsonCol, serviceCol -> serviceCol, (k1, k2) -> k1));
+                List<BatchOperateBO> deleteBatchDataList = getRemoveBatchDataList(dataMapList, cacheNeedMapping);
+                sqlExecuteMapper.executeDeleteBatch(serviceInfo.getDeleteTable(), deleteBatchDataList);
+                yield deleteBatchDataList.size();
+            }
+            default -> throw new ServerException("不支持的操作类型");
+        };
+    }
+
+    /**
+     * 获取新增操作的一笔数据
+     *
+     * @param dataMap          数据
+     * @param cacheNeedMapping 缓存可以操作的列配置项
+     * @param defaultValueMap  默认值
+     * @return BatchOperateBO 数据
+     */
+    private BatchOperateBO getAddDataList(Map<String, Object> dataMap, Map<String, ServiceCol> cacheNeedMapping, Map<String, String> defaultValueMap) {
+        List<ColumnBO> columnBOList = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+            if (!cacheNeedMapping.containsKey(entry.getKey())) {
+                continue;
+            }
+            Object value = entry.getValue();
+            if (value instanceof String[] stringArray && stringArray.length > 0) {
+                // 转 JSON 字符串
+                value = JacksonUtil.toJsonStr(stringArray);
+            }
+            // 值不能为空
+            if (value instanceof String v ? StringUtil.hasText(v) : Objects.nonNull(value)) {
+                ColumnBO columnBO = new ColumnBO();
+                ServiceCol serviceCol = cacheNeedMapping.get(entry.getKey());
+                columnBOList.add(columnBO.setColumn(serviceCol.getTableCol()).setValue(value));
+            }
+        }
+
+        // 如果不存在 key，且操作为 Insert，添加默认值
+        defaultValueMap.forEach((key, value) -> {
+            ColumnBO columnBO = new ColumnBO().setColumn(key).setValue(value);
+            if (!columnBOList.contains(columnBO)) {
+                columnBOList.add(columnBO);
+            }
+        });
+        return new BatchOperateBO().setColumnList(columnBOList);
+    }
+
+    /**
+     * 获取新增操作的多笔数据
+     *
+     * @param dataListMap      数据列表
+     * @param cacheNeedMapping 缓存可以操作的列配置项
+     * @param defaultValueMap  默认值
+     * @return BatchOperateBO
+     */
+    private List<BatchOperateBO> getAddBatchDataList(List<Map<String, Object>> dataListMap, Map<String, ServiceCol> cacheNeedMapping, Map<String, String> defaultValueMap) {
+        // 组装操作的数据
+        List<BatchOperateBO> batchOperateBOList = new ArrayList<>(dataListMap.size());
+
+        for (Map<String, Object> dataMap : dataListMap) {
+            BatchOperateBO batchOperateBO = getAddDataList(dataMap, cacheNeedMapping, defaultValueMap);
+            batchOperateBOList.add(batchOperateBO);
+        }
+        return batchOperateBOList;
+    }
+
+    /**
+     * 获取修改操作的一笔数据
+     *
+     * @param dataMap          数据
+     * @param cacheNeedMapping 缓存可以操作的列配置项
+     * @return BatchOperateBO 数据
+     */
+    private BatchOperateBO getEditDataList(Map<String, Object> dataMap, Map<String, ServiceCol> cacheNeedMapping) {
+        List<ColumnBO> columnBOList = new ArrayList<>();
+        List<WhereBO> whereBOList = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+            if (!cacheNeedMapping.containsKey(entry.getKey())) {
+                continue;
+            }
+            ServiceCol serviceCol = cacheNeedMapping.get(entry.getKey());
+            Object value = entry.getValue();
+            if (value instanceof String[] stringArray && stringArray.length > 0) {
+                // 转 JSON 字符串
+                value = JacksonUtil.toJsonStr(stringArray);
+            }
+            // 值不能为空
+            if (value instanceof String v ? StringUtil.hasText(v) : Objects.nonNull(value)) {
+                ColumnBO columnBO = new ColumnBO();
+                WhereBO whereBO = new WhereBO();
+                if (serviceCol.getIsWhereKey() == 1) {
+                    whereBOList.add(whereBO.setKey(serviceCol.getTableCol()).setValue(value));
+                } else if (serviceCol.getIsWhereKey() == 0) {
+                    // 不是 where 条件，那么就是需要操作的数据
+                    columnBOList.add(columnBO.setColumn(serviceCol.getTableCol()).setValue(value));
+                }
+            }
+        }
+        if (whereBOList.isEmpty()) {
+            throw new ServerException("where 条件不能为空");
+        }
+        return new BatchOperateBO().setColumnList(columnBOList).setWhereList(whereBOList);
+    }
+
+    /**
+     * 获取修改操作的多笔数据
+     *
+     * @param dataListMap      数据列表
+     * @param cacheNeedMapping 缓存可以操作的列配置项
+     * @return BatchOperateBO
+     */
+    private List<BatchOperateBO> getEditBatchDataList(List<Map<String, Object>> dataListMap, Map<String, ServiceCol> cacheNeedMapping) {
+        // 组装操作的数据
+        List<BatchOperateBO> batchOperateBOList = new ArrayList<>(dataListMap.size());
+
+        for (Map<String, Object> dataMap : dataListMap) {
+            BatchOperateBO batchOperateBO = getEditDataList(dataMap, cacheNeedMapping);
+            batchOperateBOList.add(batchOperateBO);
+        }
+        return batchOperateBOList;
+    }
+
+    /**
+     * 获取删除操作的一笔数据
+     *
+     * @param dataMap          数据
+     * @param cacheNeedMapping 缓存可以操作的列配置项
+     * @return BatchOperateBO 数据
+     */
+    private BatchOperateBO getRemoveDataList(Map<String, Object> dataMap, Map<String, ServiceCol> cacheNeedMapping) {
+        List<WhereBO> whereBOList = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+            if (!cacheNeedMapping.containsKey(entry.getKey())) {
+                continue;
+            }
+            ServiceCol serviceCol = cacheNeedMapping.get(entry.getKey());
+            Object value = entry.getValue();
+            // 值不能为空
+            if (value instanceof String v ? StringUtil.hasText(v) : Objects.nonNull(value)) {
+                WhereBO whereBO = new WhereBO();
+                if (serviceCol.getIsWhereKey() == 1) {
+                    whereBOList.add(whereBO.setKey(serviceCol.getTableCol()).setValue(value));
+                }
+            }
+        }
+        if (whereBOList.isEmpty()) {
+            throw new ServerException("where 条件不能为空");
+        }
+        return new BatchOperateBO().setWhereList(whereBOList);
+    }
+
+    /**
+     * 获取删除操作的多笔数据
+     *
+     * @param dataListMap      数据列表
+     * @param cacheNeedMapping 缓存可以操作的列配置项
+     * @return BatchOperateBO
+     */
+    private List<BatchOperateBO> getRemoveBatchDataList(List<Map<String, Object>> dataListMap, Map<String, ServiceCol> cacheNeedMapping) {
+        // 组装操作的数据
+        List<BatchOperateBO> batchOperateBOList = new ArrayList<>(dataListMap.size());
+
+        for (Map<String, Object> dataMap : dataListMap) {
+            BatchOperateBO deleteDataList = getRemoveDataList(dataMap, cacheNeedMapping);
+            batchOperateBOList.add(deleteDataList);
+        }
+        return batchOperateBOList;
+    }
 
 }

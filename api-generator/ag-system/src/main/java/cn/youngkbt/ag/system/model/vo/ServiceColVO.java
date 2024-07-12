@@ -47,7 +47,7 @@ public class ServiceColVO implements Serializable {
     private Integer colLength;
 
     /**
-     * 增删改时，是否作为 where 条件的主键，0 不作为，1 作为（值为空传）2 作为（值为空不传）
+     * 增删改时，是否作为 where 条件的主键，0 不作为，1 作为
      */
     private Integer isWhereKey;
 

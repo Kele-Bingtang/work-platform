@@ -56,9 +56,9 @@ public class ServiceColDTO {
     private Integer colLength;
 
     /**
-     * 增删改时，是否作为 where 条件的主键，0 不作为，1 作为（值为空传）2 作为（值为空不传）
+     * 增删改时，是否作为 where 条件的主键，0 不作为，1 作为
      */
-    @IncludeValid(value = {"0", "1"}, message = "是否作为 where 条件，0 不作为，1 作为（值为空传）2 作为（值为空不传），请传入数字", groups = {RestGroup.EditGroup.class})
+    @IncludeValid(value = {"0", "1"}, message = "是否作为 where 条件，0 不作为，1 作为，请传入数字", groups = {RestGroup.EditGroup.class})
     private Integer isWhereKey;
 
     /**

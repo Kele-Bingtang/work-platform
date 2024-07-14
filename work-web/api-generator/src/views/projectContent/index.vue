@@ -12,7 +12,7 @@
 import { Category, Overview, ProjectSetting, Service } from "./components";
 import { message, useDesign } from "work";
 import { getProjectByProjectId, type Project } from "@/api/project";
-import { ProjectKey } from "@/config/symbol";
+import { ProjectKey, ProjectOnGetKey } from "@/config/symbol";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("project-main");
@@ -21,16 +21,21 @@ const route = useRoute();
 
 const projectInfo = ref<Project.ProjectInfo>();
 
-onMounted(async () => {
+onMounted(() => {
+  initProject();
+});
+
+const initProject = async () => {
   // 初始化项目信息，给子组件使用
   const projectId = route.params.projectId as string;
   const res = await getProjectByProjectId(projectId);
   if (!res.data) return message.error("项目不存在");
 
   projectInfo.value = res.data;
-});
+};
 
 provide(ProjectKey, projectInfo);
+provide(ProjectOnGetKey, initProject);
 
 const projectTabActiveName = ref("服务管理");
 const projectTabList = [

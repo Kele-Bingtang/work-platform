@@ -57,7 +57,7 @@ public class TeamMemberDTO {
     /**
      * 团队 ID
      */
-    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.QueryGroup.class})
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class, RestGroup.QueryGroup.class})
     private String teamId;
     
 }

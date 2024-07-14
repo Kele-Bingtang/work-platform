@@ -48,11 +48,11 @@ public class CategoryDTO {
      * 显示顺序
      */
     private Integer orderNum;
-    
+
     /**
      * 项目 id
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String projectId;
 
     /**

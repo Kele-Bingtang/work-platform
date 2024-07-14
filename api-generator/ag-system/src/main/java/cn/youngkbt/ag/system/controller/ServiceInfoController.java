@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
 import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
+import cn.youngkbt.ag.system.permission.annotation.ProjectAuthorize;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
 import cn.youngkbt.core.http.HttpResult;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/service")
 @RequiredArgsConstructor
 public class ServiceInfoController {
-    
+
     private final ServiceInfoService serviceInfoService;
     private final ServiceColService serviceColService;
 
@@ -33,44 +34,47 @@ public class ServiceInfoController {
         ServiceInfoVO serviceInfoVO = serviceInfoService.getByServiceId(serviceId);
         return HttpResult.ok(serviceInfoVO);
     }
-    
+
     @GetMapping("/listPage")
     @Operation(summary = "服务列表查询（分页）", description = "通过条件查询服务列表（分页）")
+    @ProjectAuthorize(value = "#serviceInfoDTO.getProjectId()", checkRead = true)
     public Response<TablePage<ServiceInfoVO>> listPage(@Validated(RestGroup.QueryGroup.class) ServiceInfoDTO serviceInfoDTO, PageQuery pageQuery) {
         TablePage<ServiceInfoVO> serviceInfoVOTablePage = serviceInfoService.listPage(serviceInfoDTO, pageQuery);
         return HttpResult.ok(serviceInfoVOTablePage);
     }
-    
+
     @PostMapping
     @Operation(summary = "服务新增", description = "新增服务")
+    @ProjectAuthorize(value = "#serviceInfoDTO.getProjectId()", checkReadAndWrite = true)
     public Response<Boolean> addService(@Validated(RestGroup.AddGroup.class) @RequestBody ServiceInfoDTO serviceInfoDTO) {
-        if(serviceInfoService.checkServiceNameUnique(serviceInfoDTO)) {
+        if (serviceInfoService.checkServiceNameUnique(serviceInfoDTO)) {
             return HttpResult.failMessage("新增服务「" + serviceInfoDTO.getServiceName() + "」失败，服务名称已存在");
         }
 
-        if(serviceInfoService.checkServiceUrlUnique(serviceInfoDTO)) {
+        if (serviceInfoService.checkServiceUrlUnique(serviceInfoDTO)) {
             return HttpResult.failMessage("新增服务「" + serviceInfoDTO.getServiceName() + "」失败，服务链接已存在");
         }
-        
+
         boolean addService = serviceInfoService.addService(serviceInfoDTO);
         return HttpResult.okOrFail(addService);
     }
-    
+
     @PutMapping
     @Operation(summary = "服务修改", description = "修改服务")
+    @ProjectAuthorize(value = "#serviceInfoDTO.getProjectId()", checkReadAndWrite = true)
     public Response<Boolean> editService(@Validated(RestGroup.EditGroup.class) @RequestBody ServiceInfoDTO serviceInfoDTO) {
-        if(serviceInfoService.checkServiceNameUnique(serviceInfoDTO)) {
+        if (serviceInfoService.checkServiceNameUnique(serviceInfoDTO)) {
             return HttpResult.failMessage("编辑服务「" + serviceInfoDTO.getServiceName() + "」失败，服务名称已存在");
         }
 
-        if(serviceInfoService.checkServiceUrlUnique(serviceInfoDTO)) {
+        if (serviceInfoService.checkServiceUrlUnique(serviceInfoDTO)) {
             return HttpResult.failMessage("编辑服务「" + serviceInfoDTO.getServiceName() + "」失败，服务链接已存在");
         }
-        
+
         boolean editService = serviceInfoService.editService(serviceInfoDTO);
         return HttpResult.okOrFail(editService);
     }
-    
+
     @DeleteMapping("/{serviceId}")
     @Operation(summary = "服务删除", description = "删除服务")
     public Response<Boolean> removeService(@PathVariable String serviceId) {
@@ -80,8 +84,9 @@ public class ServiceInfoController {
 
     @PostMapping("/generateCol")
     @Operation(summary = "列配置项生成", description = "生成列配置项")
+    @ProjectAuthorize(value = "#serviceInfoDTO.getProjectId()", checkReadAndWrite = true)
     public Response<String> generateCol(@Validated(RestGroup.OtherGroup.class) @RequestBody ServiceInfoDTO serviceInfoDTO) {
-        if(serviceColService.checkExitCol(serviceInfoDTO.getServiceId())) {
+        if (serviceColService.checkExitCol(serviceInfoDTO.getServiceId())) {
             return HttpResult.failMessage("生成列配置项失败，列配置已生成");
         }
         Integer result = serviceInfoService.generateCol(serviceInfoDTO);

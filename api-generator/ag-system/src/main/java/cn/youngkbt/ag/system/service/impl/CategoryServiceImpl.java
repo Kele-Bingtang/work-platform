@@ -1,15 +1,14 @@
 package cn.youngkbt.ag.system.service.impl;
 
-import cn.youngkbt.ag.core.enums.ProjectMemberRole;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.CategoryMapper;
 import cn.youngkbt.ag.system.model.dto.CategoryDTO;
 import cn.youngkbt.ag.system.model.po.Category;
 import cn.youngkbt.ag.system.model.vo.CategoryVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.CategoryService;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
-import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.utils.MapstructUtil;
@@ -82,7 +81,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         Category category = baseMapper.selectOne(Wrappers.<Category>lambdaQuery()
                 .eq(Category::getCategoryId, categoryId));
 
-        checkCategoryAllowed(category.getProjectId(), AgHelper.getUserId());
+        PermissionHelper.checkProjectOperator(AgHelper.getUserId(), category.getProjectId(), "1h");
 
         // 删除所有接口
         serviceInfoService.removeAllServiceInfo(categoryId);
@@ -119,12 +118,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
                 .ne(Objects.nonNull(categoryDTO.getId()), Category::getId, categoryDTO.getId()));
     }
 
-    @Override
-    public void checkCategoryAllowed(String projectId, String userId) {
-        if (!projectMemberService.checkMemberRole(projectId, userId, List.of(ProjectMemberRole.ADMIN.ordinal(), ProjectMemberRole.MEMBER.ordinal()))) {
-            throw new ServiceException("用户没有分类操作权限");
-        }
-    }
 }
 
 

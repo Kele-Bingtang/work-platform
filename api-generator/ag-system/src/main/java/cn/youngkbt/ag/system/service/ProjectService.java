@@ -63,17 +63,6 @@ public interface ProjectService extends IService<Project> {
     boolean removeAllProject(String teamId);
 
     /**
-     * 检查是否有项目权限操作
-     *
-     * @param teamId           团队 ID
-     * @param project          项目 ID
-     * @param userId           用户 ID
-     * @param checkTeamRole    检查团队角色权限
-     * @param checkProjectRole 检查项目角色权限
-     */
-    void checkProjectAllowed(String teamId, String project, String userId, boolean checkTeamRole, boolean checkProjectRole);
-
-    /**
      * 检查项目名是否唯一
      *
      * @param projectDTO 项目信息

@@ -110,11 +110,11 @@ const selected = reactive({
 watch(
   () => unref(serviceInfo),
   async () => {
-    const { projectId = "", dataSourceId = "" } = unref(serviceInfo) || {};
-    selected.dataSourceId = dataSourceId;
+    const { projectId, dataSourceId } = unref(serviceInfo) || {};
+    selected.dataSourceId = dataSourceId || "";
     dataSourceId && handleDataSourceTypeChange(dataSourceId);
 
-    const res = await listByProjectId(projectId);
+    const res = await listByProjectId(projectId || "");
     if (res.code === 200) dataSourceList.value = res.data;
   }
 );

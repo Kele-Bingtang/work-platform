@@ -175,7 +175,7 @@ public class ServiceColDTO {
     /**
      * 项目 ID
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
     private String projectId;
 
     /**

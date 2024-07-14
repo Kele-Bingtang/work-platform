@@ -5,6 +5,7 @@ import cn.youngkbt.ag.system.model.dto.ServiceColDTO;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceColVO;
 import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
+import cn.youngkbt.ag.system.permission.annotation.ProjectAuthorize;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
 import cn.youngkbt.core.http.HttpResult;
@@ -34,6 +35,7 @@ public class ServiceColController {
 
     @GetMapping("listPage")
     @Operation(summary = "服务列配置项查询（分页）", description = "通过条件查询服务列配置项（分页）")
+    @ProjectAuthorize(value = "#serviceColDTO.getProjectId()", checkRead = true)
     public Response<TablePage<ServiceColVO>> listPage(@Validated(RestGroup.QueryGroup.class) ServiceColDTO serviceColDTO, PageQuery pageQuery) {
         TablePage<ServiceColVO> serviceColVOTablePage = serviceColService.listPage(serviceColDTO, pageQuery);
         return HttpResult.ok(serviceColVOTablePage);
@@ -41,6 +43,7 @@ public class ServiceColController {
 
     @PostMapping
     @Operation(summary = "服务列配置项新增", description = "新增服务列配置项")
+    @ProjectAuthorize(value = "#serviceColDTO.getProjectId()", checkReadAndWrite = true)
     public Response<Boolean> addServiceCol(@Validated(RestGroup.AddGroup.class) @RequestBody ServiceColDTO serviceColDTO) {
         if (serviceColService.checkServiceColUnique(serviceColDTO)) {
             return HttpResult.failMessage("新增列配置项失败，字段名称已存在");
@@ -52,9 +55,10 @@ public class ServiceColController {
 
     @PutMapping
     @Operation(summary = "服务列配置项修改", description = "修改服务列配置项")
+    @ProjectAuthorize(value = "#serviceColDTO.getProjectId()", checkReadAndWrite = true)
     public Response<Boolean> editServiceCol(@Validated(RestGroup.EditGroup.class) @RequestBody ServiceColDTO serviceColDTO) {
         if (serviceColService.checkServiceColUnique(serviceColDTO)) {
-            return HttpResult.failMessage("新增列配置项失败，字段名称已存在");
+            return HttpResult.failMessage("修改列配置项失败，字段名称已存在");
         }
 
         boolean result = serviceColService.editServiceCol(serviceColDTO);
@@ -63,6 +67,7 @@ public class ServiceColController {
 
     @PutMapping("/editBatch")
     @Operation(summary = "服务列配置项批量修改", description = "批量修改服务列配置项")
+    @ProjectAuthorize(value = "#batchUpdateDTO.getProjectId()", checkReadAndWrite = true)
     public Response<String> editServiceCol(@Validated @RequestBody ServiceColBatchUpdateDTO batchUpdateDTO) {
         if (ListUtil.isEmpty(batchUpdateDTO.getJsonColList())) {
             return HttpResult.errorMessage("批量修改的字段不能为空");

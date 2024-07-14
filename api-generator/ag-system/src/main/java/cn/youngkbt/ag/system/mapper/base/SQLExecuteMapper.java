@@ -27,10 +27,10 @@ public interface SQLExecuteMapper {
     List<LinkedHashMap<String, Object>> executeSelectList(@Param("sql") String sql, Map<String, Object> params);
 
     /**
-     * 查询对象列表
+     * 查询对象列表（分页）
      *
      * @param sql 查询 sql
-     * @return 查询出的数据
+     * @return 查询出的数据（分页）
      */
     @Select("${sql}")
     Page<LinkedHashMap<String, Object>> executeSelectPage(Page<LinkedHashMap<String, Object>> page, @Param("sql") String sql, Map<String, Object> params);

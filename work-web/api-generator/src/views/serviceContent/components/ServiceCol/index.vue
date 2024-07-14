@@ -45,7 +45,10 @@ import BatchOperate from "./batchOperate.vue";
 const serviceInfo = inject(ServiceKey);
 const { open } = useDialog();
 
-const initRequestParam = reactive({ serviceId: unref(serviceInfo)?.serviceId });
+const initRequestParam = reactive({
+  serviceId: unref(serviceInfo)?.serviceId,
+  projectId: unref(serviceInfo)?.projectId,
+});
 
 const proTableRef = shallowRef<ProTableInstance>();
 
@@ -125,7 +128,7 @@ const columns: TableColumnProps[] = [
   { prop: "displaySeq", label: "返回顺序", width: 100 },
   { prop: "queryFilter", label: "筛选条件", enum: unref(queryFilterOptions), width: 100 },
   { prop: "defaultValue", label: "默认值", width: 110 },
-  { prop: "colType", label: "类型" },
+  { prop: "colType", label: "类型", isFilterEnum: false },
   { prop: "colLength", label: "长度", width: 100 },
   { prop: "operation", label: "操作", width: 140, fixed: "right" },
 ];
@@ -147,7 +150,7 @@ const schema: FormSchemaProps[] = [
   { prop: "allowInsert", label: "新增", el: "el-select", defaultValue: 1, enum: commonEnum },
   { prop: "allowUpdate", label: "更新", el: "el-select", defaultValue: 1, enum: commonEnum },
   { prop: "allowRequest", label: "请求", el: "el-select", defaultValue: 1, enum: commonEnum },
-  { prop: "queryFilter", label: "筛选条件", el: "el-select", defaultValue: "关闭", enum: unref(queryFilterOptions) },
+  { prop: "queryFilter", label: "筛选条件", el: "el-select", defaultValue: 0, enum: unref(queryFilterOptions) },
   { prop: "orderBy", label: "排序顺序", el: "el-input-number", defaultValue: 99 },
   {
     prop: "defaultValue",
@@ -167,14 +170,27 @@ const elFormProps = {
   rules: {
     tableCol: [{ required: true, message: "请输入字段名称", trigger: "blur" }],
     jsonCol: [{ required: true, message: "请输入请求名称", trigger: "blur" }],
+    reportCol: [{ required: true, message: "请输入报表名称", trigger: "blur" }],
   },
 };
 
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema: schema },
   id: ["id", "colId"],
-  addApi: data => addServiceCol({ ...data, ...initRequestParam }),
-  editApi: editServiceCol,
+  addApi: data =>
+    addServiceCol({
+      ...data,
+      ...initRequestParam,
+      categoryId: unref(serviceInfo)?.categoryId,
+      teamId: unref(serviceInfo)?.teamId,
+    }),
+  editApi: data =>
+    editServiceCol({
+      ...data,
+      ...initRequestParam,
+      categoryId: unref(serviceInfo)?.categoryId,
+      teamId: unref(serviceInfo)?.teamId,
+    }),
   removeApi: removeServiceCol,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),

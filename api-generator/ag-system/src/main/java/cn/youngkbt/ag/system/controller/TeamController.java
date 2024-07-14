@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.TeamDTO;
 import cn.youngkbt.ag.system.model.vo.router.RouterVO;
+import cn.youngkbt.ag.system.permission.annotation.TeamAuthorize;
 import cn.youngkbt.ag.system.service.TeamMemberService;
 import cn.youngkbt.ag.system.service.TeamService;
 import cn.youngkbt.core.http.HttpResult;
@@ -40,28 +41,31 @@ public class TeamController {
         if (teamService.checkTeamNameUnique(teamDTO)) {
             return HttpResult.failMessage("新增团队「" + teamDTO.getTeamName() + "」失败，团队名称已存在");
         }
-        
+
         return HttpResult.okOrFail(teamService.addTeam(teamDTO));
     }
 
     @PutMapping
     @Operation(summary = "团队编辑", description = "编辑团队")
+    @TeamAuthorize(value = "#teamDTO.getTeamId()", checkOwner = true)
     public Response<Boolean> editTeam(@Validated(RestGroup.EditGroup.class) @RequestBody TeamDTO teamDTO) {
         if (teamService.checkTeamNameUnique(teamDTO)) {
             return HttpResult.failMessage("编辑团队「" + teamDTO.getTeamName() + "」失败，团队名称已存在");
         }
-        
+
         return HttpResult.okOrFail(teamService.editTeam(teamDTO));
     }
 
     @DeleteMapping("/{teamId}")
     @Operation(summary = "团队解散", description = "解散团队")
+    @TeamAuthorize(value = "#teamId", checkOwner = true)
     public Response<Boolean> removeTeam(@PathVariable String teamId) {
         return HttpResult.okOrFail(teamService.removeTeam(teamId));
     }
 
     @PostMapping("/transferOwner/{teamId}/{userId}/{username}")
     @Operation(summary = "团队负责人移交", description = "移交团队负责人")
+    @TeamAuthorize(value = "#teamId", checkOwner = true)
     public Response<Boolean> transferOwner(@PathVariable String teamId, @PathVariable String userId, @PathVariable String username) {
         boolean result = teamService.transferOwner(teamId, userId, username);
         return HttpResult.okOrFail(result);

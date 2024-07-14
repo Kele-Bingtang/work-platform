@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.CategoryDTO;
 import cn.youngkbt.ag.system.model.vo.CategoryVO;
+import cn.youngkbt.ag.system.permission.annotation.ProjectAuthorize;
 import cn.youngkbt.ag.system.service.CategoryService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
@@ -36,6 +37,7 @@ public class CategoryController {
 
     @GetMapping("/listPage")
     @Operation(summary = "目录列表查询（分页）", description = "通过条件查询目录列表（分页）")
+    @ProjectAuthorize(value = "#categoryDTO.getProjectId()", checkRead = true)
     public Response<TablePage<CategoryVO>> listPage(@Validated(RestGroup.QueryGroup.class) CategoryDTO categoryDTO, PageQuery pageQuery) {
         TablePage<CategoryVO> categoryVOTablePage = categoryService.listPage(categoryDTO, pageQuery);
         return HttpResult.ok(categoryVOTablePage);
@@ -43,22 +45,24 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "目录新增", description = "新增目录")
+    @ProjectAuthorize(value = "#categoryDTO.getProjectId()", checkReadAndWrite = true)
     public Response<Boolean> addCategory(@Validated(RestGroup.AddGroup.class) @RequestBody CategoryDTO categoryDTO) {
         if (categoryService.checkCategoryCodeUnique(categoryDTO)) {
             return HttpResult.failMessage("新增目录「" + categoryDTO.getCategoryName() + "」失败，目录编码已存在");
         }
-        
+
         boolean addCategory = categoryService.addCategory(categoryDTO);
         return HttpResult.okOrFail(addCategory);
     }
 
     @PutMapping
     @Operation(summary = "目录修改", description = "修改目录")
+    @ProjectAuthorize(value = "#categoryDTO.getProjectId()", checkReadAndWrite = true)
     public Response<Boolean> editCategory(@Validated(RestGroup.EditGroup.class) @RequestBody CategoryDTO categoryDTO) {
         if (categoryService.checkCategoryCodeUnique(categoryDTO)) {
             return HttpResult.failMessage("新增目录「" + categoryDTO.getCategoryName() + "」失败，目录编码已存在");
         }
-        
+
         boolean editCategory = categoryService.editCategory(categoryDTO);
         return HttpResult.okOrFail(editCategory);
     }

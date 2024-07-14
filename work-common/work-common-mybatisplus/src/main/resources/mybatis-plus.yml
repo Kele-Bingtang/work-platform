@@ -15,6 +15,8 @@ mybatis-plus:
     # 关闭日志记录 (可单纯使用 p6spy 分析) org.apache.ibatis.logging.nologging.NoLoggingImpl
     # 默认日志输出 org.apache.ibatis.logging.slf4j.Slf4jImpl
     logImpl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # 如果返回的是 Map 作为结果集接收对象，那么 Map 中是否包含 null 的字段，true 包含，默认 false 不包含
+    call-setters-on-nulls: true
   global-config:
     # 是否打印 Logo banner
     banner: true
@@ -30,5 +32,3 @@ mybatis-plus:
       insertStrategy: NOT_NULL
       updateStrategy: NOT_NULL
       whereStrategy: NOT_NULL
-  
-  

@@ -4,6 +4,7 @@ import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.core.validate.RestGroup;
 import cn.youngkbt.core.validate.annotation.IncludeValid;
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMapping;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -49,7 +50,6 @@ public class ServiceInfoDTO {
     /**
      * 数据源 ID
      */
-    @NotBlank(message = "数据源不能为空", groups = {RestGroup.AddGroup.class})
     private String dataSourceId;
 
     /**
@@ -93,6 +93,12 @@ public class ServiceInfoDTO {
     private Integer serviceVersion;
 
     /**
+     * 降级响应
+     */
+    @AutoMapping(ignore = true)
+    private Object breakingRespond;
+
+    /**
      * 接口状态，0 禁用 1 启用
      */
     @IncludeValid(value = {"0", "1"}, message = "接口状态不能为空")
@@ -107,7 +113,7 @@ public class ServiceInfoDTO {
     /**
      * 项目 ID
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.OtherGroup.class})
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class, RestGroup.OtherGroup.class})
     private String projectId;
 
     /**

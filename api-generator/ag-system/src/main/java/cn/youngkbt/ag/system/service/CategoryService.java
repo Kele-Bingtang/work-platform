@@ -81,12 +81,4 @@ public interface CategoryService extends IService<Category> {
      */
     boolean checkCategoryCodeUnique(CategoryDTO categoryDTO);
 
-    /**
-     * 检查是否有分类权限操作
-     *
-     * @param projectId 项目 ID
-     * @param userId    用户 ID
-     */
-    void checkCategoryAllowed(String projectId, String userId);
-
 }

@@ -1,7 +1,6 @@
 package cn.youngkbt.ag.system.service.impl;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.youngkbt.ag.core.enums.ProjectMemberRole;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.core.helper.SqlHelper;
 import cn.youngkbt.ag.system.mapper.ServiceColMapper;
@@ -12,6 +11,7 @@ import cn.youngkbt.ag.system.model.po.DataSource;
 import cn.youngkbt.ag.system.model.po.ServiceCol;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceColVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ServiceColService;
@@ -86,7 +86,7 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     @Override
     public boolean removeServiceColById(String id) {
         ServiceCol serviceCol = baseMapper.selectById(id);
-        checkServiceColAllowed(serviceCol.getProjectId(), AgHelper.getUserId());
+        PermissionHelper.checkProjectOperator(AgHelper.getUserId(), serviceCol.getProjectId(), "1h");
 
         return baseMapper.deleteById(id) > 0;
     }
@@ -119,17 +119,11 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
     public boolean checkServiceColUnique(ServiceColDTO serviceColDTO) {
         return baseMapper.exists(Wrappers.<ServiceCol>lambdaQuery()
                 .eq(ServiceCol::getServiceId, serviceColDTO.getServiceId())
-                .eq(ServiceCol::getTableCol, serviceColDTO.getTableCol())
-                .or()
-                .eq(ServiceCol::getJsonCol, serviceColDTO.getJsonCol())
+                .and(e -> e.eq(ServiceCol::getTableCol, serviceColDTO.getTableCol())
+                        .or()
+                        .eq(ServiceCol::getJsonCol, serviceColDTO.getJsonCol())
+                )
                 .ne(Objects.nonNull(serviceColDTO.getId()), ServiceCol::getId, serviceColDTO.getId()));
-    }
-
-    @Override
-    public void checkServiceColAllowed(String projectId, String userId) {
-        if (!projectMemberService.checkMemberRole(projectId, userId, List.of(ProjectMemberRole.ADMIN.ordinal(), ProjectMemberRole.MEMBER.ordinal()))) {
-            throw new ServiceException("用户没有列配置项操作权限");
-        }
     }
 
     /**

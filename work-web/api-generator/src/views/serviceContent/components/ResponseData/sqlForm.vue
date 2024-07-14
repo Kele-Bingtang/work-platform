@@ -84,7 +84,12 @@ const handleSave = async () => {
 
   const { id } = service;
 
-  const res = await editService({ id, dataSourceId: props.dataSourceId, ...unref(model) });
+  const res = await editService({
+    id,
+    dataSourceId: props.dataSourceId,
+    ...unref(model),
+    projectId: unref(serviceInfo)?.projectId,
+  });
   if (res.code === 200) message.success("保存成功，4s 内无法再次点击");
 };
 
@@ -111,5 +116,3 @@ const handleGenerateCol = async () => {
 
 defineExpose({ model });
 </script>
-
-<style lang="scss" scoped></style>

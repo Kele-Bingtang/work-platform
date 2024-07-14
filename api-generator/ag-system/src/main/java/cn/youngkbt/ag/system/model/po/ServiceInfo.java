@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
  * @note 服务
 */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "t_service")
+@TableName(value = "t_service", autoResultMap = true)
 @Data
 @AutoMapper(target = ServiceInfoVO.class)
 public class ServiceInfo extends BaseDO {
@@ -92,6 +92,11 @@ public class ServiceInfo extends BaseDO {
      * 接口版本号（修改一次 +1）
      */
     private Integer serviceVersion;
+    
+    /**
+     * 降级响应
+     */
+    private String breakingRespond;
 
     /**
      * 目录 ID

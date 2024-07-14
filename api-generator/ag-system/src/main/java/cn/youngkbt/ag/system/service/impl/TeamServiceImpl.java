@@ -117,7 +117,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
 
     @Override
     public Boolean editTeam(TeamDTO teamDTO) {
-        checkTeamOwnerAllowed(teamDTO.getTeamId(), AgHelper.getUserId());
 
         Team team = MapstructUtil.convert(teamDTO, Team.class);
         return baseMapper.updateById(team) > 0;
@@ -126,8 +125,6 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean removeTeam(String teamId) {
-        checkTeamOwnerAllowed(teamId, AgHelper.getUserId());
-
         // 删除所有的团队成员
         teamMemberService.removeAllTeamMember(teamId);
         // 删除所有项目
@@ -138,28 +135,11 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
     }
 
     @Override
-    public void checkTeamOwnerAllowed(String teamId, String userId) {
-        if (!teamMemberService.checkMemberRole(teamId, userId, Collections.singletonList(TeamMemberRole.OWNER.ordinal()))) {
-            throw new ServiceException("操作用户不是团队负责人");
-        }
-    }
-
-    @Override
-    public void checkTeamOperatorAllowed(String teamId, String userId) {
-        if (!teamMemberService.checkMemberRole(teamId, userId, List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {
-            throw new ServiceException("操作用户不是团队操作者");
-        }
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean transferOwner(String teamId, String userId, String username) {
         if (Objects.equals(userId, AgHelper.getUserId())) {
             throw new ServiceException("不允许操作自己");
         }
-
-        String operator = AgHelper.getUserId();
-        checkTeamOwnerAllowed(teamId, operator);
 
         if (!teamMemberService.checkMemberExist(teamId, userId)) {
             throw new ServiceException("移交用户不在团队中");
@@ -175,7 +155,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
                 .set(Team::getOwnerId, userId));
 
         // 修改自己为普通成员
-        teamMemberService.editTeamMemberRole(teamId, operator, TeamMemberRole.MEMBER.ordinal());
+        teamMemberService.editTeamMemberRole(teamId, AgHelper.getUserId(), TeamMemberRole.MEMBER.ordinal());
 
         // 修改团队成员的角色为所有者
         teamMemberService.editTeamMemberRole(teamId, userId, TeamMemberRole.OWNER.ordinal());

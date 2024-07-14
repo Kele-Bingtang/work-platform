@@ -56,7 +56,7 @@ const dialogForm: DialogForm = {
   formProps: { elFormProps, schema: schema, colRow: true },
   id: ["id", "categoryId"],
   addApi: data => addCategory({ ...data, ...initRequestParam }),
-  editApi: editCategory,
+  editApi: data => editCategory({ ...data, ...initRequestParam }),
   removeApi: removeCategory,
   afterConfirm: () => {
     mittBus.emit("initTreeData");

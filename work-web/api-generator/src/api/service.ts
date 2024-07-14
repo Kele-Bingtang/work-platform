@@ -17,6 +17,7 @@ export declare namespace Service {
     isAuth: number; // 是否进行认证（0 不认证 1 认证）
     reportTitle: string; // 报表名称
     serviceVersion: string; // 接口版本号（修改一次 +1）
+    breakingRespond: string; // 降级响应数据
     status: number; // 服务状态，0 禁用 1 启用
     createTime: string; // 创建时间
     categoryId: string; // 目录 ID
@@ -53,7 +54,7 @@ export const editService = (data: Service.ServiceUpdate) => {
 };
 
 export const removeService = (data: Service.ServiceDelete) => {
-  return http.delete<http.Response<string>>(`${baseUri}/${data.projectId}`);
+  return http.delete<http.Response<string>>(`${baseUri}/${data.serviceId}`);
 };
 
 export const generateCol = (data: Service.ServiceUpdate) => {

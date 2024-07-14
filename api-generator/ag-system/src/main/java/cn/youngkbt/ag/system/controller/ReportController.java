@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.ReportDTO;
 import cn.youngkbt.ag.system.model.vo.ReportVO;
+import cn.youngkbt.ag.system.permission.annotation.ProjectAuthorize;
 import cn.youngkbt.ag.system.service.ReportService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
@@ -25,6 +26,7 @@ public class ReportController {
 
     @GetMapping("/listOne")
     @Operation(summary = "报表查询", description = "通过条件查询报表")
+    @ProjectAuthorize(value = "#reportDTO.getProjectId()", checkRead = true)
     public Response<ReportVO> listOne(@Validated(RestGroup.QueryGroup.class) ReportDTO reportDTO) {
         ReportVO reportVO = reportService.listOne(reportDTO);
         return HttpResult.ok(reportVO);
@@ -32,6 +34,7 @@ public class ReportController {
 
     @PutMapping
     @Operation(summary = "报表修改", description = "修改报表")
+    @ProjectAuthorize(value = "#reportDTO.getProjectId()", checkReadAndWrite = true)
     public Response<Boolean> editReport(@Validated(RestGroup.EditGroup.class) @RequestBody ReportDTO reportDTO) {
         if (reportService.checkReportTitleUnique(reportDTO)) {
             return HttpResult.failMessage("编辑报表「" + reportDTO.getReportTitle() + "」失败，报表标题重复");

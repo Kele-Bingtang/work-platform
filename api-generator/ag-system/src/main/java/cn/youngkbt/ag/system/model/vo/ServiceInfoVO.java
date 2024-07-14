@@ -87,6 +87,11 @@ public class ServiceInfoVO implements Serializable {
      * 接口版本号（修改一次 +1）
      */
     private Integer serviceVersion;
+    
+    /**
+     * 降级响应
+     */
+    private String breakingRespond;
 
     /**
      * 服务状态，0 禁用 1 启用

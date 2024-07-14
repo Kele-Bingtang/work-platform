@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.service.impl;
 
+import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.DataSourceMapper;
 import cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper;
 import cn.youngkbt.ag.system.model.dto.DataSourceDTO;
@@ -7,6 +8,7 @@ import cn.youngkbt.ag.system.model.dto.SqlDTO;
 import cn.youngkbt.ag.system.model.po.DataSource;
 import cn.youngkbt.ag.system.model.vo.DataSourceTable;
 import cn.youngkbt.ag.system.model.vo.DataSourceVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
@@ -37,7 +39,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSource> implements DataSourceService {
-    
+
     private final SQLExecuteMapper sqlExecuteMapper;
 
     @Override
@@ -115,6 +117,10 @@ public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSou
 
     @Override
     public Boolean removeDataSource(String dataSourceId) {
+        DataSource dataSource = baseMapper.selectOne(Wrappers.<DataSource>lambdaQuery()
+                .eq(DataSource::getDataSourceId, dataSourceId));
+        
+        PermissionHelper.checkTeamOwnerAndAdmin(AgHelper.getUserId(), dataSource.getTeamId(), "1h");
         return baseMapper.delete(Wrappers.<DataSource>lambdaQuery()
                 .eq(DataSource::getDataSourceId, dataSourceId)) > 0;
     }

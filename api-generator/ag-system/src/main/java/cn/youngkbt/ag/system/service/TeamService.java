@@ -46,22 +46,6 @@ public interface TeamService extends IService<Team> {
     Boolean removeTeam(String teamId);
 
     /**
-     * 检查是否有所有者操作权限
-     *
-     * @param teamId          团队 ID
-     * @param userId          用户 ID
-     */
-    void checkTeamOwnerAllowed(String teamId, String userId);
-
-    /**
-     * 检查是否有操作者（所有者 | 管理员）操作权限
-     *
-     * @param teamId          团队 ID
-     * @param userId          用户 ID
-     */
-    void checkTeamOperatorAllowed(String teamId, String userId);
-
-    /**
      * 移交团队负责人
      *
      * @param teamId   团队 ID

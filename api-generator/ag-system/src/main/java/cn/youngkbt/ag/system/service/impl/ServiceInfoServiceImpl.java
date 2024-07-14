@@ -1,20 +1,20 @@
 package cn.youngkbt.ag.system.service.impl;
 
-import cn.youngkbt.ag.core.enums.ProjectMemberRole;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ServiceInfoMapper;
 import cn.youngkbt.ag.system.model.dto.ReportDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ReportService;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
 import cn.youngkbt.core.error.Assert;
-import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -45,7 +44,8 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
     public ServiceInfoVO getByServiceId(String serviceId) {
         ServiceInfo serviceInfo = baseMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getServiceId, serviceId));
-        Assert.isTrue(Objects.nonNull(serviceInfo), "服务不存在");
+        Assert.nonNull(serviceInfo, "服务不存在");
+        PermissionHelper.checkProjectOperator(AgHelper.getUserId(), serviceInfo.getProjectId(), "1h");
 
         ServiceInfoVO serviceInfoVO = MapstructUtil.convert(serviceInfo, ServiceInfoVO.class);
         boolean checkExitCol = serviceColService.checkExitCol(serviceId);
@@ -96,6 +96,11 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
     @Override
     public boolean editService(ServiceInfoDTO serviceInfoDTO) {
         ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoDTO, ServiceInfo.class);
+        // 降级响应数据转为字符串存入数据库
+        if (Objects.nonNull(serviceInfoDTO.getBreakingRespond())) {
+            serviceInfo.setBreakingRespond(JacksonUtil.toJsonStr(serviceInfoDTO.getBreakingRespond()));
+        }
+
         return baseMapper.updateById(serviceInfo) > 0;
     }
 
@@ -104,7 +109,7 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
     public boolean removeService(String serviceId) {
         ServiceInfo serviceInfo = baseMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getServiceId, serviceId));
-        checkServiceAllowed(serviceInfo.getProjectId(), AgHelper.getUserId());
+        PermissionHelper.checkProjectOperator(AgHelper.getUserId(), serviceInfo.getProjectId(), "1h");
 
         // 删除报表
         reportService.removeReport(serviceId);
@@ -165,13 +170,6 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
                 .eq(ServiceInfo::getServiceUrl, serviceInfoDTO.getServiceUrl())
                 .eq(ServiceInfo::getProjectId, serviceInfoDTO.getProjectId())
                 .ne(Objects.nonNull(serviceInfoDTO.getId()), ServiceInfo::getId, serviceInfoDTO.getId()));
-    }
-
-    @Override
-    public void checkServiceAllowed(String projectId, String userId) {
-        if (!projectMemberService.checkMemberRole(projectId, userId, List.of(ProjectMemberRole.ADMIN.ordinal(), ProjectMemberRole.MEMBER.ordinal()))) {
-            throw new ServiceException("用户没有服务操作权限");
-        }
     }
 
     @Override

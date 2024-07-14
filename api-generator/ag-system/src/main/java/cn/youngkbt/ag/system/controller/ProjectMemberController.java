@@ -1,7 +1,9 @@
 package cn.youngkbt.ag.system.controller;
 
+import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.model.dto.ProjectMemberDTO;
 import cn.youngkbt.ag.system.model.vo.ProjectMemberVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ProjectService;
 import cn.youngkbt.core.http.HttpResult;
@@ -42,7 +44,8 @@ public class ProjectMemberController {
         }
 
         // 检查是否有项目成员添加权限（只有团队所有者 | 管理员可以添加项目成员）
-        projectService.checkProjectAllowed(projectMemberDTO.getTeamId(), projectMemberDTO.getProjectId(), projectMemberDTO.getUserId(), true, true);
+        PermissionHelper.checkTeamOwnerAndAdmin(AgHelper.getUserId(), projectMemberDTO.getTeamId(), "1h");
+        PermissionHelper.checkProjectAdmin(AgHelper.getUserId(), projectMemberDTO.getTeamId(), "1h");
 
         return HttpResult.okOrFail(projectMemberService.addProjectMember(projectMemberDTO));
     }
@@ -51,8 +54,9 @@ public class ProjectMemberController {
     @Operation(summary = "项目成员编辑", description = "编辑项目成员")
     public Response<Boolean> editProjectMember(@Validated(RestGroup.EditGroup.class) @RequestBody ProjectMemberDTO projectMemberDTO) {
         // 检查是否有项目成员编辑权限（只有团队所有者 | 管理员可以编辑项目成员）
-        projectService.checkProjectAllowed(projectMemberDTO.getTeamId(), projectMemberDTO.getProjectId(), projectMemberDTO.getUserId(), true, true);
-        
+        PermissionHelper.checkTeamOwnerAndAdmin(AgHelper.getUserId(), projectMemberDTO.getTeamId(), "1h");
+        PermissionHelper.checkProjectAdmin(AgHelper.getUserId(), projectMemberDTO.getTeamId(), "1h");
+
         return HttpResult.okOrFail(projectMemberService.editProjectMember(projectMemberDTO));
     }
 }

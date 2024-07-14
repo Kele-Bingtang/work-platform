@@ -32,6 +32,7 @@ public class DataSourceController {
 
     @GetMapping("/listPage")
     @Operation(summary = "数据源列表查询（分页）", description = "通过条件查询数据源列表（分页）")
+    @TeamAuthorize(value = "#dataSourceDTO.getTeamId()", checkOwnerAndAdmin = true)
     public Response<TablePage<DataSourceVO>> listPage(@Validated(RestGroup.QueryGroup.class) DataSourceDTO dataSourceDTO, PageQuery pageQuery) {
         TablePage<DataSourceVO> dataSourceVOTablePage = dataSourceService.listPage(dataSourceDTO, pageQuery);
         return HttpResult.ok(dataSourceVOTablePage);
@@ -54,6 +55,7 @@ public class DataSourceController {
 
     @PostMapping
     @Operation(summary = "数据源新增", description = "新增数据源")
+    @TeamAuthorize(value = "#dataSourceDTO.getTeamId()", checkOwnerAndAdmin = true)
     public Response<Boolean> addDataSource(@Validated(RestGroup.AddGroup.class) @RequestBody DataSourceDTO dataSourceDTO) {
         if (dataSourceService.checkDataSourceNameUnique(dataSourceDTO)) {
             return HttpResult.failMessage("新增数据源「" + dataSourceDTO.getDataSourceName() + "」失败，数据源名称已存在");
@@ -63,6 +65,7 @@ public class DataSourceController {
 
     @PutMapping
     @Operation(summary = "数据源修改", description = "修改数据源")
+    @TeamAuthorize(value = "#dataSourceDTO.getTeamId()", checkOwnerAndAdmin = true)
     public Response<Boolean> editDataSource(@Validated(RestGroup.EditGroup.class) @RequestBody DataSourceDTO dataSourceDTO) {
         if (dataSourceService.checkDataSourceNameUnique(dataSourceDTO)) {
             return HttpResult.failMessage("新增数据源「" + dataSourceDTO.getDataSourceName() + "」失败，数据源名称已存在");

@@ -62,18 +62,18 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
     }
 
     @Override
-    public boolean checkMemberRole(String projectId, String userId, List<Integer> ordinal) {
+    public boolean checkMemberRole(String userId, String projectId, List<Integer> ordinal) {
         return baseMapper.exists(Wrappers.<ProjectMember>lambdaQuery()
-                .eq(ProjectMember::getProjectId, projectId)
                 .eq(ProjectMember::getUserId, userId)
+                .eq(ProjectMember::getProjectId, projectId)
                 .in(ProjectMember::getProjectRole, ordinal));
     }
 
     @Override
-    public boolean checkMemberExist(String projectId, String userId) {
+    public boolean checkMemberExist(String userId, String projectId) {
         return baseMapper.exists(Wrappers.<ProjectMember>lambdaQuery()
-                .eq(ProjectMember::getProjectId, projectId)
-                .eq(ProjectMember::getUserId, userId));
+                .eq(ProjectMember::getUserId, userId)
+                .eq(ProjectMember::getProjectId, projectId));
     }
 
     @Override

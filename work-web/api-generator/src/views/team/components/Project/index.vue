@@ -138,7 +138,7 @@ if (schema[schema.length - 1].prop !== "dataSourceId") {
   });
 }
 
-const dialogForm = (api: (data: any) => Promise<http.Response<string>>, status: string, successMessage: string) => {
+const openDialogForm = (api: (data: any) => Promise<http.Response<string>>, status: string, successMessage: string) => {
   open({
     title: dialogTitle[status],
     height: 300,
@@ -163,12 +163,12 @@ const dialogForm = (api: (data: any) => Promise<http.Response<string>>, status: 
 
 const handleAddProject = () => {
   formModel.value = {};
-  dialogForm(addProject, "add", "新增成功");
+  openDialogForm(addProject, "add", "新增成功");
 };
 
 const handleEditProject = (item: Project.ProjectInfo) => {
   formModel.value = { ...item };
-  dialogForm(editProject, "edit", "编辑成功");
+  openDialogForm(editProject, "edit", "编辑成功");
 };
 
 const handleRemoveProject = (item: Project.ProjectInfo) => {

@@ -96,14 +96,6 @@ public interface ServiceInfoService extends IService<ServiceInfo> {
     boolean checkServiceUrlUnique(ServiceInfoDTO serviceInfoDTO);
 
     /**
-     * 检查是否有服务权限操作
-     *
-     * @param projectId 项目 ID
-     * @param userId    用户 ID
-     */
-    void checkServiceAllowed(String projectId, String userId);
-
-    /**
      * 生成列配置项
      *
      * @param serviceInfoDTO 服务信息

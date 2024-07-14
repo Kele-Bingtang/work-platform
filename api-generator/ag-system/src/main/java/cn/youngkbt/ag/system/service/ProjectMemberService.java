@@ -54,7 +54,7 @@ public interface ProjectMemberService extends IService<ProjectMember> {
      * @param ordinal   角色序号
      * @return 是否成功
      */
-    boolean checkMemberRole(String projectId, String userId, List<Integer> ordinal);
+    boolean checkMemberRole(String userId, String projectId, List<Integer> ordinal);
 
     /**
      * 检查项目是否存在成员
@@ -63,7 +63,7 @@ public interface ProjectMemberService extends IService<ProjectMember> {
      * @param userId    用户 ID
      * @return 项目是否存在成员
      */
-    boolean checkMemberExist(String projectId, String userId);
+    boolean checkMemberExist(String userId, String projectId);
 
     /**
      * 根据项目 ID 移除所有成员

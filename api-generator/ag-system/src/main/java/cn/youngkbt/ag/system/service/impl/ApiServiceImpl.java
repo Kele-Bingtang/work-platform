@@ -25,6 +25,7 @@ import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -40,6 +41,7 @@ import static cn.youngkbt.ag.core.constant.ColumnConstant.*;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApiServiceImpl implements ApiService {
     private final ProjectService projectService;
     private final ServiceInfoService serviceInfoService;
@@ -51,7 +53,6 @@ public class ApiServiceImpl implements ApiService {
     @Override
     public LinkedHashMap<String, Object> getOne(String apiUri, String secretKey, Map<String, Object> requestParamsMap) {
         List<LinkedHashMap<String, Object>> linkedHashMapList = list(apiUri, secretKey, requestParamsMap, 1);
-
         return linkedHashMapList.get(0);
     }
 
@@ -67,7 +68,10 @@ public class ApiServiceImpl implements ApiService {
         Assert.isTrue(!ListUtil.isEmpty(serviceColList), "不存在列配置项");
 
         String selectSql = serviceInfo.getSelectSql();
-        Assert.notBlank(selectSql, "SQL 为空，因此不存在数据返回");
+        // 降级处理
+        if (StringUtil.hasEmpty(selectSql)) {
+            return getBreakingRespond(serviceInfo.getBreakingRespond());
+        }
 
         String fullSelectSql = getFullSelectSql(selectSql, requestParamsMap, serviceColList);
 
@@ -78,7 +82,14 @@ public class ApiServiceImpl implements ApiService {
             fullSelectSql = SqlHelper.addLimitToSql(fullSelectSql, limit, dataSource.getDataSourceType());
         }
 
-        List<LinkedHashMap<String, Object>> linkedHashMap = sqlExecuteMapper.executeSelectList(fullSelectSql, requestParamsMap);
+        List<LinkedHashMap<String, Object>> linkedHashMap = null;
+        try {
+            linkedHashMap = sqlExecuteMapper.executeSelectList(fullSelectSql, requestParamsMap);
+        } catch (Exception e) {
+            log.info("SQL 执行失败：", e);
+            // SQL 执行失败，则执行降级处理
+            return getBreakingRespond(serviceInfo.getBreakingRespond());
+        }
 
         if (ListUtil.isEmpty(linkedHashMap)) {
             return new ArrayList<>();
@@ -101,11 +112,22 @@ public class ApiServiceImpl implements ApiService {
         Assert.isTrue(!ListUtil.isEmpty(serviceColList), "不存在列配置项");
 
         String selectSql = serviceInfo.getSelectSql();
-        Assert.notBlank(selectSql, "SQL 为空，因此不存在数据返回");
+        // 降级处理
+        if (Objects.isNull(selectSql)) {
+            return TablePage.build(getBreakingRespond(serviceInfo.getBreakingRespond()));
+        }
 
         String fullSelectSql = getFullSelectSql(selectSql, requestParamsMap, serviceColList);
 
-        Page<LinkedHashMap<String, Object>> linkedHashMapPage = sqlExecuteMapper.executeSelectPage(pageQuery.buildPage(), fullSelectSql, requestParamsMap);
+        Page<LinkedHashMap<String, Object>> linkedHashMapPage = null;
+        try {
+            linkedHashMapPage = sqlExecuteMapper.executeSelectPage(pageQuery.buildPage(), fullSelectSql, requestParamsMap);
+        } catch (Exception e) {
+            log.info("SQL 执行失败：", e);
+            // SQL 执行失败，则执行降级处理
+            return TablePage.build(getBreakingRespond(serviceInfo.getBreakingRespond()));
+        }
+
         List<LinkedHashMap<String, Object>> linkedHashMapList = linkedHashMapPage.getRecords();
 
         List<LinkedHashMap<String, Object>> processMappingList = processMapping(linkedHashMapList, serviceColList);
@@ -146,6 +168,27 @@ public class ApiServiceImpl implements ApiService {
         Assert.nonNull(serviceInfo, "服务不存在");
         Assert.isTrue(Objects.equals(serviceInfo.getStatus(), STATUS_NORMAL), "该服务已被禁用");
         return serviceInfo;
+    }
+
+    /**
+     * SQL 为空或者执行失败，则执行降级处理
+     *
+     * @param breakingRespond 降级处理内容
+     * @return 降级处理内容
+     */
+    private List<LinkedHashMap<String, Object>> getBreakingRespond(String breakingRespond) {
+        Assert.notBlank(breakingRespond, "SQL 为空，因此不存在数据返回");
+        if (breakingRespond.startsWith("{")) {
+            return Collections.singletonList(JacksonUtil.toJson(breakingRespond, LinkedHashMap.class));
+        }
+        if (breakingRespond.startsWith("[")) {
+            return JacksonUtil.toListMap(breakingRespond);
+        }
+
+        LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put("response", breakingRespond);
+
+        return List.of(linkedHashMap);
     }
 
     /**

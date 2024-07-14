@@ -1,6 +1,7 @@
 package cn.youngkbt.ag.system.model.dto;
 
 import cn.youngkbt.core.validate.validator.ValidList;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -28,4 +29,7 @@ public class ServiceColBatchUpdateDTO {
      */
     @NotNull(message = "批量修改的字段不能为空")
     private ValidList<String> jsonColList;
+
+    @NotBlank(message = "项目 ID 不能为空")
+    private String projectId;
 }

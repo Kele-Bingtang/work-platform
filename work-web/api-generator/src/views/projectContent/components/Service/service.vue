@@ -4,6 +4,7 @@
       :request-api="listServicePage"
       :columns
       :init-request-param
+      :requestAuto="false"
       :dialogForm
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
     ></ProTable>
@@ -24,7 +25,12 @@ const props = defineProps<{ categoryId: string }>();
 const router = useRouter();
 
 const projectInfo = inject(ProjectKey);
-const initRequestParam = computed(() => ({ categoryId: props.categoryId }));
+const initRequestParam = reactive({ categoryId: "", projectId: "" });
+
+watch(projectInfo, () => {
+  initRequestParam.projectId = unref(projectInfo)?.projectId;
+  initRequestParam.categoryId = props.categoryId;
+});
 
 const columns: TableColumnProps[] = [
   { type: "index", label: "#", width: 80 },
@@ -129,7 +135,7 @@ const dialogForm: DialogForm = {
       projectId: unref(projectInfo)?.projectId,
       teamId: unref(projectInfo)?.teamId,
     }),
-  editApi: editService,
+  editApi: data => editService({ ...data, projectId: unref(projectInfo)?.projectId }),
   removeApi: removeService,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),

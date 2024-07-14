@@ -91,14 +91,6 @@ public interface ServiceColService extends IService<ServiceCol> {
     boolean checkServiceColUnique(ServiceColDTO serviceColDTO);
 
     /**
-     * 检查列配置项是否允许操作
-     *
-     * @param projectId 项目 ID
-     * @param userId    用户 ID
-     */
-    void checkServiceColAllowed(String projectId, String userId);
-
-    /**
      * 根据 SQL 查询出表所有的列配置项信息，并新增到数据库
      *
      * @param serviceInfoDTO 服务信息

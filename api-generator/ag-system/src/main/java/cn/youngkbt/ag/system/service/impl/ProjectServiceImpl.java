@@ -13,12 +13,12 @@ import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
 import cn.youngkbt.ag.system.model.po.Project;
 import cn.youngkbt.ag.system.model.vo.ProjectVO;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.CategoryService;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ProjectService;
 import cn.youngkbt.ag.system.service.TeamMemberService;
 import cn.youngkbt.core.error.Assert;
-import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
@@ -31,7 +31,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -94,8 +93,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean addProject(ProjectDTO projectDTO) {
-        checkProjectAllowed(projectDTO.getTeamId(), projectDTO.getProjectId(), AgHelper.getUserId(), true, false);
-
         Project project = MapstructUtil.convert(projectDTO, Project.class);
         // 不带 - 的 UUID 作为项目密钥
         project.setSecretKey(IdsUtil.simpleUUID());
@@ -130,8 +127,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
     @Override
     public boolean editProject(ProjectDTO projectDTO) {
-        checkProjectAllowed(projectDTO.getTeamId(), projectDTO.getProjectId(), AgHelper.getUserId(), false, true);
-
         Project project = MapstructUtil.convert(projectDTO, Project.class);
         return baseMapper.updateById(project) > 0;
     }
@@ -140,12 +135,12 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Transactional(rollbackFor = Exception.class)
     public boolean removeProject(String projectId) {
         Project project = baseMapper.selectOne(Wrappers.<Project>lambdaQuery()
-                .select(Project::getTeamId)
+                .select(Project::getProjectId)
                 .eq(Project::getProjectId, projectId));
 
         Assert.nonNull(project, "删除的项目不存在");
 
-        checkProjectAllowed(project.getTeamId(), projectId, AgHelper.getUserId(), false, true);
+        PermissionHelper.checkProjectAdmin(AgHelper.getUserId(), project.getProjectId(), "1h");
 
         // 删除项目目录
         categoryService.removeAllCategory(projectId);
@@ -166,21 +161,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         
         return baseMapper.delete(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getTeamId, teamId)) > 0;
-    }
-
-    @Override
-    public void checkProjectAllowed(String teamId, String projectId, String userId, boolean checkTeamRole, boolean checkProjectRole) {
-        // 检查是否为团队操作人（所有者 | 管理员）
-        if (checkTeamRole && teamMemberService.checkMemberRole(teamId, userId, List.of(TeamMemberRole.OWNER.ordinal(), TeamMemberRole.ADMIN.ordinal()))) {
-            return;
-        }
-
-        // 检查是否为项目管理员
-        if (checkProjectRole && projectMemberService.checkMemberRole(projectId, userId, Collections.singletonList(ProjectMemberRole.ADMIN.ordinal()))) {
-            return;
-        }
-
-        throw new ServiceException("用户没有项目操作权限");
     }
 
     @Override

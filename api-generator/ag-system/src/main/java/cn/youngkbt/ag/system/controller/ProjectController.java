@@ -2,13 +2,14 @@ package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.ProjectDTO;
 import cn.youngkbt.ag.system.model.vo.ProjectVO;
+import cn.youngkbt.ag.system.permission.annotation.ProjectAuthorize;
+import cn.youngkbt.ag.system.permission.annotation.TeamAuthorize;
 import cn.youngkbt.ag.system.service.ProjectService;
 import cn.youngkbt.ag.system.service.TeamMemberService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class ProjectController {
 
     @GetMapping("/getByProjectId/{projectId}")
     @Operation(summary = "通过项目 ID 查询一笔项目数据", description = "通过项目 ID 查询一笔项目数据")
+    @ProjectAuthorize(value = "#projectId", checkRead = true)
     public Response<ProjectVO> getByProjectId(@PathVariable String projectId) {
         ProjectVO project = projectService.getByProjectId(projectId);
         return HttpResult.ok(project);
@@ -45,6 +47,7 @@ public class ProjectController {
 
     @PostMapping
     @Operation(summary = "项目新增", description = "新增项目")
+    @TeamAuthorize(value = "#projectDTO.getTeamId()", checkOwnerAndAdmin = true)
     public Response<Boolean> addProject(@Validated(RestGroup.AddGroup.class) @RequestBody ProjectDTO projectDTO) {
         if (projectService.checkProjectNameUnique(projectDTO)) {
             return HttpResult.failMessage("新增项目「" + projectDTO.getProjectName() + "」失败，项目名称已存在");
@@ -56,6 +59,7 @@ public class ProjectController {
 
     @PutMapping
     @Operation(summary = "项目编辑", description = "编辑项目")
+    @ProjectAuthorize(value = "#projectDTO.getProjectId()", checkAdmin = true)
     public Response<Boolean> editProject(@Validated(RestGroup.EditGroup.class) @RequestBody ProjectDTO projectDTO) {
         if (projectService.checkProjectNameUnique(projectDTO)) {
             return HttpResult.failMessage("编辑项目「" + projectDTO.getProjectName() + "」失败，项目名称已存在");
@@ -67,7 +71,8 @@ public class ProjectController {
 
     @DeleteMapping("/{projectId}")
     @Operation(summary = "项目删除", description = "删除项目")
-    public Response<Boolean> removeProject(@NotBlank(message = "无效参数") @PathVariable String projectId) {
+    @ProjectAuthorize(value = "#projectId", checkAdmin = true)
+    public Response<Boolean> removeProject(@PathVariable String projectId) {
         boolean result = projectService.removeProject(projectId);
         return HttpResult.okOrFail(result);
     }

@@ -22,7 +22,7 @@ public interface TeamMemberService extends IService<TeamMember> {
      * @return 团队成员列表
      */
     List<TeamMemberVO> listAll(TeamMemberDTO teamMemberDTO);
-    
+
     /**
      * 查询团队成员（分页）
      * @param teamMemberDTO 团队成员信息
@@ -77,4 +77,5 @@ public interface TeamMemberService extends IService<TeamMember> {
      * @return 是否为团队负责人
      */
     boolean checkMemberRole(String teamId, String userId, List<Integer> ordinal);
+
 }

@@ -22,7 +22,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -85,6 +88,11 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
 
         oneRouterVO.setChildren(routerVOList);
         return List.of(oneRouterVO);
+    }
+
+    @Override
+    public List<TeamRouteVO> listMyAll() {
+        return baseMapper.listMyAllTeam(AgHelper.getUserId());
     }
 
     @Override

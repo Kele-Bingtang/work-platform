@@ -1,5 +1,7 @@
 package cn.youngkbt.ag.system.service.impl;
 
+import cn.youngkbt.ag.core.enums.ProjectMemberRole;
+import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ProjectMemberMapper;
 import cn.youngkbt.ag.system.model.dto.ProjectMemberDTO;
 import cn.youngkbt.ag.system.model.po.ProjectMember;
@@ -31,6 +33,24 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
                 .eq("tpm.user_id", userId);
 
         return baseMapper.listProjectRole(wrapper);
+    }
+
+    @Override
+    public String getMyProjectRole(String projectId) {
+        ProjectMember projectMember = baseMapper.selectOne(Wrappers.<ProjectMember>lambdaQuery()
+                .select(ProjectMember::getProjectRole)
+                .eq(ProjectMember::getProjectId, projectId)
+                .eq(ProjectMember::getUserId, AgHelper.getUserId()));
+
+        if (Objects.isNull(projectMember)) {
+            return "";
+        }
+
+        ProjectMemberRole projectMemberRole = ProjectMemberRole.getByOrdinal(projectMember.getProjectRole());
+        if (Objects.isNull(projectMemberRole)) {
+            return "";
+        }
+        return projectMemberRole.getLabel();
     }
 
     private LambdaQueryWrapper<ProjectMember> buildQueryWrapper(ProjectMemberDTO projectMemberDTO) {

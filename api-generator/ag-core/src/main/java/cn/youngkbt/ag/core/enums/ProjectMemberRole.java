@@ -18,8 +18,16 @@ public enum ProjectMemberRole {
     ADMIN("管理员"),
     MEMBER("普通成员"),
     READONLY("只读成员"),
-    PREVENT("禁止访问")
-    ;
+    PREVENT("禁止访问");
 
     private final String label;
+
+    public static ProjectMemberRole getByOrdinal(Integer ordinal) {
+        for (ProjectMemberRole value : values()) {
+            if (value.ordinal() == ordinal) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

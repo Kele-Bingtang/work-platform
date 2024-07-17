@@ -27,10 +27,13 @@ const router = useRouter();
 const projectInfo = inject(ProjectKey);
 const initRequestParam = reactive({ categoryId: "", projectId: "" });
 
-watch(projectInfo, () => {
-  initRequestParam.projectId = unref(projectInfo)?.projectId;
-  initRequestParam.categoryId = props.categoryId;
-});
+watch(
+  () => unref(projectInfo),
+  () => {
+    initRequestParam.projectId = unref(projectInfo)?.projectId || "";
+    initRequestParam.categoryId = props.categoryId;
+  }
+);
 
 const columns: TableColumnProps[] = [
   { type: "index", label: "#", width: 80 },
@@ -137,6 +140,9 @@ const dialogForm: DialogForm = {
     }),
   editApi: data => editService({ ...data, projectId: unref(projectInfo)?.projectId }),
   removeApi: removeService,
+  disableAdd: unref(projectInfo)?.projectRole === "只读成员",
+  disableEdit: unref(projectInfo)?.projectRole === "只读成员",
+  disableRemove: unref(projectInfo)?.projectRole === "只读成员",
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "45%",

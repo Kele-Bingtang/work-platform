@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.service;
 
 import cn.youngkbt.ag.system.model.dto.TeamDTO;
 import cn.youngkbt.ag.system.model.po.Team;
+import cn.youngkbt.ag.system.model.vo.TeamRouteVO;
 import cn.youngkbt.ag.system.model.vo.router.RouterVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,6 +21,13 @@ public interface TeamService extends IService<Team> {
      * @return 团队路由
      */
     List<RouterVO> listMyAllTeamRoute();
+
+    /**
+     * 获取我的所有团队
+     *
+     * @return 团队信息
+     */
+    List<TeamRouteVO> listMyAll();
 
     /**
      * 添加一个团队
@@ -62,4 +70,5 @@ public interface TeamService extends IService<Team> {
      * @return 是否唯一
      */
     boolean checkTeamNameUnique(TeamDTO teamDTO);
+
 }

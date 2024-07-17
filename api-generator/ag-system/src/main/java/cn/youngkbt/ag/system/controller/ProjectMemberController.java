@@ -36,6 +36,13 @@ public class ProjectMemberController {
         return HttpResult.ok(projectMemberVOList);
     }
 
+    @PostMapping("/getMyProjectRole/{projectId}")
+    @Operation(summary = "我的项目角色查询", description = "查询我的项目角色")
+    public Response<String> getMyProjectRole(@PathVariable String projectId) {
+        String projectRole = projectMemberService.getMyProjectRole(projectId);
+        return HttpResult.ok(projectRole);
+    }
+
     @PostMapping
     @Operation(summary = "项目成员添加", description = "添加项目成员")
     public Response<Boolean> addProjectMember(@Validated(RestGroup.AddGroup.class) @RequestBody ProjectMemberDTO projectMemberDTO) {

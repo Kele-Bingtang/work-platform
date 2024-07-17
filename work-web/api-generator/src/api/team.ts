@@ -14,6 +14,14 @@ export declare namespace Team {
     orderNum: string; // 显示顺序
   }
 
+  export interface TeamRoute {
+    id: number; // 主键
+    teamId: string; // 团队 ID
+    teamName: string; // 团队名字
+    teamRole: number; // 团队角色
+    belongType: number; // 1 团队创建者 2 团队加入者
+  }
+
   type TeamSearch = Partial<TeamInfo>;
   type TeamInsert = RequiredKeyPartialOther<Omit<TeamInfo, "id" | "teamId">, "teamName">;
   type TeamUpdate = RequiredKeyPartialOther<TeamInfo, "id" | "teamName">;
@@ -24,6 +32,10 @@ const baseUri = "/team";
 
 export const listMyAllTeamRoute = () => {
   return http.get<http.Response<RouterConfigRaw[]>>(`${baseUri}/listMyAllTeamRoute`);
+};
+
+export const listMyAllTeam = () => {
+  return http.get<http.Response<Team.TeamRoute[]>>(`${baseUri}/listMyAllTeam`);
 };
 
 export const addTeam = (data: Team.TeamInsert) => {

@@ -10,6 +10,7 @@ export declare namespace Project {
     secretKey: string; // 项目密钥，唯一
     dataSourceId: string[]; // 数据源
     teamId: string; // 团队 ID
+    projectRole?: string; // 项目成员角色
   }
 
   type ProjectSearch = Partial<ProjectInfo & { belongType: number }>;
@@ -38,4 +39,11 @@ export const editProject = (data: Project.ProjectUpdate) => {
 
 export const removeProject = (data: Project.ProjectDelete) => {
   return http.delete<http.Response<string>>(`${baseUri}/${data.projectId}`);
+};
+
+/**
+ * 项目迁移
+ */
+export const transferProject = (projectId: string, teamId: string) => {
+  return http.post<http.Response<string>>(`${baseUri}/transferProject/${projectId}/${teamId}`);
 };

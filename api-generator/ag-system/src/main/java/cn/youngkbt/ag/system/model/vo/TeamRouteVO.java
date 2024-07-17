@@ -27,7 +27,7 @@ public class TeamRouteVO implements Serializable {
     private String teamName;
     
     /**
-     * 团队角色
+     * 团队角色（1 所有者 2 管理员 3 普通成员）
      */
     private Integer teamRole;
 

@@ -15,6 +15,7 @@
         @change="handleDataSourceTypeChange"
         clearable
         filterable
+        :disabled
       >
         <el-option
           v-for="item in dataSourceList"
@@ -30,6 +31,7 @@
         @change="handleSchemaChange"
         clearable
         filterable
+        :disabled
       >
         <el-option v-for="item in schemaList" :key="item" :label="item" :value="item" />
       </el-select>
@@ -39,6 +41,7 @@
         style="width: 240px"
         @change="handleTableChange"
         filterable
+        :disabled
       >
         <el-option-group v-for="table in tableList" :key="table.tableType" :label="table.tableType">
           <el-option v-for="item in table.tableNameList" :key="item" :label="item" :value="item" />
@@ -52,13 +55,14 @@
         @change="handleSqlTemplateChange"
         clearable
         filterable
+        :disabled
       >
         <el-option v-for="item in sqlGeneratorTemplate" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
 
       <div class="flex-1 text-right">
-        <el-button>格式化</el-button>
-        <el-button type="primary" v-throttle="{ onClick: handleRun, time: 4000 }">运 行</el-button>
+        <el-button :disabled>格式化</el-button>
+        <el-button type="primary" :disabled v-throttle="{ onClick: handleRun, time: 4000 }">运 行</el-button>
       </div>
     </el-space>
 
@@ -87,6 +91,7 @@ const prefixClass = getPrefixClass("response-data");
 const sqlFormRef = shallowRef<InstanceType<typeof SqlForm>>();
 const sqlTemplate = ref("");
 const serviceInfo = inject(ServiceKey);
+const disabled = computed(() => unref(serviceInfo)?.projectRole === "只读成员");
 
 // 数据源列表
 const dataSourceList = ref<DataSource.DataSourceInfo[]>([]);

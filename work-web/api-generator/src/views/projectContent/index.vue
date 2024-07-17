@@ -13,6 +13,7 @@ import { Category, Overview, ProjectSetting, Service } from "./components";
 import { message, useDesign } from "work";
 import { getProjectByProjectId, type Project } from "@/api/project";
 import { ProjectKey, ProjectOnGetKey } from "@/config/symbol";
+import { getMyProjectRole } from "@/api/projectMember";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("project-main");
@@ -21,17 +22,24 @@ const route = useRoute();
 
 const projectInfo = ref<Project.ProjectInfo>();
 
-onMounted(() => {
+onMounted(async () => {
   initProject();
 });
 
 const initProject = async () => {
-  // 初始化项目信息，给子组件使用
+  if (!route.params.projectId) return message.error("项目不存在");
   const projectId = route.params.projectId as string;
+  // 获取项目角色
+  const projectRoleRes = await getMyProjectRole(projectId);
+  if (!projectRoleRes.data || projectRoleRes.data === "禁止访问") return message.error("您没有权限访问该项目");
+
+  // 初始化项目信息，给子组件使用
   const res = await getProjectByProjectId(projectId);
   if (!res.data) return message.error("项目不存在");
 
   projectInfo.value = res.data;
+
+  projectInfo.value.projectRole = projectRoleRes.data;
 };
 
 provide(ProjectKey, projectInfo);

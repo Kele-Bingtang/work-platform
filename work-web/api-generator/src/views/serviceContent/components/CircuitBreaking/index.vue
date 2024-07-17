@@ -1,8 +1,10 @@
 <template>
   <el-space class="card w-full" fill>
     <div>
-      <el-button>格式化</el-button>
-      <el-button type="primary" @click="handleSave">保 存</el-button>
+      <el-button :disabled="serviceInfo?.projectRole === '只读成员'">格式化</el-button>
+      <el-button type="primary" @click="handleSave" :disabled="serviceInfo?.projectRole === '只读成员'">
+        保 存
+      </el-button>
     </div>
     <div>
       <CodeMirror
@@ -44,7 +46,7 @@ const handleSave = async () => {
     return message.error("JSON 格式错误");
   }
 
-  const res = await editService({ id, breakingRespond, projectId: unref(serviceInfo).projectId });
+  const res = await editService({ id, breakingRespond, projectId: service.projectId });
   if (res.code === 200) message.success("保存成功");
 };
 </script>

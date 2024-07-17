@@ -29,8 +29,10 @@
           :trigger-on-focus="false"
         />
       </el-form-item>
-      <el-button v-if="!serviceInfo?.exitCol" type="primary" @click="handleGenerateCol">保存并生成列配置项</el-button>
-      <el-button type="primary" v-throttle="{ onClick: handleSave, time: 4000 }">保 存</el-button>
+      <el-button v-if="serviceInfo?.exitCol == false" type="primary" :disabled @click="handleGenerateCol">
+        保存并生成列配置项
+      </el-button>
+      <el-button type="primary" :disabled v-throttle="{ onClick: handleSave, time: 4000 }">保 存</el-button>
     </el-form>
   </div>
 </template>
@@ -48,6 +50,7 @@ const props = defineProps<{
 }>();
 
 const serviceInfo = inject(ServiceKey);
+const disabled = computed(() => unref(serviceInfo)?.projectRole === "只读成员");
 
 const model = reactive({
   selectSql: "",

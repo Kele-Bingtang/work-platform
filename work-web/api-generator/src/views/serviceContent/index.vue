@@ -13,6 +13,7 @@ import { message, useDesign } from "work";
 import { getServiceByServiceId, type Service } from "@/api/service";
 import { ServiceKey } from "@/config/symbol";
 import { CircuitBreaking, ResponseConfig, ResponseData, ServiceCol } from "./components";
+import { getMyProjectRole } from "@/api/projectMember";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("service-main");
@@ -24,8 +25,13 @@ const serviceInfo = ref<Service.ServiceInfo>();
 onMounted(async () => {
   // 初始化服务信息，给子组件使用
   const serviceId = route.params.serviceId as string;
+
   const res = await getServiceByServiceId(serviceId);
   if (!res.data) return message.error("服务不存在");
+
+  // 获取项目角色
+  const projectRoleRes = await getMyProjectRole(res.data.projectId);
+  if (!projectRoleRes.data || projectRoleRes.data === "禁止访问") return message.error("您没有权限访问该项目");
 
   serviceInfo.value = res.data;
 });

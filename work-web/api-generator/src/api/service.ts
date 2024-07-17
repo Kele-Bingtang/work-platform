@@ -24,6 +24,7 @@ export declare namespace Service {
     projectId: string; // 项目 ID
     teamId: string; // 团队 ID
     exitCol: boolean; // 是否存在列配置项
+    projectRole?: string; // 项目成员角色
   }
 
   type ServiceSearch = Partial<ServiceInfo>;

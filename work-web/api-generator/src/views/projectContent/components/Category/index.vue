@@ -58,6 +58,9 @@ const dialogForm: DialogForm = {
   addApi: data => addCategory({ ...data, ...initRequestParam }),
   editApi: data => editCategory({ ...data, ...initRequestParam }),
   removeApi: removeCategory,
+  disableAdd: unref(projectInfo)?.projectRole === "只读成员",
+  disableEdit: unref(projectInfo)?.projectRole === "只读成员",
+  disableRemove: unref(projectInfo)?.projectRole === "只读成员",
   afterConfirm: () => {
     mittBus.emit("initTreeData");
   },

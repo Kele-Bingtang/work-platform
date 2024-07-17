@@ -15,14 +15,17 @@ export const AddTeamMenu = () => {
 };
 
 interface TeamModel {
-  name: string;
+  teamName: string;
   description: string;
 }
 
 const openDialog = () => {
   const { open } = useDialog();
 
-  const model = ref<Partial<TeamModel>>({});
+  const model = ref<TeamModel>({
+    teamName: "",
+    description: "",
+  });
 
   const schema: FormSchemaProps[] = [
     {
@@ -55,10 +58,10 @@ const openDialog = () => {
   });
 };
 
-const handleConfirm = async (model: Partial<TeamModel>) => {
+const handleConfirm = async (model: TeamModel) => {
   const res = await addTeam(model);
   if (res.code === 200) {
     useRoutes().initDynamicRouters(useUserStore().roles);
-    message.success("团队新建成功");
+    return message.success("团队新建成功");
   }
 };

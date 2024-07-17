@@ -76,4 +76,13 @@ public class ProjectController {
         boolean result = projectService.removeProject(projectId);
         return HttpResult.okOrFail(result);
     }
+    
+    @PostMapping("/transferProject/{projectId}/{teamId}")
+    @Operation(summary = "项目转移", description = "转移项目")
+    @ProjectAuthorize(value = "#projectId", checkAdmin = true)
+    public Response<Boolean> transferProject(@PathVariable String projectId, @PathVariable String teamId) {
+        boolean result = projectService.transferProject(projectId, teamId);
+        return HttpResult.okOrFail(result);
+    }
+
 }

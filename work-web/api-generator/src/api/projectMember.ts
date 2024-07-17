@@ -22,3 +22,10 @@ export const listProjectRole = (teamId: string, userId: string) => {
 export const editProjectMember = (data: Partial<ProjectMember.ProjectMemberInfo>) => {
   return http.put<http.Response<Boolean>>(baseUri, data);
 };
+
+/**
+ * 获取我的项目角色
+ */
+export const getMyProjectRole = (projectId: string) => {
+  return http.post<http.Response<string>>(`${baseUri}/getMyProjectRole/${projectId}`);
+};

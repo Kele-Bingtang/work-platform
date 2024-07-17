@@ -1,6 +1,7 @@
 package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.TeamDTO;
+import cn.youngkbt.ag.system.model.vo.TeamRouteVO;
 import cn.youngkbt.ag.system.model.vo.router.RouterVO;
 import cn.youngkbt.ag.system.permission.annotation.TeamAuthorize;
 import cn.youngkbt.ag.system.service.TeamMemberService;
@@ -33,6 +34,13 @@ public class TeamController {
     public Response<List<RouterVO>> listMyAllTeamRoute() {
         List<RouterVO> routerVOList = teamService.listMyAllTeamRoute();
         return HttpResult.ok(routerVOList);
+    }
+
+    @GetMapping("/listMyAllTeam")
+    @Operation(summary = "我的团队列表查询", description = "查询我的团队列表")
+    public Response<List<TeamRouteVO>> listMyAll() {
+        List<TeamRouteVO> teamRouteVOList = teamService.listMyAll();
+        return HttpResult.ok(teamRouteVOList);
     }
 
     @PostMapping

@@ -33,12 +33,12 @@
       <template v-if="isProjectOwner">
         <el-descriptions-item label="移动项目" label-class-name="w-125 fz-15" class-name="flex-1 flx-justify-between">
           <span class="text-gray-400">将项目移动到其他团队</span>
-          <el-button plain auto-insert-space @click="handleTransferProject">移动</el-button>
+          <el-button plain auto-insert-space :disabled="!isProjectOwner" @click="handleTransferProject">移动</el-button>
         </el-descriptions-item>
 
         <el-descriptions-item label="删除项目" label-class-name="w-125 fz-15" class-name="flex-1 flx-justify-between">
           <span class="text-gray-400">务必谨慎，删除后项目不可以找回</span>
-          <el-button plain auto-insert-space @click="handleRemoveProject">删除</el-button>
+          <el-button plain auto-insert-space :disabled="!isProjectOwner" @click="handleRemoveProject">删除</el-button>
         </el-descriptions-item>
       </template>
     </el-descriptions>
@@ -51,7 +51,8 @@ import { useDesign, useHandleData } from "@work/hooks";
 import { WarnTriangleFilled } from "@element-plus/icons-vue";
 import { ProjectKey, ProjectOnGetKey } from "@/config/symbol";
 import { rules, schema } from "@/views/team/components/Project/formSchema";
-import { editProject, removeProject, type Project } from "@/api/project";
+import { editProject, removeProject, transferProject, type Project } from "@/api/project";
+import { listMyAllTeam } from "@/api/team";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("project-setting");
@@ -59,9 +60,9 @@ const prefixClass = getPrefixClass("project-setting");
 const { open } = useDialog();
 
 const projectInfo = inject(ProjectKey);
-const projectOnGetFunction = inject(ProjectOnGetKey);
+const projectOnGetFunction = inject(ProjectOnGetKey, () => {});
 const formModel = ref<Record<string, any>>({});
-const isProjectOwner = ref(true);
+const isProjectOwner = computed(() => unref(projectInfo)?.projectRole === "管理员");
 
 const baseInfo = computed(() => [
   { label: "项目 ID", value: unref(projectInfo)?.projectId },
@@ -76,7 +77,7 @@ const handleEdit = () => {
     title: "编辑项目信息",
     height: 300,
     onConfirm: async () => {
-      const res = await editProject({ ...unref(formModel) } as Project.ProjectInsert);
+      const res = await editProject({ ...unref(formModel) } as Project.ProjectUpdate);
       if (res.code === 200) {
         projectOnGetFunction();
         return message.success("编辑成功");
@@ -94,7 +95,47 @@ const handleEdit = () => {
   });
 };
 
-const handleTransferProject = () => {};
+const transferTeamId = reactive({
+  teamId: "",
+});
+
+const handleTransferProject = () => {
+  open({
+    title: `移动项目 ${unref(projectInfo)?.projectName}`,
+    height: 200,
+    onConfirm: async () => {
+      const res = await transferProject(unref(projectInfo)?.projectId || "", transferTeamId.teamId);
+      if (res.code === 200) {
+        projectOnGetFunction();
+        return message.success("移动项目成功");
+      }
+    },
+    render: () => (
+      <ProForm
+        v-model={transferTeamId}
+        el-form-props={{ projectName: [{ required: true, message: "请选择 移动的团队名称", trigger: "blur" }] }}
+        schema={[
+          {
+            prop: "teamId",
+            label: "移动的团队名称",
+            el: "el-select",
+            enum: async () => {
+              const res = await listMyAllTeam();
+              return {
+                data: res.data.map(item => ({
+                  value: item.teamId,
+                  label: item.teamId === unref(projectInfo)?.teamId ? `${item.teamName}（当前团队）` : item.teamName,
+                  disabled: item.teamId === unref(projectInfo)?.teamId || item.teamRole === 3,
+                })),
+              };
+            },
+          },
+        ]}
+        col-row
+      />
+    ),
+  });
+};
 
 const router = useRouter();
 const handleRemoveProject = (item: Project.ProjectInfo) => {

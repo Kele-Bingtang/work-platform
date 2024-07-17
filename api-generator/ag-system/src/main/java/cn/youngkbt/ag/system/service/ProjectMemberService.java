@@ -23,6 +23,14 @@ public interface ProjectMemberService extends IService<ProjectMember> {
     List<ProjectMemberVO> listProjectRole(String teamId, String userId);
 
     /**
+     * 获取我的项目角色
+     *
+     * @param projectId 项目 ID
+     * @return 项目角色
+     */
+    String getMyProjectRole(String projectId);
+
+    /**
      * 添加项目成员
      *
      * @param projectMemberDTO 项目成员信息

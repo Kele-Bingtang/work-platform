@@ -10,9 +10,36 @@
     @row-click="handleRowClick"
   >
     <template #tableHeaderExtra>
-      <el-button v-waves type="primary" plain :icon="Pointer" @click="handleRegenerate">生成新增字段</el-button>
-      <el-button v-waves type="danger" plain :icon="Delete" @click="handleDeleteInvalid">删除失效字段</el-button>
-      <el-button v-waves type="success" plain :icon="Files" @click="handleBatchOperate">批量操作</el-button>
+      <el-button
+        v-waves
+        type="primary"
+        plain
+        :icon="Pointer"
+        :disabled="serviceInfo?.projectRole === '只读成员'"
+        @click="handleRegenerate"
+      >
+        生成新增字段
+      </el-button>
+      <el-button
+        v-waves
+        type="danger"
+        plain
+        :icon="Delete"
+        :disabled="serviceInfo?.projectRole === '只读成员'"
+        @click="handleDeleteInvalid"
+      >
+        删除失效字段
+      </el-button>
+      <el-button
+        v-waves
+        type="success"
+        plain
+        :icon="Files"
+        :disabled="serviceInfo?.projectRole === '只读成员'"
+        @click="handleBatchOperate"
+      >
+        批量操作
+      </el-button>
     </template>
   </ProTable>
 </template>

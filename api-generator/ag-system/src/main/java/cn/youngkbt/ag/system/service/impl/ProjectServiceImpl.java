@@ -10,14 +10,11 @@ import cn.youngkbt.ag.system.model.dto.CategoryDTO;
 import cn.youngkbt.ag.system.model.dto.ProjectDTO;
 import cn.youngkbt.ag.system.model.dto.ProjectMemberDTO;
 import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
-import cn.youngkbt.ag.system.model.po.Project;
+import cn.youngkbt.ag.system.model.po.*;
 import cn.youngkbt.ag.system.model.vo.ProjectVO;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
-import cn.youngkbt.ag.system.service.CategoryService;
-import cn.youngkbt.ag.system.service.ProjectMemberService;
-import cn.youngkbt.ag.system.service.ProjectService;
-import cn.youngkbt.ag.system.service.TeamMemberService;
+import cn.youngkbt.ag.system.service.*;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.ListUtil;
@@ -43,9 +40,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> implements ProjectService {
 
+    private final TeamMemberService teamMemberService;
     private final ProjectMemberService projectMemberService;
     private final CategoryService categoryService;
-    private final TeamMemberService teamMemberService;
+    private final ServiceInfoService serviceInfoService;
+    private final ServiceColService serviceColService;
+    private final ReportService reportService;
 
 
     @Override
@@ -53,7 +53,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         Project project = baseMapper.selectOne(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getProjectId, projectId));
         Assert.isTrue(Objects.nonNull(project), "项目不存在");
-        
+
         return MapstructUtil.convert(project, ProjectVO.class);
     }
 
@@ -109,19 +109,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         categoryService.addCategory(categoryDTO);
 
         // 团队的所有成员都可以看到项目
-        List<TeamMemberVO> teamMemberVOList = teamMemberService.listAll(new TeamMemberDTO().setTeamId(project.getTeamId()));
-
-        List<ProjectMemberDTO> projectMemberDTOList = ListUtil.newArrayList(teamMemberVOList, teamMember ->
-                        new ProjectMemberDTO()
-                                .setProjectId(project.getProjectId())
-                                .setUserId(teamMember.getUserId())
-                                // 团队所有者 & 管理者默认是项目的管理者，团队普通成员默认是项目的普通成员
-                                .setProjectRole(teamMember.getTeamRole() != TeamMemberRole.MEMBER.ordinal() ? ProjectMemberRole.ADMIN.ordinal() : ProjectMemberRole.MEMBER.ordinal())
-                                .setBelongType(BelongType.CREATE.ordinal())
-                                .setTeamId(teamMember.getTeamId())
-                , ProjectMemberDTO.class);
-
-        projectMemberService.addBatchProjectMember(projectMemberDTOList);
+        addTeamMemberToProject(project.getProjectId(), project.getTeamId());
         return result > 0;
     }
 
@@ -158,7 +146,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         categoryService.removeAllCategoryByTeamId(teamId);
         // 删除团队下所有项目成员
         projectMemberService.removeAllMemberByTeamId(teamId);
-        
+
         return baseMapper.delete(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getTeamId, teamId)) > 0;
     }
@@ -169,6 +157,50 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .eq(Project::getProjectName, projectDTO.getProjectName())
                 .eq(Project::getTeamId, projectDTO.getTeamId())
                 .ne(Objects.nonNull(projectDTO.getId()), Project::getId, projectDTO.getId()));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean transferProject(String projectId, String teamId) {
+        categoryService.update(Wrappers.<Category>lambdaUpdate()
+                .set(Category::getTeamId, teamId)
+                .eq(Category::getProjectId, projectId));
+
+        serviceInfoService.update(Wrappers.<ServiceInfo>lambdaUpdate()
+                .set(ServiceInfo::getTeamId, teamId)
+                .eq(ServiceInfo::getProjectId, projectId));
+
+        serviceColService.update(Wrappers.<ServiceCol>lambdaUpdate()
+                .set(ServiceCol::getTeamId, teamId)
+                .eq(ServiceCol::getProjectId, projectId));
+
+        // reportService.update(Wrappers.<Report>lambdaUpdate()
+        //         .set(Report::getTeamId, teamId)
+        //         .eq(Report::getProjectId, projectId));
+
+        // 添加项目成员，先删除旧项目成员
+        projectMemberService.removeAllMember(projectId);
+        addTeamMemberToProject(projectId, teamId);
+
+        return baseMapper.update(Wrappers.<Project>lambdaUpdate()
+                .set(Project::getTeamId, teamId)
+                .eq(Project::getProjectId, projectId)) > 0;
+    }
+
+    private void addTeamMemberToProject(String projectId, String teamId) {
+        // 团队的所有成员都可以看到项目
+        List<TeamMemberVO> teamMemberVOList = teamMemberService.listAll(new TeamMemberDTO().setTeamId(teamId));
+        List<ProjectMemberDTO> projectMemberDTOList = ListUtil.newArrayList(teamMemberVOList, teamMember ->
+                        new ProjectMemberDTO()
+                                .setProjectId(projectId)
+                                .setUserId(teamMember.getUserId())
+                                // 团队所有者 & 管理者默认是项目的管理者，团队普通成员默认是项目的普通成员
+                                .setProjectRole(teamMember.getTeamRole() != TeamMemberRole.MEMBER.ordinal() ? ProjectMemberRole.ADMIN.ordinal() : ProjectMemberRole.MEMBER.ordinal())
+                                .setBelongType(BelongType.CREATE.ordinal())
+                                .setTeamId(teamMember.getTeamId())
+                , ProjectMemberDTO.class);
+
+        projectMemberService.addBatchProjectMember(projectMemberDTOList);
     }
 }
 

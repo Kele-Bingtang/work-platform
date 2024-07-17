@@ -1,11 +1,13 @@
 package cn.youngkbt.ag.system.model.po;
 
+import cn.youngkbt.ag.system.model.vo.TeamVO;
 import cn.youngkbt.mp.annotation.FieldValueFill;
 import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "t_team")
 @Data
+@AutoMapper(target = TeamVO.class, reverseConvertGenerate = false)
 public class Team extends BaseDO {
 
     /**

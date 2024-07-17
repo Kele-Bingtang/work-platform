@@ -70,4 +70,12 @@ public interface ProjectService extends IService<Project> {
      */
     boolean checkProjectNameUnique(ProjectDTO projectDTO);
 
+    /**
+     * 项目转移
+     *
+     * @param projectId 项目 ID
+     * @param teamId    团队 ID
+     * @return 是否转移成功
+     */
+    boolean transferProject(String projectId, String teamId);
 }

@@ -7,7 +7,7 @@ import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
-import cn.youngkbt.ag.system.service.ProjectMemberService;
+import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.ag.system.service.ReportService;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
@@ -36,9 +36,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, ServiceInfo> implements ServiceInfoService {
 
-    private final ProjectMemberService projectMemberService;
     private final ReportService reportService;
     private final ServiceColService serviceColService;
+    private final DataSourceService dataSourceService;
 
     @Override
     public ServiceInfoVO getByServiceId(String serviceId) {
@@ -179,6 +179,7 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
         // 生成列配置项
         return serviceColService.listColumnThenInsert(serviceInfoDTO);
     }
+
 }
 
 

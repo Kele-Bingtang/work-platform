@@ -102,10 +102,31 @@ public interface DataSourceService extends IService<DataSource> {
     List<DataSourceTable> listTableBySchema(String dataSourceId, String schema);
 
     /**
+     * 通过 Schema、Table 获取数据源 Column 列表
+     *
+     * @param dataSourceId 数据源 ID
+     * @param schema       Schema
+     * @param table        Table
+     * @return 数据源 Column 列表
+     */
+    List<String> listColumnBySchema(String dataSourceId, String schema, String table);
+
+    /**
      * 执行查询语句
      *
      * @param sqlDTO 查询语句
      * @return 查询结果
      */
     List<LinkedHashMap<String, Object>> executeSelect(SqlDTO sqlDTO);
+
+    /**
+     * 根据表名生成 SQL 模板
+     *
+     * @param dataSourceId 数据源 ID
+     * @param schema Schema
+     * @param tableName 表名
+     * @param type      模板类型
+     * @return 模板
+     */
+    String generateTemple(String dataSourceId, String schema, String tableName, String type);
 }

@@ -10,7 +10,10 @@ import cn.youngkbt.ag.system.model.dto.CategoryDTO;
 import cn.youngkbt.ag.system.model.dto.ProjectDTO;
 import cn.youngkbt.ag.system.model.dto.ProjectMemberDTO;
 import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
-import cn.youngkbt.ag.system.model.po.*;
+import cn.youngkbt.ag.system.model.po.Category;
+import cn.youngkbt.ag.system.model.po.Project;
+import cn.youngkbt.ag.system.model.po.ServiceCol;
+import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ProjectVO;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
@@ -20,7 +23,6 @@ import cn.youngkbt.utils.IdsUtil;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -65,15 +67,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         return MapstructUtil.convert(projectList, ProjectVO.class);
     }
 
-    private LambdaQueryWrapper<Project> buildLambdaQueryWrapper(ProjectDTO projectDTO) {
-        return Wrappers.<Project>lambdaQuery()
-                .eq(StringUtil.hasText(projectDTO.getTeamId()), Project::getTeamId, projectDTO.getTeamId())
-                .eq(StringUtil.hasText(projectDTO.getProjectName()), Project::getProjectName, projectDTO.getProjectName())
-                .eq(Objects.nonNull(projectDTO.getStatus()), Project::getStatus, projectDTO.getStatus())
-                .eq(Project::getIsDeleted, 0)
-                .orderByDesc(Project::getCreateTime);
-    }
-
     private QueryWrapper<Project> buildQueryWrapper(ProjectDTO projectDTO) {
         final String projectTablePrefix = "tp.";
         final String projectMemberTablePrefix = "tpm.";
@@ -86,7 +79,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .orderByDesc(projectTablePrefix + "create_time")
                 // project_member 表条件
                 .eq(projectMemberTablePrefix + "user_id", AgHelper.getUserId())
-                .eq(Objects.nonNull(projectDTO.getBelongType()) && projectDTO.getBelongType() != 0, projectMemberTablePrefix + "belong_type", projectDTO.getBelongType());
+                .eq(Objects.nonNull(projectDTO.getBelongType()) && projectDTO.getBelongType() != 0, projectMemberTablePrefix + "belong_type", projectDTO.getBelongType())
+                .in(ListUtil.isNotEmpty(projectDTO.getDataSourceId()), projectTablePrefix + "data_source_id", projectDTO.getDataSourceId());
 
     }
 

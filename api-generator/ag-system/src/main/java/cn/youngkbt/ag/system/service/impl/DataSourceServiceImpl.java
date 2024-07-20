@@ -1,5 +1,6 @@
 package cn.youngkbt.ag.system.service.impl;
 
+import cn.youngkbt.ag.core.enums.SqlGeneratorTemplate;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.DataSourceMapper;
 import cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper;
@@ -11,7 +12,9 @@ import cn.youngkbt.ag.system.model.vo.DataSourceVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.core.exception.ServerException;
+import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
+import cn.youngkbt.datasource.meta.Column;
 import cn.youngkbt.datasource.meta.Schema;
 import cn.youngkbt.datasource.meta.Table;
 import cn.youngkbt.mp.base.PageQuery;
@@ -119,7 +122,7 @@ public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSou
     public Boolean removeDataSource(String dataSourceId) {
         DataSource dataSource = baseMapper.selectOne(Wrappers.<DataSource>lambdaQuery()
                 .eq(DataSource::getDataSourceId, dataSourceId));
-        
+
         PermissionHelper.checkTeamOwnerAndAdmin(AgHelper.getUserId(), dataSource.getTeamId(), "1h");
         return baseMapper.delete(Wrappers.<DataSource>lambdaQuery()
                 .eq(DataSource::getDataSourceId, dataSourceId)) > 0;
@@ -170,10 +173,26 @@ public class DataSourceServiceImpl extends ServiceImpl<DataSourceMapper, DataSou
     }
 
     @Override
+    public List<String> listColumnBySchema(String dataSourceId, String schema, String table) {
+        List<Column> columnList = DataSourceHelper.getColumns(dataSourceId, schema, schema, table);
+        return columnList.stream().map(Column::getColumnName).toList();
+    }
+
+    @Override
     public List<LinkedHashMap<String, Object>> executeSelect(SqlDTO sqlDTO) {
         // 切换数据源
         DataSourceHelper.use(sqlDTO.getDataSourceId());
         return sqlExecuteMapper.executeSelectList(sqlDTO.getSql(), null);
+    }
+
+    @Override
+    public String generateTemple(String dataSourceId, String schema, String tableName, String type) {
+        if (SqlGeneratorTemplate.SELECT.name().equalsIgnoreCase(type)) {
+            List<String> columnNameList = listColumnBySchema(dataSourceId, schema, tableName);
+            String columns = String.join(", ", columnNameList);
+            return "SELECT " + columns + "\t\nFROM " + schema + "." + tableName;
+        }
+        throw new ServiceException("暂不支持" + type + "类型");
     }
 }
 

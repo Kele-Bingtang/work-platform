@@ -43,8 +43,10 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { sql } from "@codemirror/lang-sql";
 import { ServiceKey } from "@/config/symbol";
 import { editService, generateCol } from "@/api/service";
+import { format, type SqlLanguage, type KeywordCase } from "sql-formatter";
 
 const props = defineProps<{
+  selectSql: string;
   tableNameList: string[];
   dataSourceId: string;
 }>();
@@ -58,6 +60,13 @@ const model = reactive({
   updateTable: "",
   deleteTable: "",
 });
+
+watch(
+  () => props.selectSql,
+  () => {
+    model.selectSql = props.selectSql;
+  }
+);
 
 watch(
   () => unref(serviceInfo),
@@ -117,5 +126,16 @@ const handleGenerateCol = async () => {
   if (res.code === 200) message.success(res.message);
 };
 
-defineExpose({ model });
+const formatterSql = (formatterRule: { language: SqlLanguage; lowerOrUpper: KeywordCase }) => {
+  model.selectSql = format(model.selectSql, {
+    language: formatterRule.language,
+    keywordCase: formatterRule.lowerOrUpper,
+    dataTypeCase: formatterRule.lowerOrUpper,
+    functionCase: formatterRule.lowerOrUpper,
+    identifierCase: formatterRule.lowerOrUpper,
+  });
+  message.success("SQL 格式化成功");
+};
+
+defineExpose({ model, formatterSql });
 </script>

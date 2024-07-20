@@ -92,4 +92,5 @@ public class ServiceInfoController {
         Integer result = serviceInfoService.generateCol(serviceInfoDTO);
         return HttpResult.okMessage("生成了 " + result + " 个列配置项");
     }
+
 }

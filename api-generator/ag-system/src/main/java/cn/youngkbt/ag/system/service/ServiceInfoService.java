@@ -102,4 +102,5 @@ public interface ServiceInfoService extends IService<ServiceInfo> {
      * @return 成功失败信息
      */
     Integer generateCol(ServiceInfoDTO serviceInfoDTO);
+
 }

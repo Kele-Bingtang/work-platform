@@ -10,6 +10,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.sql.ResultSetMetaData;
+
 /**
  * @author Kele-Bingtang
  * @date 2024-06-22 00:15:48
@@ -113,6 +115,14 @@ public interface ServiceColService extends IService<ServiceCol> {
      * @return 是否成功
      */
     Integer removeInvalidCol(ServiceInfo serviceInfo);
+
+    /**
+     * 获取 ResultSetMetaData
+     *
+     * @param serviceInfo 服务信息
+     * @return ResultSetMetaData
+     */
+    ResultSetMetaData getResultSetMetaData(ServiceInfo serviceInfo);
 
     /**
      * 检查列配置项是否存在

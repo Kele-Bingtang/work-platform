@@ -1,7 +1,7 @@
 <template>
   <el-space class="card w-full" fill>
     <div>
-      <el-button :disabled="serviceInfo?.projectRole === '只读成员'">格式化</el-button>
+      <el-button :disabled="serviceInfo?.projectRole === '只读成员'" @click="handleFormatterJson">格式化</el-button>
       <el-button type="primary" @click="handleSave" :disabled="serviceInfo?.projectRole === '只读成员'">
         保 存
       </el-button>
@@ -31,8 +31,14 @@ const serviceInfo = inject(ServiceKey);
 const jsonCode = ref("");
 
 onMounted(() => {
-  jsonCode.value = unref(serviceInfo)?.breakingRespond || "";
+  handleFormatterJson();
 });
+
+const handleFormatterJson = () => {
+  jsonCode.value = unref(serviceInfo)?.breakingRespond
+    ? JSON.stringify(JSON.parse(unref(serviceInfo)?.breakingRespond!), null, "\t")
+    : "";
+};
 
 const handleSave = async () => {
   const service = unref(serviceInfo);

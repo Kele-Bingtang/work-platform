@@ -40,9 +40,8 @@ import { ProjectCard } from "@/components";
 import { listProject, addProject, editProject, removeProject, type Project } from "@/api/project";
 import { View, Delete, Setting, Plus } from "@element-plus/icons-vue";
 import { useDesign, useHandleData } from "@work/hooks";
-import { useDialog, ProForm, ProSearch, message } from "work";
+import { useDialog, ProForm, ProSearch, message, type FormSchemaProps } from "work";
 import { rules, schema } from "./formSchema";
-import { searchSchema } from "./searchSchema";
 import { listSelectDataSource, type DataSource } from "@/api/dataSource";
 
 const { getPrefixClass } = useDesign();
@@ -84,12 +83,40 @@ enum belongType {
 const activeName = ref("all");
 const projectList = ref<Project.ProjectInfo[]>([]);
 const formModel = ref<Record<string, any>>({});
-const searchModel = reactive<Record<string, any>>({});
+const searchModel = reactive<Record<string, any>>({ projectName: "", dataSourceId: [] });
 
 const dialogTitle: { [propName: string]: string } = {
   add: "添加项目",
   edit: "编辑项目",
 };
+
+const searchSchema: FormSchemaProps[] = [
+  {
+    prop: "projectName",
+    label: "项目名称",
+    el: "el-input",
+    props: { placeholder: "请输入 项目名称" },
+  },
+  {
+    prop: "dataSourceId",
+    label: "数据源",
+    el: "el-select",
+    enum: async () => {
+      if (unref(selectDataSource).length) return { data: selectDataSource };
+      const res = await listSelectDataSource(unref(teamId));
+      selectDataSource.value = res.data;
+      return res;
+    },
+    fieldNames: { value: "dataSourceId", label: "dataSourceName" },
+    props: {
+      multiple: true,
+      placeholder: "请选择 数据库",
+      collapseTags: true,
+      collapseTagsTooltip: true,
+      maxCollapseTags: 2,
+    },
+  },
+];
 
 const teamId = computed(() => route.meta.params?.teamId);
 
@@ -112,6 +139,8 @@ const handleSearch = () => {
 // 重置事件
 const handleReset = () => {
   initProject();
+  searchModel.projectName = "";
+  searchModel.dataSourceId = [];
 };
 
 // 切换标签事件

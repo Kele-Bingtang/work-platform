@@ -77,3 +77,7 @@ export const testConnect = (data: DataSource.DataSourceSearch) => {
 export const executeSelect = (data: DataSource.SqlExecute) => {
   return http.post<http.Response<Record<string, any>[]>>(`${baseUri}/executeSelect`, data);
 };
+
+export const generateTemple = (dataSourceId: string, schema: string, tableName: string, type: string) => {
+  return http.post<http.Response<string>>(`${baseUri}/generateTemple/${dataSourceId}/${schema}/${tableName}/${type}`);
+};

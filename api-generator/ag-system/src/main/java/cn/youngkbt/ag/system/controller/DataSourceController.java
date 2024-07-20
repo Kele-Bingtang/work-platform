@@ -103,4 +103,11 @@ public class DataSourceController {
     public Response<List<LinkedHashMap<String, Object>>> executeSelect(@Validated @RequestBody SqlDTO sqlDTO) {
         return HttpResult.ok(dataSourceService.executeSelect(sqlDTO));
     }
+
+    @PostMapping("/generateTemple/{dataSourceId}/{schema}/{tableName}/{type}")
+    @Operation(summary = "根据表名生成 SQL 模板", description = "根据表名生成 SQL 模板")
+    public Response<String> generateTemple(@PathVariable String dataSourceId, @PathVariable String schema, @PathVariable String tableName, @PathVariable String type) {
+        String result = dataSourceService.generateTemple(dataSourceId, schema, tableName, type);
+        return HttpResult.ok(result);
+    }
 }

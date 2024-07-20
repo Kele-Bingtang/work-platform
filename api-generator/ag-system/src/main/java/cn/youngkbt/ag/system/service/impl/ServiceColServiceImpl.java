@@ -221,13 +221,8 @@ public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, Service
         return ids.size();
     }
 
-    /**
-     * 获取 ResultSetMetaData
-     *
-     * @param serviceInfo 服务信息
-     * @return ResultSetMetaData
-     */
-    private ResultSetMetaData getResultSetMetaData(ServiceInfo serviceInfo) {
+    @Override
+    public ResultSetMetaData getResultSetMetaData(ServiceInfo serviceInfo) {
         // 查询数据源信息
         DataSource dataSource = dataSourceService.getOne(Wrappers.<DataSource>lambdaQuery()
                 .eq(DataSource::getDataSourceId, serviceInfo.getDataSourceId()));

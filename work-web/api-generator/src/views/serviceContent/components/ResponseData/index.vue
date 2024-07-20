@@ -40,6 +40,7 @@
         placeholder="请选择 Table（可选）"
         style="width: 240px"
         @change="handleTableChange"
+        clearable
         filterable
         :disabled
       >
@@ -48,25 +49,34 @@
         </el-option-group>
       </el-select>
 
-      <el-select
-        v-model="sqlTemplate"
-        placeholder="请选择模板生成类型（可选）"
-        style="width: 240px"
-        @change="handleSqlTemplateChange"
-        clearable
-        filterable
-        :disabled
-      >
-        <el-option v-for="item in sqlGeneratorTemplate" :key="item.value" :label="item.label" :value="item.value" />
-      </el-select>
-
       <div class="flex-1 text-right">
-        <el-button :disabled>格式化</el-button>
-        <el-button type="primary" :disabled v-throttle="{ onClick: handleRun, time: 4000 }">运 行</el-button>
+        <el-button
+          type="info"
+          :disabled="!selected.tableName"
+          v-throttle="{ onClick: handleGenerateTemplate, time: 4000 }"
+        >
+          Select 模板生成
+        </el-button>
+
+        <el-popover title="格式化规则" :width="200" trigger="hover">
+          <template #reference>
+            <el-button :disabled @click="sqlFormRef?.formatterSql(formatterRule)">SQL 格式化</el-button>
+          </template>
+          <div class="my-2">SQL 方言</div>
+          <el-select v-model="formatterRule.language" filterable :teleported="false">
+            <el-option v-for="item in formatterLanguage" :key="item" :label="item" :value="item" />
+          </el-select>
+          <div class="my-2">大小写格式化</div>
+          <el-select v-model="formatterRule.lowerOrUpper" filterable :teleported="false">
+            <el-option v-for="item in lowerOrUpper" :key="item" :label="item" :value="item" />
+          </el-select>
+        </el-popover>
+
+        <el-button type="primary" :disabled v-throttle="{ onClick: handleRun, time: 4000 }">SQL 运 行</el-button>
       </div>
     </el-space>
 
-    <SqlForm ref="sqlFormRef" :tableNameList :dataSourceId="selected.dataSourceId" />
+    <SqlForm ref="sqlFormRef" :selectSql="sqlTemplate" :tableNameList :dataSourceId="selected.dataSourceId" />
 
     <DataTable v-if="data?.length" :data />
   </el-space>
@@ -77,6 +87,7 @@ import { message, useDesign } from "work";
 import { ServiceKey } from "@/config/symbol";
 import {
   executeSelect,
+  generateTemple,
   listByProjectId,
   listSchemaByDataSource,
   listTableBySchema,
@@ -84,12 +95,12 @@ import {
 } from "@/api/dataSource";
 import DataTable from "./dataTable.vue";
 import SqlForm from "./sqlForm.vue";
+import { type SqlLanguage, type KeywordCase } from "sql-formatter";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("response-data");
 
 const sqlFormRef = shallowRef<InstanceType<typeof SqlForm>>();
-const sqlTemplate = ref("");
 const serviceInfo = inject(ServiceKey);
 const disabled = computed(() => unref(serviceInfo)?.projectRole === "只读成员");
 
@@ -97,6 +108,7 @@ const disabled = computed(() => unref(serviceInfo)?.projectRole === "只读成�
 const dataSourceList = ref<DataSource.DataSourceInfo[]>([]);
 const schemaList = ref<string[]>([]);
 const tableList = ref<DataSource.Table[]>([]);
+const sqlTemplate = ref("");
 
 // 表名列表
 const tableNameList = computed(() => {
@@ -112,6 +124,34 @@ const selected = reactive({
   tableName: "",
 });
 
+const formatterLanguage = [
+  "sql",
+  "bigquery",
+  "db2",
+  "hive",
+  "mariadb",
+  "mysql",
+  "n1ql",
+  "plsql",
+  "postgresql",
+  "redshift",
+  "singlestoredb",
+  "snowflake",
+  "spark",
+  "sqlite",
+  "tidb",
+  "transactsql",
+  "trino",
+  "tsql",
+];
+
+const lowerOrUpper = ["lower", "upper", "preserve"];
+
+const formatterRule = reactive<{ language: SqlLanguage; lowerOrUpper: KeywordCase }>({
+  language: "sql",
+  lowerOrUpper: "lower",
+});
+
 watch(
   () => unref(serviceInfo),
   async () => {
@@ -125,24 +165,18 @@ watch(
 );
 
 const handleDataSourceTypeChange = async (value: string) => {
-  if (!value) {
-    selected.schema = "";
-    selected.tableName = "";
-    schemaList.value = [];
-    tableList.value = [];
-    return;
-  }
+  selected.schema = "";
+  selected.tableName = "";
+  schemaList.value = [];
+  tableList.value = [];
   selected.dataSourceId = value;
   const res = await listSchemaByDataSource(value);
   if (res.code === 200) schemaList.value = res.data;
 };
 
 const handleSchemaChange = async (value: string) => {
-  if (!value) {
-    selected.tableName = "";
-    tableList.value = [];
-    return;
-  }
+  selected.tableName = "";
+  tableList.value = [];
   selected.schema = value;
   const res = await listTableBySchema(selected.dataSourceId, value);
   if (res.code === 200) tableList.value = res.data;
@@ -150,18 +184,6 @@ const handleSchemaChange = async (value: string) => {
 
 const handleTableChange = (value: string) => {
   selected.tableName = value;
-};
-
-const sqlGeneratorTemplate = [
-  { value: "Select", label: "Select" },
-  { value: "Inset", label: "Inset" },
-  { value: "Update", label: "Update" },
-  { value: "Delete", label: "Delete" },
-  { value: "DDL", label: "DDL" },
-];
-
-const handleSqlTemplateChange = (value: string) => {
-  console.log(value);
 };
 
 const data = ref<Record<string, any>[]>([]);
@@ -179,6 +201,14 @@ const handleRun = async () => {
     data.value = res.data;
     if (res.data?.length) message.success("执行成功，4 秒内无法再次点击");
     else message.success("执行成功，数据为空，4 秒内无法再次点击");
+  }
+};
+
+const handleGenerateTemplate = async () => {
+  const res = await generateTemple(selected.dataSourceId, selected.schema, selected.tableName, "select");
+  if (res.code === 200) {
+    sqlTemplate.value = res.data;
+    message.success("Select 模板生成成功，4 秒内无法再次点击");
   }
 };
 </script>

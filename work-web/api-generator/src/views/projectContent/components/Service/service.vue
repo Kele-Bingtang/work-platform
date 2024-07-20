@@ -28,7 +28,7 @@ const projectInfo = inject(ProjectKey);
 const initRequestParam = reactive({ categoryId: "", projectId: "" });
 
 watch(
-  () => unref(projectInfo),
+  () => [unref(projectInfo), props.categoryId],
   () => {
     initRequestParam.projectId = unref(projectInfo)?.projectId || "";
     initRequestParam.categoryId = props.categoryId;

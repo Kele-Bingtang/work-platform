@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.service;
 
 import cn.youngkbt.ag.system.model.dto.ReportDTO;
 import cn.youngkbt.ag.system.model.po.Report;
+import cn.youngkbt.ag.system.model.vo.ReportDataVO;
 import cn.youngkbt.ag.system.model.vo.ReportVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -53,6 +54,7 @@ public interface ReportService extends IService<Report> {
 
     /**
      * 根据项目 ID 删除报表
+     *
      * @param projectId 项目 ID
      * @return 是否删除成功
      */
@@ -60,6 +62,7 @@ public interface ReportService extends IService<Report> {
 
     /**
      * 根据团队 ID 删除报表
+     *
      * @param teamId 团队 ID
      * @return 是否删除成功
      */
@@ -72,5 +75,13 @@ public interface ReportService extends IService<Report> {
      * @return 报表标题是否唯一
      */
     boolean checkReportTitleUnique(ReportDTO reportDTO);
-    
+
+    /**
+     * 获取报表配置信息
+     *
+     * @param serviceId 服务 ID
+     * @return 报表配置信息
+     */
+    ReportDataVO listReportConfig(String serviceId);
+
 }

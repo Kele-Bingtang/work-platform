@@ -47,7 +47,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     private final CategoryService categoryService;
     private final ServiceInfoService serviceInfoService;
     private final ServiceColService serviceColService;
-    private final ReportService reportService;
 
 
     @Override

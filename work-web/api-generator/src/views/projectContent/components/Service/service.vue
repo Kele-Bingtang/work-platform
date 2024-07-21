@@ -47,7 +47,16 @@ const columns: TableColumnProps[] = [
       onClick: ({ row }) => router.push(`/service/${row.serviceId}/${row.serviceName}`),
     },
   },
-  { prop: "reportTitle", label: "报表名称", width: 180 },
+  {
+    prop: "reportTitle",
+    label: "报表名称",
+    width: 180,
+    link: true,
+    linkProps: {
+      type: "info",
+      onClick: ({ row }) => window.open(`/report/${row.serviceId}/${row.reportTitle}`),
+    },
+  },
   { prop: "status", label: "接口状态", width: 100 },
   {
     prop: "serviceUrl",

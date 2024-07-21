@@ -51,7 +51,7 @@ public class Report extends BaseDO {
     /**
      * 是否允许删除（0 不允许，1 允许）
      */
-    private Integer allowDelete;
+    private Integer allowRemove;
 
     /**
      * 是否允许查询（0 不允许，1 允许）
@@ -84,12 +84,22 @@ public class Report extends BaseDO {
     private Integer chartType;
 
     /**
+     * 目录 ID
+     */
+    private String categoryId;
+
+    /**
+     * 服务 ID
+     */
+    private String serviceId;
+
+    /**
      * 项目 ID
      */
     private String projectId;
     
     /**
-     * 服务 ID
+     * 团队 ID
      */
-    private String serviceId;
+    private String teamId;
 }

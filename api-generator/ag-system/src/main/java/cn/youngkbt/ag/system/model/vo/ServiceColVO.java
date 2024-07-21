@@ -120,7 +120,7 @@ public class ServiceColVO implements Serializable {
     /**
      * 报表的增删改弹出框，该字段的输入框宽度，-1 为 auto，其他为准确的数值 + px
      */
-    private Integer detailColWidth;
+    private Integer detailColSpan;
 
     /**
      * 报表显示的列对齐（0 为左对齐 1 为居中 2 为右对齐）

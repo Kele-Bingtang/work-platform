@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 public enum QueryFilterType {
 
+    NO_FILTER(0, ""),
     EQUAL(1, " = '{val}'"),
     NOT_EQUAL(2, " != '{val}'"),
     LEFT_LIKE(3, " LIKE '%{val}'"),

@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author Kele-Bingtang
@@ -17,6 +18,7 @@ import lombok.Data;
  */
 @Data
 @AutoMapper(target = Report.class, reverseConvertGenerate = false)
+@Accessors(chain = true)
 public class ReportDTO {
     /**
      * 主键
@@ -56,7 +58,7 @@ public class ReportDTO {
      * 是否允许删除（0 不允许，1 允许）
      */
     @IncludeValid(value = {"0", "1"}, message = "是否允许删除配置不能为空")
-    private Integer allowDelete;
+    private Integer allowRemove;
 
     /**
      * 是否允许查询（0 不允许，1 允许）
@@ -94,14 +96,26 @@ public class ReportDTO {
     private Integer chartType;
 
     /**
-     * 项目 ID
+     * 目录 ID
      */
-    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.EditGroup.class})
-    private String projectId;
+    @NotBlank(message = "目录 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String categoryId;
 
     /**
      * 服务 ID
      */
     @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
     private String serviceId;
+
+    /**
+     * 项目 ID
+     */
+    @NotBlank(message = "项目 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String projectId;
+
+    /**
+     * 团队 ID
+     */
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String teamId;
 }

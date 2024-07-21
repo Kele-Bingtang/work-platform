@@ -10,6 +10,7 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.StringUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,9 @@ public class ApiController {
     private final ApiService apiService;
 
     @GetMapping(value = "/one/**")
-    public Response<LinkedHashMap<String, Object>> getOne(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
-                                                          HttpServletRequest request) {
-        Map<String, Object> requestParamsMap = this.getParameterMap(request);
+    @Operation(summary = "查询一笔数据", description = "查询一笔数据")
+    public Response<LinkedHashMap<String, Object>> getOne(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request) {
+        Map<String, Object> requestParamsMap = getParameterMap(request);
         String secretKeyParam = (String) requestParamsMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -50,9 +51,9 @@ public class ApiController {
     }
 
     @GetMapping(value = "/list/**")
-    public Response<List<LinkedHashMap<String, Object>>> list(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
-                                                              HttpServletRequest request) {
-        Map<String, Object> requestParamsMap = this.getParameterMap(request);
+    @Operation(summary = "查询多笔数据", description = "查询多笔数据")
+    public Response<List<LinkedHashMap<String, Object>>> list(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request) {
+        Map<String, Object> requestParamsMap = getParameterMap(request);
         String secretKeyParam = (String) requestParamsMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -66,9 +67,9 @@ public class ApiController {
     }
 
     @GetMapping(value = "/page/**")
-    public Response<TablePage<LinkedHashMap<String, Object>>> page(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
-                                                                   @RequestParam Map<String, Object> requestParamsMap,
-                                                                   PageQuery pageQuery) {
+    @Operation(summary = "查询分页数据", description = "查询分页数据")
+    public Response<TablePage<LinkedHashMap<String, Object>>> page(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, 
+                                                                   @RequestParam Map<String, Object> requestParamsMap, PageQuery pageQuery) {
         String secretKeyParam = (String) requestParamsMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -82,10 +83,26 @@ public class ApiController {
         return HttpResult.ok(list);
     }
 
+    @GetMapping(value = "/listByServiceId/{serviceId}")
+    @Operation(summary = "通过服务 ID 查询多笔数据", description = "通过服务 ID 查询多笔数据")
+    public Response<List<LinkedHashMap<String, Object>>> listByServiceId(@PathVariable String serviceId, HttpServletRequest request) {
+        Map<String, Object> dataMap = getParameterMap(request);
+        List<LinkedHashMap<String, Object>> dataList = apiService.listByServiceId(serviceId, dataMap);
+        return HttpResult.ok(dataList);
+    }
+
+    @GetMapping(value = "/pageByServiceId/{serviceId}")
+    @Operation(summary = "通过服务 ID 查询多笔数据（分页）", description = "通过服务 ID 查询多笔数据（分页）")
+    public Response<TablePage<LinkedHashMap<String, Object>>> pageByServiceId(@PathVariable String serviceId, PageQuery pageQuery, HttpServletRequest request) {
+        Map<String, Object> dataMap = getParameterMap(request);
+        TablePage<LinkedHashMap<String, Object>> dataList = apiService.pageByServiceId(serviceId, pageQuery, dataMap);
+        return HttpResult.ok(dataList);
+    }
+
     @PostMapping("/{operateType}/**")
-    public Response<Integer> operate(@PathVariable String operateType, @RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
-                                     HttpServletRequest request) {
-        Map<String, Object> dataMap = this.getParameterMap(request);
+    @Operation(summary = "操作数据", description = "操作数据")
+    public Response<Integer> operate(@PathVariable String operateType, @RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request) {
+        Map<String, Object> dataMap = getParameterMap(request);
         String secretKeyParam = (String) dataMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -103,6 +120,13 @@ public class ApiController {
             return HttpResult.ok(result);
         }
         return HttpResult.okMessage(operateType + " 了 " + result + " 笔数据");
+    }
+
+    @PostMapping(value = "/operate/{operateType}/{serviceId}")
+    @Operation(summary = "通过服务 ID 操作数据", description = "通过服务 ID 操作数据")
+    public Response<Integer> operateByServiceId(@PathVariable String operateType, @PathVariable String serviceId, HttpServletRequest request) {
+        Integer result = apiService.operateByServiceId(operateType, serviceId, getJson(request).get(0));
+        return HttpResult.ok(result);
     }
 
     /**

@@ -39,7 +39,7 @@ export type SearchProps = {
   key?: string; // 当搜索项 key 不为 prop 属性时，可通过 key 指定
   order?: number; // 搜索项排序（从大到小）
   span?: number; // 搜索项所占用的列数，默认为 1 列
-  offset?: number; // 搜索字段左侧偏移列数
+  offset?: number; // 搜索字段左侧偏移列数w
   defaultValue?:
     | ValueType
     | ((model: any, enumMap: Map<string, Record<string, any>>) => ValueType | any)

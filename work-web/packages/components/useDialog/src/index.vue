@@ -31,7 +31,7 @@
       </slot>
     </template>
 
-    <ElScrollbar :style="dialogStyle">
+    <ElScrollbar :height="dialogHeight" :maxHeight>
       <slot></slot>
     </ElScrollbar>
 
@@ -61,6 +61,7 @@ interface WorkDialogProps {
   fullscreen?: boolean; // 是否默认全屏，默认 false
   fullscreenIcon?: boolean; // 是否渲染全屏图标，默认 true
   height?: string | number; // 内容高度，默认 400px
+  maxHeight?: string | number; // 内容最大高度
   confirmLabel?: string; // 确认按钮文字，默认 确认
   closeLabel?: string; // 关闭按钮文字，默认 关闭
 }

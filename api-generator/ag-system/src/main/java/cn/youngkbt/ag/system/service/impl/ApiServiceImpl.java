@@ -2,6 +2,10 @@ package cn.youngkbt.ag.system.service.impl;
 
 import cn.youngkbt.ag.core.enums.QueryFilterType;
 import cn.youngkbt.ag.core.helper.SqlHelper;
+import cn.youngkbt.ag.system.mapper.DataSourceMapper;
+import cn.youngkbt.ag.system.mapper.ProjectMapper;
+import cn.youngkbt.ag.system.mapper.ServiceColMapper;
+import cn.youngkbt.ag.system.mapper.ServiceInfoMapper;
 import cn.youngkbt.ag.system.mapper.base.SQLExecuteMapper;
 import cn.youngkbt.ag.system.model.bo.BatchOperateBO;
 import cn.youngkbt.ag.system.model.bo.ColumnBO;
@@ -11,9 +15,6 @@ import cn.youngkbt.ag.system.model.po.Project;
 import cn.youngkbt.ag.system.model.po.ServiceCol;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.service.ApiService;
-import cn.youngkbt.ag.system.service.DataSourceService;
-import cn.youngkbt.ag.system.service.ProjectService;
-import cn.youngkbt.ag.system.service.ServiceInfoService;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
@@ -43,11 +44,10 @@ import static cn.youngkbt.ag.core.constant.ColumnConstant.*;
 @RequiredArgsConstructor
 @Slf4j
 public class ApiServiceImpl implements ApiService {
-    private final ProjectService projectService;
-    private final ServiceInfoService serviceInfoService;
-    private final ServiceColServiceImpl serviceColService;
-    private final DataSourceService dataSourceService;
-
+    private final DataSourceMapper dataSourceMapper;
+    private final ProjectMapper projectMapper;
+    private final ServiceColMapper serviceColMapper;
+    private final ServiceInfoMapper serviceInfoMapper;
     private final SQLExecuteMapper sqlExecuteMapper;
 
     @Override
@@ -63,13 +63,14 @@ public class ApiServiceImpl implements ApiService {
         DataSourceHelper.use(serviceInfo.getDataSourceId());
 
         // 获取服务列配置项信息
-        List<ServiceCol> serviceColList = serviceColService.list(Wrappers.<ServiceCol>lambdaQuery()
+        List<ServiceCol> serviceColList = serviceColMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
                 .eq(ServiceCol::getServiceId, serviceInfo.getServiceId()));
         Assert.isTrue(!ListUtil.isEmpty(serviceColList), "不存在列配置项");
 
         String selectSql = serviceInfo.getSelectSql();
         // 降级处理
         if (StringUtil.hasEmpty(selectSql)) {
+            DataSourceHelper.close();
             return getBreakingRespond(serviceInfo.getBreakingRespond());
         }
 
@@ -77,25 +78,26 @@ public class ApiServiceImpl implements ApiService {
 
         if (Objects.nonNull(limit)) {
             // 查询数据源信息
-            DataSource dataSource = dataSourceService.getOne(Wrappers.<DataSource>lambdaQuery()
+            DataSource dataSource = dataSourceMapper.selectOne(Wrappers.<DataSource>lambdaQuery()
                     .eq(DataSource::getDataSourceId, serviceInfo.getDataSourceId()));
             fullSelectSql = SqlHelper.addLimitToSql(fullSelectSql, limit, dataSource.getDataSourceType());
         }
 
-        List<LinkedHashMap<String, Object>> linkedHashMap = null;
+        List<LinkedHashMap<String, Object>> linkedHashMap;
         try {
             linkedHashMap = sqlExecuteMapper.executeSelectList(fullSelectSql, requestParamsMap);
         } catch (Exception e) {
             log.info("SQL 执行失败：", e);
+            DataSourceHelper.close();
             // SQL 执行失败，则执行降级处理
             return getBreakingRespond(serviceInfo.getBreakingRespond());
         }
+        DataSourceHelper.close();
 
         if (ListUtil.isEmpty(linkedHashMap)) {
             return new ArrayList<>();
         }
 
-        DataSourceHelper.close();
 
         return processMapping(linkedHashMap, serviceColList);
     }
@@ -107,23 +109,25 @@ public class ApiServiceImpl implements ApiService {
         DataSourceHelper.use(serviceInfo.getDataSourceId());
 
         // 获取服务列配置项信息
-        List<ServiceCol> serviceColList = serviceColService.list(Wrappers.<ServiceCol>lambdaQuery()
+        List<ServiceCol> serviceColList = serviceColMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
                 .eq(ServiceCol::getServiceId, serviceInfo.getServiceId()));
         Assert.isTrue(!ListUtil.isEmpty(serviceColList), "不存在列配置项");
 
         String selectSql = serviceInfo.getSelectSql();
         // 降级处理
         if (Objects.isNull(selectSql)) {
+            DataSourceHelper.close();
             return TablePage.build(getBreakingRespond(serviceInfo.getBreakingRespond()));
         }
 
         String fullSelectSql = getFullSelectSql(selectSql, requestParamsMap, serviceColList);
 
-        Page<LinkedHashMap<String, Object>> linkedHashMapPage = null;
+        Page<LinkedHashMap<String, Object>> linkedHashMapPage;
         try {
             linkedHashMapPage = sqlExecuteMapper.executeSelectPage(pageQuery.buildPage(), fullSelectSql, requestParamsMap);
         } catch (Exception e) {
             log.info("SQL 执行失败：", e);
+            DataSourceHelper.close();
             // SQL 执行失败，则执行降级处理
             return TablePage.build(getBreakingRespond(serviceInfo.getBreakingRespond()));
         }
@@ -137,6 +141,25 @@ public class ApiServiceImpl implements ApiService {
         return TablePage.build(linkedHashMapPage);
     }
 
+    @Override
+    public List<LinkedHashMap<String, Object>> listByServiceId(String serviceId, Map<String, Object> dataMap) {
+        ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
+                .eq(ServiceInfo::getServiceId, serviceId));
+        Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
+                .eq(Project::getProjectId, serviceInfo.getProjectId()));
+        return list(serviceInfo.getFullUrl(), project.getSecretKey(), dataMap, null);
+    }
+
+    @Override
+    public TablePage<LinkedHashMap<String, Object>> pageByServiceId(String serviceId, PageQuery pageQuery, Map<String, Object> dataMap) {
+        ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
+                .eq(ServiceInfo::getServiceId, serviceId));
+        Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
+                .eq(Project::getProjectId, serviceInfo.getProjectId()));
+
+        return page(serviceInfo.getFullUrl(), project.getSecretKey(), dataMap, pageQuery);
+    }
+
     /**
      * 验证项目，获取服务信息
      *
@@ -145,7 +168,7 @@ public class ApiServiceImpl implements ApiService {
      * @return 服务信息
      */
     private ServiceInfo checkThenGetService(String requestUri, String secretKey) {
-        Project project = projectService.getOne(Wrappers.<Project>lambdaQuery()
+        Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getSecretKey, secretKey));
         Assert.nonNull(project, "项目不存在");
         Assert.isTrue(Objects.nonNull(project) && Objects.equals(project.getStatus(), STATUS_NORMAL), "该项目已被禁用");
@@ -160,7 +183,7 @@ public class ApiServiceImpl implements ApiService {
 
         Assert.isTrue(projectUrl.equals(baseUrl), "服务链接和项目密钥不匹配");
 
-        ServiceInfo serviceInfo = serviceInfoService.getOne(Wrappers.<ServiceInfo>lambdaQuery()
+        ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getProjectId, project.getProjectId())
                 .eq(ServiceInfo::getServiceUrl, serviceUrl)
         );
@@ -217,10 +240,13 @@ public class ApiServiceImpl implements ApiService {
      * @return where 后的查询 sql
      */
     private String getQuerySql(Map<String, Object> requestParamsMap, List<ServiceCol> serviceColList) {
+        LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>(requestParamsMap);
+        linkedHashMap.remove("pageNum");
+        linkedHashMap.remove("pageSize");
         StringBuilder querySql = new StringBuilder();
-        for (Map.Entry<String, Object> entry : requestParamsMap.entrySet()) {
+        for (Map.Entry<String, Object> entry : linkedHashMap.entrySet()) {
             for (ServiceCol serviceCol : serviceColList) {
-                if (!serviceCol.getJsonCol().equals(entry.getKey()) || (Objects.isNull(serviceCol.getQueryFilter()) || serviceCol.getQueryFilter() == 0)) {
+                if (!entry.getKey().contains(serviceCol.getJsonCol()) || (Objects.isNull(serviceCol.getQueryFilter()) || serviceCol.getQueryFilter().equals(QueryFilterType.NO_FILTER.getIndex()))) {
                     continue;
                 }
 
@@ -310,7 +336,7 @@ public class ApiServiceImpl implements ApiService {
         DataSourceHelper.use(serviceInfo.getDataSourceId());
 
         // 获取服务列配置项信息
-        List<ServiceCol> serviceColList = serviceColService.list(Wrappers.<ServiceCol>lambdaQuery()
+        List<ServiceCol> serviceColList = serviceColMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
                 .eq(ServiceCol::getServiceId, serviceInfo.getServiceId()));
         Assert.isTrue(!ListUtil.isEmpty(serviceColList), "不存在列配置项");
 
@@ -332,6 +358,16 @@ public class ApiServiceImpl implements ApiService {
 
         // 批量模式，仅限 application/json 数组
         return processMultipleData(operateType, serviceInfo, serviceColList, jsonList, defaultValueMap);
+    }
+
+    @Override
+    public Integer operateByServiceId(String operateType, String serviceId, Map<String, Object> dataMap) {
+        ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
+                .eq(ServiceInfo::getServiceId, serviceId));
+        Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
+                .eq(Project::getProjectId, serviceInfo.getProjectId()));
+
+        return operate(operateType, serviceInfo.getFullUrl(), project.getSecretKey(), dataMap, null);
     }
 
     /**

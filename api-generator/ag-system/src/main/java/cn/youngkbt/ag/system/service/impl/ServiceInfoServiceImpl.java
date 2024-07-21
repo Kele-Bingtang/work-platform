@@ -1,13 +1,14 @@
 package cn.youngkbt.ag.system.service.impl;
 
 import cn.youngkbt.ag.core.helper.AgHelper;
+import cn.youngkbt.ag.system.mapper.ProjectMapper;
 import cn.youngkbt.ag.system.mapper.ServiceInfoMapper;
 import cn.youngkbt.ag.system.model.dto.ReportDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
+import cn.youngkbt.ag.system.model.po.Project;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
-import cn.youngkbt.ag.system.service.DataSourceService;
 import cn.youngkbt.ag.system.service.ReportService;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.ag.system.service.ServiceInfoService;
@@ -38,7 +39,7 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
 
     private final ReportService reportService;
     private final ServiceColService serviceColService;
-    private final DataSourceService dataSourceService;
+    private final ProjectMapper projectMapper;
 
     @Override
     public ServiceInfoVO getByServiceId(String serviceId) {
@@ -74,10 +75,17 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
     @Transactional(rollbackFor = Exception.class)
     public boolean addService(ServiceInfoDTO serviceInfoDTO) {
         ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoDTO, ServiceInfo.class);
+        
+        Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
+                .eq(Project::getProjectId, serviceInfo.getProjectId()));
+        
+        serviceInfo.setFullUrl(project.getBaseUrl() + serviceInfo.getServiceUrl());
+
         // 如果没有设置报表标题，则默认为服务名称
         if (StringUtil.hasEmpty(serviceInfo.getReportTitle())) {
             serviceInfo.setReportTitle(serviceInfo.getServiceName());
         }
+
         int result = baseMapper.insert(serviceInfo);
 
         if (result != 0) {

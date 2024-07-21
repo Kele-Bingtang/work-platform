@@ -180,7 +180,7 @@ export interface ProTableProps extends /* @vue-ignore */ Partial<Omit<TableProps
   searchCols?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
   searchProps?: Omit<ProSearchProps, "schema" | "searchCols" | "modeValue">; // ProSearch 配置项
   // 搜索模式，search 使用 ProSearch 组件，filter 开启表格筛选功能，useFilter 启用所有表格筛选功能，不管也没有配置 search。all 两个都使用。allAndUseFilter 两个都使用的同时，默认启用所有表格筛选功能
-  searchModel?: "search" | "filter" | "useFilter" | "all" | "allAndUseFilter";
+  searchModel?: "" | "search" | "filter" | "useFilter" | "all" | "allAndUseFilter";
   filterRule?: "front" | "back"; // 过滤规则：前端筛选还是后端筛选，默认后端筛选
   editRow?: number; // 允许最大编辑的行数，默认 undefined，没有限制
   rowClickEdit?: boolean; // 单击行激活行内编辑

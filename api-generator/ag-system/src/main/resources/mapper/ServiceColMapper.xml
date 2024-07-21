@@ -24,7 +24,7 @@
             <result property="allowShowInDetail" column="allow_show_in_detail" jdbcType="TINYINT"/>
             <result property="displaySeq" column="display_seq" jdbcType="INTEGER"/>
             <result property="reportColWidth" column="report_col_width" jdbcType="INTEGER"/>
-            <result property="detailColWidth" column="detail_col_width" jdbcType="INTEGER"/>
+            <result property="detailColSpan" column="detail_col_width" jdbcType="INTEGER"/>
             <result property="colAlign" column="col_align" jdbcType="TINYINT"/>
             <result property="dropdownValue" column="dropdown_value" jdbcType="VARCHAR"/>
             <result property="dropdownService" column="dropdown_service" jdbcType="VARCHAR"/>

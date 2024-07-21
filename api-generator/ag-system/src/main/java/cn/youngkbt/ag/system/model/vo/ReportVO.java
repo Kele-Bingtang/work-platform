@@ -45,7 +45,7 @@ public class ReportVO implements Serializable {
     /**
      * 是否允许删除（0 不允许，1 允许）
      */
-    private Integer allowDelete;
+    private Integer allowRemove;
 
     /**
      * 是否允许查询（0 不允许，1 允许）
@@ -78,14 +78,24 @@ public class ReportVO implements Serializable {
     private Integer chartType;
 
     /**
-     * 项目 ID
+     * 目录 ID
      */
-    private String projectId;
-    
+    private String categoryId;
+
     /**
      * 服务 ID
      */
     private String serviceId;
+
+    /**
+     * 项目 ID
+     */
+    private String projectId;
+
+    /**
+     * 团队 ID
+     */
+    private String teamId;
 
     @Serial
     private static final long serialVersionUID = 1L;

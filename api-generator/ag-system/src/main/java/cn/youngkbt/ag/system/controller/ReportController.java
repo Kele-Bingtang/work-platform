@@ -1,6 +1,7 @@
 package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.ReportDTO;
+import cn.youngkbt.ag.system.model.vo.ReportDataVO;
 import cn.youngkbt.ag.system.model.vo.ReportVO;
 import cn.youngkbt.ag.system.permission.annotation.ProjectAuthorize;
 import cn.youngkbt.ag.system.service.ReportService;
@@ -42,4 +43,12 @@ public class ReportController {
 
         return HttpResult.okOrFail(reportService.editReport(reportDTO));
     }
+
+    @GetMapping(value = "/listReportConfig/{serviceId}")
+    @Operation(summary = "查询报表数据", description = "查询报表数据")
+    public Response<ReportDataVO> listReport(@PathVariable String serviceId) {
+        ReportDataVO reportDataVO = reportService.listReportConfig(serviceId);
+        return HttpResult.ok(reportDataVO);
+    }
+    
 }

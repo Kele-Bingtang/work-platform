@@ -125,7 +125,6 @@ export const rolesRoutes: RouterConfigRaw[] = [
     meta: {
       title: route => route.params.projectName + "",
       hideInMenu: true,
-      icon: HomeFilled,
     },
   },
 
@@ -136,7 +135,17 @@ export const rolesRoutes: RouterConfigRaw[] = [
     meta: {
       title: route => route.params.serviceName + "",
       hideInMenu: true,
-      icon: HomeFilled,
+    },
+  },
+
+  {
+    path: "/report/:serviceId/:reportName",
+    name: "Report",
+    component: "/report/index",
+    meta: {
+      title: route => route.params.reportName + "",
+      hideInMenu: true,
+      isFull: true,
     },
   },
 

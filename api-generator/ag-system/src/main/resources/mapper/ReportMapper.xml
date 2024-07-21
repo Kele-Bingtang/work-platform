@@ -11,7 +11,7 @@
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="allowAdd" column="allow_add" jdbcType="TINYINT"/>
             <result property="allowEdit" column="allow_edit" jdbcType="TINYINT"/>
-            <result property="allowDelete" column="allow_delete" jdbcType="TINYINT"/>
+            <result property="allowRemove" column="allow_remove" jdbcType="TINYINT"/>
             <result property="allowFilter" column="allow_filter" jdbcType="TINYINT"/>
             <result property="allowExport" column="allow_export" jdbcType="TINYINT"/>
             <result property="allowRow" column="allow_row" jdbcType="TINYINT"/>
@@ -32,7 +32,7 @@
     <sql id="Base_Column_List">
         id,report_id,report_title,
         description,allow_add,allow_edit,
-        allow_delete,allow_filter,allow_export,
+        allow_remove,allow_filter,allow_export,
         allow_row,dialog_width,page_size,
         chart_type,create_by,create_by_id,
         create_time,update_by,update_by_id,

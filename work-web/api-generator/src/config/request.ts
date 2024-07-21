@@ -123,10 +123,9 @@ class RequestHttp {
         // 如果后台自动续期 Token，则更新
         if (response.headers && response.headers["jwt-token"]) userStore.setToken(response.headers["jwt-token"]);
 
-        //  登陆失效（code == 401）
+        //  登陆失效（code == 7000）
         if (data.code && data.code === ResultEnum.LOGIN) {
           message.error(data.message);
-          userStore.tryLogout();
           router.replace(LOGIN_URL);
           return Promise.reject(data);
         }

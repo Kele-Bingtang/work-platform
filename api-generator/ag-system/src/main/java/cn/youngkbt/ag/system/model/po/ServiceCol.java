@@ -84,6 +84,7 @@ public class ServiceCol extends BaseNoLogicDO {
      * 8 为 le，即小于等于
      * 9 为 ge，即大于等于
      * 10 为 value range，即值范围查询
+     * 11 为 in
      */
     private Integer queryFilter;
 
@@ -130,7 +131,7 @@ public class ServiceCol extends BaseNoLogicDO {
     /**
      * 报表的增删改弹出框，该字段的输入框宽度，-1 为 auto，其他为准确的数值 + px
      */
-    private Integer detailColWidth;
+    private Integer detailColSpan;
 
     /**
      * 报表显示的列对齐（0 为左对齐 1 为居中 2 为右对齐）

@@ -44,6 +44,7 @@ export interface WorkDialogProps extends Partial<DialogProps> {
   fullscreen?: boolean; // 是否默认全屏，默认 false
   fullscreenIcon?: boolean; // 是否渲染全屏图标，默认 true
   height?: string | number; // 内容高度，默认 400px
+  maxHeight?: string | number; // 内容最大高度
 }
 
 /**
@@ -126,17 +127,13 @@ export const showDialog = (dialogProps: WorkDialogProps, component?: Component, 
           default: () => {
             if (dialogProps.render) {
               return (
-                <ElScrollbar
-                  style={{
-                    height: unref(contentHeight),
-                  }}
-                >
+                <ElScrollbar height={unref(contentHeight)} maxHeight={dialogProps.maxHeight}>
                   {dialogProps.render()}
                 </ElScrollbar>
               );
             }
             return (
-              <ElScrollbar style={{ height: unref(contentHeight) }}>
+              <ElScrollbar height={unref(contentHeight)} maxHeight={dialogProps.maxHeight}>
                 <component is={component} {...componentsProps}></component>
               </ElScrollbar>
             );

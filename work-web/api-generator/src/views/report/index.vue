@@ -8,17 +8,20 @@
     :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
     :disabled-button="reportInfo?.allowExport == 0 ? ['export'] : []"
     :page-config="{ pageSize: reportInfo?.pageSize || 20 }"
+    :exportFile
     class="p-3 bg-[#f0f2f5]"
   ></ProTable>
 </template>
 
 <script setup lang="ts" name="Report">
-import { ProTable, type DialogForm, type DialogFormSchemaProps } from "work";
+import { ProTable, downloadByData, type DialogForm, type DialogFormSchemaProps } from "work";
 import { listReportConfig, type Report } from "@/api/report";
-import { pageByServiceId, operateByServiceId } from "@/api/api";
+import { pageByServiceId, operateByServiceId, exportExcel } from "@/api/api";
+import { ElMessageBox } from "element-plus";
 
 const route = useRoute();
 const serviceId = computed(() => (route.params.serviceId as string) || "");
+const reportName = computed(() => (route.params.reportName as string) || "");
 
 const reportInfo = ref<Report.ReportInfo>();
 const columns = ref<Record<string, any>[]>([]);
@@ -27,6 +30,14 @@ const schema = ref<Record<string, any>[]>([]);
 const initRequestParam = reactive({
   serviceId: unref(serviceId),
 });
+
+const exportFile = (_: Record<string, any>[], searchParam: Record<string, any>) => {
+  ElMessageBox.confirm("确认导出吗？", "温馨提示", { type: "warning" }).then(() => {
+    exportExcel(unref(serviceId), searchParam).then(res => {
+      downloadByData(res, `${unref(reportName)}_${new Date().getTime()}.xlsx`);
+    });
+  });
+};
 
 const dialogForm: DialogForm = reactive({
   formProps: {

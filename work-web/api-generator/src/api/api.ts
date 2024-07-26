@@ -14,3 +14,7 @@ export const operateByServiceId = (data: Record<string, any>) => {
   delete data.serviceId;
   return http.post<http.Response<Record<string, any>>[]>(`${baseUri}/operate/${operateType}/${serviceId}`, data);
 };
+
+export const exportExcel = (serviceId: string, params: Record<string, any>) => {
+  return http.post<any>(`${baseUri}/export/${serviceId}`, params, { responseType: "blob" });
+};

@@ -139,6 +139,17 @@ export const rolesRoutes: RouterConfigRaw[] = [
   },
 
   {
+    path: "/serviceQuery/:serviceId/:serviceName",
+    name: "ServiceQuery",
+    component: "/serviceQuery/index",
+    meta: {
+      title: route => route.params.serviceName + "",
+      hideInMenu: true,
+      isFull: true,
+    },
+  },
+
+  {
     path: "/report/:serviceId/:reportName",
     name: "Report",
     component: "/report/index",

@@ -7,7 +7,13 @@
       :requestAuto="false"
       :dialogForm
       :search-cols="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
-    ></ProTable>
+    >
+      <template #operationExtra="{ row }">
+        <el-button link type="info" size="small" :icon="Search" @click="handleSearchServiceData(row)">
+          服务查询
+        </el-button>
+      </template>
+    </ProTable>
   </div>
 </template>
 
@@ -15,14 +21,20 @@
 import { listServicePage, addService, editService, removeService, type Service } from "@/api/service";
 import { ProjectKey } from "@/config/symbol";
 import { ElTooltip, ElTag } from "element-plus";
-import { ProTable, useDesign, type DialogForm, type DialogFormSchemaProps, type TableColumnProps } from "work";
+import { ProTable, message, Point, type DialogForm, type DialogFormSchemaProps, type TableColumnProps } from "work";
+import { useDesign, useClipboard } from "@work/hooks";
+import { Search } from "@element-plus/icons-vue";
+import { useDictStore } from "@/stores";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("service");
 
+const { copy } = useClipboard();
+
 const props = defineProps<{ categoryId: string }>();
 
 const router = useRouter();
+const { getDictData } = useDictStore();
 
 const projectInfo = inject(ProjectKey);
 const initRequestParam = reactive({ categoryId: "", projectId: "" });
@@ -34,6 +46,20 @@ watch(
     initRequestParam.categoryId = props.categoryId;
   }
 );
+
+const handleSearchServiceData = (row: Service.ServiceInfo) => {
+  window.open(`/serviceQuery/${row.serviceId}/${row.serviceName}`);
+};
+
+const handleCopyLink = (row: Service.ServiceInfo) => {
+  copy(`${import.meta.env.VITE_API_URL}/generic-api${unref(projectInfo)?.baseUrl}/${row.serviceUrl}`);
+  message.success("复制成功");
+};
+
+const statusColor = {
+  0: "var(--el-color-info)",
+  1: "var(--el-color-primary)",
+};
 
 const columns: TableColumnProps[] = [
   { type: "index", label: "#", width: 80 },
@@ -57,13 +83,23 @@ const columns: TableColumnProps[] = [
       onClick: ({ row }) => window.open(`/report/${row.serviceId}/${row.reportTitle}`),
     },
   },
-  { prop: "status", label: "接口状态", width: 100 },
+  {
+    prop: "status",
+    label: "接口状态",
+    width: 100,
+    enum: () => getDictData("sys_normal_status"),
+    fieldNames: { value: "dictValue", label: "dictLabel" },
+    search: { el: "el-select" },
+    render: ({ row }) => <Point color={statusColor[row.status]} text={row._enum.status} />,
+  },
   {
     prop: "serviceUrl",
     label: "接口地址",
     render: ({ row }) => (
-      <ElTooltip effect="dark" content="复制接口相对地址" placement="top">
-        <ElTag type="primary">{row.serviceUrl}</ElTag>
+      <ElTooltip effect="dark" content="点击复制完整地址" placement="top">
+        <ElTag type="primary" onClick={() => handleCopyLink(row)} class="cursor-pointer">
+          {row.serviceUrl}
+        </ElTag>
       </ElTooltip>
     ),
   },

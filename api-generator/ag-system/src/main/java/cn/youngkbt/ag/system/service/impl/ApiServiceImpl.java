@@ -17,7 +17,9 @@ import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.service.ApiService;
 import cn.youngkbt.core.error.Assert;
 import cn.youngkbt.core.exception.ServerException;
+import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
+import cn.youngkbt.excel.helper.ExcelHelper;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import cn.youngkbt.utils.JacksonUtil;
@@ -25,6 +27,7 @@ import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -142,22 +145,67 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public List<LinkedHashMap<String, Object>> listByServiceId(String serviceId, Map<String, Object> dataMap) {
+    public List<LinkedHashMap<String, Object>> listByServiceId(String serviceId, Map<String, Object> requestParamsMap) {
         ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getServiceId, serviceId));
         Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getProjectId, serviceInfo.getProjectId()));
-        return list(serviceInfo.getFullUrl(), project.getSecretKey(), dataMap, null);
+        return list(serviceInfo.getFullUrl(), project.getSecretKey(), requestParamsMap, null);
     }
 
     @Override
-    public TablePage<LinkedHashMap<String, Object>> pageByServiceId(String serviceId, PageQuery pageQuery, Map<String, Object> dataMap) {
+    public TablePage<LinkedHashMap<String, Object>> pageByServiceId(String serviceId, PageQuery pageQuery, Map<String, Object> requestParamsMap) {
         ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getServiceId, serviceId));
         Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getProjectId, serviceInfo.getProjectId()));
 
-        return page(serviceInfo.getFullUrl(), project.getSecretKey(), dataMap, pageQuery);
+        return page(serviceInfo.getFullUrl(), project.getSecretKey(), requestParamsMap, pageQuery);
+    }
+
+    @Override
+    public void export(String serviceId, PageQuery pageQuery, Map<String, Object> requestParamsMap, HttpServletResponse response) {
+        ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
+                .eq(ServiceInfo::getServiceId, serviceId));
+        
+        // 验证项目，获取服务信息
+        DataSourceHelper.use(serviceInfo.getDataSourceId());
+
+        // 获取服务列配置项信息
+        List<ServiceCol> serviceColList = serviceColMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, serviceInfo.getServiceId()));
+        Assert.isTrue(!ListUtil.isEmpty(serviceColList), "不存在列配置项");
+
+        String selectSql = serviceInfo.getSelectSql();
+        if (Objects.isNull(selectSql)) {
+            DataSourceHelper.close();
+            throw new ServiceException("SQL 为空，无法导出");
+        }
+
+        String fullSelectSql = getFullSelectSql(selectSql, requestParamsMap, serviceColList);
+
+        Page<LinkedHashMap<String, Object>> linkedHashMapPage;
+        try {
+            linkedHashMapPage = sqlExecuteMapper.executeSelectPage(pageQuery.buildPage(), fullSelectSql, requestParamsMap);
+        } catch (Exception e) {
+            log.info("SQL 执行失败：", e);
+            DataSourceHelper.close();
+            throw new ServiceException("SQL 为空，无法导出");
+        }
+
+        List<LinkedHashMap<String, Object>> linkedHashMapList = linkedHashMapPage.getRecords();
+
+        List<LinkedHashMap<String, Object>> processMappingList = processMapping(linkedHashMapList, serviceColList);
+        DataSourceHelper.close();
+
+        // 构建导出的表头
+        List<List<String>> headerListList = new ArrayList<>();
+        serviceColList.forEach(serviceCol -> headerListList.add(ListUtil.newArrayList(serviceCol.getReportCol())));
+
+        // 构建导出的列表
+        List<List<Object>> dataList = processMappingList.stream().map(linkedHashMap -> linkedHashMap.values().stream().toList()).toList();
+
+        ExcelHelper.exportExcel(dataList, serviceInfo.getServiceName(), headerListList, response);
     }
 
     /**

@@ -13,6 +13,7 @@ import cn.youngkbt.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ import java.util.*;
 public class ApiController {
 
     private final ApiService apiService;
+    private final String BASE_URI = "/generic-api";
 
     @GetMapping(value = "/one/**")
     @Operation(summary = "查询一笔数据", description = "查询一笔数据")
@@ -45,7 +47,7 @@ public class ApiController {
         } else if (StringUtil.hasText(secretKeyParam)) {
             secretKey = secretKeyParam;
         }
-        String apiUri = requestUri.substring("/generic-api/one".length());
+        String apiUri = requestUri.substring((BASE_URI + "/one").length());
         LinkedHashMap<String, Object> one = apiService.getOne(apiUri, secretKey, requestParamsMap);
         return HttpResult.ok(one);
     }
@@ -61,15 +63,16 @@ public class ApiController {
         } else if (StringUtil.hasText(secretKeyParam)) {
             secretKey = secretKeyParam;
         }
-        String apiUri = requestUri.substring("/generic-api/list".length());
+        String apiUri = requestUri.substring((BASE_URI + "/list").length());
         List<LinkedHashMap<String, Object>> list = apiService.list(apiUri, secretKey, requestParamsMap, null);
         return HttpResult.ok(list);
     }
 
     @GetMapping(value = "/page/**")
     @Operation(summary = "查询分页数据", description = "查询分页数据")
-    public Response<TablePage<LinkedHashMap<String, Object>>> page(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, 
-                                                                   @RequestParam Map<String, Object> requestParamsMap, PageQuery pageQuery) {
+    public Response<TablePage<LinkedHashMap<String, Object>>> page(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
+                                                                   HttpServletRequest request, PageQuery pageQuery) {
+        Map<String, Object> requestParamsMap = getParameterMap(request);
         String secretKeyParam = (String) requestParamsMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -77,7 +80,7 @@ public class ApiController {
         } else if (StringUtil.hasText(secretKeyParam)) {
             secretKey = secretKeyParam;
         }
-        String apiUri = requestUri.substring("/generic-api/page".length());
+        String apiUri = requestUri.substring((BASE_URI + "/page").length());
         TablePage<LinkedHashMap<String, Object>> list = apiService.page(apiUri, secretKey, requestParamsMap, pageQuery);
 
         return HttpResult.ok(list);
@@ -99,6 +102,13 @@ public class ApiController {
         return HttpResult.ok(dataList);
     }
 
+    @PostMapping(value = "/export/{serviceId}")
+    @Operation(summary = "导出分页数据", description = "导出分页数据")
+    public void export(@PathVariable String serviceId, PageQuery pageQuery, HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> requestParamsMap = getParameterMap(request);
+        apiService.export(serviceId, pageQuery, requestParamsMap, response);
+    }
+
     @PostMapping("/{operateType}/**")
     @Operation(summary = "操作数据", description = "操作数据")
     public Response<Integer> operate(@PathVariable String operateType, @RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request) {
@@ -111,7 +121,7 @@ public class ApiController {
             secretKey = secretKeyParam;
         }
         List<Map<String, Object>> jsonList = getJson(request);
-        String apiUri = requestUri.substring("/generic-api/".length() + operateType.length());
+        String apiUri = requestUri.substring((BASE_URI + "/").length() + operateType.length());
         dataMap.remove("secretKey");
         Integer result = apiService.operate(operateType, apiUri, secretKey, dataMap, jsonList);
 

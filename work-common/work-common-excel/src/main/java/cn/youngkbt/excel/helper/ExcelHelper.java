@@ -159,6 +159,31 @@ public class ExcelHelper {
     /**
      * 导出 Excel
      *
+     * @param list       导出数据集合
+     * @param sheetName  工作表的名称
+     * @param headerInfo 头部信息
+     * @param response   响应体
+     */
+    public static <T> void exportExcel(List<T> list, String sheetName, List<List<String>> headerInfo, HttpServletResponse response) {
+        try {
+            resetResponse(sheetName, response);
+            EasyExcel.write(response.getOutputStream())
+                    .head(headerInfo)
+                    .autoCloseStream(false)
+                    // 自动适配
+                    .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                    // 大数值自动转换，防止失真
+                    .registerConverter(new ExcelBigNumberConvert())
+                    .sheet(sheetName)
+                    .doWrite(list);
+        } catch (IOException e) {
+            throw new RuntimeException("导出 Excel 异常");
+        }
+    }
+
+    /**
+     * 导出 Excel
+     *
      * @param list      导出数据集合
      * @param sheetName 工作表的名称
      * @param clazz     实体类

@@ -16,7 +16,7 @@
 
 <script setup lang="tsx" name="Members">
 import { useDesign } from "@work/hooks";
-import { ProTable, ProForm, type TableColumnProps, useDialog, type FormSchemaProps } from "work";
+import { ProTable, ProForm, Point, type TableColumnProps, useDialog, type FormSchemaProps } from "work";
 import { listMembersPage, type TeamMember } from "@/api/teamMember";
 import { useDictStore } from "@/stores";
 import { Setting, Plus } from "@element-plus/icons-vue";
@@ -36,7 +36,12 @@ const initRequestParam = {
   teamId: route.meta.params?.teamId,
 };
 
-const columns: TableColumnProps<TeamMember.TeamMemberInfo>[] = [
+const statusColor = {
+  0: "var(--el-color-info)",
+  1: "var(--el-color-primary)",
+};
+
+const columns: TableColumnProps[] = [
   {
     prop: "userId",
     label: "成员 ID",
@@ -61,9 +66,8 @@ const columns: TableColumnProps<TeamMember.TeamMemberInfo>[] = [
     label: "状态",
     enum: () => getDictData("sys_normal_status"),
     fieldNames: { value: "dictValue", label: "dictLabel" },
-    search: {
-      el: "el-select",
-    },
+    search: { el: "el-select" },
+    render: ({ row }) => <Point color={statusColor[row.status]} text={row._enum.status} />,
   },
   {
     prop: "teamRole",

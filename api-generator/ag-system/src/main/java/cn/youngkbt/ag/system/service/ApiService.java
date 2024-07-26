@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.service;
 
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,10 +50,10 @@ public interface ApiService {
      * 通过服务 ID 获取数据
      *
      * @param serviceId 服务 ID
-     * @param dataMap   查询条件
+     * @param requestParamsMap   查询条件
      * @return 数据列表
      */
-    List<LinkedHashMap<String, Object>> listByServiceId(String serviceId, Map<String, Object> dataMap);
+    List<LinkedHashMap<String, Object>> listByServiceId(String serviceId, Map<String, Object> requestParamsMap);
 
     /**
      * 通过服务 ID 获取分页数据
@@ -61,7 +62,16 @@ public interface ApiService {
      * @param pageQuery 分页信息
      * @return 报表数据
      */
-    TablePage<LinkedHashMap<String, Object>> pageByServiceId(String serviceId, PageQuery pageQuery, Map<String, Object> dataMap);
+    TablePage<LinkedHashMap<String, Object>> pageByServiceId(String serviceId, PageQuery pageQuery, Map<String, Object> requestParamsMap);
+
+    /**
+     * 导出数据
+     *
+     * @param serviceId 服务 ID
+     * @param pageQuery 分页信息
+     * @param response  响应对象
+     */
+    void export(String serviceId, PageQuery pageQuery, Map<String, Object> requestParamsMap, HttpServletResponse response);
 
     /**
      * 操作数据
@@ -84,4 +94,5 @@ public interface ApiService {
      * @return 操作结果
      */
     Integer operateByServiceId(String operateType, String serviceId, Map<String, Object> dataMap);
+
 }

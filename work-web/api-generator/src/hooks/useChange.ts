@@ -1,4 +1,4 @@
-import { useLayoutStore } from "@/stores";
+import { useDictStore } from "@/stores";
 import { findItemNested } from "@work/components";
 import { message } from "@work/utils";
 import { ElMessageBox } from "element-plus";
@@ -10,7 +10,7 @@ export const useChange = (
   listApi: () => Promise<any> | undefined
 ) => {
   const statusChange = async (value: number, row: any) => {
-    const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
+    const statusEnum = await useDictStore().getDictData("sys_normal_status");
     const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
 
     if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");

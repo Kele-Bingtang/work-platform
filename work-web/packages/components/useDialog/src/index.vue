@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { ElDialog, ElScrollbar, ElButton, type DialogProps } from "element-plus";
 import { Icon } from "@work/components";
-import { computed, nextTick, ref, unref, watch, useSlots, shallowRef } from "vue";
+import { nextTick, ref, unref, watch, useSlots, shallowRef } from "vue";
 import { getPx } from "@work/utils";
 import { useDesign } from "@work/hooks";
 
@@ -108,12 +108,6 @@ watch(
     immediate: true,
   }
 );
-
-const dialogStyle = computed(() => {
-  return {
-    height: unref(dialogHeight),
-  };
-});
 
 const handleClose = () => {
   emits("close", unref(elDialogRef));

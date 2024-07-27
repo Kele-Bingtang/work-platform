@@ -36,7 +36,7 @@ export declare namespace ServiceCol {
     displaySeq: number; // 报表字段出现的顺序
     reportColWidth: number; // 报表字段显示的宽度，-1 为 auto，其他为准确的数值+px
     detailColSpan: number; // 报表的增删改弹出框，该字段的输入框宽度，-1 为 auto，其他为准确的数值 + px
-    colAlign: number; // 报表显示的列对齐（0 为左对齐 1 为居中 2 为右对齐）
+    colAlign: number; // 报表显示的列对齐（1 为左对齐 2 为居中 3 为右对齐）
     dropdownValue: string; // 自定义下拉值
     dropdownService: string; // 读取接口获取下拉值
     dropdownSql: string; // 通过SQL 获取下拉值

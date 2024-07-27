@@ -28,6 +28,14 @@ export declare namespace Report {
 }
 
 const baseUri = "/report";
+export const getReportByServiceId = (serviceId: string) => {
+  return http.get<http.Response<Report.ReportInfo>>(`${baseUri}/getReportByServiceId/${serviceId}`);
+};
+
+export const editReport = (data: Partial<Report.ReportInfo>) => {
+  return http.put<http.Response<Report.ReportInfo>>(baseUri, data);
+};
+
 export const listReportConfig = (serviceId: string) => {
   return http.get<http.Response<Report.ReportConfig>>(`${baseUri}/listReportConfig/${serviceId}`);
 };

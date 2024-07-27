@@ -15,7 +15,7 @@ export declare namespace Service {
     insertTable: string; // 执行更新语句的表名
     deleteTable: string; // 执行删除语句的表名
     isAuth: number; // 是否进行认证（0 不认证 1 认证）
-    reportTitle: string; // 报表名称
+      reportId: string; // 报表 ID
     serviceVersion: string; // 接口版本号（修改一次 +1）
     breakingRespond: string; // 降级响应数据
     status: number; // 服务状态，0 禁用 1 启用
@@ -44,6 +44,10 @@ export const listServicePage = (params?: http.PageData<Service.ServiceSearch>) =
 
 export const getServiceByServiceId = (serviceId: string) => {
   return http.get<http.Response<Service.ServiceInfo>>(`${baseUri}/getByServiceId/${serviceId}`);
+};
+
+export const listSelectInProject = (projectId: string, serviceId: string) => {
+  return http.get<http.Response<Service.ServiceInfo[]>>(`${baseUri}/listSelectInProject/${projectId}/${serviceId}`);
 };
 
 export const addService = (data: Service.ServiceInsert) => {

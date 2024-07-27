@@ -3,9 +3,9 @@ package cn.youngkbt.ag.system.service.impl;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ProjectMapper;
 import cn.youngkbt.ag.system.mapper.ServiceInfoMapper;
-import cn.youngkbt.ag.system.model.dto.ReportDTO;
 import cn.youngkbt.ag.system.model.dto.ServiceInfoDTO;
 import cn.youngkbt.ag.system.model.po.Project;
+import cn.youngkbt.ag.system.model.po.Report;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceInfoVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
@@ -19,6 +19,7 @@ import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -56,13 +58,29 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
 
     @Override
     public TablePage<ServiceInfoVO> listPage(ServiceInfoDTO serviceInfoDTO, PageQuery pageQuery) {
-        LambdaQueryWrapper<ServiceInfo> wrapper = buildQueryWrapper(serviceInfoDTO);
-        Page<ServiceInfo> serviceInfoPage = baseMapper.selectPage(pageQuery.buildPage(), wrapper);
+        QueryWrapper<ServiceInfo> wrapper = buildQueryWrapper(serviceInfoDTO);
+        Page<ServiceInfoVO> serviceInfoPage = baseMapper.selectPageData(pageQuery.buildPage(), wrapper);
 
-        return TablePage.build(serviceInfoPage, ServiceInfoVO.class);
+        return TablePage.build(serviceInfoPage);
     }
 
-    private LambdaQueryWrapper<ServiceInfo> buildQueryWrapper(ServiceInfoDTO serviceInfoDTO) {
+    @Override
+    public List<ServiceInfoVO> listSelectInProject(String projectId, String serviceId) {
+        List<ServiceInfo> serviceInfoList = baseMapper.selectList(Wrappers.<ServiceInfo>lambdaQuery()
+                .select(ServiceInfo::getServiceId, ServiceInfo::getServiceName)
+                .eq(ServiceInfo::getProjectId, projectId));
+        List<ServiceInfoVO> serviceInfoVOList = MapstructUtil.convert(serviceInfoList, ServiceInfoVO.class);
+        // 找出当前的服务，让前端金禁止选择
+        for (ServiceInfoVO serviceInfoVO : serviceInfoVOList) {
+            if (serviceId.equals(serviceInfoVO.getServiceId())) {
+                // serviceInfoVO.setDisabled(true);
+                serviceInfoVO.setServiceName(serviceInfoVO.getServiceName() + "（当前服务）");
+            }
+        }
+        return serviceInfoVOList;
+    }
+
+    private LambdaQueryWrapper<ServiceInfo> buildLambdaQueryWrapper(ServiceInfoDTO serviceInfoDTO) {
         return Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(StringUtil.hasText(serviceInfoDTO.getServiceName()), ServiceInfo::getServiceName, serviceInfoDTO.getServiceName())
                 .eq(StringUtil.hasText(serviceInfoDTO.getServiceUrl()), ServiceInfo::getServiceUrl, serviceInfoDTO.getServiceUrl())
@@ -71,34 +89,48 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
                 .orderByDesc(ServiceInfo::getCreateTime);
     }
 
+    private QueryWrapper<ServiceInfo> buildQueryWrapper(ServiceInfoDTO serviceInfoDTO) {
+        return Wrappers.<ServiceInfo>query()
+                .eq(StringUtil.hasText(serviceInfoDTO.getServiceName()), "ts.service_name", serviceInfoDTO.getServiceName())
+                .eq(StringUtil.hasText(serviceInfoDTO.getServiceUrl()), "ts.service_url", serviceInfoDTO.getServiceUrl())
+                .eq(StringUtil.hasText(serviceInfoDTO.getProjectId()), "ts.project_id", serviceInfoDTO.getProjectId())
+                .eq(StringUtil.hasText(serviceInfoDTO.getCategoryId()), "ts.category_id", serviceInfoDTO.getCategoryId())
+                .eq("ts.is_deleted", 0)
+                .orderByDesc("ts.create_time");
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean addService(ServiceInfoDTO serviceInfoDTO) {
         ServiceInfo serviceInfo = MapstructUtil.convert(serviceInfoDTO, ServiceInfo.class);
-        
+
         Project project = projectMapper.selectOne(Wrappers.<Project>lambdaQuery()
                 .eq(Project::getProjectId, serviceInfo.getProjectId()));
-        
+
         serviceInfo.setFullUrl(project.getBaseUrl() + serviceInfo.getServiceUrl());
 
+        // 新增报表
+        Report report = new Report();
         // 如果没有设置报表标题，则默认为服务名称
-        if (StringUtil.hasEmpty(serviceInfo.getReportTitle())) {
-            serviceInfo.setReportTitle(serviceInfo.getServiceName());
+        if (StringUtil.hasEmpty(serviceInfoDTO.getReportTitle())) {
+            report.setReportTitle(serviceInfoDTO.getServiceName());
+        } else {
+            report.setReportTitle(serviceInfoDTO.getReportTitle());
         }
+        report.setReportTitle(serviceInfo.getServiceName());
+        report.setDescription(serviceInfo.getServiceName());
+        report.setServiceId(serviceInfo.getServiceId());
+        report.setCategoryId(serviceInfo.getCategoryId());
+        report.setProjectId(serviceInfo.getProjectId());
+        report.setTeamId(serviceInfo.getTeamId());
 
-        int result = baseMapper.insert(serviceInfo);
+        reportService.save(report);
 
-        if (result != 0) {
-            // 新增报表
-            ReportDTO reportDTO = new ReportDTO();
-            reportDTO.setReportTitle(serviceInfo.getServiceName());
-            reportDTO.setDescription(serviceInfo.getServiceName());
-            reportDTO.setServiceId(serviceInfo.getServiceId());
+        Report insetReport = reportService.getOne(Wrappers.<Report>lambdaQuery()
+                .eq(Report::getId, report.getId()));
 
-            reportService.addReport(reportDTO);
-        }
-
-        return result > 0;
+        serviceInfo.setReportId(insetReport.getReportId());
+        return baseMapper.insert(serviceInfo) > 0;
     }
 
     @Override

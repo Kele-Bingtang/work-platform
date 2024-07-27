@@ -150,11 +150,11 @@ export const rolesRoutes: RouterConfigRaw[] = [
   },
 
   {
-    path: "/report/:serviceId/:reportName",
+    path: "/report/:serviceId",
     name: "Report",
     component: "/report/index",
     meta: {
-      title: route => route.params.reportName + "",
+      title: "报表",
       hideInMenu: true,
       isFull: true,
     },

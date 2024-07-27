@@ -79,7 +79,12 @@ public class ServiceInfoVO implements Serializable {
     private Integer isAuth;
 
     /**
-     * 报表名称
+     * 报表 ID
+     */
+    private String reportId;
+
+    /**
+     * 报表标题
      */
     private String reportTitle;
 
@@ -122,6 +127,11 @@ public class ServiceInfoVO implements Serializable {
      * 是否存在列配置项
      */
     private boolean exitCol;
+
+    /**
+     * 是否禁用，作为下拉值用到
+     */
+    private boolean disabled;
 
     @Serial
     private static final long serialVersionUID = 1L;

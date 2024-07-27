@@ -2,6 +2,7 @@ package cn.youngkbt.ag.system.service.impl;
 
 import cn.youngkbt.ag.core.constant.ColumnConstant;
 import cn.youngkbt.ag.core.enums.QueryFilterType;
+import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ReportMapper;
 import cn.youngkbt.ag.system.mapper.ServiceColMapper;
 import cn.youngkbt.ag.system.mapper.ServiceInfoMapper;
@@ -14,6 +15,7 @@ import cn.youngkbt.ag.system.model.vo.component.ProFormSchemaVO;
 import cn.youngkbt.ag.system.model.vo.component.ProTableColumnsVO;
 import cn.youngkbt.ag.system.model.vo.ReportDataVO;
 import cn.youngkbt.ag.system.model.vo.ReportVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.ApiService;
 import cn.youngkbt.ag.system.service.ReportService;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
@@ -38,15 +40,17 @@ import java.util.*;
 public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> implements ReportService {
 
     private final ApiService apiService;
-    
+
     private final ServiceColMapper serviceColMapper;
     private final ServiceInfoMapper serviceInfoMapper;
     private final SQLExecuteMapper sqlExecuteMapper;
 
     @Override
-    public ReportVO listOne(ReportDTO reportDTO) {
-        LambdaQueryWrapper<Report> wrapper = buildQueryWrapper(reportDTO);
-        Report report = baseMapper.selectOne(wrapper);
+    public ReportVO getReportByServiceId(String serviceId) {
+        Report report = baseMapper.selectOne(Wrappers.<Report>lambdaQuery()
+                .eq(Report::getServiceId, serviceId)
+        );
+        PermissionHelper.checkProjectReader(AgHelper.getUserId(), report.getProjectId(), "1h");
         return MapstructUtil.convert(report, ReportVO.class);
     }
 
@@ -103,6 +107,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
 
     @Override
     public ReportDataVO listReportConfig(String serviceId) {
+        ReportVO report = getReportByServiceId(serviceId);
+
         ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getServiceId, serviceId)
         );
@@ -113,12 +119,9 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
 
         List<ProTableColumnsVO> proTableColumnsVOList = new ArrayList<>();
         List<ProFormSchemaVO> proFormSchemaVOList = new ArrayList<>();
-        // 负数降序，正数升序，绝对值越小，优先级越高
+        // 升序，值越小，优先级越高
         List<ServiceCol> sortServiceColList = serviceColList.stream().sorted(Comparator.comparingInt(ServiceCol::getDisplaySeq)
-                .thenComparingInt(serviceCol -> Math.abs(serviceCol.getDisplaySeq()))
-                .reversed()).toList();
-
-        ReportVO report = listOne(new ReportDTO().setServiceId(serviceId));
+                .thenComparingInt(serviceCol -> Math.abs(serviceCol.getDisplaySeq()))).toList();
 
         // 是否显示行数
         if (report.getAllowRow() == 1) {
@@ -155,7 +158,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
         proTableColumnsVO.setProp(serviceCol.getJsonCol());
         proTableColumnsVO.setLabel(serviceCol.getReportCol());
         proTableColumnsVO.setWidth(serviceCol.getReportColWidth() == -1 ? null : serviceCol.getReportColWidth());
-        proTableColumnsVO.setAlign(serviceCol.getColAlign() == 0 ? "left" : serviceCol.getColAlign() == 1 ? "center" : "right");
+        proTableColumnsVO.setAlign(serviceCol.getColAlign() == 1 ? "left" : serviceCol.getColAlign() == 2 ? "center" : "right");
         if (StringUtil.hasAnyText(serviceCol.getDropdownValue(), serviceCol.getDropdownService(), serviceCol.getDropdownSql())) {
             // 下拉值枚举配置（表格需要根据枚举类格式化，因此不需要开启搜索才获取枚举配置）
             proTableColumnsVO.setEnumMap(getSelectOptions(serviceCol, serviceInfo));

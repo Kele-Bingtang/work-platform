@@ -40,6 +40,7 @@
       >
         批量操作
       </el-button>
+      <el-button v-waves type="info" plain :icon="Link" @click="handleToReport">跳转至报表</el-button>
     </template>
   </ProTable>
 </template>
@@ -59,6 +60,7 @@ import { ServiceKey } from "@/config/symbol";
 import { colTypeComponentForm, queryFilter } from "@/config/constant";
 import {
   ProTable,
+  CodeMirror,
   type DialogForm,
   type TableColumnProps,
   type FormSchemaProps,
@@ -66,8 +68,11 @@ import {
   type ProTableInstance,
   useDialog,
 } from "work";
-import { Pointer, Delete, Files } from "@element-plus/icons-vue";
-import BatchOperate from "./batchOperate.vue";
+import { Pointer, Delete, Files, Link, Plus, Minus } from "@element-plus/icons-vue";
+import BatchOperate from "./BatchOperate.vue";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { sql } from "@codemirror/lang-sql";
+import { listSelectInProject } from "@/api/service";
 
 const serviceInfo = inject(ServiceKey);
 const { open } = useDialog();
@@ -86,7 +91,6 @@ const colTypeOptions = computed(() =>
   Object.keys(colTypeComponentForm).map((key, index) => ({ label: key, value: index }))
 );
 const queryFilterOptions = computed(() => queryFilter.map((item, index) => ({ label: item, value: index })));
-
 const handleRowClick = (row: ServiceCol.ServiceColInfo) => {
   clickRow.value = row;
 };
@@ -130,6 +134,19 @@ const handleBatchOperate = () => {
   });
 };
 
+const handleToReport = () => {
+  window.open(`/report/${unref(serviceInfo)?.serviceId}`);
+};
+
+const customDropDownList = ref<{ value: string; label: string }[]>([reactive({ value: "", label: "" })]);
+
+const addCustomSelect = () => {
+  unref(customDropDownList).push(reactive({ value: "", label: "" }));
+};
+const removeCustomSelect = (index: number) => {
+  unref(customDropDownList).splice(index, 1);
+};
+
 const commonEnum = [
   { label: "不允许", value: 0 },
   { label: "允许", value: 1 },
@@ -161,6 +178,7 @@ const columns: TableColumnProps[] = [
 ];
 
 const schema: FormSchemaProps[] = [
+  { prop: "base", label: "基本配置", el: "ElDivider" },
   { prop: "tableCol", label: "字段名称", el: "el-input" },
   { prop: "jsonCol", label: "请求名称", el: "el-input" },
   { prop: "reportCol", label: "报表名称", el: "el-input" },
@@ -174,9 +192,9 @@ const schema: FormSchemaProps[] = [
       { label: "作为", value: 1 },
     ],
   },
-  { prop: "allowInsert", label: "新增", el: "el-select", defaultValue: 1, enum: commonEnum },
-  { prop: "allowUpdate", label: "更新", el: "el-select", defaultValue: 1, enum: commonEnum },
-  { prop: "allowRequest", label: "请求", el: "el-select", defaultValue: 1, enum: commonEnum },
+  { prop: "allowInsert", label: "新增", el: "el-select", enum: commonEnum, defaultValue: 1 },
+  { prop: "allowUpdate", label: "更新", el: "el-select", enum: commonEnum, defaultValue: 1 },
+  { prop: "allowRequest", label: "请求", el: "el-select", enum: commonEnum, defaultValue: 1 },
   { prop: "queryFilter", label: "筛选条件", el: "el-select", defaultValue: 0, enum: unref(queryFilterOptions) },
   { prop: "orderBy", label: "排序顺序", el: "el-input-number", defaultValue: 99 },
   {
@@ -189,11 +207,83 @@ const schema: FormSchemaProps[] = [
     },
   },
   { prop: "colType", label: "字段类型", el: "el-select", defaultValue: "String", enum: unref(colTypeOptions) },
+  { prop: "report", label: "报表配置", el: "ElDivider" },
+  {
+    prop: "colAlign",
+    label: "列对齐",
+    el: "el-select",
+    enum: [
+      { label: "左对齐", value: 1 },
+      { label: "居中", value: 2 },
+      { label: "右对齐", value: 3 },
+    ],
+    defaultValue: 1,
+  },
+  { prop: "allowShowInReport", label: "是否在报表显示", el: "el-select", enum: commonEnum, defaultValue: 1 },
+  { prop: "allowShowInDetail", label: "是否在弹框显示", el: "el-select", enum: commonEnum, defaultValue: 1 },
   { prop: "displaySeq", label: "返回出现顺序", el: "el-input-number", defaultValue: 99 },
+  { prop: "reportColWidth", label: "报表列宽度", el: "el-input-number", defaultValue: -1 },
+  { prop: "detailColWidth", label: "弹框组件宽度", el: "el-input-number", defaultValue: -1 },
+  {
+    prop: "dropDownType",
+    label: "下拉模板",
+    el: "el-radio-group",
+    enum: [
+      { value: "Local", label: "本地下拉配置" },
+      { value: "Service", label: "从其他服务获取" },
+      { value: "Sql", label: "从 SQL 里获取" },
+    ],
+    defaultValue: "Local",
+    col: { span: 24 },
+  },
+  {
+    prop: "dropdownList",
+    label: "",
+    col: { span: 24 },
+    render: () => {
+      return (
+        <div class="relative">
+          <el-button
+            type="primary"
+            icon={Plus}
+            circle
+            onClick={() => addCustomSelect()}
+            class="mr-11 absolute left-[-70px]"
+          />
+          {unref(customDropDownList).map((item, index) => (
+            <div class="flex mb-2">
+              <el-input v-model={item.value} placeholder="请输入存储内容（value）" class="mr-4" />
+              <el-input v-model={item.label} placeholder="请输入展示内容（label）" class="mr-4" />
+              <el-button type="danger" icon={Minus} circleonClick={() => removeCustomSelect(index)} />
+            </div>
+          ))}
+        </div>
+      );
+    },
+    destroy: model => model.dropDownType !== "Local",
+  },
+  {
+    prop: "dropdownService",
+    label: "",
+    el: "el-select",
+    enum: () => listSelectInProject(unref(serviceInfo)?.projectId || "", unref(serviceInfo)?.serviceId || ""),
+    fieldNames: { value: "serviceId", label: "serviceName" },
+    col: { span: 24 },
+    destroy: model => model.dropDownType !== "Service",
+  },
+  {
+    prop: "dropdownSql",
+    label: "",
+    col: { span: 24 },
+    render: ({ model }) => (
+      <CodeMirror v-model={model.dropdownSql} localTheme={oneDark} lang={sql()} height={500} fullScreen />
+    ),
+    destroy: model => model.dropDownType !== "Sql",
+  },
 ];
 
 const elFormProps = {
-  labelWidth: 100,
+  labelWidth: 110,
   rules: {
     tableCol: [{ required: true, message: "请输入字段名称", trigger: "blur" }],
     jsonCol: [{ required: true, message: "请输入请求名称", trigger: "blur" }],
@@ -209,6 +299,7 @@ const dialogForm: DialogForm = {
       ...data,
       ...initRequestParam,
       categoryId: unref(serviceInfo)?.categoryId,
+      dropdownValue: unref(customDropDownList).length ? JSON.stringify(customDropDownList.value) : null,
       teamId: unref(serviceInfo)?.teamId,
     }),
   editApi: data =>
@@ -221,8 +312,8 @@ const dialogForm: DialogForm = {
   removeApi: removeServiceCol,
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: "45%",
-    height: 400,
+    width: "50%",
+    height: 700,
     top: "5vh",
     closeOnClickModal: false,
   },

@@ -134,7 +134,7 @@ public class ServiceCol extends BaseNoLogicDO {
     private Integer detailColSpan;
 
     /**
-     * 报表显示的列对齐（0 为左对齐 1 为居中 2 为右对齐）
+     * 报表显示的列对齐（1 为左对齐 2 为居中 3 为右对齐）
      */
     private Integer colAlign;
 

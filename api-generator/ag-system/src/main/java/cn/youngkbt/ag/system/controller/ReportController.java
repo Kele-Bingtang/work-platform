@@ -25,11 +25,10 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/listOne")
+    @GetMapping("/getReportByServiceId/{serviceId}")
     @Operation(summary = "报表查询", description = "通过条件查询报表")
-    @ProjectAuthorize(value = "#reportDTO.getProjectId()", checkRead = true)
-    public Response<ReportVO> listOne(@Validated(RestGroup.QueryGroup.class) ReportDTO reportDTO) {
-        ReportVO reportVO = reportService.listOne(reportDTO);
+    public Response<ReportVO> getReportByServiceId(@PathVariable String serviceId) {
+        ReportVO reportVO = reportService.getReportByServiceId(serviceId);
         return HttpResult.ok(reportVO);
     }
 
@@ -46,7 +45,7 @@ public class ReportController {
 
     @GetMapping(value = "/listReportConfig/{serviceId}")
     @Operation(summary = "查询报表数据", description = "查询报表数据")
-    public Response<ReportDataVO> listReport(@PathVariable String serviceId) {
+    public Response<ReportDataVO> listReportConfig(@PathVariable String serviceId) {
         ReportDataVO reportDataVO = reportService.listReportConfig(serviceId);
         return HttpResult.ok(reportDataVO);
     }

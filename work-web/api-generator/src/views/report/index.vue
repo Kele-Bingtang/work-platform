@@ -49,7 +49,7 @@ const dialogForm: DialogForm = reactive({
   removeApi: data => operateByServiceId({ ...data, operateType: "remove", serviceId: unref(serviceId) }),
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
-    width: unref(reportInfo)?.dialogWidth,
+    width: unref(reportInfo)?.dialogWidth || "50%",
     height: "auto",
     maxHeight: 500,
     top: "5vh",

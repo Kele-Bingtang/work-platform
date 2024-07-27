@@ -15,10 +15,10 @@ public interface ReportService extends IService<Report> {
     /**
      * 根据条件查询报表信息
      *
-     * @param reportDTO 报表查询条件
+     * @param serviceId 服务 ID
      * @return 报表信息
      */
-    ReportVO listOne(ReportDTO reportDTO);
+    ReportVO getReportByServiceId(String serviceId);
 
     /**
      * 添加报表

@@ -50,7 +50,6 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
     {
       prop: "menuType",
       label: "菜单类型",
-      br: true,
       el: "el-radio-group",
       enum: menuTypeEnum,
       defaultValue: "C",

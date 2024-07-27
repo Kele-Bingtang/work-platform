@@ -139,7 +139,7 @@ public class ServiceColDTO {
     private Integer detailColSpan;
 
     /**
-     * 报表显示的列对齐（0 为左对齐 1 为居中 2 为右对齐）
+     * 报表显示的列对齐（1 为左对齐 2 为居中 3 为右对齐）
      */
     @IncludeValid(value = {"0", "1", "2"}, message = "列对齐不能为空", groups = {RestGroup.EditGroup.class})
     private Integer colAlign;

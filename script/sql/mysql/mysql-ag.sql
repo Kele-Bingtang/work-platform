@@ -471,7 +471,7 @@ CREATE TABLE `t_service_col` (
   `display_seq` int DEFAULT '99' COMMENT '报表字段出现的顺序',
   `report_col_width` int DEFAULT '-1' COMMENT '报表字段显示的宽度，-1 为 auto，其他为准确的数值+px',
   `detail_col_width` int DEFAULT '-1' COMMENT '报表的增删改弹出框，该字段的输入框宽度，-1 为 auto，其他为准确的数值 + px',
-  `col_align` tinyint DEFAULT '0' COMMENT '报表显示的列对齐（0 为左对齐 1 为居中 2 为右对齐）',
+  `col_align` tinyint DEFAULT '0' COMMENT '报表显示的列对齐（1 为左对齐 2 为居中 3 为右对齐）',
   `dropdown_value` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '自定义下拉值',
   `dropdown_service` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '读取接口获取下拉值',
   `dropdown_sql` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '通过SQL 获取下拉值',

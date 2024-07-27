@@ -7,6 +7,8 @@ import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024-06-22 00:15:48
@@ -31,6 +33,15 @@ public interface ServiceInfoService extends IService<ServiceInfo> {
      */
     TablePage<ServiceInfoVO> listPage(ServiceInfoDTO serviceInfoDTO, PageQuery pageQuery);
 
+    /**
+     * 根据项目 ID 查询服务列表
+     *
+     * @param projectId 项目 ID
+     * @param serviceId 服务 ID
+     * @return 服务列表
+     */
+    List<ServiceInfoVO> listSelectInProject(String projectId, String serviceId);
+    
     /**
      * 新增服务
      *

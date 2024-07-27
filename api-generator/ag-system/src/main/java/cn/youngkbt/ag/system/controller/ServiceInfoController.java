@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/6/25 23:24:21
@@ -41,6 +43,14 @@ public class ServiceInfoController {
     public Response<TablePage<ServiceInfoVO>> listPage(@Validated(RestGroup.QueryGroup.class) ServiceInfoDTO serviceInfoDTO, PageQuery pageQuery) {
         TablePage<ServiceInfoVO> serviceInfoVOTablePage = serviceInfoService.listPage(serviceInfoDTO, pageQuery);
         return HttpResult.ok(serviceInfoVOTablePage);
+    }
+
+    @GetMapping("/listSelectInProject/{projectId}/{serviceId}")
+    @Operation(summary = "同一个项目服务列表查询）", description = "同一个项目服务列表查询")
+    @ProjectAuthorize(value = "#projectId", checkRead = true)
+    public Response<List<ServiceInfoVO>> listSelectInProject(@PathVariable String projectId, @PathVariable String serviceId) {
+        List<ServiceInfoVO> serviceInfoVOList = serviceInfoService.listSelectInProject(projectId, serviceId);
+        return HttpResult.ok(serviceInfoVOList);
     }
 
     @PostMapping

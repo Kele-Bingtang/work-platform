@@ -27,7 +27,7 @@
 import { TreeFilter, mittBus, useDesign, type TreeFilterInstance } from "work";
 import { listCategory } from "@/api/category";
 import { FolderOpened } from "@element-plus/icons-vue";
-import Service from "./service.vue";
+import Service from "./Service.vue";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("service-main");

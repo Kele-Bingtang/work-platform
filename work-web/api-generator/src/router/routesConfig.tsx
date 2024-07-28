@@ -34,7 +34,7 @@
  * @param render ==> 自定义 Render 菜单元素（TSX 语法）
  */
 
-import { HomeFilled } from "@element-plus/icons-vue";
+import { HomeFilled, User } from "@element-plus/icons-vue";
 import { HOME_URL, HOME_NAME, LOGIN_URL, LOGIN_NAME, LAYOUT_NAME, REDIRECT_NAME, NOT_FOUND } from "@work/constants";
 
 export { HOME_URL, HOME_NAME, LOGIN_URL, LOGIN_NAME, LAYOUT_NAME, REDIRECT_NAME, NOT_FOUND };
@@ -53,6 +53,12 @@ export const constantRoutes: RouterConfigRaw[] = [
         name: "ErrorLog",
         component: () => import("@/views/errorLog/index.vue"),
         meta: { title: "错误日志", isKeepAlive: false },
+      },
+      {
+        path: "/profile",
+        name: "Profile",
+        component: () => import("@/views/profile/index.vue"),
+        meta: { title: "我的主页", icon: User },
       },
     ],
   },

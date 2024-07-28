@@ -11,11 +11,13 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024-03-23 01:03:56
  * @note 响应配置
-*/
+ */
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "t_response_config")
 @Data
@@ -29,14 +31,33 @@ public class ResponseConfig extends BaseNoLogicDO {
     private String responseId;
 
     /**
-     * 响应格式
+     * 响应码
      */
-    private String responseJson;
+    private String code;
+    /**
+     * 父级响应 ID
+     */
+    private String parentId;
 
     /**
-     * 如果是一笔数据，是否以对象/数组形式返回（0 对象 1 数组），如果是多多笔数据，一定是以数组返回
+     * 字段名
      */
-    private Integer responseArray;
+    private String description;
+    
+    /**
+     * 响应码描述
+     */
+    private List<String> jsonCol;
+
+    /**
+     * 目录 ID
+     */
+    private String categoryId;
+
+    /**
+     * 服务 ID
+     */
+    private String serviceId;
 
     /**
      * 项目 ID
@@ -44,8 +65,8 @@ public class ResponseConfig extends BaseNoLogicDO {
     private String projectId;
 
     /**
-     * 服务 ID
+     * 团队 ID
      */
-    private Long serviceId;
+    private String teamId;
 
 }

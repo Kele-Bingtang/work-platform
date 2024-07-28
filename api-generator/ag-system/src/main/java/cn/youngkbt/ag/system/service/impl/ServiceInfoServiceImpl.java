@@ -73,7 +73,7 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
         // 找出当前的服务，让前端金禁止选择
         for (ServiceInfoVO serviceInfoVO : serviceInfoVOList) {
             if (serviceId.equals(serviceInfoVO.getServiceId())) {
-                // serviceInfoVO.setDisabled(true);
+                serviceInfoVO.setDisabled(true);
                 serviceInfoVO.setServiceName(serviceInfoVO.getServiceName() + "（当前服务）");
             }
         }

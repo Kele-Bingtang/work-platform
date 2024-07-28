@@ -7,10 +7,11 @@ import cn.youngkbt.mp.base.BaseNoLogicDO;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -18,8 +19,7 @@ import java.util.Objects;
  * @date 2024-04-23 01:04:02
  * @note 服务列配置项
 */
-@EqualsAndHashCode(callSuper = true)
-@TableName(value = "t_service_col")
+@TableName(value = "t_service_col", autoResultMap = true)
 @Data
 @AutoMapper(target = ServiceColVO.class, reverseConvertGenerate = false)
 public class ServiceCol extends BaseNoLogicDO {
@@ -139,19 +139,12 @@ public class ServiceCol extends BaseNoLogicDO {
     private Integer colAlign;
 
     /**
-     * 自定义下拉值
+     * 下拉值配置
+     * key 有 type、value
+     * type 的 value 有 local、service、sql
      */
-    private String dropdownValue;
-
-    /**
-     * 读取接口获取下拉值
-     */
-    private String dropdownService;
-
-    /**
-     * 通过SQL 获取下拉值
-     */
-    private String dropdownSql;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private Map<String, Object> dropdownConfig;
 
     /**
      * 服务 ID

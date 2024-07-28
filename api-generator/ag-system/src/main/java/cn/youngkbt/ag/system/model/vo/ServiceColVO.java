@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author Kele-Bingtang
@@ -128,20 +129,11 @@ public class ServiceColVO implements Serializable {
     private Integer colAlign;
 
     /**
-     * 自定义下拉值
+     * 下拉值配置
+     * key 有 type、value
+     * type 的 value 有 local、service、sql
      */
-    private String dropdownValue;
-
-    /**
-     * 读取接口获取下拉值
-     */
-    private String dropdownService;
-
-    /**
-     * 通过SQL 获取下拉值
-     */
-    private String dropdownSql;
-
+    private Map<String, Object> dropdownConfig;
 
     /**
      * 服务 ID

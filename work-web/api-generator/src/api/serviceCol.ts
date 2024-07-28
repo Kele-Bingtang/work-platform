@@ -37,9 +37,7 @@ export declare namespace ServiceCol {
     reportColWidth: number; // 报表字段显示的宽度，-1 为 auto，其他为准确的数值+px
     detailColSpan: number; // 报表的增删改弹出框，该字段的输入框宽度，-1 为 auto，其他为准确的数值 + px
     colAlign: number; // 报表显示的列对齐（1 为左对齐 2 为居中 3 为右对齐）
-    dropdownValue: string; // 自定义下拉值
-    dropdownService: string; // 读取接口获取下拉值
-    dropdownSql: string; // 通过SQL 获取下拉值
+    dropdownConfig: string; // 下拉值配置
     serviceId: string; // 服务 ID
     categoryId: string; // 分类 ID
     projectId: string; // 项目 ID
@@ -65,6 +63,10 @@ export declare namespace ServiceCol {
 }
 
 const baseUri = "/serviceCol";
+
+export const listByServiceId = (serviceId: string) => {
+  return http.get<http.Response<ServiceCol.ServiceColInfo[]>>(`${baseUri}/listByServiceId/${serviceId}`);
+};
 
 export const listServiceColPage = (params?: http.PageData<ServiceCol.ServiceColSearch>) => {
   return http.get<http.Response<ServiceCol.ServiceColInfo[]>>(`${baseUri}/listPage`, params);

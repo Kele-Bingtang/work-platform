@@ -22,10 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Kele-Bingtang
@@ -118,7 +115,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements Te
                 .setTeamId(team.getTeamId())
                 .setBelongType(BelongType.CREATE.ordinal());
 
-        teamMemberService.addTeamMember(teamMemberDTO);
+        teamMemberService.addTeamMembers(List.of(teamMemberDTO), null);
 
         return result > 0;
     }

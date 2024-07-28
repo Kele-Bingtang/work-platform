@@ -149,3 +149,6 @@ websocket:
   path: /uac/websocket
   # 设置访问源地址
   allowedOrigins: '*'
+
+default:
+  password: 123456

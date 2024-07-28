@@ -31,13 +31,13 @@ const serviceInfo = inject(ServiceKey);
 const jsonCode = ref("");
 
 onMounted(() => {
-  handleFormatterJson();
-});
-
-const handleFormatterJson = () => {
   jsonCode.value = unref(serviceInfo)?.breakingRespond
     ? JSON.stringify(JSON.parse(unref(serviceInfo)?.breakingRespond!), null, "\t")
     : "";
+});
+
+const handleFormatterJson = () => {
+  jsonCode.value = unref(jsonCode) ? JSON.stringify(JSON.parse(jsonCode.value), null, "\t") : "";
 };
 
 const handleSave = async () => {

@@ -1,6 +1,7 @@
 package cn.youngkbt.ag.system.controller;
 
 import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
+import cn.youngkbt.ag.system.model.dto.TeamMemberWithProjectRoleDTO;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
 import cn.youngkbt.ag.system.permission.annotation.TeamAuthorize;
 import cn.youngkbt.ag.system.service.TeamMemberService;
@@ -44,10 +45,22 @@ public class TeamMemberController {
         return HttpResult.ok(teamMemberVOList);
     }
 
+    @PostMapping("/inviteMembers")
+    @Operation(summary = "团队成员邀请", description = "邀请团队成员")
+    public Response<Boolean> inviteMembers(@RequestBody List<TeamMemberDTO> teamMemberDTOList, String inviteUserId) {
+        return HttpResult.ok(teamMemberService.addTeamMembers(teamMemberDTOList, inviteUserId));
+    }
+
     @DeleteMapping("/{teamId}")
     @Operation(summary = "团队退出", description = "退出团队")
     public Response<Boolean> leaveTeam(@PathVariable String teamId) {
         return HttpResult.ok(teamMemberService.leaveTeam(teamId));
     }
 
+    @PutMapping
+    @Operation(summary = "团队成员角色修改", description = "修改团队成员角色")
+    @TeamAuthorize(value = "#teamMemberWithProjectRoleDTO.getTeamMember.getTeamId()", checkOwnerAndAdmin = true)
+    public Response<Boolean> editTeamMemberWithProjectRole(@RequestBody TeamMemberWithProjectRoleDTO teamMemberWithProjectRoleDTO) {
+        return HttpResult.ok(teamMemberService.editTeamMemberWithProjectRole(teamMemberWithProjectRoleDTO));
+    }
 }

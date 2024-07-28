@@ -1,6 +1,10 @@
 package cn.youngkbt.ag.system.model.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -13,21 +17,36 @@ public class ResponseConfigVO {
      * 主键
      */
     private Long id;
-    
-    /**
-     * 响应配置 ID
-     */
-    private String responseId;
 
     /**
-     * 响应格式
+     * 响应码
      */
-    private String responseJson;
+    private String code;
+    /**
+     * 父级响应 ID
+     */
+    private String parentId;
 
     /**
-     * 如果是一笔数据，是否以对象/数组形式返回（0 对象 1 数组），如果是多多笔数据，一定是以数组返回
+     * 字段名
      */
-    private Integer responseArray;
+    private String description;
+
+    /**
+     * 响应码描述
+     */
+    @TableField(typeHandler = FastjsonTypeHandler.class)
+    private List<String> jsonCol;
+
+    /**
+     * 目录 ID
+     */
+    private String categoryId;
+
+    /**
+     * 服务 ID
+     */
+    private String serviceId;
 
     /**
      * 项目 ID
@@ -35,7 +54,7 @@ public class ResponseConfigVO {
     private String projectId;
 
     /**
-     * 服务 ID
+     * 团队 ID
      */
-    private Long serviceId;
+    private String teamId;
 }

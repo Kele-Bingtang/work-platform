@@ -1,34 +1,25 @@
-package cn.youngkbt.ag.system.model.po;
+package cn.youngkbt.ag.system.model.vo;
 
-import cn.youngkbt.ag.system.model.vo.UserVO;
-import cn.youngkbt.mp.annotation.FieldValueFill;
-import cn.youngkbt.mp.annotation.ValueStrategy;
-import cn.youngkbt.mp.base.BaseDO;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
 /**
  * @author Kele-Bingtang
- * @date 2024-04-23 01:04:49
- * @note 用户
-*/
-@EqualsAndHashCode(callSuper = true)
-@TableName(value = "t_user")
+ * @date 2024/7/28 18:41:59
+ * @note
+ */
 @Data
-@AutoMapper(target = UserVO.class, reverseConvertGenerate = false)
-public class User extends BaseDO {
+public class UserVO {
+    /**
+     * 主键
+     */
 
+    private Long id;
+    
     /**
      * 用户 ID
      */
-    @TableField(fill = FieldFill.INSERT)
-    @FieldValueFill(ValueStrategy.SNOWFLAKE)
     private String userId;
 
     /**

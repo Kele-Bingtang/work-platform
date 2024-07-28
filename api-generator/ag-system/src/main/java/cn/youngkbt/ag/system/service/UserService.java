@@ -2,7 +2,10 @@ package cn.youngkbt.ag.system.service;
 
 import cn.youngkbt.ag.system.model.dto.UserDTO;
 import cn.youngkbt.ag.system.model.po.User;
+import cn.youngkbt.ag.system.model.vo.UserVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -11,5 +14,43 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
-    boolean updateByUserId(UserDTO sysUserDTO);
+    /**
+     * 根据关键字查询用户
+     *
+     * @param keyword 关键词
+     * @return 用户列表
+     */
+    List<UserVO> listByKeyword(String keyword);
+
+    /**
+     * 根据用户 ID 更新用户信息
+     *
+     * @param userDTO 用户信息
+     * @return 成功与否
+     */
+    boolean updateByUsername(UserDTO userDTO);
+
+    /**
+     * 检查用户名是否唯一
+     *
+     * @param userDTO 用户信息
+     * @return 是否唯一
+     */
+    boolean checkUsernameUnique(UserDTO userDTO);
+
+    /**
+     * 用户注册
+     *
+     * @param userDTO 用户信息
+     * @return 是否成功
+     */
+    Boolean register(UserDTO userDTO);
+
+    /**
+     * 用户编辑
+     *
+     * @param userDTO 用户信息
+     * @return 是否成功
+     */
+    Boolean edit(UserDTO userDTO);
 }

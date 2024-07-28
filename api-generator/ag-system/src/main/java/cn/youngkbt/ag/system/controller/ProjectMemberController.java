@@ -5,7 +5,6 @@ import cn.youngkbt.ag.system.model.dto.ProjectMemberDTO;
 import cn.youngkbt.ag.system.model.vo.ProjectMemberVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.ProjectMemberService;
-import cn.youngkbt.ag.system.service.ProjectService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
@@ -27,7 +26,6 @@ import java.util.List;
 public class ProjectMemberController {
 
     private final ProjectMemberService projectMemberService;
-    private final ProjectService projectService;
 
     @GetMapping("/listProjectRole/{teamId}/{userId}")
     @Operation(summary = "项目成员角色查询", description = "查询项目成员角色")
@@ -66,4 +64,5 @@ public class ProjectMemberController {
 
         return HttpResult.okOrFail(projectMemberService.editProjectMember(projectMemberDTO));
     }
+    
 }

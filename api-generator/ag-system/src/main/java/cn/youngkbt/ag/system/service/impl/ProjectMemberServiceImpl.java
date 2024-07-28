@@ -30,7 +30,9 @@ public class ProjectMemberServiceImpl extends ServiceImpl<ProjectMemberMapper, P
     public List<ProjectMemberVO> listProjectRole(String teamId, String userId) {
         QueryWrapper<ProjectMember> wrapper = Wrappers.<ProjectMember>query()
                 .eq("tpm.team_id", teamId)
-                .eq("tpm.user_id", userId);
+                .eq("tpm.user_id", userId)
+                .eq("tpm.is_deleted", 0)
+                .eq("tp.is_deleted", 0);
 
         return baseMapper.listProjectRole(wrapper);
     }

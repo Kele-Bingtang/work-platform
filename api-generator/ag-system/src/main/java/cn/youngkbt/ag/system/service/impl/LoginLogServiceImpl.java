@@ -75,7 +75,7 @@ public class LoginLogServiceImpl extends ServiceImpl<LoginLogMapper, LoginLog> i
                 .setLoginIp(clientIp)
                 .setLoginTime(LocalDateTime.now());
 
-        userService.updateByUserId(sysUserDTO);
+        userService.updateByUsername(sysUserDTO);
     }
 }
 

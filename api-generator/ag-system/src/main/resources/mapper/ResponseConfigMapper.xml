@@ -7,8 +7,10 @@
     <resultMap id="BaseResultMap" type="cn.youngkbt.ag.system.model.po.ResponseConfig">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="responseId" column="response_id" jdbcType="VARCHAR"/>
-            <result property="responseJson" column="response_json" jdbcType="VARCHAR"/>
-            <result property="responseArray" column="response_array" jdbcType="TINYINT"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="jsonCol" column="json_col" jdbcType="TINYINT" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -20,8 +22,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,response_id,response_json,
-        response_array,create_by,create_by_id,
+        id,response_id,code,
+        parentId,description,jsonCol,create_by,create_by_id,
         create_time,update_by,update_by_id,
         update_time,status,service_id
     </sql>

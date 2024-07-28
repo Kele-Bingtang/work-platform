@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/6/26 01:04:43
@@ -22,19 +24,34 @@ public class ResponseConfigDTO {
     private Long id;
 
     /**
-     * 响应配置 ID
+     * 响应码
      */
-    private String responseId;
+    private String code;
+    /**
+     * 父级响应 ID
+     */
+    private String parentId;
 
     /**
-     * 响应格式
+     * 字段名
      */
-    private String responseJson;
+    private String description;
+    /**
+     * 响应码描述
+     */
+    private List<String> jsonCol;
 
     /**
-     * 如果是一笔数据，是否以对象/数组形式返回（0 对象 1 数组），如果是多多笔数据，一定是以数组返回
+     * 目录 ID
      */
-    private Integer responseArray;
+    @NotBlank(message = "目录 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String categoryId;
+
+    /**
+     * 服务 ID
+     */
+    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
+    private String serviceId;
 
     /**
      * 项目 ID
@@ -43,8 +60,8 @@ public class ResponseConfigDTO {
     private String projectId;
 
     /**
-     * 服务 ID
+     * 团队 ID
      */
-    @NotBlank(message = "服务 ID 不能为空", groups = {RestGroup.QueryGroup.class, RestGroup.AddGroup.class})
-    private Long serviceId;
+    @NotBlank(message = "团队 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    private String teamId;
 }

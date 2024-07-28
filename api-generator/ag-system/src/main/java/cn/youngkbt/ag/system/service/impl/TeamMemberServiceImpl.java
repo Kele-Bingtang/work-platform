@@ -2,20 +2,30 @@ package cn.youngkbt.ag.system.service.impl;
 
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.TeamMemberMapper;
+import cn.youngkbt.ag.system.model.dto.ProjectMemberDTO;
 import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
+import cn.youngkbt.ag.system.model.dto.TeamMemberWithProjectRoleDTO;
+import cn.youngkbt.ag.system.model.po.ProjectMember;
 import cn.youngkbt.ag.system.model.po.TeamMember;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
+import cn.youngkbt.ag.system.permission.PermissionHelper;
+import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.TeamMemberService;
+import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.mp.base.PageQuery;
 import cn.youngkbt.mp.base.TablePage;
+import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +37,10 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TeamMemberServiceImpl extends ServiceImpl<TeamMemberMapper, TeamMember> implements TeamMemberService {
+
+    private final ProjectMemberService projectMemberService;
 
     @Override
     public List<TeamMemberVO> listAll(TeamMemberDTO teamMemberDTO) {
@@ -57,9 +70,25 @@ public class TeamMemberServiceImpl extends ServiceImpl<TeamMemberMapper, TeamMem
     }
 
     @Override
-    public boolean addTeamMember(TeamMemberDTO teamMemberDTO) {
-        TeamMember teamMember = MapstructUtil.convert(teamMemberDTO, TeamMember.class);
-        return baseMapper.insert(teamMember) > 0;
+    public boolean addTeamMembers(List<TeamMemberDTO> teamMemberDTOList, String inviteUserId) {
+        if (ListUtil.isEmpty(teamMemberDTOList)) {
+            return false;
+        }
+        String teamId = teamMemberDTOList.get(0).getTeamId();
+        if (StringUtil.hasText(inviteUserId)) {
+            PermissionHelper.checkTeamOwnerAndAdmin(inviteUserId, teamId, "1h");
+        }
+        List<TeamMember> teamMemberList = MapstructUtil.convert(teamMemberDTOList, TeamMember.class);
+        // 检查邀请的成员是否已经在团队里
+        List<String> userIdList = teamMemberList.stream().map(TeamMember::getUserId).toList();
+        boolean exists = baseMapper.exists(Wrappers.<TeamMember>lambdaQuery()
+                .eq(TeamMember::getTeamId, teamId)
+                .in(TeamMember::getUserId, userIdList));
+        if (exists) {
+            throw new ServerException("邀请的成员已在团队里");
+        }
+
+        return Db.saveBatch(teamMemberList);
     }
 
     @Override
@@ -101,5 +130,20 @@ public class TeamMemberServiceImpl extends ServiceImpl<TeamMemberMapper, TeamMem
                 .eq(TeamMember::getTeamId, teamId)
                 .eq(TeamMember::getUserId, userId)
                 .in(TeamMember::getTeamRole, ordinal));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean editTeamMemberWithProjectRole(TeamMemberWithProjectRoleDTO teamMemberWithProjectRoleDTO) {
+        List<ProjectMemberDTO> projectMemberDTOList = teamMemberWithProjectRoleDTO.getProjectMemberList();
+        if (ListUtil.isNotEmpty(projectMemberDTOList)) {
+            List<ProjectMember> projectMemberList = MapstructUtil.convert(projectMemberDTOList, ProjectMember.class);
+            projectMemberService.updateBatchById(projectMemberList);
+        }
+        TeamMember teamMember = MapstructUtil.convert(teamMemberWithProjectRoleDTO.getTeamMember(), TeamMember.class);
+        String teamId = teamMember.getTeamId();
+        teamMember.setTeamId(null);
+        return baseMapper.update(teamMember, Wrappers.<TeamMember>lambdaQuery()
+                .eq(TeamMember::getTeamId, teamId)) > 0;
     }
 }

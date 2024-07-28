@@ -1,6 +1,7 @@
 package cn.youngkbt.ag.system.service;
 
 import cn.youngkbt.ag.system.model.dto.TeamMemberDTO;
+import cn.youngkbt.ag.system.model.dto.TeamMemberWithProjectRoleDTO;
 import cn.youngkbt.ag.system.model.po.TeamMember;
 import cn.youngkbt.ag.system.model.vo.TeamMemberVO;
 import cn.youngkbt.mp.base.PageQuery;
@@ -18,6 +19,7 @@ public interface TeamMemberService extends IService<TeamMember> {
 
     /**
      * 查询团队成员
+     *
      * @param teamMemberDTO 团队成员信息
      * @return 团队成员列表
      */
@@ -25,23 +27,27 @@ public interface TeamMemberService extends IService<TeamMember> {
 
     /**
      * 查询团队成员（分页）
+     *
      * @param teamMemberDTO 团队成员信息
-     * @param pageQuery 分页信息
+     * @param pageQuery     分页信息
      * @return 团队成员列表
      */
     TablePage<TeamMemberVO> listPage(TeamMemberDTO teamMemberDTO, PageQuery pageQuery);
-    
+
     /**
      * 添加团队成员
-     * @param teamMemberDTO 团队成员信息
+     *
+     * @param teamMemberDTOList 团队成员信息
+     * @param inviteUserId 执行邀请的用户 ID
      * @return 是否添加成功
      */
-    boolean addTeamMember(TeamMemberDTO teamMemberDTO);
+    boolean addTeamMembers(List<TeamMemberDTO> teamMemberDTOList, String inviteUserId);
 
     /**
      * 修改团队成员的角色
-     * @param teamId 团队 ID
-     * @param userId 用户 ID
+     *
+     * @param teamId  团队 ID
+     * @param userId  用户 ID
      * @param ordinal 团队角色级别
      * @return 是否修改成功
      */
@@ -49,6 +55,7 @@ public interface TeamMemberService extends IService<TeamMember> {
 
     /**
      * 退出团队
+     *
      * @param teamId 团队 ID
      * @return 是否退出成功
      */
@@ -56,13 +63,15 @@ public interface TeamMemberService extends IService<TeamMember> {
 
     /**
      * 移除团队所有成员
+     *
      * @param teamId 团队 ID
      * @return 是否移除成功
      */
     boolean removeAllTeamMember(String teamId);
-    
+
     /**
      * 检查成员是否存在
+     *
      * @param teamId 团队 ID
      * @param userId 用户 ID
      * @return 是否存在
@@ -71,11 +80,20 @@ public interface TeamMemberService extends IService<TeamMember> {
 
     /**
      * 检查成员的团队角色
-     * @param teamId 团队 ID
-     * @param userId 用户 ID
+     *
+     * @param teamId  团队 ID
+     * @param userId  用户 ID
      * @param ordinal 团队角色级别
      * @return 是否为团队负责人
      */
     boolean checkMemberRole(String teamId, String userId, List<Integer> ordinal);
+
+    /**
+     * 修改团队成员角色和团队下项目成员角色
+     *
+     * @param teamMemberWithProjectRoleDTO 团队成员和团队下项目成员角色信息
+     * @return 是否修改成功
+     */
+    Boolean editTeamMemberWithProjectRole(TeamMemberWithProjectRoleDTO teamMemberWithProjectRoleDTO);
 
 }

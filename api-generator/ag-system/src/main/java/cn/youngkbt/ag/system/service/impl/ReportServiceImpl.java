@@ -1,6 +1,7 @@
 package cn.youngkbt.ag.system.service.impl;
 
 import cn.youngkbt.ag.core.constant.ColumnConstant;
+import cn.youngkbt.ag.core.enums.DropdownConfigType;
 import cn.youngkbt.ag.core.enums.QueryFilterType;
 import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.ReportMapper;
@@ -11,15 +12,14 @@ import cn.youngkbt.ag.system.model.dto.ReportDTO;
 import cn.youngkbt.ag.system.model.po.Report;
 import cn.youngkbt.ag.system.model.po.ServiceCol;
 import cn.youngkbt.ag.system.model.po.ServiceInfo;
-import cn.youngkbt.ag.system.model.vo.component.ProFormSchemaVO;
-import cn.youngkbt.ag.system.model.vo.component.ProTableColumnsVO;
 import cn.youngkbt.ag.system.model.vo.ReportDataVO;
 import cn.youngkbt.ag.system.model.vo.ReportVO;
+import cn.youngkbt.ag.system.model.vo.component.ProFormSchemaVO;
+import cn.youngkbt.ag.system.model.vo.component.ProTableColumnsVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.ApiService;
 import cn.youngkbt.ag.system.service.ReportService;
 import cn.youngkbt.datasource.helper.DataSourceHelper;
-import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.MapstructUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -159,15 +159,16 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
         proTableColumnsVO.setLabel(serviceCol.getReportCol());
         proTableColumnsVO.setWidth(serviceCol.getReportColWidth() == -1 ? null : serviceCol.getReportColWidth());
         proTableColumnsVO.setAlign(serviceCol.getColAlign() == 1 ? "left" : serviceCol.getColAlign() == 2 ? "center" : "right");
-        if (StringUtil.hasAnyText(serviceCol.getDropdownValue(), serviceCol.getDropdownService(), serviceCol.getDropdownSql())) {
+        Map<String, Object> dropdownConfig = serviceCol.getDropdownConfig();
+        if (Objects.nonNull(dropdownConfig) && !dropdownConfig.isEmpty()) {
             // 下拉值枚举配置（表格需要根据枚举类格式化，因此不需要开启搜索才获取枚举配置）
-            proTableColumnsVO.setEnumMap(getSelectOptions(serviceCol, serviceInfo));
+            proTableColumnsVO.setEnumMap(getSelectOptions(dropdownConfig, serviceInfo));
         }
 
         if (allowFilter == 1 && !Objects.equals(serviceCol.getQueryFilter(), QueryFilterType.NO_FILTER.getIndex())) {
             // 设置搜索的 el 类型
             ProTableColumnsVO.Search search = new ProTableColumnsVO.Search();
-            if (StringUtil.hasAnyText(serviceCol.getDropdownValue(), serviceCol.getDropdownService(), serviceCol.getDropdownSql())) {
+            if (Objects.nonNull(dropdownConfig) && !dropdownConfig.isEmpty()) {
                 // 下拉值枚举 EL 配置
                 proTableColumnsVO.setSearch(search.setEl("ElSelect"));
             } else if (serviceCol.getQueryFilter().equals(QueryFilterType.BETWEEN.getIndex())) {
@@ -203,10 +204,11 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
         proFormSchemaVO.setCol(serviceCol.getDetailColSpan() == -1 ? null : Map.of("span", serviceCol.getDetailColSpan()));
         proFormSchemaVO.setDefaultValue(serviceCol.getDefaultValue());
 
-        if (StringUtil.hasAnyText(serviceCol.getDropdownValue(), serviceCol.getDropdownService(), serviceCol.getDropdownSql())) {
+        Map<String, Object> dropdownConfig = serviceCol.getDropdownConfig();
+        if (Objects.nonNull(dropdownConfig) && !dropdownConfig.isEmpty()) {
             // 下拉值枚举配置
             proFormSchemaVO.setEl("ElSelect");
-            proFormSchemaVO.setEnumMap(getSelectOptions(serviceCol, serviceInfo));
+            proFormSchemaVO.setEnumMap(getSelectOptions(dropdownConfig, serviceInfo));
         } else {
             String colType = serviceCol.getColType();
             // 根据字段类型设置 el
@@ -237,34 +239,101 @@ public class ReportServiceImpl extends ServiceImpl<ReportMapper, Report> impleme
     /**
      * 获取下拉枚举值
      *
-     * @param serviceCol  服务列配置项信息
-     * @param serviceInfo 服务信息
+     * @param dropdownConfig 下拉配置项
+     * @param serviceInfo    服务信息
      * @return 下拉枚举值
      */
-    private List<Map<String, Object>> getSelectOptions(ServiceCol serviceCol, ServiceInfo serviceInfo) {
-        if (StringUtil.hasText(serviceCol.getDropdownValue())) {
+    private List<Map<String, Object>> getSelectOptions(Map<String, Object> dropdownConfig, ServiceInfo serviceInfo) {
+        String type = (String) dropdownConfig.get("type");
+        Object dropdownValue = dropdownConfig.get("value");
+        // 本地配置
+        if (Objects.equals(DropdownConfigType.LOCAL.getType(), type)) {
             // 从配置解析获取，必须是 value、label
-            return JacksonUtil.toListMap(serviceCol.getDropdownValue());
+            return (List<Map<String, Object>>) dropdownValue;
         }
-        if (StringUtil.hasText(serviceCol.getDropdownService())) {
-            // 从其他服务获取下拉值，返回值必须是 value、label
-            List<LinkedHashMap<String, Object>> linkedHashMapList = apiService.listByServiceId(serviceCol.getDropdownService(), new HashMap<>());
+        // 从其他服务获取下拉值
+        if (Objects.equals(DropdownConfigType.SERVICE.getType(), type)) {
+            return getSelectOptionByService((Map<String, String>) dropdownValue);
+        }
+        // 执行 SQL 获取下拉值
+        if (Objects.equals(DropdownConfigType.SQL.getType(), type)) {
+            return getSelectOptionBySql(serviceInfo, (String) dropdownValue);
+        }
+        return Collections.emptyList();
+    }
 
-            return linkedHashMapList.stream()
-                    .map(originalMap -> Map.of(ColumnConstant.VALUE, originalMap.get(ColumnConstant.VALUE), ColumnConstant.LABEL, originalMap.get(ColumnConstant.LABEL)))
-                    .toList();
-        }
-        if (StringUtil.hasText(serviceCol.getDropdownSql())) {
-            // 执行 SQL 获取下拉值
-            DataSourceHelper.use(serviceInfo.getDataSourceId());
-            List<LinkedHashMap<String, Object>> linkedHashMapList = sqlExecuteMapper.executeSelectList(serviceCol.getDropdownSql(), null);
-            DataSourceHelper.close();
+    /**
+     * 从其他服务获取下拉值
+     *
+     * @param serviceConfig 服务配置项
+     * @return 下拉值
+     */
+    private List<Map<String, Object>> getSelectOptionByService(Map<String, String> serviceConfig) {
+        String serviceId = serviceConfig.get("service");
+        // key 是 jsonCol，value 是实际的值
+        List<LinkedHashMap<String, Object>> linkedHashMapList = apiService.listByServiceId(serviceId, new HashMap<>());
 
-            return linkedHashMapList.stream()
-                    .map(originalMap -> Map.of(ColumnConstant.VALUE, originalMap.get(ColumnConstant.VALUE), ColumnConstant.LABEL, originalMap.get(ColumnConstant.LABEL)))
-                    .toList();
+        // 获取其他服务的列配置项信息，因为下拉配置项存的是列配置项的 serviceColId，所以需要根据下拉配置项的 serviceColId 获取 jsonCol
+        List<ServiceCol> serviceColList = serviceColMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, serviceId)
+        );
+        String valueName = "";
+        String labelName = "";
+        // 根据下拉配置的 serviceColId 获取 jsonCol
+        for (ServiceCol serviceCol : serviceColList) {
+            if (Objects.equals(serviceCol.getColId(), serviceConfig.get(ColumnConstant.VALUE))) {
+                valueName = serviceCol.getJsonCol();
+            }
+
+            if (Objects.equals(serviceCol.getColId(), serviceConfig.get(ColumnConstant.LABEL))) {
+                labelName = serviceCol.getJsonCol();
+            }
         }
-        return null;
+        // 如果 valueName 或者 labelName 为空，则返回空列表
+        if (StringUtil.hasAnyEmpty(valueName, labelName)) {
+            return Collections.emptyList();
+        }
+
+        String finalValueName = valueName;
+        String finalLabelName = labelName;
+        return linkedHashMapList.stream()
+                .map(originalMap -> {
+                    // 过滤空值，下拉不能有空值
+                    Object value = originalMap.get(finalValueName);
+                    Object label = originalMap.get(finalLabelName);
+                    if (Objects.isNull(value) || Objects.isNull(label)) {
+                        return null;
+                    }
+                    return Map.of(ColumnConstant.VALUE, value, ColumnConstant.LABEL, label);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    /**
+     * 执行 SQL 获取下拉值
+     *
+     * @param serviceInfo   服务信息
+     * @param sql sql
+     * @return 下拉值
+     */
+    private List<Map<String, Object>> getSelectOptionBySql(ServiceInfo serviceInfo, String sql) {
+        DataSourceHelper.use(serviceInfo.getDataSourceId());
+        List<LinkedHashMap<String, Object>> linkedHashMapList = sqlExecuteMapper.executeSelectList(sql, null);
+        DataSourceHelper.close();
+
+        return linkedHashMapList.stream()
+                .map(originalMap -> {
+                    // 过滤空值，下拉不能有空值
+                    Object value = originalMap.get(ColumnConstant.VALUE);
+                    Object label = originalMap.get(ColumnConstant.LABEL);
+                    if (Objects.isNull(value) || Objects.isNull(label)) {
+                        return null;
+                    }
+                    return Map.of(ColumnConstant.VALUE, value, ColumnConstant.LABEL, label);
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 }
 

@@ -11,6 +11,7 @@ import cn.youngkbt.mp.base.TablePage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.sql.ResultSetMetaData;
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -19,6 +20,14 @@ import java.sql.ResultSetMetaData;
  */
 public interface ServiceColService extends IService<ServiceCol> {
 
+    /**
+     * 根据服务 ID 获取列配置项
+     *
+     * @param serviceId 服务 ID
+     * @return 列配置项
+     */
+    List<ServiceColVO> listByServiceId(String serviceId);
+    
     /**
      * 分页查询列配置项
      *
@@ -139,4 +148,5 @@ public interface ServiceColService extends IService<ServiceCol> {
      * @return 是否成功
      */
     boolean editBatchServiceCol(ServiceColBatchUpdateDTO batchUpdateDTO);
+
 }

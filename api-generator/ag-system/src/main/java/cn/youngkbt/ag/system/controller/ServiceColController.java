@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/6/26 00:24:26
@@ -32,6 +34,13 @@ public class ServiceColController {
 
     private final ServiceColService serviceColService;
     private final ServiceInfoService serviceInfoService;
+    
+    @GetMapping("/listByServiceId/{serviceId}")
+    @Operation(summary = "通过服务 ID 查询服务列配置项", description = "通过服务 ID 查询服务列配置项")
+    public Response<List<ServiceColVO>> listByServiceId(@PathVariable String serviceId) {
+        List<ServiceColVO> serviceColVOList = serviceColService.listByServiceId(serviceId);
+        return HttpResult.ok(serviceColVOList);
+    }
 
     @GetMapping("listPage")
     @Operation(summary = "服务列配置项查询（分页）", description = "通过条件查询服务列配置项（分页）")

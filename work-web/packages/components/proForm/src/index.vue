@@ -436,7 +436,7 @@ const setProps = (props: Partial<ProFormProps> = {}) => {
 // 设置 schema
 const setSchema = (schemaSet: FormSetProps[]) => {
   const { schema } = unref(getProps);
-  for (const v of schema) {
+  for (const v of unref(schema)) {
     for (const item of schemaSet) {
       if (v.prop === item.prop) {
         setProp(v, item.field, item.value);
@@ -450,20 +450,20 @@ const addSchema = (formSchema: FormSchemaProps, prop?: number | string, position
   const { schema } = unref(getProps);
 
   if (isString(prop)) {
-    return schema.forEach((s, i) => {
+    return unref(schema).forEach((s, i) => {
       if (s.prop === prop) position === "after" ? formSchema.splice(i + 1, 0, s) : formSchema.splice(i, 0, s);
     });
   }
-  if (prop !== undefined) return schema.splice(prop, 0, formSchema);
-  return schema.push(formSchema);
+  if (prop !== undefined) return unref(schema).splice(prop, 0, formSchema);
+  return unref(schema).push(formSchema);
 };
 
 // 删除 schema
 const delSchema = (prop: string) => {
   const { schema } = unref(getProps);
 
-  const index = schema.findIndex(item => item.prop === prop);
-  if (index > -1) schema.splice(index, 1);
+  const index = unref(schema).findIndex(item => item.prop === prop);
+  if (index > -1) unref(schema).splice(index, 1);
 };
 
 // 获取表单组件实例

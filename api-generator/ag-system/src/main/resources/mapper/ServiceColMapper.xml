@@ -26,9 +26,7 @@
             <result property="reportColWidth" column="report_col_width" jdbcType="INTEGER"/>
             <result property="detailColSpan" column="detail_col_width" jdbcType="INTEGER"/>
             <result property="colAlign" column="col_align" jdbcType="TINYINT"/>
-            <result property="dropdownValue" column="dropdown_value" jdbcType="VARCHAR"/>
-            <result property="dropdownService" column="dropdown_service" jdbcType="VARCHAR"/>
-            <result property="dropdownSql" column="dropdown_sql" jdbcType="VARCHAR"/>
+            <result property="dropdownConfig" column="dropdown_config" jdbcType="VARCHAR" typeHandler="com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler"/>
             <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
             <result property="createById" column="create_by_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

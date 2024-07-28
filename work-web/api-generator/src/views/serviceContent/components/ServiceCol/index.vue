@@ -55,6 +55,7 @@ import {
   reGenCol,
   removeInvalidCol,
   editBatch,
+  listByServiceId,
 } from "@/api/serviceCol";
 import { ServiceKey } from "@/config/symbol";
 import { colTypeComponentForm, queryFilter } from "@/config/constant";
@@ -147,6 +148,13 @@ const removeCustomSelect = (index: number) => {
   unref(customDropDownList).splice(index, 1);
 };
 
+const dropdownServiceColList = ref<ServiceCol.ServiceColInfo[]>([]);
+const serviceSelectChange = async (value: string) => {
+  if (!value) dropdownServiceColList.value = [];
+  const res = await listByServiceId(value);
+  if (res.code === 200) dropdownServiceColList.value = res.data;
+};
+
 const commonEnum = [
   { label: "不允许", value: 0 },
   { label: "允许", value: 1 },
@@ -176,6 +184,9 @@ const columns: TableColumnProps[] = [
   { prop: "colLength", label: "长度", width: 100 },
   { prop: "operation", label: "操作", width: 140, fixed: "right" },
 ];
+
+const dropdownService = reactive({ service: "", value: "", label: "" });
+const dropdownSql = ref("");
 
 const schema: FormSchemaProps[] = [
   { prop: "base", label: "基本配置", el: "ElDivider" },
@@ -229,56 +240,81 @@ const schema: FormSchemaProps[] = [
     label: "下拉模板",
     el: "el-radio-group",
     enum: [
-      { value: "Local", label: "本地下拉配置" },
-      { value: "Service", label: "从其他服务获取" },
-      { value: "Sql", label: "从 SQL 里获取" },
+      { value: "local", label: "本地下拉配置" },
+      { value: "service", label: "从其他服务获取" },
+      { value: "sql", label: "从 SQL 里获取" },
     ],
-    defaultValue: "Local",
+    defaultValue: "local",
     col: { span: 24 },
   },
   {
     prop: "dropdownList",
     label: "",
     col: { span: 24 },
-    render: () => {
-      return (
-        <div class="relative">
-          <el-button
-            type="primary"
-            icon={Plus}
-            circle
-            onClick={() => addCustomSelect()}
-            class="mr-11 absolute left-[-70px]"
-          />
-          {unref(customDropDownList).map((item, index) => (
-            <div class="flex mb-2">
-              <el-input v-model={item.value} placeholder="请输入存储内容（value）" class="mr-4" />
-              <el-input v-model={item.label} placeholder="请输入展示内容（label）" class="mr-4" />
-              <el-button type="danger" icon={Minus} circleonClick={() => removeCustomSelect(index)} />
-            </div>
-          ))}
-        </div>
-      );
-    },
-    destroy: model => model.dropDownType !== "Local",
+    render: () => (
+      <div class="relative">
+        <el-button
+          type="primary"
+          icon={Plus}
+          circle
+          onClick={() => addCustomSelect()}
+          class="mr-11 absolute left-[-70px]"
+        />
+        {unref(customDropDownList).map((item, index) => (
+          <div class="flex mb-2">
+            <el-input v-model={item.value} placeholder="请输入存储内容（value）" class="mr-4" />
+            <el-input v-model={item.label} placeholder="请输入展示内容（label）" class="mr-4" />
+            <el-button type="danger" icon={Minus} circle onClick={() => removeCustomSelect(index)} />
+          </div>
+        ))}
+      </div>
+    ),
+    hidden: model => model.dropDownType !== "local",
   },
   {
     prop: "dropdownService",
     label: "",
     el: "el-select",
     enum: () => listSelectInProject(unref(serviceInfo)?.projectId || "", unref(serviceInfo)?.serviceId || ""),
-    fieldNames: { value: "serviceId", label: "serviceName" },
     col: { span: 24 },
-    destroy: model => model.dropDownType !== "Service",
+    hidden: model => model.dropDownType !== "service",
+    render: ({ enumData }) => {
+      return (
+        <div>
+          <el-select
+            v-model={dropdownService.service}
+            placeholder="请选择接口"
+            clearable
+            onChange={serviceSelectChange}
+          >
+            {enumData.map(item => (
+              <el-option label={item.serviceName} value={item.serviceId} />
+            ))}
+          </el-select>
+          <div class="flex mt-2">
+            <el-select v-model={dropdownService.value} placeholder="存储内容字段：Value" clearable>
+              {unref(dropdownServiceColList).map(item => (
+                <el-option label={item.jsonCol} value={item.colId} />
+              ))}
+            </el-select>
+            <el-select v-model={dropdownService.label} placeholder="展示内容内容字段：Label" clearable>
+              {unref(dropdownServiceColList).map(item => (
+                <el-option label={item.jsonCol} value={item.colId} />
+              ))}
+            </el-select>
+          </div>
+        </div>
+      );
+    },
   },
   {
     prop: "dropdownSql",
     label: "",
     col: { span: 24 },
-    render: ({ model }) => (
-      <CodeMirror v-model={model.dropdownSql} localTheme={oneDark} lang={sql()} height={500} fullScreen />
-    ),
-    destroy: model => model.dropDownType !== "Sql",
+    render: () => {
+      return <CodeMirror v-model={dropdownSql.value} localTheme={oneDark} lang={sql()} height={300} fullScreen />;
+    },
+    hidden: model => model.dropDownType !== "sql",
   },
 ];
 
@@ -291,30 +327,73 @@ const elFormProps = {
   },
 };
 
+const getDropdownConfig = (data: any) => {
+  let dropdownConfig: { type: string; value: any } | {} = {};
+  if (data.dropDownType === "local") {
+    if (data.dropdownList.length > 0) dropdownConfig = { type: "local", value: unref(customDropDownList) };
+  }
+  if (data.dropDownType === "service") {
+    if (dropdownService.service) dropdownConfig = { type: "service", value: { ...dropdownService } };
+  }
+  if (data.dropDownType === "sql") {
+    if (unref(dropdownSql)) dropdownConfig = { type: "sql", value: unref(dropdownSql) };
+  }
+
+  // 重置数据为初始值
+  customDropDownList.value = [reactive({ value: "", label: "" })];
+  dropdownService.service = "";
+  dropdownService.value = "";
+  dropdownService.label = "";
+  dropdownSql.value = "";
+
+  return dropdownConfig;
+};
+
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema: schema },
   id: ["id", "colId"],
-  addApi: data =>
-    addServiceCol({
+  addApi: data => {
+    const dropdownConfig = getDropdownConfig(data);
+
+    return addServiceCol({
       ...data,
       ...initRequestParam,
       categoryId: unref(serviceInfo)?.categoryId,
-      dropdownValue: unref(customDropDownList).length ? JSON.stringify(customDropDownList.value) : null,
+      dropdownConfig,
       teamId: unref(serviceInfo)?.teamId,
-    }),
-  editApi: data =>
-    editServiceCol({
+    });
+  },
+  editApi: data => {
+    const dropdownConfig = getDropdownConfig(data);
+
+    return editServiceCol({
       ...data,
       ...initRequestParam,
+      dropdownConfig,
       categoryId: unref(serviceInfo)?.categoryId,
       teamId: unref(serviceInfo)?.teamId,
-    }),
+    });
+  },
   removeApi: removeServiceCol,
+  clickEdit: model => {
+    const dropdownConfig = model.dropdownConfig;
+    if (!dropdownConfig) return;
+
+    model.dropDownType = dropdownConfig?.type;
+
+    if (dropdownConfig?.type === "local") customDropDownList.value = dropdownConfig.value;
+    else if (dropdownConfig?.type === "service") {
+      serviceSelectChange(dropdownConfig.value.service);
+      dropdownService.service = dropdownConfig.value.service;
+      dropdownService.value = dropdownConfig.value.value;
+      dropdownService.label = dropdownConfig.value.label;
+    } else if (dropdownConfig?.type === "sql") dropdownSql.value = dropdownConfig.value;
+  },
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),
     width: "50%",
     height: 700,
-    top: "5vh",
+    top: "2vh",
     closeOnClickModal: false,
   },
 };

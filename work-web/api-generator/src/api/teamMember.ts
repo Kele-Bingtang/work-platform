@@ -10,6 +10,11 @@ export namespace TeamMember {
     belongType: number; // 1 团队创建者 2 团队加入者
     teamId: string; // 团队 ID
   }
+
+  export interface TeamMemberInfoWithProjectRole {
+    teamMember: { teamRole: string; nickname: string; teamId: string };
+    projectMemberRole: { id: number; projectRole: string };
+  }
 }
 
 const baseUri = "/teamMember";
@@ -24,4 +29,11 @@ export const listMembersPage = (params: Partial<TeamMember.TeamMemberInfo>) => {
 
 export const leaveTeam = (teamId: string) => {
   return http.delete<http.Response<Boolean>>(`${baseUri}/${teamId}`);
+};
+
+export const editTeamMember = (data: TeamMember.TeamMemberInfoWithProjectRole) => {
+  return http.put<http.Response<Boolean>>(baseUri, data);
+};
+export const inviteMembers = (data: TeamMember.TeamMemberInfo[], inviteUserId: string) => {
+  return http.post<http.Response<Boolean>>(`${baseUri}/inviteMembers`, data, { params: { inviteUserId } });
 };

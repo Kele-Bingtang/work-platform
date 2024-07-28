@@ -13,7 +13,6 @@ import cn.youngkbt.ag.system.model.po.ServiceInfo;
 import cn.youngkbt.ag.system.model.vo.ServiceColVO;
 import cn.youngkbt.ag.system.permission.PermissionHelper;
 import cn.youngkbt.ag.system.service.DataSourceService;
-import cn.youngkbt.ag.system.service.ProjectMemberService;
 import cn.youngkbt.ag.system.service.ServiceColService;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.core.validate.validator.ValidList;
@@ -51,9 +50,16 @@ import java.util.function.Function;
 @Slf4j
 public class ServiceColServiceImpl extends ServiceImpl<ServiceColMapper, ServiceCol> implements ServiceColService {
 
-    private final ProjectMemberService projectMemberService;
     private final DataSourceService dataSourceService;
     private final SqlSessionFactory sqlSessionFactory;
+
+    @Override
+    public List<ServiceColVO> listByServiceId(String serviceId) {
+        List<ServiceCol> serviceColList = baseMapper.selectList(Wrappers.<ServiceCol>lambdaQuery()
+                .eq(ServiceCol::getServiceId, serviceId)
+                .orderByAsc(ServiceCol::getDisplaySeq));
+        return MapstructUtil.convert(serviceColList, ServiceColVO.class);
+    }
 
     @Override
     public TablePage<ServiceColVO> listPage(ServiceColDTO serviceColDTO, PageQuery pageQuery) {

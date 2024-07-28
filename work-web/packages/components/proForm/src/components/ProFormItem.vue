@@ -139,6 +139,7 @@ const { renderCheckboxOptions } = useRenderCheckbox();
 // 渲染插槽
 const RenderSlots = () => {
   const { column } = props;
+
   return column.render!({
     model: unref(model),
     data: getProp(unref(model), column.prop),

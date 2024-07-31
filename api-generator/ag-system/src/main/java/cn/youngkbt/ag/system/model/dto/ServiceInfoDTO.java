@@ -99,6 +99,12 @@ public class ServiceInfoDTO {
     private Object breakingRespond;
 
     /**
+     * 响应模板
+     */
+    @AutoMapping(ignore = true)
+    private Object responseTemplate;
+
+    /**
      * 接口状态，0 禁用 1 启用
      */
     @IncludeValid(value = {"0", "1"}, message = "接口状态不能为空")

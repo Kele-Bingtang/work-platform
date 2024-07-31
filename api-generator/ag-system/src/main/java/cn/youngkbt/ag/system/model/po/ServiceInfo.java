@@ -99,6 +99,11 @@ public class ServiceInfo extends BaseDO {
     private String breakingRespond;
 
     /**
+     * 响应模板
+     */
+    private String responseTemplate;
+
+    /**
      * 目录 ID
      */
     private String categoryId;

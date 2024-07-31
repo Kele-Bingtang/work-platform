@@ -15,9 +15,10 @@ export declare namespace Service {
     insertTable: string; // 执行更新语句的表名
     deleteTable: string; // 执行删除语句的表名
     isAuth: number; // 是否进行认证（0 不认证 1 认证）
-      reportId: string; // 报表 ID
+    reportId: string; // 报表 ID
     serviceVersion: string; // 接口版本号（修改一次 +1）
     breakingRespond: string; // 降级响应数据
+    responseTemplate: string; // 响应模板数据
     status: number; // 服务状态，0 禁用 1 启用
     createTime: string; // 创建时间
     categoryId: string; // 目录 ID

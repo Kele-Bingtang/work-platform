@@ -67,7 +67,7 @@ watch(
 );
 
 const handleCopyLink = (row: Service.ServiceInfo) => {
-  copy(`${import.meta.env.VITE_API_URL}/generic-api${unref(projectInfo)?.baseUrl}/${row.serviceUrl}`);
+  copy(`${import.meta.env.VITE_API_URL}/generic-api/list${unref(projectInfo)?.baseUrl}${row.serviceUrl}`);
   message.success("复制成功");
 };
 

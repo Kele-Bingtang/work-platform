@@ -99,6 +99,11 @@ public class ServiceInfoVO implements Serializable {
     private String breakingRespond;
 
     /**
+     * 响应模板
+     */
+    private String responseTemplate;
+
+    /**
      * 服务状态，0 禁用 1 启用
      */
     private Integer status;

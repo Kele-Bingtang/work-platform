@@ -141,6 +141,11 @@ public class ServiceInfoServiceImpl extends ServiceImpl<ServiceInfoMapper, Servi
             serviceInfo.setBreakingRespond(JacksonUtil.toJsonStr(serviceInfoDTO.getBreakingRespond()));
         }
 
+        // 响应模板数据转为字符串存入数据库
+        if (Objects.nonNull(serviceInfoDTO.getResponseTemplate())) {
+            serviceInfo.setResponseTemplate(JacksonUtil.toJsonStr(serviceInfoDTO.getResponseTemplate()));
+        }
+
         return baseMapper.updateById(serviceInfo) > 0;
     }
 

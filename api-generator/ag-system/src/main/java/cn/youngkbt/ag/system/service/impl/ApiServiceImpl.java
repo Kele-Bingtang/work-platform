@@ -101,8 +101,17 @@ public class ApiServiceImpl implements ApiService {
             return new ArrayList<>();
         }
 
+        List<LinkedHashMap<String, Object>> dataList = processMapping(linkedHashMap, serviceColList);
 
-        return processMapping(linkedHashMap, serviceColList);
+        String responseTemplate = serviceInfo.getResponseTemplate();
+        if (StringUtil.hasText(responseTemplate) && JacksonUtil.canSerialize(responseTemplate)) {
+            Map<String, Object> jsonTemplate = JacksonUtil.toJson(responseTemplate, Map.class);
+            if (Objects.nonNull(jsonTemplate.get("_root")) && jsonTemplate.size() == 1) {
+                return dataList;
+            }
+            return transformData(dataList, jsonTemplate);
+        }
+        return dataList;
     }
 
     @Override
@@ -138,9 +147,19 @@ public class ApiServiceImpl implements ApiService {
         List<LinkedHashMap<String, Object>> linkedHashMapList = linkedHashMapPage.getRecords();
 
         List<LinkedHashMap<String, Object>> processMappingList = processMapping(linkedHashMapList, serviceColList);
-        linkedHashMapPage.setRecords(processMappingList);
-
         DataSourceHelper.close();
+
+        String responseTemplate = serviceInfo.getResponseTemplate();
+        if (StringUtil.hasText(responseTemplate) && JacksonUtil.canSerialize(responseTemplate)) {
+            Map<String, Object> jsonTemplate = JacksonUtil.toJson(responseTemplate, Map.class);
+            if (Objects.nonNull(jsonTemplate.get("_root")) && jsonTemplate.size() == 1) {
+                linkedHashMapPage.setRecords(processMappingList);
+                return TablePage.build(linkedHashMapPage);
+            }
+            linkedHashMapPage.setRecords(transformData(processMappingList, jsonTemplate));
+            return TablePage.build(linkedHashMapPage);
+        }
+        
         return TablePage.build(linkedHashMapPage);
     }
 
@@ -167,7 +186,7 @@ public class ApiServiceImpl implements ApiService {
     public void export(String serviceId, PageQuery pageQuery, Map<String, Object> requestParamsMap, HttpServletResponse response) {
         ServiceInfo serviceInfo = serviceInfoMapper.selectOne(Wrappers.<ServiceInfo>lambdaQuery()
                 .eq(ServiceInfo::getServiceId, serviceId));
-        
+
         // 验证项目，获取服务信息
         DataSourceHelper.use(serviceInfo.getDataSourceId());
 
@@ -375,6 +394,42 @@ public class ApiServiceImpl implements ApiService {
         }
 
         return newListMap;
+    }
+
+    private static List<LinkedHashMap<String, Object>> transformData(List<LinkedHashMap<String, Object>> originalData, Map<String, Object> template) {
+        List<LinkedHashMap<String, Object>> result = new ArrayList<>();
+        for (LinkedHashMap<String, Object> row : originalData) {
+            LinkedHashMap<String, Object> newRow = new LinkedHashMap<>();
+            processTemplate(template, row, newRow);
+            result.add(newRow);
+        }
+        return result;
+    }
+
+    private static void processTemplate(Map<String, Object> template, Map<String, Object> row, Map<String, Object> newRow) {
+        for (Map.Entry<String, Object> entry : template.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if ("_root".equals(key)) {
+                // 处理 _root，_root 表示不需要包起来
+                List<String> fields = (List<String>) value;
+                for (String field : fields) {
+                    newRow.put(field, row.get(field));
+                }
+            } else if (value instanceof List) {
+                List<String> fields = (List<String>) value;
+                Map<String, Object> nestedObj = new LinkedHashMap<>();
+                for (String field : fields) {
+                    nestedObj.put(field, row.get(field));
+                }
+                newRow.put(key, nestedObj);
+            } else if (value instanceof Map) {
+                // 递归处理嵌套对象
+                Map<String, Object> nestedObj = new LinkedHashMap<>();
+                newRow.put(key, nestedObj);
+                processTemplate((Map<String, Object>) value, row, nestedObj);
+            }
+        }
     }
 
     @Override

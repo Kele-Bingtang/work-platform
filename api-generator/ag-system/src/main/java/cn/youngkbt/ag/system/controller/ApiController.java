@@ -34,7 +34,7 @@ import java.util.*;
 public class ApiController {
 
     private final ApiService apiService;
-    private final String BASE_URI = "/generic-api";
+    private static final String BASE_URI = "/generic-api";
 
     @GetMapping(value = "/one/**")
     @Operation(summary = "查询一笔数据", description = "查询一笔数据")

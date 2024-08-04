@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>work-monitor-admin</artifactId>
+    
+    <description>工作平台的监控平台</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

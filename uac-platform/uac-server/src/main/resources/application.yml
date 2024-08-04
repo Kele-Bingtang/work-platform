@@ -8,7 +8,7 @@ uac:
   copyrightYear: 2023
 
 server:
-  port: 8090
+  port: 9000
   servlet:
     # 应用的访问路径
     context-path: /

@@ -4,21 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>cn.youngkbt</groupId>
-        <artifactId>work-platform</artifactId>
+        <groupId>cn.youngkbt.file</groupId>
+        <artifactId>file-store</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>cn.youngkbt.notice</groupId>
-    <artifactId>notice-platform</artifactId>
-    <packaging>pom</packaging>
-
-    <description>消息发送平台</description>
-    <modules>
-        <module>notice-core</module>
-        <module>notice-server</module>
-        <module>notice-system</module>
-    </modules>
+    <artifactId>file-core</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -26,4 +17,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-doc</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
 </project>

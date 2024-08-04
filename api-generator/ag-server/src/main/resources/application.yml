@@ -8,7 +8,7 @@ ag:
   copyrightYear: 2024
 
 server:
-  port: 9000
+  port: 9010
   servlet:
     # 应用的访问路径
     context-path: /

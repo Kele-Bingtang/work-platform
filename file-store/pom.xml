@@ -11,8 +11,14 @@
 
     <groupId>cn.youngkbt.file</groupId>
     <artifactId>file-store</artifactId>
-    
+    <packaging>pom</packaging>
+
     <description>文件存储仓库</description>
+    <modules>
+        <module>file-core</module>
+        <module>file-system</module>
+        <module>file-server</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -20,18 +26,4 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-        </dependency>
-    </dependencies>
 </project>

@@ -194,7 +194,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         return baseMapper.exists(Wrappers.<SysDept>lambdaQuery()
                 .eq(SysDept::getDeptName, sysDeptDTO.getDeptName())
                 .eq(SysDept::getParentId, sysDeptDTO.getParentId())
-                .ne(Objects.nonNull(sysDeptDTO.getDeptId()), SysDept::getDeptId, sysDeptDTO.getDeptId()));
+                .ne(Objects.nonNull(sysDeptDTO.getId()), SysDept::getDeptId, sysDeptDTO.getId()));
     }
 
     /**
@@ -216,7 +216,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public boolean insertOne(SysDeptDTO sysDeptDTO) {
+    public boolean addDept(SysDeptDTO sysDeptDTO) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDTO, SysDept.class);
 
         if (StringUtil.hasText(sysDeptDTO.getParentId())) {
@@ -238,7 +238,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateOne(SysDeptDTO sysDeptDTO) {
+    public boolean editDept(SysDeptDTO sysDeptDTO) {
         SysDept sysDept = MapstructUtil.convert(sysDeptDTO, SysDept.class);
 
         // 如果更新为启用状态，则上级上级所有部门都启用
@@ -298,7 +298,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public boolean removeOne(Long id) {
+    public boolean removeDept(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 

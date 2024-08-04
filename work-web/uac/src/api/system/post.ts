@@ -35,15 +35,15 @@ export const userSelectPostList = (userId: string) => {
   return http.get<http.Response<Post.UserSelectPost[]>>(`${baseUri}/userSelectPostList/${userId}`);
 };
 
-export const addOne = (data: Post.PostInfo) => {
+export const addPost = (data: Post.PostInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<Post.PostInfo, "id">) => {
+export const editPost = (data: RequiredKeyPartialOther<Post.PostInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: Post.PostInfo) => {
+export const removePost = (data: Post.PostInfo) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -53,7 +53,7 @@ export const deleteOne = (data: Post.PostInfo) => {
   );
 };
 
-export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Post.PostInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Post.PostInfo[] }) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},

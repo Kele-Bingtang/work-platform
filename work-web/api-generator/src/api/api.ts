@@ -1,6 +1,7 @@
 import http from "@/config/request";
 
 const baseUri = "/generic-api";
+
 export const pageByServiceId = (params: Record<string, any>) => {
   const serviceId = params.serviceId;
   delete params.serviceId;

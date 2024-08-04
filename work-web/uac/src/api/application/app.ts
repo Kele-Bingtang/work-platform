@@ -32,15 +32,15 @@ export const listPage = (params: Partial<App.AppInfo>) => {
   return http.get<http.Page<App.AppInfo[]>>(`${baseUri}/listPage`, params);
 };
 
-export const addOne = (data: App.AppInfo) => {
+export const addApp = (data: App.AppInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<App.AppInfo, "id">) => {
+export const editApp = (data: RequiredKeyPartialOther<App.AppInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: App.AppInfo) => {
+export const removeApp = (data: App.AppInfo) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -50,7 +50,7 @@ export const deleteOne = (data: App.AppInfo) => {
   );
 };
 
-export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: App.AppInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: App.AppInfo[] }) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},

@@ -64,7 +64,7 @@ public interface SysPostService extends IService<SysPost> {
      * @param sysPostDTO 岗位列表查询参数
      * @return 是否成功
      */
-    boolean insertOne(SysPostDTO sysPostDTO);
+    boolean addPost(SysPostDTO sysPostDTO);
 
     /**
      * 更新岗位
@@ -72,7 +72,7 @@ public interface SysPostService extends IService<SysPost> {
      * @param sysPostDTO 岗位列表查询参数
      * @return 是否成功
      */
-    boolean updateOne(SysPostDTO sysPostDTO);
+    boolean editPost(SysPostDTO sysPostDTO);
 
     /**
      * 批量删除岗位

@@ -74,7 +74,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public boolean insertOne(SysClientDTO sysClientDTO) {
+    public boolean insertClient(SysClientDTO sysClientDTO) {
         SysClient sysClient = MapstructUtil.convert(sysClientDTO, SysClient.class);
         // 如果没有设置 clientSecret，则自动生成
         if (Objects.isNull(sysClient.getClientSecret())) {
@@ -90,7 +90,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     }
 
     @Override
-    public boolean updateOne(SysClientDTO sysClientDTO) {
+    public boolean updateClient(SysClientDTO sysClientDTO) {
         SysClient sysClient = MapstructUtil.convert(sysClientDTO, SysClient.class);
         sysClient.setGrantTypes(String.join(",", sysClientDTO.getGrantTypeList()));
         return baseMapper.updateById(sysClient) > 0;
@@ -112,14 +112,14 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     public boolean checkClientKeyUnique(SysClientDTO sysClientDTO) {
         return baseMapper.exists(Wrappers.<SysClient>lambdaQuery()
                 .eq(SysClient::getClientKey, sysClientDTO.getClientKey())
-                .ne(Objects.nonNull(sysClientDTO.getClientId()), SysClient::getClientId, sysClientDTO.getClientId()));
+                .ne(Objects.nonNull(sysClientDTO.getId()), SysClient::getId, sysClientDTO.getId()));
     }
 
     @Override
     public boolean checkClientSecretUnique(SysClientDTO sysClientDTO) {
         return baseMapper.exists(Wrappers.<SysClient>lambdaQuery()
                 .eq(SysClient::getClientSecret, sysClientDTO.getClientSecret())
-                .ne(Objects.nonNull(sysClientDTO.getClientId()), SysClient::getClientId, sysClientDTO.getClientId()));
+                .ne(Objects.nonNull(sysClientDTO.getId()), SysClient::getId, sysClientDTO.getId()));
     }
 }
 

@@ -1,17 +1,26 @@
 package cn.youngkbt.ag.system.controller;
 
+import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.model.dto.UserDTO;
+import cn.youngkbt.ag.system.model.dto.UserPasswordDTO;
+import cn.youngkbt.ag.system.model.po.User;
 import cn.youngkbt.ag.system.model.vo.UserVO;
 import cn.youngkbt.ag.system.service.UserService;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
+import cn.youngkbt.security.domain.LoginUser;
+import cn.youngkbt.utils.MapstructUtil;
+import cn.youngkbt.utils.StringUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -24,6 +33,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/listByKeyword/{keyword}")
     @Operation(summary = "通过关键字查询用户", description = "通过关键字查询用户")
@@ -38,13 +48,55 @@ public class UserController {
         if (userService.checkUsernameUnique(userDTO)) {
             return HttpResult.failMessage("用户名已存在");
         }
+        
+        if (!userDTO.getPassword().equals(userDTO.getRepeatPassword())) {
+            return HttpResult.failMessage("两次密码不一致");
+        }
 
         return HttpResult.ok(userService.register(userDTO));
     }
 
     @PutMapping
-    @Operation(summary = "用户修改", description = "用户修改")
-    public Response<Boolean> edit(@Validated(RestGroup.EditGroup.class)  @RequestBody UserDTO userDTO) {
-        return HttpResult.ok(userService.edit(userDTO));
+    @Operation(summary = "个人信息修改", description = "修改个人信息")
+    @PreventRepeatSubmit
+    public Response<Boolean> editUser(@Validated @RequestBody UserDTO userDTO) {
+        LoginUser loginUser = AgHelper.getLoginUser();
+        if (Objects.isNull(loginUser)) {
+            return HttpResult.failMessage("用户信息失效");
+        }
+        User user = MapstructUtil.convert(userDTO, User.class);
+
+        user.setId(loginUser.getId());
+        user.setUserId(loginUser.getUserId());
+        
+        if (StringUtil.hasText(user.getPhone()) && userService.checkPhoneUnique(userDTO)) {
+            return HttpResult.failMessage("修改用户「" + userDTO.getNickname() + "」失败，手机号「" + userDTO.getPhone() + "」已存在");
+        }
+        if (StringUtil.hasText(userDTO.getEmail()) && userService.checkEmailUnique(userDTO)) {
+            return HttpResult.failMessage("修改用户「" + userDTO.getNickname() + "」失败，邮箱账号「" + userDTO.getEmail() + "」已存在");
+        }
+        
+        boolean result = userService.editUser(userDTO);
+        return HttpResult.ok(result);
+    }
+
+    @PutMapping("/updatePassword")
+    @Operation(summary = "个人密码修改", description = "修改个人密码")
+    public Response<Boolean> updatePassword(@Validated @RequestBody UserPasswordDTO userPasswordDTO) {
+        LoginUser loginUser = AgHelper.getLoginUser();
+        if (Objects.isNull(loginUser)) {
+            return HttpResult.failMessage("用户未登录");
+        }
+        User sysUser = userService.getById(loginUser.getId());
+        if (!passwordEncoder.matches(userPasswordDTO.getOldPassword(), sysUser.getPassword())) {
+            return HttpResult.failMessage("修改密码失败，旧密码错误");
+        }
+
+        if (passwordEncoder.matches(userPasswordDTO.getNewPassword(), sysUser.getPassword())) {
+            return HttpResult.failMessage("新密码不能与旧密码相同");
+        }
+
+        boolean result = userService.updatePassword(loginUser.getUserId(), passwordEncoder.encode(userPasswordDTO.getNewPassword()));
+        return HttpResult.ok(result);
     }
 }

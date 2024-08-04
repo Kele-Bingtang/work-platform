@@ -13,7 +13,7 @@
       <el-input clearable v-model="ruleForm.username" placeholder="用户名" :prefix-icon="User" />
     </el-form-item>
 
-    <el-form-item prop="phone">
+    <!-- <el-form-item prop="phone">
       <el-input clearable v-model="ruleForm.phone" placeholder="手机号码" :prefix-icon="Phone" />
     </el-form-item>
 
@@ -24,7 +24,7 @@
           {{ text.length > 0 ? text + " 秒后重新获取" : "获取验证码" }}
         </el-button>
       </div>
-    </el-form-item>
+    </el-form-item> -->
 
     <el-form-item prop="password">
       <el-input clearable show-password v-model="ruleForm.password" placeholder="密码" :prefix-icon="Lock" />
@@ -49,7 +49,7 @@
           type="primary"
           :loading="loading"
         >
-          登录
+          注册
         </el-button>
         <el-button :icon="CircleClose" round @click="onBack" size="large">返回</el-button>
       </div>
@@ -61,8 +61,9 @@
 import { ElMessage, type FormInstance } from "element-plus";
 import { useVerifyCode } from "../verifyCode";
 import { updateRules } from "../rules";
-import { User, Phone, Lock, WarnTriangleFilled, CircleClose, UserFilled } from "@element-plus/icons-vue";
+import { User, Lock, CircleClose, UserFilled } from "@element-plus/icons-vue";
 import { useDesign } from "@work/hooks";
+import { register } from "@/api/user";
 
 const { getPrefixClass } = useDesign();
 const prefixClass = getPrefixClass("login");
@@ -71,13 +72,10 @@ const checked = ref(false);
 const loading = ref(false);
 const ruleForm = reactive({
   username: "",
-  phone: "",
-  verifyCode: "",
   password: "",
   repeatPassword: "",
 });
 const ruleFormRef = ref<FormInstance>();
-const { isDisabled, text } = useVerifyCode();
 const switchFormMode = inject("switchFormMode") as (mode: string) => {};
 const repeatPasswordRule = [
   {
@@ -97,21 +95,20 @@ const repeatPasswordRule = [
 const onRegister = async (formEl: FormInstance | undefined) => {
   loading.value = true;
   if (!formEl) return;
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async valid => {
     if (valid) {
-      if (checked.value) {
-        // 模拟请求，需根据实际开发进行修改
-        setTimeout(() => {
-          ElMessage.success("修改密码成功");
-          loading.value = false;
-        }, 2000);
+      if (unref(checked)) {
+        const res = await register(ruleForm);
+        if (res.code === 200) {
+          ElMessage.success("注册成功");
+          onBack();
+        }
       } else {
         loading.value = false;
         ElMessage.warning("请勾选隐私政策");
       }
     } else {
       loading.value = false;
-      return fields;
     }
   });
 };

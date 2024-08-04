@@ -101,7 +101,7 @@ export const listWithDisabledByRoleId = (params: { roleId: string }) => {
   );
 };
 
-export const addOne = (data: UserGroup.UserGroupInfo) => {
+export const addUserGroup = (data: UserGroup.UserGroupInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
@@ -119,7 +119,7 @@ export const addUsersToGroup = (data: UserGroup.UserGroupLinkUser) => {
   return http.post<http.Response<string>>(`${baseUri}/addUsersToGroup`, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<UserGroup.UserGroupInfo, "id">) => {
+export const editUserGroup = (data: RequiredKeyPartialOther<UserGroup.UserGroupInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
@@ -130,7 +130,7 @@ export const editUserGroupLinkInfo = (data: RequiredKeyPartialOther<UserGroup.Us
   return http.put<http.Response<boolean>>(`${baseUri}/editUserGroupUserLink`, data);
 };
 
-export const deleteOne = (data: UserGroup.UserGroupInfo) => {
+export const removeUserGroup = (data: UserGroup.UserGroupInfo) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -140,7 +140,7 @@ export const deleteOne = (data: UserGroup.UserGroupInfo) => {
   );
 };
 
-export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: UserGroup.UserGroupInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: UserGroup.UserGroupInfo[] }) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},

@@ -22,7 +22,7 @@ export const useFormSchema = (enumData: ComputedRef<any>, defaultValue: Computed
       enum: enumData,
       fieldNames: { value: "clientId", label: "clientName" },
       defaultValue: defaultValue,
-      isDisabled: form => !!form.clientId,
+      disabled: form => !!form.clientId,
       props: { clearable: true, placeholder: "请选择 所属客户端" },
       col: { span: 24 },
     },

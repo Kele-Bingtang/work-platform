@@ -22,19 +22,19 @@ export const listPage = (params: Partial<DictType.DictTypeInfo>) => {
   return http.get<http.Page<DictType.DictTypeInfo[]>>(`${baseUri}/listPage`, params);
 };
 
-export const addOne = (data: DictType.DictTypeInfo) => {
+export const addDictType = (data: DictType.DictTypeInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: DictType.DictTypeInfo) => {
+export const editDictType = (data: DictType.DictTypeInfo) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: DictType.DictTypeInfo) => {
+export const removeDictType = (data: DictType.DictTypeInfo) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}`);
 };
 
-export const deleteBatch = ({ idList }: { idList: string[] }) => {
+export const removeBatch = ({ idList }: { idList: string[] }) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${idList.join(",")}`);
 };
 

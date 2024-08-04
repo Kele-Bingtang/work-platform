@@ -68,7 +68,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
 
     @Override
     @CacheEvict(cacheNames = CacheNameConstant.SYS_DICT, key = "#sysDictDataDTO.dictCode")
-    public boolean insertOne(SysDictDataDTO sysDictDataDTO) {
+    public boolean addDictData(SysDictDataDTO sysDictDataDTO) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDTO, SysDictData.class);
 
         if (StringUtil.hasText(sysDictDataDTO.getParentId())) {
@@ -82,7 +82,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     @Transactional
     @CacheEvict(cacheNames = CacheNameConstant.SYS_DICT, key = "#sysDictDataDTO.dictCode")
-    public boolean updateOne(SysDictDataDTO sysDictDataDTO) {
+    public boolean editDictData(SysDictDataDTO sysDictDataDTO) {
         SysDictData sysDictData = MapstructUtil.convert(sysDictDataDTO, SysDictData.class);
         return baseMapper.updateById(sysDictData) > 0;
     }

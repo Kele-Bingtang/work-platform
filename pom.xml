@@ -15,6 +15,7 @@
         <module>file-store</module>
         <module>work-sso</module>
         <module>uac-platform</module>
+        <module>work-monitor-admin</module>
     </modules>
 
     <properties>

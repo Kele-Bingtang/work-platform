@@ -56,7 +56,7 @@ public interface SysClientService extends IService<SysClient> {
      * @param sysClientDTO 客户端信息
      * @return 是否成功
      */
-    boolean insertOne(SysClientDTO sysClientDTO);
+    boolean insertClient(SysClientDTO sysClientDTO);
 
     /**
      * 修改客户端信息
@@ -64,7 +64,7 @@ public interface SysClientService extends IService<SysClient> {
      * @param sysClientDTO 客户端信息
      * @return 是否成功
      */
-    boolean updateOne(SysClientDTO sysClientDTO);
+    boolean updateClient(SysClientDTO sysClientDTO);
 
     /**
      * 修改客户端状态

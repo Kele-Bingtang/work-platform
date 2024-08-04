@@ -16,7 +16,15 @@
 
 <script setup lang="tsx" name="Tenant">
 import { ProTable, Icon, downloadByData } from "work";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Tenant, exportExcel } from "@/api/system/tenant";
+import {
+  listPage,
+  addTenant,
+  editTenant,
+  removeTenant,
+  removeBatch,
+  type Tenant,
+  exportExcel,
+} from "@/api/system/tenant";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
@@ -32,7 +40,7 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "tenantName",
   "租户",
-  (row, status) => editOne({ id: row.id, tenantId: row.tenantId, status }),
+  (row, status) => editTenant({ id: row.id, tenantId: row.tenantId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -78,10 +86,10 @@ const { hasAuth } = usePermission();
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
   id: ["id", "tenantId"],
-  addApi: addOne,
-  editApi: editOne,
-  removeApi: deleteOne,
-  removeBatchApi: deleteBatch,
+  addApi: addTenant,
+  editApi: editTenant,
+  removeApi: removeTenant,
+  removeBatchApi: removeBatch,
   disableAdd: !hasAuth("system:tenant:add"),
   disableEdit: !hasAuth("system:tenant:edit"),
   disableRemove: !hasAuth("system:tenant:remove"),

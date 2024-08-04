@@ -50,7 +50,15 @@
 
 <script setup lang="tsx" name="UserGroup">
 import { ProTable, TreeFilter, downloadByData } from "work";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type UserGroup, exportExcel } from "@/api/user/userGroup";
+import {
+  listPage,
+  addUserGroup,
+  editUserGroup,
+  removeUserGroup,
+  removeBatch,
+  type UserGroup,
+  exportExcel,
+} from "@/api/user/userGroup";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import { getAppTreeList, type App } from "@/api/application/app";
@@ -116,12 +124,12 @@ const dialogForm: DialogForm = {
     schema: useFormSchema().schema,
   },
   id: ["id", "groupId"],
-  addApi: form => addOne({ ...form, appId: requestParam.appId }),
+  addApi: form => addUserGroup({ ...form, appId: requestParam.appId }),
   beforeAdd: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
   },
-  editApi: editOne,
+  editApi: editUserGroup,
   beforeEdit: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
@@ -130,8 +138,8 @@ const dialogForm: DialogForm = {
   disableEdit: !hasAuth("system:userGroup:edit"),
   disableRemove: !hasAuth("system:userGroup:remove"),
   disableRemoveBatch: !hasAuth("system:userGroup:remove"),
-  removeApi: deleteOne,
-  removeBatchApi: deleteBatch,
+  removeApi: removeUserGroup,
+  removeBatchApi: removeBatch,
   apiFilterKeys: ["user", "createTime"],
   dialog: {
     title: (_, status) => (status === "add" ? "新增" : "编辑"),

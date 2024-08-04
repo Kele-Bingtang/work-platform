@@ -47,7 +47,7 @@ public interface SysAppService extends IService<SysApp> {
      * @param sysAppDTO 应用信息
      * @return 是否成功
      */
-    boolean insertOne(SysAppDTO sysAppDTO);
+    boolean addApp(SysAppDTO sysAppDTO);
 
     /**
      * 更新一条应用信息
@@ -55,7 +55,7 @@ public interface SysAppService extends IService<SysApp> {
      * @param sysAppDTO 应用信息
      * @return 是否成功
      */
-    boolean updateOne(SysAppDTO sysAppDTO);
+    boolean editApp(SysAppDTO sysAppDTO);
 
     /**
      * 批量删除应用信息

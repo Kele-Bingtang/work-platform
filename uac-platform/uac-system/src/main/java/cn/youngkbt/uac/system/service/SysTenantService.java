@@ -47,7 +47,7 @@ public interface SysTenantService extends IService<SysTenant> {
      * @param sysTenantDTO 租户信息
      * @return 是否新增成功
      */
-    boolean insertOne(SysTenantDTO sysTenantDTO);
+    boolean addTenant(SysTenantDTO sysTenantDTO);
 
     /**
      * 更新租户
@@ -55,7 +55,7 @@ public interface SysTenantService extends IService<SysTenant> {
      * @param sysTenantDTO 租户信息
      * @return 是否更新成功
      */
-    boolean updateOne(SysTenantDTO sysTenantDTO);
+    boolean editTenant(SysTenantDTO sysTenantDTO);
 
     /**
      * 删除租户

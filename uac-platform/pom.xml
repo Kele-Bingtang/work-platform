@@ -17,7 +17,6 @@
         <module>uac-system</module>
         <module>uac-server</module>
         <module>uac-core</module>
-        <module>uac-monitor-admin</module>
         <module>uac-demo</module>
     </modules>
 

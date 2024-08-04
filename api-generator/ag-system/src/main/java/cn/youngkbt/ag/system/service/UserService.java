@@ -39,6 +39,22 @@ public interface UserService extends IService<User> {
     boolean checkUsernameUnique(UserDTO userDTO);
 
     /**
+     * 检查手机号是否唯一
+     *
+     * @param userDTO 用户信息
+     * @return 是否唯一
+     */
+    boolean checkPhoneUnique(UserDTO userDTO);
+
+    /**
+     * 检查邮箱是否唯一
+     *
+     * @param userDTO 用户信息
+     * @return 是否唯一
+     */
+    boolean checkEmailUnique(UserDTO userDTO);
+
+    /**
      * 用户注册
      *
      * @param userDTO 用户信息
@@ -52,5 +68,14 @@ public interface UserService extends IService<User> {
      * @param userDTO 用户信息
      * @return 是否成功
      */
-    Boolean edit(UserDTO userDTO);
+    Boolean editUser(UserDTO userDTO);
+
+    /**
+     * 更新用户密码
+     *
+     * @param userId 用户 ID
+     * @param password 密码
+     * @return 是否成功
+     */
+    boolean updatePassword(String userId, String password);
 }

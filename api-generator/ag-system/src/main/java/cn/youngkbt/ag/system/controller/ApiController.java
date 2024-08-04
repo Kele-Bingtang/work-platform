@@ -64,7 +64,7 @@ public class ApiController {
             secretKey = secretKeyParam;
         }
         String apiUri = requestUri.substring((BASE_URI + "/list").length());
-        List<LinkedHashMap<String, Object>> list = apiService.list(apiUri, secretKey, requestParamsMap, null);
+        List<LinkedHashMap<String, Object>> list = apiService.list(apiUri, secretKey, requestParamsMap, Integer.valueOf((String) requestParamsMap.get("_limit")));
         return HttpResult.ok(list);
     }
 

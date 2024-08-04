@@ -39,15 +39,15 @@ export const listClientGrantTypeList = (clientId: string) => {
   return http.get<http.Response<Client.ClientInfo[]>>(`${baseUri}/grantTypeList/${clientId}`);
 };
 
-export const addOne = (data: Client.ClientInfo) => {
+export const addClient = (data: Client.ClientInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<Client.ClientInfo, "id">) => {
+export const editClient = (data: RequiredKeyPartialOther<Client.ClientInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: Client.ClientInfo) => {
+export const removeClient = (data: Client.ClientInfo) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -57,7 +57,7 @@ export const deleteOne = (data: Client.ClientInfo) => {
   );
 };
 
-export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Client.ClientInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Client.ClientInfo[] }) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},

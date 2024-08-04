@@ -42,7 +42,7 @@
 <script setup lang="tsx" name="DictType">
 import { ProTable, TreeFilter, BasicDrawer, Point, downloadByData } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { listPage, addOne, editOne, deleteOne, type DictType, exportExcel } from "@/api/system/dictType";
+import { listPage, addDictType, editDictType, removeDictType, type DictType, exportExcel } from "@/api/system/dictType";
 import { type DialogForm, type TableColumnProps, type TreeFilterInstance } from "@work/components";
 import DictData from "./dictData.vue";
 import { ElLink, ElMessageBox } from "element-plus";
@@ -119,9 +119,9 @@ const dialogForm: DialogForm = {
     ).dictTypeSchema,
   },
   id: ["id", "dictTypeId"],
-  addApi: addOne,
-  editApi: editOne,
-  removeApi: deleteOne,
+  addApi: addDictType,
+  editApi: editDictType,
+  removeApi: removeDictType,
   disableAdd: !hasAuth("system:dict:add"),
   disableEdit: !hasAuth("system:dict:edit"),
   disableRemove: !hasAuth("system:dict:remove"),

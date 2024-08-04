@@ -15,7 +15,7 @@
 
 <script setup lang="tsx" name="Post">
 import { ProTable, downloadByData } from "work";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Post, exportExcel } from "@/api/system/post";
+import { listPage, addPost, editPost, removePost, removeBatch, type Post, exportExcel } from "@/api/system/post";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
@@ -31,7 +31,7 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "postName",
   "岗位",
-  (row, status) => editOne({ id: row.id, postId: row.postId, status }),
+  (row, status) => editPost({ id: row.id, postId: row.postId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -73,10 +73,10 @@ const { hasAuth } = usePermission();
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
   id: ["id", "postId"],
-  addApi: addOne,
-  editApi: editOne,
-  removeApi: deleteOne,
-  removeBatchApi: deleteBatch,
+  addApi: addPost,
+  editApi: editPost,
+  removeApi: removePost,
+  removeBatchApi: removeBatch,
   disableAdd: !hasAuth("system:post:add"),
   disableEdit: !hasAuth("system:post:edit"),
   disableRemove: !hasAuth("system:post:remove"),

@@ -89,12 +89,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public boolean checkCompanyNameUnique(SysTenantDTO sysTenantDTO) {
         return baseMapper.exists(new LambdaQueryWrapper<SysTenant>()
                 .eq(SysTenant::getTenantName, sysTenantDTO.getTenantName())
-                .ne(Objects.nonNull(sysTenantDTO.getTenantId()), SysTenant::getTenantId, sysTenantDTO.getTenantId()));
+                .ne(Objects.nonNull(sysTenantDTO.getId()), SysTenant::getId, sysTenantDTO.getId()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertOne(SysTenantDTO sysTenantDTO) {
+    public boolean addTenant(SysTenantDTO sysTenantDTO) {
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDTO, SysTenant.class);
         // 获取数据库所有的租户 ID，然后根据最后一个生成新的 ID
         List<SysTenant> sysTenantList = baseMapper.selectList(Wrappers.<SysTenant>lambdaQuery().select(SysTenant::getTenantId));
@@ -363,7 +363,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Override
     @CacheEvict(cacheNames = CacheNameConstant.SYS_TENANT, key = "#sysTenantDTO.tenantId")
-    public boolean updateOne(SysTenantDTO sysTenantDTO) {
+    public boolean editTenant(SysTenantDTO sysTenantDTO) {
         checkTenantAllowed(sysTenantDTO.getTenantId());
         SysTenant sysTenant = MapstructUtil.convert(sysTenantDTO, SysTenant.class);
         return baseMapper.updateById(sysTenant) > 0;

@@ -63,17 +63,17 @@ public class SysUserGroupServiceImpl extends ServiceImpl<SysUserGroupMapper, Sys
     public boolean checkUserGroupNameUnique(SysUserGroupDTO sysUserGroupDTO) {
         return baseMapper.exists(Wrappers.<SysUserGroup>lambdaQuery()
                 .eq(SysUserGroup::getGroupName, sysUserGroupDTO.getGroupName())
-                .ne(Objects.nonNull(sysUserGroupDTO.getGroupId()), SysUserGroup::getGroupId, sysUserGroupDTO.getGroupId()));
+                .ne(Objects.nonNull(sysUserGroupDTO.getId()), SysUserGroup::getId, sysUserGroupDTO.getId()));
     }
 
     @Override
-    public boolean insertOne(SysUserGroupDTO sysUserGroupDTO) {
+    public boolean addUserGroup(SysUserGroupDTO sysUserGroupDTO) {
         SysUserGroup userGroup = MapstructUtil.convert(sysUserGroupDTO, SysUserGroup.class);
         return baseMapper.insert(userGroup) > 0;
     }
 
     @Override
-    public boolean updateOne(SysUserGroupDTO sysUserGroupDTO) {
+    public boolean editOne(SysUserGroupDTO sysUserGroupDTO) {
         SysUserGroup userGroup = MapstructUtil.convert(sysUserGroupDTO, SysUserGroup.class);
         return baseMapper.updateById(userGroup) > 0;
     }

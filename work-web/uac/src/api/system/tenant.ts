@@ -31,15 +31,15 @@ export const listPage = (params: Partial<Tenant.TenantInfo>) => {
   return http.get<http.Page<Tenant.TenantInfo[]>>(`${baseUri}/listPage`, params);
 };
 
-export const addOne = (data: Tenant.TenantInfo) => {
+export const addTenant = (data: Tenant.TenantInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<Tenant.TenantInfo, "id">) => {
+export const editTenant = (data: RequiredKeyPartialOther<Tenant.TenantInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: Tenant.TenantInfo) => {
+export const removeTenant = (data: Tenant.TenantInfo) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -49,7 +49,7 @@ export const deleteOne = (data: Tenant.TenantInfo) => {
   );
 };
 
-export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Tenant.TenantInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Tenant.TenantInfo[] }) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},

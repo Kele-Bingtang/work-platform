@@ -2,6 +2,7 @@ import http from "@/config/request";
 
 export namespace Profile {
   export interface ProfileInfo {
+    id: number;
     nickname: string;
     phone: string;
     email: string;
@@ -17,7 +18,7 @@ export namespace Profile {
 
 const baseUri = "/system/user/profile";
 
-export const editOne = (data: Profile.ProfileInfo) => {
+export const editProfile = (data: Profile.ProfileInfo) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 

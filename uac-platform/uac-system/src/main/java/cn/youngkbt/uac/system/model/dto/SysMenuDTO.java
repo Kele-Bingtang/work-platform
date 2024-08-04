@@ -91,7 +91,7 @@ public class SysMenuDTO {
     /**
      * 应用 ID
      */
-    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class})
+    @NotBlank(message = "应用 ID 不能为空", groups = {RestGroup.AddGroup.class, RestGroup.QueryGroup.class})
     private String appId;
 
     /**

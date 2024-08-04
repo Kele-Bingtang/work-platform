@@ -181,7 +181,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
                 .eq(SysMenu::getMenuCode, sysMenuDTO.getMenuCode())
                 .eq(SysMenu::getParentId, sysMenuDTO.getParentId())
-                .ne(Objects.nonNull(sysMenuDTO.getMenuId()), SysMenu::getMenuId, sysMenuDTO.getMenuId()));
+                .ne(Objects.nonNull(sysMenuDTO.getId()), SysMenu::getId, sysMenuDTO.getId()));
     }
 
     @Override
@@ -189,7 +189,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return baseMapper.exists(Wrappers.<SysMenu>lambdaQuery()
                 .eq(SysMenu::getMenuName, sysMenuDTO.getMenuName())
                 .eq(SysMenu::getParentId, sysMenuDTO.getParentId())
-                .ne(Objects.nonNull(sysMenuDTO.getMenuId()), SysMenu::getMenuId, sysMenuDTO.getMenuId()));
+                .ne(Objects.nonNull(sysMenuDTO.getId()), SysMenu::getId, sysMenuDTO.getId()));
     }
 
     @Override
@@ -206,7 +206,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean insertOne(SysMenuDTO sysMenuDTO) {
+    public boolean addMenu(SysMenuDTO sysMenuDTO) {
         SysMenu sysMenu = MapstructUtil.convert(sysMenuDTO, SysMenu.class);
 
         if (StringUtil.hasText(sysMenu.getParentId())) {
@@ -240,7 +240,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean updateOne(SysMenuDTO sysMenuDTO) {
+    public boolean editMenu(SysMenuDTO sysMenuDTO) {
         SysMenu sysMenu = MapstructUtil.convert(sysMenuDTO, SysMenu.class);
         // 更新部分菜单数据到 Meta
         if (!sysMenu.getMenuType().equals(ColumnConstant.MENU_TYPE_BUTTON)) {
@@ -261,7 +261,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public boolean removeOne(Long id) {
+    public boolean removeMenu(Long id) {
         return baseMapper.deleteById(id) > 0;
     }
 

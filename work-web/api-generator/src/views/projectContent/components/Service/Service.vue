@@ -100,7 +100,9 @@ const editReport = async (row: Service.ServiceInfo) => {
 };
 
 const handleSearchServiceData = (row: Service.ServiceInfo) => {
-  window.open(`/serviceQuery/${row.serviceId}/${row.serviceName}`);
+  window.open(
+    `/serviceQuery/${row.serviceId}/${row.serviceName}?query=/generic-api/list${unref(projectInfo)?.baseUrl}${row.serviceUrl}&secretKey=${unref(projectInfo)?.secretKey}`
+  );
 };
 
 const statusColor = {

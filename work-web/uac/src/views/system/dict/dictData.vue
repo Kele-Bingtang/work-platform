@@ -29,9 +29,9 @@ import { ProTable, downloadByData } from "work";
 import {
   listPage,
   listDataTreeTable,
-  addOne,
-  editOne,
-  removeOne,
+  addDictData,
+  editDictData,
+  removeDictData,
   type DictData,
   exportExcel,
 } from "@/api/system/dictData";
@@ -75,9 +75,9 @@ const dialogForm: DialogForm = {
     ).dictDataSchema,
   },
   id: ["id", "dataId"],
-  addApi: params => addOne({ ...params, appId: props.appId }),
-  editApi: editOne,
-  removeApi: removeOne,
+  addApi: params => addDictData({ ...params, appId: props.appId }),
+  editApi: editDictData,
+  removeApi: removeDictData,
   beforeEdit: form => {
     if (form.tagEl === undefined) form.tagEl = "";
   },

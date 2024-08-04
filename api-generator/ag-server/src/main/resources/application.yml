@@ -81,6 +81,7 @@ security:
     - /actuator/**
     - /ai/**
     - /generic-api/**
+    - /user/register
 
 # 用户配置
 login:
@@ -102,6 +103,18 @@ springdoc:
     title: API 生成器平台
     description: 根据 SQL 生成增删改查的 API
     version: ${ag.version}
+
+--- # Actuator 监控端点的配置项
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+    logfile:
+      external-file: ./logs/${ag.name}-error.log # Spring Boot Admin 在线查看日志的路径，与 logback-plus.xml 里生成的文件路径一致，这里取得是 error 的日志
 
 # 全局线程池相关配置
 thread-pool:

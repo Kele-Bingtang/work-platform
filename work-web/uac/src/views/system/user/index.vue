@@ -32,7 +32,7 @@
 <script setup lang="tsx" name="UserInfo">
 import { TreeFilter, ProTable, useDialog, type TableColumnProps, downloadByData } from "work";
 import { listDeptTreeList } from "@/api/system/dept";
-import { addOne, editOne, deleteOne, deleteBatch, listPage, type User, exportExcel } from "@/api/user/user";
+import { addUser, editUser, removeUser, removeBatch, listPage, type User, exportExcel } from "@/api/user/user";
 import { elFormProps, useFormSchema } from "./useFormSchema";
 import type { DialogForm, ProTableInstance } from "@work/components";
 import { useLayoutStore } from "@/stores";
@@ -72,7 +72,7 @@ const handleConfirm = () => {
 const { statusChange } = useChange(
   "username",
   "用户",
-  (row, status) => editOne({ id: row.id, userId: row.userId, status }),
+  (row, status) => editUser({ id: row.id, userId: row.userId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -120,11 +120,11 @@ const dialogForm: DialogForm = {
     schema: useFormSchema(computed(() => initRequestParam.deptId)).schema,
   },
   id: ["id", "userId"],
-  addApi: addOne,
-  editApi: editOne,
+  addApi: addUser,
+  editApi: editUser,
   editFilterKeys: ["dept", "disabled", "loginIp", "loginTime", "registerTime"],
-  removeApi: deleteOne,
-  removeBatchApi: deleteBatch,
+  removeApi: removeUser,
+  removeBatchApi: removeBatch,
   disableAdd: !hasAuth("system:user:add"),
   disableEdit: !hasAuth("system:user:edit"),
   disableRemove: !hasAuth("system:user:remove"),

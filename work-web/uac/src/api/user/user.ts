@@ -119,15 +119,15 @@ export const addRolesToUser = (data: User.UserLinkRole) => {
   return http.post<http.Response<boolean>>(`${baseUri}/addRolesToUser`, data);
 };
 
-export const addOne = (data: User.UserInfo) => {
+export const addUser = (data: User.UserInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<User.UserInfo, "id">) => {
+export const editUser = (data: RequiredKeyPartialOther<User.UserInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: User.UserInfo) => {
+export const removeUser = (data: User.UserInfo) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -137,7 +137,7 @@ export const deleteOne = (data: User.UserInfo) => {
   );
 };
 
-export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: User.UserInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: User.UserInfo[] }) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},

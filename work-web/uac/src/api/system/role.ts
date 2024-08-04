@@ -126,7 +126,7 @@ export const listWithDisabledByGroupId = (params: { userGroupId: string }) => {
 /**
  * 新增一个角色
  */
-export const addOne = (data: Role.RoleInfo) => {
+export const addRole = (data: Role.RoleInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
@@ -161,7 +161,7 @@ export const addDeptsToRole = (data: Role.RoleLinkDept) => {
 /**
  * 修改一个角色
  */
-export const editOne = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
+export const editRole = (data: RequiredKeyPartialOther<Role.RoleInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
@@ -175,7 +175,7 @@ export const editUserRoleLinkInfo = (data: RequiredKeyPartialOther<Role.RoleLink
 /**
  * 删除一个角色
  */
-export const deleteOne = (data: Role.RoleInfo) => {
+export const removeRole = (data: Role.RoleInfo) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${data.id}`,
     {},
@@ -188,7 +188,7 @@ export const deleteOne = (data: Role.RoleInfo) => {
 /**
  * 通过主键批量删除角色列表
  */
-export const deleteBatch = ({ idList, dataList }: { idList: string[]; dataList: Role.RoleLinkInfo[] }) => {
+export const removeBatch = ({ idList, dataList }: { idList: string[]; dataList: Role.RoleLinkInfo[] }) => {
   return http.delete<http.Response<boolean>>(
     `${baseUri}/${idList.join(",")}`,
     {},

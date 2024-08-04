@@ -130,7 +130,7 @@ public interface SysDeptService extends IService<SysDept> {
      * @param sysDeptDTO 部门信息
      * @return 是否成功
      */
-    boolean insertOne(SysDeptDTO sysDeptDTO);
+    boolean addDept(SysDeptDTO sysDeptDTO);
 
     /**
      * 修改部门
@@ -138,7 +138,7 @@ public interface SysDeptService extends IService<SysDept> {
      * @param sysDeptDTO 部门信息
      * @return 是否成功
      */
-    boolean updateOne(SysDeptDTO sysDeptDTO);
+    boolean editDept(SysDeptDTO sysDeptDTO);
 
     /**
      * 删除部门
@@ -146,6 +146,6 @@ public interface SysDeptService extends IService<SysDept> {
      * @param id 主键
      * @return 是否成功
      */
-    boolean removeOne(Long id);
+    boolean removeDept(Long id);
 
 }

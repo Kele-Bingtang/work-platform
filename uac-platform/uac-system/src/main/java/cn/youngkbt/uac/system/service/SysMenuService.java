@@ -116,7 +116,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param sysMenuDTO 新增对象
      * @return 是否成功
      */
-    boolean insertOne(SysMenuDTO sysMenuDTO);
+    boolean addMenu(SysMenuDTO sysMenuDTO);
 
     /**
      * 修改菜单
@@ -124,7 +124,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param sysMenuDTO 修改对象
      * @return 是否成功
      */
-    boolean updateOne(SysMenuDTO sysMenuDTO);
+    boolean editMenu(SysMenuDTO sysMenuDTO);
 
     /**
      * 删除菜单
@@ -132,7 +132,7 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param id 主键
      * @return 是否成功
      */
-    boolean removeOne(Long id);
+    boolean removeMenu(Long id);
 
     /**
      * 校验 App 下是否存在菜单

@@ -72,13 +72,13 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     }
 
     @Override
-    public boolean insertOne(SysAppDTO sysAppDTO) {
+    public boolean addApp(SysAppDTO sysAppDTO) {
         SysApp sysApp = MapstructUtil.convert(sysAppDTO, SysApp.class);
         return baseMapper.insert(sysApp) > 0;
     }
 
     @Override
-    public boolean updateOne(SysAppDTO sysAppDTO) {
+    public boolean editApp(SysAppDTO sysAppDTO) {
         SysApp sysApp = MapstructUtil.convert(sysAppDTO, SysApp.class);
         return baseMapper.updateById(sysApp) > 0;
     }
@@ -98,7 +98,7 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
     public boolean checkAppCodeUnique(SysAppDTO sysAppDTO) {
         return baseMapper.exists(Wrappers.<SysApp>lambdaQuery()
                 .eq(SysApp::getAppCode, sysAppDTO.getAppCode())
-                .ne(Objects.nonNull(sysAppDTO.getAppId()), SysApp::getAppId, sysAppDTO.getAppId()));
+                .ne(Objects.nonNull(sysAppDTO.getId()), SysApp::getId, sysAppDTO.getId()));
     }
 }
 

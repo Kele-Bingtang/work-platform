@@ -53,6 +53,12 @@ public class UserDTO {
     private String password;
 
     /**
+     * 确认密码
+     */
+    @NotBlank(message = "确认密码不能为空", groups = { RestGroup.AddGroup.class })
+    private String repeatPassword;
+
+    /**
      * 邮箱
      */
     @Email(message = "邮箱格式不正确", groups = { RestGroup.AddGroup.class })

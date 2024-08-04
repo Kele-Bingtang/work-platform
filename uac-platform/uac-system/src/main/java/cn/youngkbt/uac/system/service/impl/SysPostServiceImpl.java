@@ -61,14 +61,14 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     public boolean checkPostNameUnique(SysPostDTO sysPostDTO) {
         return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
                 .eq(SysPost::getPostName, sysPostDTO.getPostName())
-                .ne(Objects.nonNull(sysPostDTO.getPostId()), SysPost::getPostId, sysPostDTO.getPostId()));
+                .ne(Objects.nonNull(sysPostDTO.getId()), SysPost::getId, sysPostDTO.getId()));
     }
 
     @Override
     public boolean checkPostCodeUnique(SysPostDTO sysPostDTO) {
         return baseMapper.exists(new LambdaQueryWrapper<SysPost>()
                 .eq(SysPost::getPostCode, sysPostDTO.getPostCode())
-                .ne(Objects.nonNull(sysPostDTO.getPostId()), SysPost::getPostId, sysPostDTO.getPostId()));
+                .ne(Objects.nonNull(sysPostDTO.getId()), SysPost::getId, sysPostDTO.getId()));
     }
 
     @Override
@@ -78,13 +78,13 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     }
 
     @Override
-    public boolean insertOne(SysPostDTO sysPostDTO) {
+    public boolean addPost(SysPostDTO sysPostDTO) {
         SysPost sysPost = MapstructUtil.convert(sysPostDTO, SysPost.class);
         return baseMapper.insert(sysPost) > 0;
     }
 
     @Override
-    public boolean updateOne(SysPostDTO sysPostDTO) {
+    public boolean editPost(SysPostDTO sysPostDTO) {
         SysPost sysPost = MapstructUtil.convert(sysPostDTO, SysPost.class);
         return baseMapper.updateById(sysPost) > 0;
     }

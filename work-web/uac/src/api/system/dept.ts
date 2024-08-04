@@ -66,15 +66,15 @@ export const listDeptListByRoleId = (appId: string, roleId: string) => {
   return http.get<http.Response<Dept.DeptTreeList[]>>(`${baseUri}/listDeptListByRoleId/${appId}/${roleId}`);
 };
 
-export const addOne = (data: Dept.DeptInfo) => {
+export const addDept = (data: Dept.DeptInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<Dept.DeptInfo, "id">) => {
+export const editDept = (data: RequiredKeyPartialOther<Dept.DeptInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: Dept.DeptInfo) => {
+export const removeDept = (data: Dept.DeptInfo) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}/${data.deptId}`);
 };
 

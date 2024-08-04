@@ -46,7 +46,7 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      * @param sysUserGroupDTO 用户组信息
      * @return 是否新增成功
      */
-    boolean insertOne(SysUserGroupDTO sysUserGroupDTO);
+    boolean addUserGroup(SysUserGroupDTO sysUserGroupDTO);
 
     /**
      * 修改用户组
@@ -54,7 +54,7 @@ public interface SysUserGroupService extends IService<SysUserGroup> {
      * @param sysUserGroupDTO 用户组信息
      * @return 是否修改成功
      */
-    boolean updateOne(SysUserGroupDTO sysUserGroupDTO);
+    boolean editOne(SysUserGroupDTO sysUserGroupDTO);
 
     /**
      * 批量删除用户组

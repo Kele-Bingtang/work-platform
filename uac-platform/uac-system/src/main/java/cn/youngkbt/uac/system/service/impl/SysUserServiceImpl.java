@@ -96,26 +96,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public boolean checkUserNameUnique(SysUserDTO sysUserDTO) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getUsername, sysUserDTO.getUsername())
-                .ne(Objects.nonNull(sysUserDTO.getUserId()), SysUser::getUserId, sysUserDTO.getUserId()));
+                .ne(Objects.nonNull(sysUserDTO.getId()), SysUser::getId, sysUserDTO.getId()));
     }
 
     @Override
     public boolean checkPhoneUnique(SysUserDTO sysUserDTO) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getPhone, sysUserDTO.getPhone())
-                .ne(Objects.nonNull(sysUserDTO.getUserId()), SysUser::getUserId, sysUserDTO.getUserId()));
+                .ne(Objects.nonNull(sysUserDTO.getId()), SysUser::getId, sysUserDTO.getId()));
     }
 
     @Override
     public boolean checkEmailUnique(SysUserDTO sysUserDTO) {
         return baseMapper.exists(Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getEmail, sysUserDTO.getEmail())
-                .ne(Objects.nonNull(sysUserDTO.getUserId()), SysUser::getUserId, sysUserDTO.getUserId()));
+                .ne(Objects.nonNull(sysUserDTO.getId()), SysUser::getId, sysUserDTO.getId()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertOne(SysUserDTO sysUserDTO) {
+    public boolean addUser(SysUserDTO sysUserDTO) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
         sysUser.setRegisterTime(LocalDateTime.now());
@@ -134,9 +134,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateOne(SysUserDTO sysUserDTO) {
+    public boolean editUser(SysUserDTO sysUserDTO) {
         checkUserAllowed(sysUserDTO.getUserId());
         SysUser sysUser = MapstructUtil.convert(sysUserDTO, SysUser.class);
+        // userId、username、password 不允许编辑
+        sysUser.setUserId(null);
+        sysUser.setUsername(null);
         sysUser.setPassword(null);
         int insert = baseMapper.updateById(sysUser);
 

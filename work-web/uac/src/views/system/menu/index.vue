@@ -53,7 +53,7 @@
 import { TreeFilter, ProTable, Icon, downloadByData } from "work";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 import { getAppTreeList } from "@/api/application/app";
-import { listMenuTreeTableByApp, addOne, editOne, deleteOne, type Menu, exportExcel } from "@/api/system/menu";
+import { listMenuTreeTableByApp, addMenu, editMenu, removeMenu, type Menu, exportExcel } from "@/api/system/menu";
 import {
   type DialogForm,
   type TableColumnProps,
@@ -76,7 +76,7 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "menuName",
   "菜单",
-  (row, status) => editOne({ id: row.id, menuId: row.menuId, parentId: row.parentId, status }),
+  (row, status) => editMenu({ id: row.id, menuId: row.menuId, parentId: row.parentId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -149,20 +149,20 @@ const dialogForm: DialogForm = {
   },
   id: ["id", "menuId"],
   addApi: data =>
-    addOne({
+    addMenu({
       ...data,
       path: (data.pathPrefix || "") + (data.path || ""),
       meta: installMeta(data),
       appId: initRequestParam.appId,
     }),
   editApi: data =>
-    editOne({
+    editMenu({
       ...data,
       path: (data.pathPrefix || "") + (data.path || ""),
       meta: installMeta(data),
       appId: initRequestParam.appId,
     }),
-  removeApi: deleteOne,
+  removeApi: removeMenu,
   clickEdit: form => {
     if ([httpPrefix, httpsPrefix].find(item => form.path.includes(item))) {
       form.pathPrefix = form.path.split("//")[0] + "//";

@@ -14,8 +14,16 @@
 
 <script setup lang="tsx" name="Client">
 import { ProTable, downloadByData } from "work";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Client, exportExcel } from "@/api/application/client";
-import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
+import {
+  listPage,
+  addClient,
+  editClient,
+  removeClient,
+  removeBatch,
+  type Client,
+  exportExcel,
+} from "@/api/application/client";
+import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/compClientnts";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
 import { useChange, usePermission } from "@/hooks";
@@ -30,7 +38,7 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "clientName",
   "客户端",
-  (row, status) => editOne({ id: row.id, clientId: row.clientId, status }),
+  (row, status) => editClient({ id: row.id, clientId: row.clientId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -89,10 +97,10 @@ const { hasAuth } = usePermission();
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
   id: ["id", "clientId"],
-  addApi: addOne,
-  editApi: editOne,
-  removeApi: deleteOne,
-  removeBatchApi: deleteBatch,
+  addApi: addClient,
+  editApi: editClient,
+  removeApi: removeClient,
+  removeBatchApi: removeBatch,
   disableAdd: !hasAuth("system:client:add"),
   disableEdit: !hasAuth("system:client:edit"),
   disableRemove: !hasAuth("system:client:remove"),

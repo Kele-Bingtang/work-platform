@@ -37,15 +37,15 @@ export const listDataTreeTable = (params: Partial<DictData.DictDataInfo>) => {
   return http.get<http.Response<DictData.DictDataInfo[]>>(`${baseUri}/treeTable`, params);
 };
 
-export const addOne = (data: DictData.DictDataInfo) => {
+export const addDictData = (data: DictData.DictDataInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: DictData.DictDataInfo) => {
+export const editDictData = (data: DictData.DictDataInfo) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const removeOne = (data: DictData.DictDataInfo) => {
+export const removeDictData = (data: DictData.DictDataInfo) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}`);
 };
 

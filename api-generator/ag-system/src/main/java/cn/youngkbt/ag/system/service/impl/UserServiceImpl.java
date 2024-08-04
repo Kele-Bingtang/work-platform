@@ -1,10 +1,12 @@
 package cn.youngkbt.ag.system.service.impl;
 
+import cn.youngkbt.ag.core.helper.AgHelper;
 import cn.youngkbt.ag.system.mapper.UserMapper;
 import cn.youngkbt.ag.system.model.dto.UserDTO;
 import cn.youngkbt.ag.system.model.po.User;
 import cn.youngkbt.ag.system.model.vo.UserVO;
 import cn.youngkbt.ag.system.service.UserService;
+import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.utils.MapstructUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -55,6 +57,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public boolean checkPhoneUnique(UserDTO userDTO) {
+        return baseMapper.exists(Wrappers.<User>lambdaQuery()
+                .eq(User::getPhone, userDTO.getPhone())
+                .ne(Objects.nonNull(userDTO.getId()), User::getId, userDTO.getId()));
+    }
+
+    @Override
+    public boolean checkEmailUnique(UserDTO userDTO) {
+        return baseMapper.exists(Wrappers.<User>lambdaQuery()
+                .eq(User::getEmail, userDTO.getEmail())
+                .ne(Objects.nonNull(userDTO.getId()), User::getId, userDTO.getId()));
+    }
+
+    @Override
     public Boolean register(UserDTO userDTO) {
         User user = MapstructUtil.convert(userDTO, User.class);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -64,18 +80,48 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 默认密码
             user.setPassword(passwordEncoder.encode(password));
         }
+        final String SYSTEM = "System";
+        user.setCreateBy(SYSTEM);
+        user.setUpdateBy(SYSTEM);
+        user.setCreateById(SYSTEM);
+        user.setUpdateById(SYSTEM);
         return baseMapper.insert(user) > 0;
     }
 
     @Override
-    public Boolean edit(UserDTO userDTO) {
+    public Boolean editUser(UserDTO userDTO) {
         User user = MapstructUtil.convert(userDTO, User.class);
         // userId、username、password 不允许编辑
         user.setUserId(null);
         user.setUsername(null);
         user.setPassword(null);
-        return baseMapper.updateById(user) > 0;
+
+        int result = baseMapper.updateById(user);
+
+        // 更新缓存的用户信息
+        LoginUser loginUser = AgHelper.getLoginUser();
+
+        if (Objects.nonNull(loginUser)) {
+            loginUser.setAvatar(user.getAvatar());
+            loginUser.setEmail(user.getEmail());
+            loginUser.setNickname(user.getNickname());
+            loginUser.setPhone(user.getPhone());
+            loginUser.setSex(user.getSex());
+            loginUser.setBirthday(user.getBirthday());
+
+            AgHelper.updateUserInfo(loginUser);
+        }
+        return result > 0;
     }
+
+    @Override
+    public boolean updatePassword(String userId, String password) {
+        return baseMapper.update(null,
+                Wrappers.<User>lambdaUpdate()
+                        .set(User::getPassword, password)
+                        .eq(User::getUserId, userId)) > 0;
+    }
+
 }
 
 

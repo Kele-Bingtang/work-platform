@@ -41,7 +41,7 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param sysDictDataDTO 字典数据
      * @return 是否成功
      */
-    boolean insertOne(SysDictDataDTO sysDictDataDTO);
+    boolean addDictData(SysDictDataDTO sysDictDataDTO);
 
     /**
      * 修改字典数据
@@ -49,7 +49,7 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @param sysDictDataDTO 字典数据
      * @return 是否成功
      */
-    boolean updateOne(SysDictDataDTO sysDictDataDTO);
+    boolean editDictData(SysDictDataDTO sysDictDataDTO);
 
     /**
      * 更新字典编码

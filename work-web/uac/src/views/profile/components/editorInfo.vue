@@ -5,6 +5,7 @@
     :schema="schema"
     :el-form-props="elFormProps"
     :row-props="{ col: { span: 24 } }"
+    :include-model-keys="['id']"
   >
     <template #operation>
       <el-button type="primary" @click="submit()">保存</el-button>
@@ -41,7 +42,7 @@ import { ProForm, type FormSchemaProps, type ProFormInstance } from "work";
 import { useFormRules } from "@/hooks/useFormRules";
 import { useUserStore, type UserInfo, useLayoutStore } from "@/stores";
 import { ElMessage } from "element-plus";
-import { editOne } from "@/api/user/profile";
+import { editProfile } from "@/api/user/profile";
 
 const props = defineProps<{ user: UserInfo }>();
 
@@ -66,9 +67,9 @@ const rules = {
 const submit = () => {
   proFormRef.value?.form?.validate(valid => {
     if (valid) {
-      const { nickname, phone, email, sex } = user.value;
+      const { nickname, phone, email, sex, id } = user.value;
 
-      editOne({ nickname, phone, email, sex }).then(res => {
+      editProfile({ nickname, phone, email, sex, id }).then(res => {
         if (res.status === "success") {
           userStore.setUserInfo({ ...user.value });
           ElMessage({ message: "修改成功", type: "success" });
@@ -115,6 +116,7 @@ const schema: FormSchemaProps[] = [
     label: "用户性别",
     el: "el-radio-group",
     fieldNames: { value: "dictValue", label: "dictLabel" },
+    valueFormat: "string",
     enum: () => useLayoutStore().getDictData("sys_user_sex"),
   },
 ];

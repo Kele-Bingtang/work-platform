@@ -121,7 +121,7 @@ const clearable = computed(() => {
 });
 
 const isDisabled = () => {
-  if (typeof props.column.disabled === "function") return props.column.isDisabled(unref(model));
+  if (typeof props.column.disabled === "function") return props.column.disabled(unref(model));
   return props.column.disabled;
 };
 

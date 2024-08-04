@@ -3,7 +3,7 @@
     <slot name="avatar">
       <el-avatar :class="`${prefixClass}__head-icon`" :icon="User" />
     </slot>
-    <div :class="`${prefixClass}__box flex1-1`">
+    <div :class="`${prefixClass}__box flex-1`">
       <div class="flx-justify-between">
         <span :class="`${prefixClass}__box--title`">{{ title }}</span>
         <slot name="extra"></slot>

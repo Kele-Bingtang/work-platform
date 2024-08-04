@@ -32,7 +32,7 @@
 <script setup lang="tsx" name="Role">
 import { TreeFilter, ProTable, downloadByData } from "work";
 import { getAppTreeList } from "@/api/application/app";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type Role, exportExcel } from "@/api/system/role";
+import { listPage, addRole, editRole, removeRole, removeBatch, type Role, exportExcel } from "@/api/system/role";
 import {
   type DialogForm,
   type ProTableInstance,
@@ -54,7 +54,7 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "roleName",
   "角色",
-  (row, status) => editOne({ id: row.id, roleId: row.roleId, status }),
+  (row, status) => editRole({ id: row.id, roleId: row.roleId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -107,10 +107,10 @@ const dialogForm: DialogForm = {
     ).schema,
   },
   id: ["id", "roleId"],
-  addApi: addOne,
-  editApi: editOne,
-  removeApi: deleteOne,
-  removeBatchApi: deleteBatch,
+  addApi: addRole,
+  editApi: editRole,
+  removeApi: removeRole,
+  removeBatchApi: removeBatch,
   disableAdd: !hasAuth("system:role:add"),
   disableEdit: !hasAuth("system:role:edit"),
   disableRemove: !hasAuth("system:role:remove"),

@@ -30,8 +30,6 @@ export namespace Auth {
   export interface LoginUserInfo {
     id: number;
     userId: string;
-    tenantId: string;
-    deptId: string;
     username: string;
     nickname: string;
     email: string;

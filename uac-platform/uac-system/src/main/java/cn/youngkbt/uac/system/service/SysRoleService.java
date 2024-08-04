@@ -56,7 +56,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param sysRoleDTO 角色信息
      * @return 是否成功
      */
-    boolean insertOne(SysRoleDTO sysRoleDTO);
+    boolean addRole(SysRoleDTO sysRoleDTO);
 
     /**
      * 更新角色
@@ -64,7 +64,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param sysRoleDTO 角色信息
      * @return 是否成功
      */
-    boolean updateOne(SysRoleDTO sysRoleDTO);
+    boolean editRole(SysRoleDTO sysRoleDTO);
 
     /**
      * 批量删除角色

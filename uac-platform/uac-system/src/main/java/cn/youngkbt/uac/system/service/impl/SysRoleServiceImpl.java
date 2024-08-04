@@ -70,19 +70,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public boolean checkRoleCodeUnique(SysRoleDTO sysRoleDTO) {
         return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
                 .eq(SysRole::getRoleCode, sysRoleDTO.getRoleCode())
-                .ne(Objects.nonNull(sysRoleDTO.getRoleId()), SysRole::getRoleId, sysRoleDTO.getRoleId()));
+                .ne(Objects.nonNull(sysRoleDTO.getId()), SysRole::getId, sysRoleDTO.getId()));
     }
 
     @Override
     public boolean checkRoleNameUnique(SysRoleDTO sysRoleDTO) {
         return baseMapper.exists(Wrappers.<SysRole>lambdaQuery()
                 .eq(SysRole::getRoleName, sysRoleDTO.getRoleName())
-                .ne(Objects.nonNull(sysRoleDTO.getRoleId()), SysRole::getRoleId, sysRoleDTO.getRoleId()));
+                .ne(Objects.nonNull(sysRoleDTO.getId()), SysRole::getId, sysRoleDTO.getId()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertOne(SysRoleDTO sysRoleDTO) {
+    public boolean addRole(SysRoleDTO sysRoleDTO) {
         checkRoleAllowed(sysRoleDTO);
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         int result = baseMapper.insert(sysRole);
@@ -95,7 +95,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateOne(SysRoleDTO sysRoleDTO) {
+    public boolean editRole(SysRoleDTO sysRoleDTO) {
         checkRoleAllowed(sysRoleDTO);
         SysRole sysRole = MapstructUtil.convert(sysRoleDTO, SysRole.class);
         int result = baseMapper.updateById(sysRole);

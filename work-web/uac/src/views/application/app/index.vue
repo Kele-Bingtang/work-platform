@@ -32,7 +32,7 @@
 <script setup lang="tsx" name="App">
 import { TreeFilter, ProTable, downloadByData } from "work";
 import { getClientTreeList } from "@/api/application/client";
-import { listPage, addOne, editOne, deleteOne, deleteBatch, type App, exportExcel } from "@/api/application/app";
+import { listPage, addApp, editApp, removeApp, removeBatch, type App, exportExcel } from "@/api/application/app";
 import {
   type DialogForm,
   type ProTableInstance,
@@ -54,7 +54,7 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "appName",
   "应用",
-  (row, status) => editOne({ id: row.id, clientId: row.clientId, status }),
+  (row, status) => editApp({ id: row.id, clientId: row.clientId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -106,18 +106,18 @@ const dialogForm: DialogForm = {
     ).schema,
   },
   id: ["id", "appId"],
-  addApi: addOne,
+  addApi: addApp,
   beforeAdd: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
   },
-  editApi: data => editOne({ ...data, clientId: initRequestParam.clientId || data.clientId }),
+  editApi: data => editApp({ ...data, clientId: initRequestParam.clientId || data.clientId }),
   beforeEdit: form => {
     form.ownerId = form.user?.username;
     form.ownerName = form.user?.nickname;
   },
-  removeApi: deleteOne,
-  removeBatchApi: deleteBatch,
+  removeApi: removeApp,
+  removeBatchApi: removeBatch,
   disableAdd: !hasAuth("system:app:add"),
   disableEdit: !hasAuth("system:app:edit"),
   disableRemove: !hasAuth("system:app:remove"),

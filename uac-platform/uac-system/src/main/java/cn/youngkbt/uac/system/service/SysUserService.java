@@ -63,7 +63,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDTO 用户信息
      * @return 是否成功
      */
-    boolean insertOne(SysUserDTO sysUserDTO);
+    boolean addUser(SysUserDTO sysUserDTO);
 
     /**
      * 更新用户
@@ -71,7 +71,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param sysUserDTO 用户信息
      * @return 是否成功
      */
-    boolean updateOne(SysUserDTO sysUserDTO);
+    boolean editUser(SysUserDTO sysUserDTO);
 
     /**
      * 更新用户密码

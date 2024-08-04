@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Kele-Bingtang
@@ -58,14 +59,14 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     }
 
     @Override
-    public boolean insertOne(SysDictTypeDTO sysDictTypeDTO) {
+    public boolean addDictType(SysDictTypeDTO sysDictTypeDTO) {
         SysDictType sysDictType = MapstructUtil.convert(sysDictTypeDTO, SysDictType.class);
         return baseMapper.insert(sysDictType) > 0;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateOne(SysDictTypeDTO sysDictTypeDTO) {
+    public boolean editDictType(SysDictTypeDTO sysDictTypeDTO) {
         SysDictType newSysDictType = MapstructUtil.convert(sysDictTypeDTO, SysDictType.class);
         // 同步更新 dictData 的 dictCode
         SysDictType oldDictType = baseMapper.selectById(sysDictTypeDTO.getId());
@@ -97,7 +98,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     public boolean checkDictCodeUnique(SysDictTypeDTO sysDictTypeDTO) {
         return baseMapper.exists(Wrappers.<SysDictType>lambdaQuery()
                 .eq(SysDictType::getDictCode, sysDictTypeDTO.getDictCode())
-                .ne(StringUtil.hasText(sysDictTypeDTO.getDictId()), SysDictType::getDictId, sysDictTypeDTO.getDictId()));
+                .ne(Objects.nonNull(sysDictTypeDTO.getId()), SysDictType::getId, sysDictTypeDTO.getId()));
     }
 }
 

@@ -59,7 +59,7 @@ spring.boot.admin.client:
   instance:
     name: UAC Platform
     service-host-type: IP
-  username: uac
+  username: work
   password: 123456
   
 --- # Spring Cache

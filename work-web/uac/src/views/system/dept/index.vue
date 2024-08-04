@@ -28,7 +28,7 @@
 
 <script setup lang="tsx" name="Dept">
 import { ProTable, downloadByData } from "work";
-import { listDeptTreeTable, addOne, editOne, deleteOne, type Dept, exportExcel } from "@/api/system/dept";
+import { listDeptTreeTable, addDept, editDept, removeDept, type Dept, exportExcel } from "@/api/system/dept";
 import { type DialogForm, type ProTableInstance, type TableColumnProps } from "@work/components";
 import { elFormProps, schema } from "./formSchema";
 import { useLayoutStore } from "@/stores";
@@ -45,7 +45,7 @@ const proTableRef = shallowRef<ProTableInstance>();
 const { statusChange } = useChange(
   "deptName",
   "部门",
-  (row, status) => editOne({ id: row.id, deptId: row.deptId, parentId: row.parentId, status }),
+  (row, status) => editDept({ id: row.id, deptId: row.deptId, parentId: row.parentId, status }),
   () => proTableRef.value?.getTableList()
 );
 
@@ -90,9 +90,9 @@ const { hasAuth } = usePermission();
 const dialogForm: DialogForm = {
   formProps: { elFormProps, schema },
   id: ["id", "deptId"],
-  addApi: addOne,
-  editApi: editOne,
-  removeApi: deleteOne,
+  addApi: addDept,
+  editApi: editDept,
+  removeApi: removeDept,
   disableAdd: !hasAuth("system:dept:add"),
   disableEdit: !hasAuth("system:dept:edit"),
   disableRemove: !hasAuth("system:dept:remove"),

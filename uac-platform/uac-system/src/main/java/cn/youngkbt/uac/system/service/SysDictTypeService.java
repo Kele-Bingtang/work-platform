@@ -39,7 +39,7 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @param sysDictTypeDTO 新增字典类型信息
      * @return 是否新增成功
      */
-    boolean insertOne(SysDictTypeDTO sysDictTypeDTO);
+    boolean addDictType(SysDictTypeDTO sysDictTypeDTO);
 
     /**
      * 修改字典类型
@@ -47,7 +47,7 @@ public interface SysDictTypeService extends IService<SysDictType> {
      * @param sysDictTypeDTO 修改字典类型信息
      * @return 是否修改成功
      */
-    boolean updateOne(SysDictTypeDTO sysDictTypeDTO);
+    boolean editDictType(SysDictTypeDTO sysDictTypeDTO);
 
     /**
      * 批量删除字典类型

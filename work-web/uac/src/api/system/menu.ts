@@ -59,15 +59,15 @@ export const listMenuListByRoleId = (appId: string, roleId: string) => {
   return http.get<http.Response<Menu.MenuTreeList[]>>(`${baseUri}/listMenuListByRoleId/${appId}/${roleId}`);
 };
 
-export const addOne = (data: Menu.MenuInfo) => {
+export const addMenu = (data: Menu.MenuInfo) => {
   return http.post<http.Response<boolean>>(baseUri, data);
 };
 
-export const editOne = (data: RequiredKeyPartialOther<Menu.MenuInfo, "id">) => {
+export const editMenu = (data: RequiredKeyPartialOther<Menu.MenuInfo, "id">) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const deleteOne = (data: Menu.MenuInfo) => {
+export const removeMenu = (data: Menu.MenuInfo) => {
   return http.delete<http.Response<boolean>>(`${baseUri}/${data.id}/${data.menuId}`);
 };
 

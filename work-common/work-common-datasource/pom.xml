@@ -9,7 +9,6 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>cn.youngkbt</groupId>
     <artifactId>work-common-datasource</artifactId>
     
     <description>多数据源模块</description>

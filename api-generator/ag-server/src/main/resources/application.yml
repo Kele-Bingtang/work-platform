@@ -52,7 +52,7 @@ logging:
 
 mybatis-plus:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
-  scanPackage: cn.youngkbt.**.mapper
+  scanPackage: cn.youngkbt.ag.system.**.mapper
 
 --- # 数据源 DB 初始化加载
 spring.datasource:

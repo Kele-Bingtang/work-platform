@@ -47,7 +47,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 jwt:
-  secret: work-uac-platform-abcdefghijklmnopqrstuvwxyz
+  secret-key: work-uac-platform-abcdefghijklmnopqrstuvwxyz
   expire-time: 43200000 # 12 小时
   refresh-time: 7200000 # token 过期前多少毫秒刷新 token (2小时)
 

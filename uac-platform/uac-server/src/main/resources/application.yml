@@ -52,7 +52,7 @@ logging:
 
 mybatis-plus:
   mapperLocations: classpath*:mapper/**/*Mapper.xml
-  scanPackage: cn.youngkbt.**.mapper
+  scanPackage: cn.youngkbt.uac.system.**.mapper
 
 # security 配置
 security:

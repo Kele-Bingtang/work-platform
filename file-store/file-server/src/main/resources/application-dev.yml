@@ -1,7 +1,7 @@
 --- # 数据源配置
 spring.datasource:
   driver-class-name: com.mysql.cj.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/work_ag?useSSL-=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true
+  url: jdbc:mysql://localhost:3306/work_file?useSSL-=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true
   username: root
   password: YoungKbt1234
   type: com.alibaba.druid.pool.DruidDataSource
@@ -62,7 +62,11 @@ spring.boot.admin.client:
   enabled: true
   url: http://localhost:9090/admin
   instance:
-    name: API Generator
+    name: File Store
     service-host-type: IP
   username: work
   password: 123456
+
+file:
+  file-store-path: D:\\file-store
+  expire-time: -1 # 永不过期

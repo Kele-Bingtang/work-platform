@@ -90,7 +90,7 @@ public class FileHelper {
         String savePath = fileProperties.getFileStorePath() + SEPARATOR +
                 appId + SEPARATOR +
                 now.getYear() + SEPARATOR +
-                now.getMonth() + SEPARATOR +
+                now.getMonthValue() + SEPARATOR +
                 now.getDayOfMonth();
 
         if (StringUtil.hasText(appModule)) {

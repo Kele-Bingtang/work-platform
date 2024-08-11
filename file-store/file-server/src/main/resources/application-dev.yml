@@ -69,4 +69,4 @@ spring.boot.admin.client:
 
 file:
   file-store-path: D:\\file-store
-  expire-time: -1 # 永不过期
+  expire-time: 3650 # 100 年

@@ -2,13 +2,14 @@ package cn.youngkbt.file.system.controller;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.file.system.aspect.app.annotation.AppAuthorize;
+import cn.youngkbt.file.system.aspect.log.annotation.OperateLog;
+import cn.youngkbt.file.system.aspect.log.enums.OperatorType;
 import cn.youngkbt.file.system.service.FileDownloadService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Kele-Bingtang
@@ -19,12 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/download")
 public class FileDownloadController {
-    
+
     private final FileDownloadService fileDownloadService;
 
-    @PostMapping("/{fileKey}")
-    public Response<Void> downloadFileByFileKey(@PathVariable String fileKey, HttpServletResponse response) {
-        fileDownloadService.downloadFileByFileKey(fileKey, response);
+    @PostMapping("/{appId}/{fileKey}")
+    @Operation(summary = "文件下载", description = "下载文件")
+    @AppAuthorize("#appId")
+    @OperateLog(operatorType = OperatorType.DOWNLOAD, appId = "#appId", fileKey = "#fileKey")
+    public Response<Void> downloadFileByFileKey(@PathVariable String appId, @PathVariable String fileKey, 
+                                                @RequestParam(required = false, defaultValue = "false") boolean isBrowse, HttpServletResponse response) {
+        fileDownloadService.downloadFileByFileKey(appId, fileKey, isBrowse, response);
         return HttpResult.okMessage("下载中");
     }
 }

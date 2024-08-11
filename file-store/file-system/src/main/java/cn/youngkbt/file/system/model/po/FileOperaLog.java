@@ -1,9 +1,16 @@
 package cn.youngkbt.file.system.model.po;
 
+import cn.youngkbt.file.system.model.vo.FileOperaLogVO;
+import cn.youngkbt.mp.annotation.FieldValueFill;
+import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 
@@ -11,12 +18,16 @@ import java.io.Serial;
  * 附件信息日志表
  */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value ="t_file_opera_log")
+@TableName(value = "t_file_opera_log")
 @Data
+@Accessors(chain = true)
+@AutoMapper(target = FileOperaLogVO.class, reverseConvertGenerate = false)
 public class FileOperaLog extends BaseDO {
     /**
      * 日志 ID
      */
+    @TableField(fill = FieldFill.INSERT)
+    @FieldValueFill(ValueStrategy.SNOWFLAKE)
     private String operaId;
 
     /**
@@ -30,14 +41,19 @@ public class FileOperaLog extends BaseDO {
     private String fileKey;
 
     /**
-     * 操作类型（0 上传 1 下载）
+     * 方法名
      */
-    private String operateType;
+    private String method;
+
+    /**
+     * 操作类型（1 上传 2 下载）
+     */
+    private Integer operaType;
 
     /**
      * 操作用户
      */
-    private String operateUser;
+    private String operaUser;
 
     /**
      * 主机地址
@@ -50,9 +66,19 @@ public class FileOperaLog extends BaseDO {
     private String operaLocation;
 
     /**
+     * 请求地址
+     */
+    private String operaUrl;
+
+    /**
      * 消耗时间
      */
-    private Integer costTime;
+    private Long costTime;
+
+    /**
+     * 消耗时间
+     */
+    private String errorMsg;
 
     /**
      * 备注

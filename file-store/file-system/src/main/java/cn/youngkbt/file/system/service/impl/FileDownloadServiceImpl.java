@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -23,14 +24,21 @@ public class FileDownloadServiceImpl implements FileDownloadService {
     private final FileInfoService fileInfoService;
 
     @Override
-    public void downloadFileByFileKey(String fileKey, HttpServletResponse response) {
+    public void downloadFileByFileKey(String appId, String fileKey, boolean isBrowse, HttpServletResponse response) {
         FileInfo fileInfo = fileInfoService.getOne(Wrappers.<FileInfo>lambdaQuery()
-                .eq(FileInfo::getFileKey, fileKey));
-        
-        if(Objects.isNull(fileInfo)) {
+                .eq(FileInfo::getFileKey, fileKey)
+                .eq(FileInfo::getAppId, appId));
+
+        if (Objects.isNull(fileInfo)) {
             throw new ServiceException("文件不存在");
         }
 
-        FileHelper.getFileForResponse(fileInfo.getFilePath(), fileInfo.getFileName(), response, false);
+        // 检查过期时间
+        LocalDateTime expireTime = fileInfo.getExpireTime();
+        if (Objects.nonNull(expireTime) && expireTime.isBefore(LocalDateTime.now())) {
+            throw new ServiceException("文件已过期");
+        }
+
+        FileHelper.getFileForResponse(fileInfo.getFilePath(), fileInfo.getFileName(), response, isBrowse);
     }
 }

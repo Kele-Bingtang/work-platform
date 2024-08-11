@@ -3,6 +3,8 @@ package cn.youngkbt.file.system.model.vo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/8/5 22:26:23
@@ -24,5 +26,5 @@ public class FileUploadSuccessVO {
     /**
      * 失效时间
      */
-    private Integer expireTime;
+    private LocalDateTime expireTime;
 }

@@ -2,6 +2,8 @@ package cn.youngkbt.file.system.model.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/8/6 21:27:05
@@ -25,14 +27,19 @@ public class FileOperaLogDTO {
     private String fileKey;
 
     /**
-     * 操作类型（0 上传 1 下载）
+     * 方法名
      */
-    private String operateType;
+    private String method;
+
+    /**
+     * 操作类型（1 上传 2 下载）
+     */
+    private Integer operaType;
 
     /**
      * 操作用户
      */
-    private String operateUser;
+    private String operaUser;
 
     /**
      * 主机地址
@@ -45,12 +52,27 @@ public class FileOperaLogDTO {
     private String operaLocation;
 
     /**
+     * 请求地址
+     */
+    private String operaUrl;
+
+    /**
      * 消耗时间
      */
-    private Integer costTime;
+    private Long costTime;
+
+    /**
+     * 消耗时间
+     */
+    private String errorMsg;
 
     /**
      * 备注
      */
     private String remark;
+
+    /**
+     * 创建时间
+     */
+    private List<String> createTime;
 }

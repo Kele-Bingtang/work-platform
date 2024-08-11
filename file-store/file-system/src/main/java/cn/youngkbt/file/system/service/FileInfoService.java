@@ -1,7 +1,13 @@
 package cn.youngkbt.file.system.service;
 
+import cn.youngkbt.file.system.model.dto.FileInfoDTO;
 import cn.youngkbt.file.system.model.po.FileInfo;
+import cn.youngkbt.file.system.model.vo.FileInfoVO;
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * @author Kele-Bingtang
@@ -10,4 +16,44 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FileInfoService extends IService<FileInfo> {
 
+    /**
+     * 获取 AppModule 列表
+     *
+     * @param appId App ID
+     * @return AppModule 列表
+     */
+    List<FileInfoVO> listAppModule(String appId);
+    
+    /**
+     * 获取文件信息列表（分页）
+     *
+     * @param fileInfoDTO 文件信息条件
+     * @param pageQuery  分页参数
+     * @return AppModule 文件信息列表（分页）
+     */
+    TablePage<FileInfoVO> listPage(FileInfoDTO fileInfoDTO, PageQuery pageQuery);
+
+    /**
+     * 新增文件信息
+     *
+     * @param fileInfoDTO 文件信息条件
+     * @return 是否添加成功
+     */
+    boolean addFile(FileInfoDTO fileInfoDTO);
+
+    /**
+     * 修改文件信息
+     *
+     * @param fileInfoDTO 文件信息条件
+     * @return 是否修改成功
+     */
+    boolean editFile(FileInfoDTO fileInfoDTO);
+
+    /**
+     * 删除文件信息
+     *
+     * @param fileKey File Key
+     * @return 是否删除成功
+     */
+    boolean removeFile(String fileKey);
 }

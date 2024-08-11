@@ -1,20 +1,24 @@
 package cn.youngkbt.file.system.model.po;
 
+import cn.youngkbt.file.system.model.vo.FileInfoVO;
 import cn.youngkbt.mp.base.BaseDO;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 
 /**
  * 附件信息表
  */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value ="t_file_info")
+@TableName(value = "t_file_info")
 @Data
 @Accessors(chain = true)
+@AutoMapper(target = FileInfoVO.class, reverseConvertGenerate = false)
 public class FileInfo extends BaseDO {
     /**
      * 应用系统标识
@@ -54,7 +58,7 @@ public class FileInfo extends BaseDO {
     /**
      * 失效时间
      */
-    private Integer expireTime;
+    private LocalDateTime expireTime;
 
     @Serial
     private static final long serialVersionUID = 1L;

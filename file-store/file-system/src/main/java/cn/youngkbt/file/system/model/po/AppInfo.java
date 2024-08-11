@@ -1,7 +1,13 @@
 package cn.youngkbt.file.system.model.po;
 
+import cn.youngkbt.file.system.model.vo.AppInfoVO;
+import cn.youngkbt.mp.annotation.FieldValueFill;
+import cn.youngkbt.mp.annotation.ValueStrategy;
 import cn.youngkbt.mp.base.BaseDO;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,10 +19,13 @@ import java.io.Serial;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value ="t_app_info")
 @Data
+@AutoMapper(target = AppInfoVO.class, reverseConvertGenerate = false)
 public class AppInfo extends BaseDO {
     /**
      * 应用 ID
      */
+    @TableField(fill = FieldFill.INSERT)
+    @FieldValueFill(ValueStrategy.SNOWFLAKE)
     private String appId;
 
     /**

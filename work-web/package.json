@@ -9,11 +9,13 @@
     "packages/*",
     "docs",
     "uac",
-    "api-generator"
+    "api-generator",
+    "file-store"
   ],
   "scripts": {
     "uac": "pnpm -C uac",
     "ag": "pnpm -C api-generator",
+    "file": "pnpm -C file-store",
     "cloc": "NODE_OPTIONS=--max-old-space-size=4096 cloc . --exclude-dir=node_modules",
     "clean:cache": "rm -rf node_modules && rm -rf .eslintcache && yarn install",
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",

@@ -3,3 +3,4 @@ packages:
   - docs
   - uac
   - api-generator
+  - file-store

@@ -1,5 +1,7 @@
 package cn.youngkbt.file.system.model.dto;
 
+import cn.youngkbt.file.system.model.po.AppInfo;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 /**
@@ -8,6 +10,7 @@ import lombok.Data;
  * @note
  */
 @Data
+@AutoMapper(target = AppInfo.class, reverseConvertGenerate = false)
 public class AppInfoDTO {
     /**
      * 应用 ID
@@ -48,4 +51,9 @@ public class AppInfoDTO {
      * 备注
      */
     private String remark;
+
+    /**
+     * 状态（0 异常 1 正常）
+     */
+    private Integer status;
 }

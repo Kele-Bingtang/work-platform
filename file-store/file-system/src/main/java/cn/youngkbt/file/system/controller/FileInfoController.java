@@ -1,0 +1,64 @@
+package cn.youngkbt.file.system.controller;
+
+import cn.youngkbt.core.http.HttpResult;
+import cn.youngkbt.core.http.Response;
+import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.file.system.model.dto.FileInfoDTO;
+import cn.youngkbt.file.system.model.vo.FileInfoVO;
+import cn.youngkbt.file.system.service.FileInfoService;
+import cn.youngkbt.mp.base.PageQuery;
+import cn.youngkbt.mp.base.TablePage;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * @author Kele-Bingtang
+ * @date 2024/8/11 23:58:52
+ * @note
+ */
+@RestController
+@RequestMapping("/file")
+@RequiredArgsConstructor
+public class FileInfoController {
+    private final FileInfoService fileInfoService;
+
+    @GetMapping("/listAppModule/{appId}")
+    @Operation(summary = "AppModule 列表获取", description = "获取 AppModule 列表")
+    public Response<List<FileInfoVO>> listAppModule(@PathVariable String appId) {
+        List<FileInfoVO> appInfoVOList = fileInfoService.listAppModule(appId);
+        return HttpResult.ok(appInfoVOList);
+    }
+
+
+    @GetMapping("/listPage")
+    @Operation(summary = "文件列表列表查询（分页）", description = "通过条件查询文件列表（分页）")
+    public Response<TablePage<FileInfoVO>> listPage(@Validated(RestGroup.QueryGroup.class) FileInfoDTO fileInfoDTO, PageQuery pageQuery) {
+        TablePage<FileInfoVO> fileInfoVOList = fileInfoService.listPage(fileInfoDTO, pageQuery);
+        return HttpResult.ok(fileInfoVOList);
+    }
+
+    @PostMapping
+    @Operation(summary = "文件新增", description = "新增文件")
+    public Response<Boolean> addApp(@RequestBody @Validated(RestGroup.AddGroup.class) FileInfoDTO fileInfoDTO) {
+        boolean result = fileInfoService.addFile(fileInfoDTO);
+        return HttpResult.ok(result);
+    }
+
+    @PutMapping
+    @Operation(summary = "文件修改", description = "修改文件")
+    public Response<Boolean> editApp(@RequestBody @Validated(RestGroup.EditGroup.class) FileInfoDTO fileInfoDTO) {
+        boolean result = fileInfoService.editFile(fileInfoDTO);
+        return HttpResult.ok(result);
+    }
+
+    @DeleteMapping("/{fileKey}")
+    @Operation(summary = "文件删除", description = "删除文件")
+    public Response<Boolean> removeApp(@PathVariable String fileKey) {
+        boolean result = fileInfoService.removeFile(fileKey);
+        return HttpResult.ok(result);
+    }
+}

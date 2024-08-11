@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +55,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             FileInfo fileInfo = new FileInfo();
 
             expireTime = Objects.nonNull(expireTime) ? expireTime : fileProperties.getExpireTime();
+            LocalDateTime localDateTime = LocalDateTime.now().plusDays(expireTime);
             fileInfo.setAppId(uploadFileDTO.getAppId())
                     .setFileKey(fileKey)
                     .setAppModule(uploadFileDTO.getAppModule())
@@ -61,20 +63,27 @@ public class FileUploadServiceImpl implements FileUploadService {
                     .setFileName(originalFilename)
                     .setFilePath(saveFile.getAbsolutePath())
                     .setFileType(fileName)
-                    .setExpireTime(expireTime)
+                    .setExpireTime(localDateTime)
                     .setCreateBy(uploadFileDTO.getUploadUserName())
                     .setCreateById(uploadFileDTO.getUploadUserId())
                     .setUpdateBy(uploadFileDTO.getUploadUserName())
                     .setUpdateById(uploadFileDTO.getUploadUserId());
 
             fileInfoList.add(fileInfo);
-            fileInfoVOList.add(new FileUploadSuccessVO().setFileKey(fileKey).setFileName(originalFilename).setExpireTime(expireTime));
+            fileInfoVOList.add(new FileUploadSuccessVO().setFileKey(fileKey).setFileName(originalFilename).setExpireTime(localDateTime));
         }
 
-        if (!fileInfoService.saveBatch(fileInfoList)) {
-            // 保存失败，则删除文件
+        try {
+            if (!fileInfoService.saveBatch(fileInfoList)) {
+                // 保存失败，则删除文件
+                FileHelper.removeFiles(saveFileList);
+                throw new ServiceException("上传文件失败");
+            }
+        } catch (Exception e) {
+            if (e instanceof ServiceException) {
+                throw new ServiceException("上传文件失败");
+            }
             FileHelper.removeFiles(saveFileList);
-            throw new ServiceException("上传文件失败");
         }
 
         return fileInfoVOList;

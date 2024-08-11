@@ -14,5 +14,5 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileProperties {
     private String fileStorePath;
-    private Integer expireTime;
+    private Integer expireTime = 3650; // 99 年
 }

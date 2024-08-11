@@ -39,11 +39,6 @@
         </dependency>
         <dependency>
             <groupId>cn.youngkbt</groupId>
-            <artifactId>work-common-redis</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-sensitive</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -65,16 +60,6 @@
         <dependency>
             <groupId>cn.youngkbt</groupId>
             <artifactId>work-common-websocket</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.youngkbt</groupId>
-            <artifactId>work-common-rateLimit</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.youngkbt</groupId>
-            <artifactId>work-common-cache</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

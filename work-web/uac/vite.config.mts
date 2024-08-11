@@ -40,7 +40,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
       // 跨域代理配置
       proxy: {
         "/api": {
-          target: "http://localhost:8090",
+          target: "http://localhost:9000",
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, ""),
         },

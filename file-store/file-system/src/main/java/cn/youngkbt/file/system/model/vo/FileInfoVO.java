@@ -49,7 +49,7 @@ public class FileInfoVO {
     /**
      * 失效时间
      */
-    private Integer expireTime;
+    private LocalDateTime expireTime;
 
     /**
      * 创建时间

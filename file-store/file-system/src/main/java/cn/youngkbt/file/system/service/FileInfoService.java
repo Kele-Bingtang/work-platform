@@ -56,4 +56,12 @@ public interface FileInfoService extends IService<FileInfo> {
      * @return 是否删除成功
      */
     boolean removeFile(String fileKey);
+
+    /**
+     * 批量删除文件信息
+     *
+     * @param fileKeyList File Key 列表
+     * @return 是否删除成功
+     */
+    boolean removeBatchFile(List<String> fileKeyList);
 }

@@ -82,6 +82,11 @@ $prefix-class: #{$admin-namespace}-pro-table;
         left: 50%;
         transform: translate(-50%, -50%);
 
+        .#{$el-namespace}-table__empty-text {
+          display: flex;
+          justify-content: center;
+        }
+
         .#{$prefix-class}__empty {
           line-height: 30px;
         }

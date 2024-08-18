@@ -32,6 +32,10 @@ export const editFile = (data: File.FileInfo) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 
-export const removeFile = (appId: string) => {
-  return http.delete<http.Response<boolean>>(`${baseUri}/${appId}`);
+export const removeFile = (appId: string, fileKey: string) => {
+  return http.delete<http.Response<boolean>>(`${baseUri}/${appId}/${fileKey}`);
+};
+
+export const removeBatchFile = (appId: string, fileKeyList: string[]) => {
+  return http.delete<http.Response<boolean>>(`${baseUri}/batch/${appId}`, {}, { data: fileKeyList });
 };

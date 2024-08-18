@@ -14,7 +14,4 @@ public interface FileDownloadService {
      * @param fileKey 文件唯一标识
      */
     void downloadFileByFileKey(String appId, String fileKey, boolean isBrowse, HttpServletResponse response);
-
-    // String getDownloadFileUrl();
-    // void downloadFileByUrl();
 }

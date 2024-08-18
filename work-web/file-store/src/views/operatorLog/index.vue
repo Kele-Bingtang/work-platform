@@ -101,6 +101,7 @@ const columns: TableColumnProps<OperaLog.OperaLogInfo>[] = [
     enum: [
       { value: 1, label: "上传" },
       { value: 2, label: "下载" },
+      { value: 3, label: "预览" },
     ],
   },
   { prop: "operaUser", label: "操作人员", search: { el: "el-input" } },

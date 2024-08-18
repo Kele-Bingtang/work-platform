@@ -18,5 +18,9 @@ public enum OperatorType {
      * 下载
      */
     DOWNLOAD,
+    /**
+     * 预览
+     */
+    PREVIEW,
     ;
 }

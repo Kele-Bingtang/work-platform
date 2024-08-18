@@ -64,7 +64,7 @@ const columns: TableColumnProps[] = [
     search: { el: "el-input" },
     link: true,
     linkProps: {
-      onClick: ({ row }) => router.push(`/file/${row.appId}`),
+      onClick: ({ row }) => router.push(`/file/${row.appId}/${row.appName}`),
     },
   },
   { prop: "appName", label: "App 名称", search: { el: "el-input" } },

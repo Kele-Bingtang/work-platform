@@ -2,6 +2,7 @@ package cn.youngkbt.file.system.model.dto;
 
 import cn.youngkbt.file.system.model.po.FileInfo;
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMapping;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -58,5 +59,11 @@ public class FileInfoDTO {
      * 失效时间
      */
     private LocalDateTime expireTime;
+
+    /**
+     * 是否失效
+     */
+    @AutoMapping(ignore = true, target = "expireTime")
+    private Boolean expire;
 
 }

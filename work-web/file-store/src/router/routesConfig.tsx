@@ -115,10 +115,15 @@ export const rolesRoutes: RouterConfigRaw[] = [
     meta: { title: "日志管理", icon: HomeFilled },
   },
   {
-    path: "/file/:appId",
+    path: "/file/:appId/:appName",
     name: "File",
     component: "/file/index",
-    meta: { title: "日志管理", icon: HomeFilled },
+    meta: {
+      hideInMenu: true,
+      title: route => `文件管理 - ${route.params.appName}`,
+      icon: HomeFilled,
+      activeMenu: "/app",
+    },
   },
   // {
   //   path: "dict-manage",

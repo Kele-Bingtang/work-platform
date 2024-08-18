@@ -15,4 +15,6 @@ import org.springframework.stereotype.Component;
 public class FileProperties {
     private String fileStorePath;
     private Integer expireTime = 3650; // 99 年
+    private Integer maxFileSize = 500 * 1024; // 500MB
+    private Integer maxFileNameSize = 300;
 }

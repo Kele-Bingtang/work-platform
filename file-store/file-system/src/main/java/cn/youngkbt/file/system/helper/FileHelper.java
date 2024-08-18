@@ -1,10 +1,8 @@
 package cn.youngkbt.file.system.helper;
 
 import cn.youngkbt.core.exception.ServiceException;
-import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.file.system.properties.FileProperties;
 import cn.youngkbt.helper.SpringHelper;
-import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.StringUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
@@ -46,7 +44,7 @@ public class FileHelper {
         String saveFilePath = mkFileDirs(appId, appModule);
         if (null == saveFilePath) {
             log.error("创建文件路径失败，appId：{}，appModule：{}，fileKey：{}", appId, appModule, fileKey);
-            throw new ServiceException("创建文件路径失败,appId：" + appId);
+            throw new ServiceException("创建文件路径失败,，appId：" + appId);
         }
         // 获得文件后缀并生成存储文件名
         String originalFileName = multipartFile.getOriginalFilename();
@@ -57,7 +55,7 @@ public class FileHelper {
         try {
             multipartFile.transferTo(saveFile);
         } catch (IOException e) {
-            throw new ServiceException("图片报错失败，报错信息：" + e.getMessage());
+            throw new ServiceException("上传失败，报错信息：" + e.getMessage());
         }
         return saveFile;
     }
@@ -129,11 +127,7 @@ public class FileHelper {
         try {
             if (!file.exists()) {
                 log.error("getFileForResponse -> 文件不存在, filePath：{} , fileName：{}", filePath, fileName);
-                response.setContentType("application/json;charset=UTF-8");
-                PrintWriter writer = response.getWriter();
-                // 将错误信息转换成 JSON
-                writer.println(JacksonUtil.toJsonStr(HttpResult.response(null, 400, "fail", "文件不存在")));
-                return;
+                throw new ServiceException("文件不存在");
             }
             fileInputStream = new FileInputStream(file);
         } catch (IOException e) {
@@ -150,17 +144,17 @@ public class FileHelper {
         OutputStream outputStream = null;
         try {
             response.reset();
-            fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+            fileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
             // 设置允许跨域的 key
             response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
             if (isBrowse) {
                 // 如果是浏览器访问
                 URL url = new URL("file:///" + filePath);
-                response.setContentType(url.openConnection().getContentType());
+                response.setContentType(url.openConnection().getContentType() + ";charset=utf-8");
                 response.setHeader("Content-Disposition", "inline; filename=" + fileName);
             } else {
                 // 非浏览器访问，直接下载
-                response.setContentType("application/x-download;charset=utf-8");
+                response.setContentType("application/octet-stream;charset=utf-8");
                 response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
             }
             outputStream = response.getOutputStream();

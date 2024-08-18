@@ -3,6 +3,7 @@ package cn.youngkbt.file.system.controller;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
 import cn.youngkbt.core.validate.RestGroup;
+import cn.youngkbt.file.system.aspect.app.annotation.AppAuthorize;
 import cn.youngkbt.file.system.model.dto.FileInfoDTO;
 import cn.youngkbt.file.system.model.vo.FileInfoVO;
 import cn.youngkbt.file.system.service.FileInfoService;
@@ -43,22 +44,31 @@ public class FileInfoController {
 
     @PostMapping
     @Operation(summary = "文件新增", description = "新增文件")
-    public Response<Boolean> addApp(@RequestBody @Validated(RestGroup.AddGroup.class) FileInfoDTO fileInfoDTO) {
+    public Response<Boolean> addFile(@RequestBody @Validated(RestGroup.AddGroup.class) FileInfoDTO fileInfoDTO) {
         boolean result = fileInfoService.addFile(fileInfoDTO);
         return HttpResult.ok(result);
     }
 
     @PutMapping
     @Operation(summary = "文件修改", description = "修改文件")
-    public Response<Boolean> editApp(@RequestBody @Validated(RestGroup.EditGroup.class) FileInfoDTO fileInfoDTO) {
+    public Response<Boolean> editFile(@RequestBody @Validated(RestGroup.EditGroup.class) FileInfoDTO fileInfoDTO) {
         boolean result = fileInfoService.editFile(fileInfoDTO);
         return HttpResult.ok(result);
     }
 
-    @DeleteMapping("/{fileKey}")
+    @DeleteMapping("/{appId}/{fileKey}")
     @Operation(summary = "文件删除", description = "删除文件")
-    public Response<Boolean> removeApp(@PathVariable String fileKey) {
+    @AppAuthorize("#appId")
+    public Response<Boolean> removeFile(@PathVariable String appId, @PathVariable String fileKey) {
         boolean result = fileInfoService.removeFile(fileKey);
+        return HttpResult.ok(result);
+    }
+
+    @DeleteMapping("/batch/{appId}")
+    @Operation(summary = "文件删除", description = "批量删除文件")
+    @AppAuthorize("#appId")
+    public Response<Boolean> removeBatchFile(@PathVariable String appId, @RequestBody List<String> fileKeyList) {
+        boolean result = fileInfoService.removeBatchFile(fileKeyList);
         return HttpResult.ok(result);
     }
 }

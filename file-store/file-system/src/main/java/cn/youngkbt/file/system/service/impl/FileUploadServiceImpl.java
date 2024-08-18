@@ -107,8 +107,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         for (MultipartFile multipartFile : fileList) {
             if (!multipartFile.isEmpty()) {
                 String originalFileName = multipartFile.getOriginalFilename();
-                if (StringUtil.hasText(originalFileName) && originalFileName.length() > 300) {
-                    throw new ServiceException("文件名称大小不能超过 300 字符");
+                if (StringUtil.hasText(originalFileName) && originalFileName.length() > fileProperties.getMaxFileNameSize()) {
+                    throw new ServiceException("文件名称大小不能超过 " + fileProperties.getMaxFileNameSize() + " 字符");
                 }
                 if (multipartFile.getSize() == 0L) {
                     throw new ServiceException("文件大小不能为 0");
@@ -118,8 +118,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
 
         // 校验文件大小总和是否超过限制
-        if (totalSize > 100 * 1024) {
-            throw new ServiceException("文件总大小不能超过 100 M");
+        if (totalSize > fileProperties.getMaxFileSize()) {
+            throw new ServiceException("文件总大小不能超过 " + fileProperties.getMaxFileSize() / 1024 + " M");
         }
     }
 }

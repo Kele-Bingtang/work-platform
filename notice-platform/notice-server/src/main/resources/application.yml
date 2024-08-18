@@ -87,3 +87,12 @@ thread-pool:
   queueCapacity: 128
   # 线程池维护线程所允许的空闲时间
   keepAliveSeconds: 300
+  
+--- # 邮件服务
+spring:
+  mail:
+    host: smtp.163.com # 邮件服务器地址
+    protocol: smtp # 协议
+    username: kele_bingtang@163.com # 发送邮件的邮箱也就是你开通服务的邮箱
+    password: GJQDWNWVGYEVTSMB # 开通服务后得到的授权码
+    default-encoding: utf-8 # 邮件内容的编码

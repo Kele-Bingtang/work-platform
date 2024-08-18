@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -150,11 +151,11 @@ public class FileHelper {
             if (isBrowse) {
                 // 如果是浏览器访问
                 URL url = new URL("file:///" + filePath);
-                response.setContentType(url.openConnection().getContentType() + ";charset=utf-8");
+                response.setContentType(url.openConnection().getContentType() + ";charset=UTF-8");
                 response.setHeader("Content-Disposition", "inline; filename=" + fileName);
             } else {
                 // 非浏览器访问，直接下载
-                response.setContentType("application/octet-stream;charset=utf-8");
+                response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE + "; charset=UTF-8");
                 response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
             }
             outputStream = response.getOutputStream();

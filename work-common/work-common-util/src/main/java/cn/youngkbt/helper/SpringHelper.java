@@ -5,6 +5,7 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,15 @@ import java.util.Map;
  * @note
  */
 public class SpringHelper extends SpringUtil {
+
+    /**
+     * 获取 application 环境变量
+     */
+    public static String getEnvProperty(String key) {
+        Environment env = context().getEnvironment();
+        return env.getProperty(key);
+    }
+    
     /**
      * 如果 BeanFactory 包含一个与所给名称匹配的 bean 定义，则返回 true
      */

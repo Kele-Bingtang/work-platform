@@ -2,6 +2,7 @@ package cn.youngkbt.notice.system.controller;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
+import cn.youngkbt.notice.system.aspect.annotation.AppAuthorize;
 import cn.youngkbt.notice.system.model.dto.NoticeInfoDTO;
 import cn.youngkbt.notice.system.model.vo.NoticeInfoVO;
 import cn.youngkbt.notice.system.service.MailService;
@@ -26,6 +27,7 @@ public class MailController {
 
     @GetMapping
     @Operation(summary = "发送邮件", description = "发送邮件（不支持附件）")
+    @AppAuthorize("#noticeInfoDTO.getAppId()")
     public Response<NoticeInfoVO> sendMail(NoticeInfoDTO noticeInfoDTO) {
         NoticeInfoVO noticeVO = mailService.sendMail(noticeInfoDTO);
         return HttpResult.ok(noticeVO);
@@ -33,6 +35,7 @@ public class MailController {
 
     @PostMapping
     @Operation(summary = "发送邮件", description = "发送邮件（支持附件）")
+    @AppAuthorize("#noticeInfoDTO.getAppId()")
     public Response<NoticeInfoVO> sendMailWithFile(NoticeInfoDTO noticeInfoDTO) {
         NoticeInfoVO noticeVO = mailService.sendMail(noticeInfoDTO);
         return HttpResult.ok(noticeVO);

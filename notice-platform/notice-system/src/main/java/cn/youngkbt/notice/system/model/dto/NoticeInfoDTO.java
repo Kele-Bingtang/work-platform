@@ -1,5 +1,7 @@
 package cn.youngkbt.notice.system.model.dto;
 
+import cn.youngkbt.notice.system.model.po.NoticeInfo;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,7 +13,12 @@ import java.util.List;
  * @note
  */
 @Data
+@AutoMapper(target = NoticeInfo.class, reverseConvertGenerate = false)
 public class NoticeInfoDTO {
+    /**
+     * App ID
+     */
+    private String appId;
     /**
      * 接收者
      */
@@ -25,6 +32,10 @@ public class NoticeInfoDTO {
      */
     private String bcc;
     /**
+     * 发送人别称
+     */
+    private String fromName;
+    /**
      * 主题
      */
     private String subject;
@@ -35,9 +46,21 @@ public class NoticeInfoDTO {
     /**
      * 优先级
      */
-    private int priority;
+    private Integer priority;
+    /**
+     * 分类
+     */
+    private String category;
+    /**
+     * 业务 ID
+     */
+    private String bizId;
     /**
      * 附件
      */
     private List<MultipartFile> fileList;
+    /**
+     * 是否显示自动提示
+     */
+    private Boolean showTip;
 }

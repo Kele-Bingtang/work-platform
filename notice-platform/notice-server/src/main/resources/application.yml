@@ -1,7 +1,7 @@
 # 项目相关配置
 notice:
   # 名称
-  name: file-store-platform
+  name: notice-platform
   # 版本
   version: 1.0.0
   # 版权年份
@@ -63,8 +63,8 @@ springdoc:
     enabled: true
     path: /swagger-ui
   info:
-    title: 文件存储仓库平台
-    description: 专门存储文件的平台
+    title: 消息发送平台
+    description: 消息发送平台
     version: ${notice.version}
     
 --- # Actuator 监控端点的配置项

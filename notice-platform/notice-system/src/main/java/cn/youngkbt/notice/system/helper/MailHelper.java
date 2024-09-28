@@ -3,22 +3,22 @@ package cn.youngkbt.notice.system.helper;
 import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.notice.system.model.dto.NoticeInfoDTO;
+import cn.youngkbt.notice.system.model.po.NoticeMailConfig;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.StringUtil;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Kele-Bingtang
@@ -31,47 +31,24 @@ public class MailHelper {
     /**
      * 多邮箱账户缓存
      */
-    private static Map<String, JavaMailSender> javaMailSenderMap = new LinkedHashMap<>();
-    private static final JavaMailSender defaultJavaMailSender;
-    private static final String from;
-
-    static {
-        from = SpringHelper.getEnvProperty("spring.mail.username");
-        defaultJavaMailSender = SpringHelper.getBean(JavaMailSender.class);
-    }
-
+    private static final Map<String, JavaMailSenderImpl> javaMailSenderMap = new LinkedHashMap<>();
+    private static final SpringTemplateEngine templateEngine = SpringHelper.getBean(SpringTemplateEngine.class);
 
     public static void send(NoticeInfoDTO noticeInfoDTO) {
-        send(noticeInfoDTO.getTo(), noticeInfoDTO.getCc(), noticeInfoDTO.getBcc(), noticeInfoDTO.getSubject(), noticeInfoDTO.getContent(),
-                noticeInfoDTO.getPriority(), multipartFileToFile(noticeInfoDTO.getFileList()));
+        JavaMailSender defaultJavaMailSender = createDefaultSender();
+        send(defaultJavaMailSender, SpringHelper.getEnvProperty("spring.mail.username"), noticeInfoDTO);
     }
 
-    public static void send(String to, String subject, String content) {
-        send(to, "", subject, content);
-    }
+    public static void send(JavaMailSender javaMailSender, String from, NoticeInfoDTO noticeInfoDTO) {
+        String to = noticeInfoDTO.getTo();
+        String cc = noticeInfoDTO.getCc();
+        String bcc = noticeInfoDTO.getBcc();
+        String subject = noticeInfoDTO.getSubject();
+        String content = noticeInfoDTO.getContent();
+        Integer priority = noticeInfoDTO.getPriority();
+        List<MultipartFile> fileList = noticeInfoDTO.getFileList();
 
-    public static void send(String to, String cc, String subject, String content) {
-        send(to, cc, subject, content, new File(""));
-    }
-
-    public static void send(String to, String subject, String content, File file) {
-        send(to, "", subject, content, Collections.singletonList(file));
-    }
-
-    public static void send(String to, String cc, String subject, String content, File file) {
-        send(to, cc, subject, content, Collections.singletonList(file));
-    }
-
-    public static void send(String to, String subject, String content, List<File> fileList) {
-        send(to, "", subject, content, fileList);
-    }
-
-    public static void send(String to, String cc, String subject, String content, List<File> fileList) {
-        send(to, cc, "", subject, content, 3, fileList);
-    }
-
-    public static void send(String to, String cc, String bcc, String subject, String content, int priority, List<File> fileList) {
-        MimeMessage mimeMessage = defaultJavaMailSender.createMimeMessage();
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             if (to.contains(",")) {
@@ -79,7 +56,7 @@ public class MailHelper {
             } else {
                 helper.setTo(to);
             }
-            helper.setFrom(from);
+            helper.setFrom(from, noticeInfoDTO.getFromName());
             if (StringUtil.hasText(cc)) {
                 if (cc.contains(",")) {
                     helper.setTo(cc.replace(" ", "").split(","));
@@ -91,25 +68,70 @@ public class MailHelper {
                 helper.setBcc(bcc);
             }
             helper.setSubject(subject);
-            helper.setText(content, true);
-            helper.setPriority(priority);
+            helper.setPriority(Optional.ofNullable(priority).orElse(3));
 
-            for (File file : fileList) {
+            Context context = new Context();
+            // 定义模板数据
+            context.setVariables(Map.of("content", content, "showTip", noticeInfoDTO.getShowTip()));
+            // 获取 thymeleaf 的 html 模板 
+            String emailContent = templateEngine.process("common_mail.html", context);
+            // 指定模板路径
+            helper.setText(emailContent, true);
+
+            for (File file : multipartFileToFile(fileList)) {
                 if (StringUtil.hasText(file.getPath())) {
                     helper.addAttachment(file.getName(), file);
                 }
             }
 
             log.info("发送邮件：to={}, cc={}, bcc={}, subject={}, content={}, priority={}, fileList={}", to, cc, bcc, subject, content, priority, fileList);
-            defaultJavaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+            javaMailSender.send(mimeMessage);
+        } catch (Exception e) {
             log.error("发送邮件失败：{}", e.getMessage());
             throw new ServerException(e.getMessage());
         }
     }
 
-    public static void sendMultipartFile(String to, String subject, String content, List<MultipartFile> fileList) {
-        send(to, "", subject, content, multipartFileToFile(fileList));
+    public static JavaMailSenderImpl createDefaultSender() {
+        return SpringHelper.getBean(JavaMailSenderImpl.class);
+    }
+
+    public static JavaMailSenderImpl createSender(NoticeMailConfig noticeMailConfig) {
+        if (StringUtil.hasEmpty(noticeMailConfig.getConfigId())) {
+            log.warn("邮件配置 ID 为空，不创建邮件发送器");
+            return null;
+        }
+        JavaMailSenderImpl javaMailSender = javaMailSenderMap.get(noticeMailConfig.getConfigId());
+
+        if (Objects.nonNull(javaMailSender)) {
+            return javaMailSender;
+        }
+
+        javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost(noticeMailConfig.getHost());
+
+        if (Objects.nonNull(noticeMailConfig.getProtocol())) {
+            javaMailSender.setProtocol(noticeMailConfig.getProtocol());
+        }
+        javaMailSender.setUsername(noticeMailConfig.getUsername());
+        javaMailSender.setPassword(noticeMailConfig.getPassword());
+        javaMailSender.setDefaultEncoding("UTF-8");
+
+        Properties props = new Properties();
+        props.setProperty("mail.smtp.host", noticeMailConfig.getHost());
+        props.setProperty("mail.smtp.auth", "true");
+        props.setProperty("mail.smtp.starttls.enable", "true");
+        props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        // props.setProperty("mail.debug", "true"); // 查看发送邮件的每一步日志，用于定位问题
+
+        if (Objects.nonNull(noticeMailConfig.getPort())) {
+            javaMailSender.setPort(noticeMailConfig.getPort());
+            props.setProperty("mail.smtp.port", String.valueOf(noticeMailConfig.getPort()));
+        }
+        javaMailSender.setJavaMailProperties(props);
+
+        javaMailSenderMap.put(noticeMailConfig.getConfigId(), javaMailSender);
+        return javaMailSender;
     }
 
     public static File multipartFileToFile(MultipartFile multiFile) {

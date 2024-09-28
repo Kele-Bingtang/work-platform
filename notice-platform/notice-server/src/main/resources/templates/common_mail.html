@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title></head>
+<body>
+<div id="content" overflow="hidden"><span th:utext="${content}"></span></div>
+<br/> <br/>
+<div th:if="${showTip}" style="position: fixed;bottom: 0px;"><font style="font-weight:bold;color:red;">
+  此邮件由系统自动发送，请不要回复 </font></div>
+</body>
+</html>

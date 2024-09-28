@@ -1,5 +1,7 @@
 package cn.youngkbt.file.system.controller;
 
+import cn.youngkbt.core.http.HttpResult;
+import cn.youngkbt.core.http.Response;
 import cn.youngkbt.file.system.aspect.app.annotation.AppAuthorize;
 import cn.youngkbt.file.system.aspect.log.annotation.OperateLog;
 import cn.youngkbt.file.system.aspect.log.enums.OperatorType;
@@ -35,5 +37,14 @@ public class FileDownloadController {
     @OperateLog(operatorType = OperatorType.DOWNLOAD, appId = "#appId", fileKey = "#fileKey")
     public void downloadFileByFileKey(@PathVariable String appId, @PathVariable String fileKey, HttpServletResponse response) {
         fileDownloadService.downloadFileByFileKey(appId, fileKey, false, response);
+    }
+
+    @PostMapping("/base64/{appId}/{fileKey}")
+    @Operation(summary = "文件下载", description = "获取图片的 Base64")
+    @AppAuthorize("#appId")
+    @OperateLog(operatorType = OperatorType.DOWNLOAD, appId = "#appId", fileKey = "#fileKey")
+    public Response<String> getImageBase64(@PathVariable String appId, @PathVariable String fileKey) {
+        String base64 = fileDownloadService.getImageBase64(appId, fileKey);
+        return HttpResult.ok(base64);
     }
 }

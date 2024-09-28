@@ -4,6 +4,8 @@ import cn.youngkbt.core.validate.RestGroup;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/8/5 22:26:07
@@ -42,4 +44,9 @@ public class UploadFileDTO {
      * 文件过期时间
      */
     private Integer expireTime;
+
+    /**
+     * 图片 Base64
+     */
+    List<String> base64Images;
 }

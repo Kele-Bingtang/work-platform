@@ -14,4 +14,6 @@ import java.util.List;
 public interface FileUploadService {
 
     List<FileUploadSuccessVO> uploadFiles(MultipartFile[] fileList, UploadFileDTO uploadFileDTO);
+
+    List<FileUploadSuccessVO> uploadBase64(UploadFileDTO uploadFileDTO);
 }

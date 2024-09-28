@@ -45,7 +45,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         List<FileInfo> fileInfoList = new ArrayList<>();
         for (MultipartFile file : fileList) {
             String originalFilename = file.getOriginalFilename();
-            String fileName = FilenameUtils.getExtension(originalFilename);
+            String fileType = FilenameUtils.getExtension(originalFilename);
             long fileSize = file.getSize();
             String fileKey = IdsUtil.simpleUUID();
             // 保存到指定路径下
@@ -60,9 +60,9 @@ public class FileUploadServiceImpl implements FileUploadService {
                     .setFileKey(fileKey)
                     .setAppModule(uploadFileDTO.getAppModule())
                     .setFileSize(fileSize)
-                    .setFileName(originalFilename)
+                    .setFileName(StringUtil.hasText(uploadFileDTO.getFileName()) ? uploadFileDTO.getFileName() + "." + fileType : originalFilename)
                     .setFilePath(saveFile.getAbsolutePath())
-                    .setFileType(fileName)
+                    .setFileType(fileType)
                     .setExpireTime(localDateTime)
                     .setCreateBy(uploadFileDTO.getUploadUserName())
                     .setCreateById(uploadFileDTO.getUploadUserId())
@@ -88,7 +88,6 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         return fileInfoVOList;
     }
-
 
     /**
      * 校验上传文件参数
@@ -121,5 +120,58 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (totalSize > fileProperties.getMaxFileSize()) {
             throw new ServiceException("文件总大小不能超过 " + fileProperties.getMaxFileSize() / 1024 + " M");
         }
+    }
+
+    @Override
+    public List<FileUploadSuccessVO> uploadBase64(UploadFileDTO uploadFileDTO) {
+        List<String> base64Image = uploadFileDTO.getBase64Images();
+        Integer expireTime = uploadFileDTO.getExpireTime();
+        String fileKey = IdsUtil.simpleUUID();
+
+        List<File> saveFileList = new ArrayList<>();
+        List<FileUploadSuccessVO> fileInfoVOList = new ArrayList<>();
+        List<FileInfo> fileInfoList = new ArrayList<>();
+        for (String base64 : base64Image) {
+            File file = FileHelper.saveFileByBase64(base64, uploadFileDTO.getAppId(), uploadFileDTO.getAppModule(), fileKey);
+
+            saveFileList.add(file);
+            FileInfo fileInfo = new FileInfo();
+
+            expireTime = Objects.nonNull(expireTime) ? expireTime : fileProperties.getExpireTime();
+            LocalDateTime localDateTime = LocalDateTime.now().plusDays(expireTime);
+
+            String fileType = "png";
+            String originalFilename = fileKey + "." + fileType;
+            fileInfo.setAppId(uploadFileDTO.getAppId())
+                    .setFileKey(fileKey)
+                    .setAppModule(uploadFileDTO.getAppModule())
+                    .setFileSize(fileInfo.getFileSize())
+                    .setFileName(StringUtil.hasText(uploadFileDTO.getFileName()) ? uploadFileDTO.getFileName() + "." + fileType : originalFilename)
+                    .setFilePath(file.getAbsolutePath())
+                    .setFileType("png")
+                    .setExpireTime(localDateTime)
+                    .setCreateBy(uploadFileDTO.getUploadUserName())
+                    .setCreateById(uploadFileDTO.getUploadUserId())
+                    .setUpdateBy(uploadFileDTO.getUploadUserName())
+                    .setUpdateById(uploadFileDTO.getUploadUserId());
+
+            fileInfoList.add(fileInfo);
+            fileInfoVOList.add(new FileUploadSuccessVO().setFileKey(fileKey).setFileName(originalFilename).setExpireTime(localDateTime));
+        }
+
+        try {
+            if (!fileInfoService.saveBatch(fileInfoList)) {
+                // 保存失败，则删除文件
+                FileHelper.removeFiles(saveFileList);
+                throw new ServiceException("上传 Base64 图片失败");
+            }
+        } catch (Exception e) {
+            if (e instanceof ServiceException) {
+                throw new ServiceException("上传 Base64 图片失败");
+            }
+            FileHelper.removeFiles(saveFileList);
+        }
+
+        return fileInfoVOList;
     }
 }

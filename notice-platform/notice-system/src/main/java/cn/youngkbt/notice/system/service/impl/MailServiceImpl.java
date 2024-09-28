@@ -123,7 +123,7 @@ public class MailServiceImpl implements MailService {
         );
 
         if (!update) {
-            log.info("更新状态失败，消息 ID：{}", noticeStatusType);
+            log.error("更新状态失败，消息 ID：{}", noticeStatusType);
         }
     }
 

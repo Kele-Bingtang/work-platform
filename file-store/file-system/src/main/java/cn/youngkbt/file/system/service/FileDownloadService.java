@@ -14,4 +14,11 @@ public interface FileDownloadService {
      * @param fileKey 文件唯一标识
      */
     void downloadFileByFileKey(String appId, String fileKey, boolean isBrowse, HttpServletResponse response);
+
+    /**
+     * 根据 fileKey 获取图片的 base64
+     *
+     * @param fileKey 文件唯一标识
+     */
+    String getImageBase64(String appId, String fileKey);
 }

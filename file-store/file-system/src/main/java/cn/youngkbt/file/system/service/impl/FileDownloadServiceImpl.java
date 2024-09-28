@@ -41,4 +41,17 @@ public class FileDownloadServiceImpl implements FileDownloadService {
 
         FileHelper.getFileForResponse(fileInfo.getFilePath(), fileInfo.getFileName(), response, isBrowse);
     }
+
+    @Override
+    public String getImageBase64(String appId, String fileKey) {
+        FileInfo fileInfo = fileInfoService.getOne(Wrappers.<FileInfo>lambdaQuery()
+                .eq(FileInfo::getFileKey, fileKey)
+                .eq(FileInfo::getAppId, appId));
+        
+        if(!fileInfo.getFileType().equals("png")) {
+            throw new ServiceException("不是图片格式，无法转为 base64");
+        }
+        
+        return FileHelper.getBase64ByFilePath(fileInfo.getFilePath());
+    }
 }

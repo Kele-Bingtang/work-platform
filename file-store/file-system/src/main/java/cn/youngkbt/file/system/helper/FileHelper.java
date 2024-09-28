@@ -16,8 +16,11 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -112,7 +115,7 @@ public class FileHelper {
      **/
     public static List<String> fileKeysToList(String fileKeys) {
         if (Objects.isNull(fileKeys)) {
-            return null;
+            return Collections.emptyList();
         }
 
         String[] fileKeyArray = fileKeys.split(",");
@@ -127,7 +130,7 @@ public class FileHelper {
         File file = new File(filePath);
         try {
             if (!file.exists()) {
-                log.error("getFileForResponse -> 文件不存在, filePath：{} , fileName：{}", filePath, fileName);
+                log.error("文件不存在, filePath：{} , fileName：{}", filePath, fileName);
                 throw new ServiceException("文件不存在");
             }
             fileInputStream = new FileInputStream(file);
@@ -160,12 +163,46 @@ public class FileHelper {
             }
             outputStream = response.getOutputStream();
             IOUtils.copy(inputStream, outputStream);
-        } catch (IOException e) {
-            log.error("getFileForResponse -> filePath：{},fileName：{}，Exception：{}", filePath, fileName, e.getMessage());
+        } catch (Exception e) {
+            log.error("写入响应流失败，filePath：{},fileName：{}，Exception：{}", filePath, fileName, e.getMessage());
             throw new ServiceException(e.getMessage());
         } finally {
             IOUtils.closeQuietly(inputStream);
             IOUtils.closeQuietly(outputStream);
         }
+    }
+
+    public static File saveFileByBase64(String base64String, String appId, String appModule, String fileKey) {
+        String filePath = mkFileDirs(appId, appModule);
+        String fileName = fileKey + ".png";
+        File file = new File(filePath, fileName);
+
+        byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(decodedBytes);
+        } catch (Exception e) {
+            log.error("base64 转为文件失败，filePath：{}，fileName：{}，Exception：{}", filePath, fileName, e.getMessage());
+            throw new ServiceException(e.getMessage());
+        }
+        return file;
+    }
+
+    public static String getBase64ByFilePath(String filePath) {
+        File file = new File(filePath);
+        String fileName = file.getName();
+        if (!file.exists()) {
+            log.error("文件不存在, filePath：{} , fileName：{}", filePath, fileName);
+            throw new ServiceException("文件不存在");
+        }
+
+        byte[] bytes;
+        try {
+            bytes = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            log.error("图片转 Base64 失败，filePath：{}，fileName：{}，Exception：{}", filePath, fileName, e.getMessage());
+            throw new ServiceException(e.getMessage());
+        }
+
+        return Base64.getEncoder().encodeToString(bytes);
     }
 }

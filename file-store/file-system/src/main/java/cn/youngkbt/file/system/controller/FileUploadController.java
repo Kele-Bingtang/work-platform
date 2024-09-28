@@ -42,4 +42,17 @@ public class FileUploadController {
         List<FileUploadSuccessVO> fileUploadSuccessVOList = fileUploadService.uploadFiles(fileList, uploadFileDTO);
         return HttpResult.ok(fileUploadSuccessVOList);
     }
+
+    @PostMapping("/base64")
+    @Operation(summary = "图片 Base64 上传", description = "上传图片 Base64")
+    @AppAuthorize("#uploadFileDTO.getAppId()")
+    @OperateLog(operatorType = OperatorType.UPLOAD, appId = "#uploadFileDTO.getAppId()")
+    public Response<List<FileUploadSuccessVO>> uploadBase64(@RequestBody @Validated(RestGroup.AddGroup.class) UploadFileDTO uploadFileDTO) {
+        List<String> base64Image = uploadFileDTO.getBase64Images();
+        if (Objects.isNull(base64Image) || base64Image.isEmpty()) {
+            return HttpResult.failMessage("Base64 图片为空，请先上传");
+        }
+
+        return HttpResult.ok(fileUploadService.uploadBase64(uploadFileDTO));
+    }
 }

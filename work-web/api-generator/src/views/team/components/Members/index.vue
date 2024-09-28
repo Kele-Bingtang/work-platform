@@ -259,7 +259,7 @@ $prefix-class: #{$admin-namespace}-members;
   flex: 1;
 
   :deep(.#{$admin-namespace}-search-form) {
-    padding: 10px 0;
+    padding: 0;
     margin: 0;
     border: none;
     box-shadow: none;

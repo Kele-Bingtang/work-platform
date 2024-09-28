@@ -24,7 +24,7 @@ public interface SQLExecuteMapper {
      * @return 查询出的数据
      */
     @Select("${sql}")
-    List<LinkedHashMap<String, Object>> executeSelectList(@Param("sql") String sql, Map<String, Object> params);
+    List<LinkedHashMap<String, Object>> executeSelectList(@Param("sql") String sql, @Param("p") Map<String, Object> params);
 
     /**
      * 查询对象列表（分页）
@@ -33,7 +33,7 @@ public interface SQLExecuteMapper {
      * @return 查询出的数据（分页）
      */
     @Select("${sql}")
-    Page<LinkedHashMap<String, Object>> executeSelectPage(Page<LinkedHashMap<String, Object>> page, @Param("sql") String sql, Map<String, Object> params);
+    Page<LinkedHashMap<String, Object>> executeSelectPage(Page<LinkedHashMap<String, Object>> page, @Param("sql") String sql, @Param("p") Map<String, Object> params);
 
     /**
      * 新增操作

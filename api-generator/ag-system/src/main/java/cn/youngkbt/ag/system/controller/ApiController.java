@@ -39,7 +39,9 @@ public class ApiController {
     @GetMapping(value = "/one/**")
     @Operation(summary = "查询一笔数据", description = "查询一笔数据")
     public Response<LinkedHashMap<String, Object>> getOne(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request) {
+        // 获取请求参数
         Map<String, Object> requestParamsMap = getParameterMap(request);
+        // 获取项目密钥（请求头或者请求参数里获取）
         String secretKeyParam = (String) requestParamsMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -47,6 +49,8 @@ public class ApiController {
         } else if (StringUtil.hasText(secretKeyParam)) {
             secretKey = secretKeyParam;
         }
+        requestParamsMap.remove("secretKey");
+        // 去掉固定的接口前缀，获取项目的实际 uri
         String apiUri = requestUri.substring((BASE_URI + "/one").length());
         LinkedHashMap<String, Object> one = apiService.getOne(apiUri, secretKey, requestParamsMap);
         return HttpResult.ok(one);
@@ -55,7 +59,9 @@ public class ApiController {
     @GetMapping(value = "/list/**")
     @Operation(summary = "查询多笔数据", description = "查询多笔数据")
     public Response<List<LinkedHashMap<String, Object>>> list(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request) {
+        // 获取请求参数
         Map<String, Object> requestParamsMap = getParameterMap(request);
+        // 获取项目密钥（请求头或者请求参数里获取）
         String secretKeyParam = (String) requestParamsMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -63,16 +69,21 @@ public class ApiController {
         } else if (StringUtil.hasText(secretKeyParam)) {
             secretKey = secretKeyParam;
         }
+        requestParamsMap.remove("secretKey");
+        // 去掉固定的接口前缀，获取项目的实际 uri
         String apiUri = requestUri.substring((BASE_URI + "/list").length());
-        List<LinkedHashMap<String, Object>> list = apiService.list(apiUri, secretKey, requestParamsMap, Integer.valueOf((String) requestParamsMap.get("_limit")));
+        // 限制数据的数量
+        String limit = (String) requestParamsMap.get("_limit");
+        List<LinkedHashMap<String, Object>> list = apiService.list(apiUri, secretKey, requestParamsMap, Objects.nonNull(limit) ? Integer.valueOf(limit) : null);
         return HttpResult.ok(list);
     }
 
     @GetMapping(value = "/page/**")
     @Operation(summary = "查询分页数据", description = "查询分页数据")
-    public Response<TablePage<LinkedHashMap<String, Object>>> page(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey,
-                                                                   HttpServletRequest request, PageQuery pageQuery) {
+    public Response<TablePage<LinkedHashMap<String, Object>>> page(@RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request, PageQuery pageQuery) {
+        // 获取请求参数
         Map<String, Object> requestParamsMap = getParameterMap(request);
+        // 获取项目密钥（请求头或者请求参数里获取）
         String secretKeyParam = (String) requestParamsMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -80,6 +91,8 @@ public class ApiController {
         } else if (StringUtil.hasText(secretKeyParam)) {
             secretKey = secretKeyParam;
         }
+        requestParamsMap.remove("secretKey");
+        // 去掉固定的接口前缀，获取项目的实际 uri
         String apiUri = requestUri.substring((BASE_URI + "/page").length());
         TablePage<LinkedHashMap<String, Object>> list = apiService.page(apiUri, secretKey, requestParamsMap, pageQuery);
 
@@ -112,7 +125,9 @@ public class ApiController {
     @PostMapping("/{operateType}/**")
     @Operation(summary = "操作数据", description = "操作数据")
     public Response<Integer> operate(@PathVariable String operateType, @RequestURI String requestUri, @RequestHeader(value = "Secret-Key", required = false) String secretKey, HttpServletRequest request) {
+        // 获取请求参数
         Map<String, Object> dataMap = getParameterMap(request);
+        // 获取项目密钥（请求头或者请求参数里获取）
         String secretKeyParam = (String) dataMap.get("secretKey");
 
         if (StringUtil.hasEmpty(secretKey, secretKeyParam)) {
@@ -120,7 +135,10 @@ public class ApiController {
         } else if (StringUtil.hasText(secretKeyParam)) {
             secretKey = secretKeyParam;
         }
+        // 获取 body 的数据
         List<Map<String, Object>> jsonList = getJson(request);
+        dataMap.remove("secretKey");
+        // 去掉固定的接口前缀，获取项目的实际 uri
         String apiUri = requestUri.substring((BASE_URI + "/").length() + operateType.length());
         dataMap.remove("secretKey");
         Integer result = apiService.operate(operateType, apiUri, secretKey, dataMap, jsonList);

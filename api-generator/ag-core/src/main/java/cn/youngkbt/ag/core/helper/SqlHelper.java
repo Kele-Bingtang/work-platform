@@ -4,6 +4,9 @@ import cn.youngkbt.core.exception.ServiceException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author Kele-Bingtang
  * @date 2024/7/7 22:53:00
@@ -34,6 +37,44 @@ public class SqlHelper {
             throw new ServiceException("不支持数据源类型: " + dbType);
         }
 
+        return finalSql;
+    }
+
+    /**
+     * 处理 Mybatis 的参数 SQL，如 #{xxx}、${xxx}，处理为 ${p.xxx}、${p.xxx}，因为传给 Mabatis 的参数 @Params("p") Map
+     *
+     * @param originalSql 原始 SQL
+     * @return 处理后的 SQL
+     */
+    public static String processMybatisParams(String originalSql) {
+        // 检查是否包含 #{} 或者 ${}
+        if (!originalSql.contains("#{") && !originalSql.contains("${")) {
+            return originalSql;
+        }
+
+        // 正则表达式匹配 #{...} 和 ${...} 中的内容
+        Pattern pattern = Pattern.compile("(#\\{([^}]*)}|\\$\\{([^}]*)})");
+        Matcher matcher = pattern.matcher(originalSql);
+
+        StringBuilder sql = new StringBuilder();
+        while (matcher.find()) {
+            String match = matcher.group(0);  // 完整匹配
+            String param = matcher.group(2) != null ? matcher.group(2) : matcher.group(3); // 提取 {..} 中的内容
+            if (!param.startsWith("p.")) {
+                param = "p." + param;
+            }
+
+            String replacement = match.substring(0, 2) + param + match.substring(match.length() - 1);
+            if (match.startsWith("${")) {
+                replacement = replacement.replace("${", "@{");
+            }
+            matcher.appendReplacement(sql, replacement);
+        }
+        matcher.appendTail(sql);
+        String finalSql = sql.toString();
+        if (finalSql.contains("@{")) {
+            finalSql = finalSql.replace("@{", "${");
+        }
         return finalSql;
     }
 }

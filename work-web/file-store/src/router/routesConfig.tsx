@@ -46,13 +46,13 @@ export const constantRoutes: RouterConfigRaw[] = [
     name: LAYOUT_NAME,
     component: () => import("@/layout/index.vue"),
     redirect: HOME_URL,
-    meta: { hideInBread: true, isFull: true },
+    meta: { hideInMenu: true, hideInBread: true, isFull: true },
     children: [
       {
         path: "/error-log",
         name: "ErrorLog",
         component: () => import("@/views/errorLog/index.vue"),
-        meta: { hideInMenu: true, title: "错误日志", isKeepAlive: false },
+        meta: { title: "错误日志", isKeepAlive: false },
       },
     ],
   },

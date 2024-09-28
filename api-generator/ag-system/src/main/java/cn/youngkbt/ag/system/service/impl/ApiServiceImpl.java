@@ -53,6 +53,8 @@ public class ApiServiceImpl implements ApiService {
     private final ServiceInfoMapper serviceInfoMapper;
     private final SQLExecuteMapper sqlExecuteMapper;
 
+    private final static String RESPONSE_DATA_ROOT = "_root";
+
     @Override
     public LinkedHashMap<String, Object> getOne(String apiUri, String secretKey, Map<String, Object> requestParamsMap) {
         List<LinkedHashMap<String, Object>> linkedHashMapList = list(apiUri, secretKey, requestParamsMap, 1);
@@ -88,6 +90,7 @@ public class ApiServiceImpl implements ApiService {
 
         List<LinkedHashMap<String, Object>> linkedHashMap;
         try {
+            // fullSelectSql = SqlHelper.processMybatisParams(fullSelectSql);
             linkedHashMap = sqlExecuteMapper.executeSelectList(fullSelectSql, requestParamsMap);
         } catch (Exception e) {
             log.info("SQL 执行失败：", e);
@@ -106,7 +109,7 @@ public class ApiServiceImpl implements ApiService {
         String responseTemplate = serviceInfo.getResponseTemplate();
         if (StringUtil.hasText(responseTemplate) && JacksonUtil.canSerialize(responseTemplate)) {
             Map<String, Object> jsonTemplate = JacksonUtil.toJson(responseTemplate, Map.class);
-            if (Objects.nonNull(jsonTemplate.get("_root")) && jsonTemplate.size() == 1) {
+            if (Objects.nonNull(jsonTemplate.get(RESPONSE_DATA_ROOT)) && jsonTemplate.size() == 1) {
                 return dataList;
             }
             return transformData(dataList, jsonTemplate);
@@ -152,14 +155,14 @@ public class ApiServiceImpl implements ApiService {
         String responseTemplate = serviceInfo.getResponseTemplate();
         if (StringUtil.hasText(responseTemplate) && JacksonUtil.canSerialize(responseTemplate)) {
             Map<String, Object> jsonTemplate = JacksonUtil.toJson(responseTemplate, Map.class);
-            if (Objects.nonNull(jsonTemplate.get("_root")) && jsonTemplate.size() == 1) {
+            if (Objects.nonNull(jsonTemplate.get(RESPONSE_DATA_ROOT)) && jsonTemplate.size() == 1) {
                 linkedHashMapPage.setRecords(processMappingList);
                 return TablePage.build(linkedHashMapPage);
             }
             linkedHashMapPage.setRecords(transformData(processMappingList, jsonTemplate));
             return TablePage.build(linkedHashMapPage);
         }
-        
+
         return TablePage.build(linkedHashMapPage);
     }
 
@@ -410,7 +413,7 @@ public class ApiServiceImpl implements ApiService {
         for (Map.Entry<String, Object> entry : template.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if ("_root".equals(key)) {
+            if (RESPONSE_DATA_ROOT.equals(key)) {
                 // 处理 _root，_root 表示不需要包起来
                 List<String> fields = (List<String>) value;
                 for (String field : fields) {

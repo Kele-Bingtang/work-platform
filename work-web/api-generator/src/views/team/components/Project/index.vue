@@ -223,7 +223,7 @@ $prefix-class: #{$admin-namespace}-project;
 
 .#{$prefix-class} {
   :deep(.k-search-form) {
-    padding: 10px 0;
+    padding: 0;
     margin: 0;
     border: none;
     box-shadow: none;

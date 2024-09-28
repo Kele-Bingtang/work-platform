@@ -39,6 +39,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
             throw new ServiceException("文件已过期");
         }
 
+        // 文件流写入响应里
         FileHelper.getFileForResponse(fileInfo.getFilePath(), fileInfo.getFileName(), response, isBrowse);
     }
 
@@ -52,6 +53,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
             throw new ServiceException("不是图片格式，无法转为 base64");
         }
         
+        // 提供文件路径，获取文件并转为 base64 
         return FileHelper.getBase64ByFilePath(fileInfo.getFilePath());
     }
 }

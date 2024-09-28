@@ -172,12 +172,16 @@ public class FileHelper {
         }
     }
 
+    /**
+     * base64 转为图片
+     */
     public static File saveFileByBase64(String base64String, String appId, String appModule, String fileKey) {
         String filePath = mkFileDirs(appId, appModule);
         String fileName = fileKey + ".png";
         File file = new File(filePath, fileName);
-
+        // base64 转为字节数组
         byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+        // 字节数组写入文件流
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(decodedBytes);
         } catch (Exception e) {
@@ -187,6 +191,9 @@ public class FileHelper {
         return file;
     }
 
+    /**
+     * 图片转为 base64
+     */
     public static String getBase64ByFilePath(String filePath) {
         File file = new File(filePath);
         String fileName = file.getName();
@@ -197,6 +204,7 @@ public class FileHelper {
 
         byte[] bytes;
         try {
+            // 读取文件
             bytes = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             log.error("图片转 Base64 失败，filePath：{}，fileName：{}，Exception：{}", filePath, fileName, e.getMessage());

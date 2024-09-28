@@ -36,13 +36,28 @@ public class MailHelper {
      * 多邮箱账户缓存，缓存时间为 4h
      */
     private static final Cache<Object, Object> CAFFEINE = Caffeine.newBuilder().expireAfterWrite(Duration.ofHours(4)).initialCapacity(30).maximumSize(1000L).build();
+    /**
+     * 模板引擎
+     */
     private static final SpringTemplateEngine templateEngine = SpringHelper.getBean(SpringTemplateEngine.class);
 
+    /**
+     * 发送邮件
+     *
+     * @param noticeInfoDTO 邮件发送信息
+     */
     public static void send(NoticeInfoDTO noticeInfoDTO) {
         JavaMailSender defaultJavaMailSender = createDefaultSender();
         send(defaultJavaMailSender, SpringHelper.getEnvProperty("spring.mail.username"), noticeInfoDTO);
     }
 
+    /**
+     * 发送邮件
+     *
+     * @param javaMailSender 邮件发送器
+     * @param from           发件人
+     * @param noticeInfoDTO  邮件发送信息
+     */
     public static void send(JavaMailSender javaMailSender, String from, NoticeInfoDTO noticeInfoDTO) {
         String to = noticeInfoDTO.getTo();
         String cc = noticeInfoDTO.getCc();
@@ -96,10 +111,21 @@ public class MailHelper {
         }
     }
 
+    /**
+     * 创建默认邮件发送器（Spring Boot 配置文件里的邮件信息自动注入生成邮件发送器）
+     *
+     * @return 邮件发送器
+     */
     public static JavaMailSenderImpl createDefaultSender() {
         return SpringHelper.getBean(JavaMailSenderImpl.class);
     }
 
+    /**
+     * 创建邮件发送器
+     *
+     * @param noticeMailConfig 邮件配置
+     * @return 邮件发送器
+     */
     public static JavaMailSenderImpl createSender(NoticeMailConfig noticeMailConfig) {
         if (StringUtil.hasEmpty(noticeMailConfig.getConfigId())) {
             log.warn("邮件配置 ID 为空，不创建邮件发送器");
@@ -108,6 +134,7 @@ public class MailHelper {
 
         String key = CacheNameConstant.PREFIX + noticeMailConfig.getConfigId();
 
+        // 从缓存获取邮件发送器
         JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) CAFFEINE.getIfPresent(key);
 
         if (Objects.nonNull(javaMailSender)) {
@@ -136,11 +163,14 @@ public class MailHelper {
             props.setProperty("mail.smtp.port", String.valueOf(noticeMailConfig.getPort()));
         }
         javaMailSender.setJavaMailProperties(props);
-
+        // 邮件发送器存入缓存
         CAFFEINE.put(key, javaMailSender);
         return javaMailSender;
     }
 
+    /**
+     * MultipartFile 转 File
+     */
     public static File multipartFileToFile(MultipartFile multiFile) {
         // 获取文件名
         String fileName = multiFile.getOriginalFilename();
@@ -158,6 +188,9 @@ public class MailHelper {
         }
     }
 
+    /**
+     * MultipartFile 集合转 File 集合
+     */
     public static List<File> multipartFileToFile(List<MultipartFile> multiFileList) {
         if (ListUtil.isEmpty(multiFileList)) {
             return ListUtil.newArrayList();

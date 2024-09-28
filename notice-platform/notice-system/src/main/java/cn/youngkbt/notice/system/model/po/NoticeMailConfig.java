@@ -77,7 +77,7 @@ public class NoticeMailConfig implements Serializable {
      * 邮件发送限制
      */
     private Integer sendLimit;
-
+    
     /**
      * 创建时间
      */

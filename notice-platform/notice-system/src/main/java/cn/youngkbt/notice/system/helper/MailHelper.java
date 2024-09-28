@@ -2,10 +2,13 @@ package cn.youngkbt.notice.system.helper;
 
 import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.helper.SpringHelper;
+import cn.youngkbt.notice.core.constant.CacheNameConstant;
 import cn.youngkbt.notice.system.model.dto.NoticeInfoDTO;
 import cn.youngkbt.notice.system.model.po.NoticeMailConfig;
 import cn.youngkbt.utils.ListUtil;
 import cn.youngkbt.utils.StringUtil;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.mail.internet.MimeMessage;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.*;
 
 /**
@@ -29,9 +33,9 @@ import java.util.*;
 @Slf4j
 public class MailHelper {
     /**
-     * 多邮箱账户缓存
+     * 多邮箱账户缓存，缓存时间为 4h
      */
-    private static final Map<String, JavaMailSenderImpl> javaMailSenderMap = new LinkedHashMap<>();
+    private static final Cache<Object, Object> CAFFEINE = Caffeine.newBuilder().expireAfterWrite(Duration.ofHours(4)).initialCapacity(30).maximumSize(1000L).build();
     private static final SpringTemplateEngine templateEngine = SpringHelper.getBean(SpringTemplateEngine.class);
 
     public static void send(NoticeInfoDTO noticeInfoDTO) {
@@ -101,7 +105,10 @@ public class MailHelper {
             log.warn("邮件配置 ID 为空，不创建邮件发送器");
             return null;
         }
-        JavaMailSenderImpl javaMailSender = javaMailSenderMap.get(noticeMailConfig.getConfigId());
+
+        String key = CacheNameConstant.PREFIX + noticeMailConfig.getConfigId();
+
+        JavaMailSenderImpl javaMailSender = (JavaMailSenderImpl) CAFFEINE.getIfPresent(key);
 
         if (Objects.nonNull(javaMailSender)) {
             return javaMailSender;
@@ -130,7 +137,7 @@ public class MailHelper {
         }
         javaMailSender.setJavaMailProperties(props);
 
-        javaMailSenderMap.put(noticeMailConfig.getConfigId(), javaMailSender);
+        CAFFEINE.put(key, javaMailSender);
         return javaMailSender;
     }
 

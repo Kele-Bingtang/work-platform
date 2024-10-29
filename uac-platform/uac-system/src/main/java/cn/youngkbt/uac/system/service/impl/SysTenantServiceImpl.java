@@ -54,7 +54,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private final SysAppService sysAppService;
     private final SysDictTypeService sysDictTypeService;
     private final SysDictDataService sysDictDataService;
-    private final SysTenantMapper sysTenantMapper;
 
     @Override
     @Cacheable(cacheNames = CacheNameConstant.SYS_TENANT, key = "#tenantId")
@@ -66,7 +65,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public List<SysTenantVO> listAll(SysTenantDTO sysTenantDTO) {
         LambdaQueryWrapper<SysTenant> wrapper = buildQueryWrapper(sysTenantDTO);
         List<SysTenant> sysTenantList = baseMapper.selectList(wrapper);
-        sysTenantList = sysTenantMapper.selectList(wrapper);
 
         return MapstructUtil.convert(sysTenantList, SysTenantVO.class);
     }

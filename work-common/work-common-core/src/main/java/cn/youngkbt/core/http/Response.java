@@ -3,6 +3,7 @@ package cn.youngkbt.core.http;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Response<T> implements Serializable {
+    @Serial
     private static final long serialVersionUID = -464624820023286858L;
     /**
      * 自定义状态码
@@ -33,7 +35,7 @@ public class Response<T> implements Serializable {
     /**
      * 数据
      **/
-    protected  T data;
+    protected T data;
 
     public static <T> Response<T> instance() {
         return new Response<>();

@@ -102,7 +102,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <!-- mybatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>

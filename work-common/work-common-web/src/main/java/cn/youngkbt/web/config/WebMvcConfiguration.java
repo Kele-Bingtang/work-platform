@@ -1,8 +1,7 @@
-package cn.youngkbt.core.config;
+package cn.youngkbt.web.config;
 
-import cn.youngkbt.core.date.DatePatternPlus;
-import cn.youngkbt.core.http.annotation.resolver.RequestUriArgumentResolver;
-import cn.youngkbt.core.http.annotation.resolver.RequestUrlArgumentResolver;
+import cn.youngkbt.web.annotation.resolver.RequestUriArgumentResolver;
+import cn.youngkbt.web.annotation.resolver.RequestUrlArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
@@ -10,11 +9,12 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
  * @author Kele-Bingtang
- * @date 2023/6/30 23:04
+ * @date 2024/11/6 21:04:42
  * @note
  */
 @Configuration
@@ -44,9 +44,9 @@ public class WebMvcConfiguration  implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
-        registrar.setTimeFormatter(DatePatternPlus.NORM_TIME_FORMATTER);
-        registrar.setDateFormatter(DatePatternPlus.NORM_DATE_FORMATTER);
-        registrar.setDateTimeFormatter(DatePatternPlus.NORM_DATETIME_FORMATTER);
+        registrar.setTimeFormatter(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        registrar.setDateFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        registrar.setDateTimeFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         registrar.registerFormatters(registry);
     }
 

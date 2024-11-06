@@ -1,10 +1,8 @@
-package cn.youngkbt.core.error;
+package cn.youngkbt.core.http;
 
-import cn.youngkbt.core.http.ResponseStatusEnum;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.utils.StringUtil;
 import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Kele-Bingtang

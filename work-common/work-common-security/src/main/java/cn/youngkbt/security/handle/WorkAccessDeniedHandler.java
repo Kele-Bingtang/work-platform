@@ -2,7 +2,7 @@ package cn.youngkbt.security.handle;
 
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.ResponseStatusEnum;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

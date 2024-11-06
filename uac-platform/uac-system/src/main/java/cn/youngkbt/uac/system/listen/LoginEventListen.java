@@ -8,7 +8,7 @@ import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.redis.constants.AuthRedisConstant;
 import cn.youngkbt.uac.core.exception.AuthException;
 import cn.youngkbt.uac.system.service.SysLoginLogService;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -7,7 +7,7 @@ import cn.youngkbt.file.system.model.vo.FileUploadSuccessVO;
 import cn.youngkbt.file.system.service.FileOperaLogService;
 import cn.youngkbt.helper.SpElParserHelper;
 import cn.youngkbt.utils.AddressUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import cn.youngkbt.utils.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

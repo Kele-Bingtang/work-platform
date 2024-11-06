@@ -8,7 +8,7 @@ import cn.youngkbt.idempotent.annotation.PreventRepeatSubmit;
 import cn.youngkbt.redis.utils.RedisUtil;
 import cn.youngkbt.security.utils.JwtTokenUtils;
 import cn.youngkbt.utils.JacksonUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.JoinPoint;

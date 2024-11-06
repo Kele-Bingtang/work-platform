@@ -9,6 +9,11 @@ import cn.youngkbt.core.base.BaseCommonEnum;
  * @note
  */
 public class ServerException extends BaseException{
+
+    public ServerException() {
+        super();
+    }
+    
     public ServerException(Integer code) {
         super(code);
     }

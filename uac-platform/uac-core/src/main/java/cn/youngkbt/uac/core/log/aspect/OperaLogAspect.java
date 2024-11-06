@@ -9,7 +9,7 @@ import cn.youngkbt.uac.core.log.enums.BusinessStatus;
 import cn.youngkbt.uac.core.log.event.OperaLogEvent;
 import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.JacksonUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package cn.youngkbt.integrate.system.service.impl;
 
 
-import cn.youngkbt.core.error.Assert;
+import cn.youngkbt.core.http.Assert;
 import cn.youngkbt.integrate.core.constants.GlobalConstant;
 import cn.youngkbt.integrate.system.context.ContextHolder;
 import cn.youngkbt.integrate.system.handler.DispatcherServiceHandler;

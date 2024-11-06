@@ -9,7 +9,7 @@
 
 <script setup lang="tsx" name="App">
 import { listAppPage, registerApp, editApp, removeApp } from "@/api/app";
-import { ElMessageBox } from "element-plus";
+import { ElMessageBox, ElSwitch } from "element-plus";
 import { ProTable, type DialogForm, type TableColumnProps, type FormSchemaProps, message } from "work";
 
 const validatePhone = (rule: any, value: any, callback: any) => {

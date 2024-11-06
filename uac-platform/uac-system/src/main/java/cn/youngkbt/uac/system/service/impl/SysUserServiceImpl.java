@@ -15,7 +15,7 @@ import cn.youngkbt.uac.system.model.vo.SysUserVO;
 import cn.youngkbt.uac.system.service.*;
 import cn.youngkbt.uac.system.model.po.*;
 import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

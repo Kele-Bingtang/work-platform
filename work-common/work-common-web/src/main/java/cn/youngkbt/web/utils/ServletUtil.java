@@ -1,13 +1,14 @@
-package cn.youngkbt.utils;
+package cn.youngkbt.web.utils;
 
 import cn.hutool.extra.servlet.JakartaServletUtil;
+import cn.youngkbt.utils.JacksonUtil;
+import cn.youngkbt.utils.StringUtil;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedCaseInsensitiveMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -48,7 +49,7 @@ public class ServletUtil extends JakartaServletUtil {
     @SuppressWarnings("deprecation") // 必须使用 APPLICATION_JSON_UTF8_VALUE，否则会乱码
     public static void writeJSON(HttpServletResponse response, Object object) {
         String content = JacksonUtil.toJsonStr(object);
-        ServletUtil.write(response, content, MediaType.APPLICATION_JSON_UTF8_VALUE);
+        write(response, content, MediaType.APPLICATION_JSON_UTF8_VALUE);
     }
 
     /**

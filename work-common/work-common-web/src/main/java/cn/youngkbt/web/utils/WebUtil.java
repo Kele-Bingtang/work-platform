@@ -1,19 +1,23 @@
-package cn.youngkbt.utils;
+package cn.youngkbt.web.utils;
 
 import cn.hutool.core.util.StrUtil;
+import cn.youngkbt.utils.StringUtil;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.method.HandlerMethod;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
@@ -34,6 +38,24 @@ public class WebUtil {
     public static void renderString(HttpServletResponse response, String string) {
         try {
             response.setStatus(200);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().print(string);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 将字符串渲染到客户端
+     *
+     * @param response 渲染对象
+     * @param string   待渲染的字符串
+     * @param status   状态码
+     */
+    public static void renderString(HttpServletResponse response, String string, int status) {
+        try {
+            response.setStatus(status);
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
             response.getWriter().print(string);
@@ -121,5 +143,24 @@ public class WebUtil {
             ex.printStackTrace();
             return "";
         }
+    }
+
+    /**
+     * 获取Annotation
+     *
+     * @param handlerMethod  HandlerMethod
+     * @param annotationType 注解类
+     * @param <A>            泛型标记
+     * @return {Annotation}
+     */
+    public static <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
+        // 先找方法，再找方法上的类
+        A annotation = handlerMethod.getMethodAnnotation(annotationType);
+        if (null != annotation) {
+            return annotation;
+        }
+        // 获取类上面的Annotation，可能包含组合注解，故采用spring的工具类
+        Class<?> beanType = handlerMethod.getBeanType();
+        return AnnotatedElementUtils.findMergedAnnotation(beanType, annotationType);
     }
 }

@@ -19,7 +19,7 @@ import cn.youngkbt.uac.system.model.po.SysApp;
 import cn.youngkbt.uac.system.model.po.SysClient;
 import cn.youngkbt.uac.system.model.po.SysTenant;
 import cn.youngkbt.uac.system.service.SysTenantService;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import cn.youngkbt.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

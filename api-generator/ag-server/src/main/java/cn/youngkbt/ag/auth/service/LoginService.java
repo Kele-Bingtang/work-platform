@@ -18,7 +18,7 @@ import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.utils.SecurityUtils;
 import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

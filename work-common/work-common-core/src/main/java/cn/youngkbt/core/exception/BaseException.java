@@ -17,6 +17,9 @@ public class BaseException extends RuntimeException {
     private Integer code = ResponseStatusEnum.FAIL.getCode();
     private String status = ResponseStatusEnum.FAIL.getStatus();
     private String message = ResponseStatusEnum.FAIL.getMessage();
+    
+    public BaseException() {
+    }
 
     public BaseException(Integer code) {
         this.code = code;

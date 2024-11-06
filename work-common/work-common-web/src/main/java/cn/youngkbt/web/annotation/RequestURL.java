@@ -1,4 +1,4 @@
-package cn.youngkbt.core.http.annotation;
+package cn.youngkbt.web.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

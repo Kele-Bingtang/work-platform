@@ -3,7 +3,7 @@ package cn.youngkbt.uac.system.security.interceptor;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.utils.SecurityUtils;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

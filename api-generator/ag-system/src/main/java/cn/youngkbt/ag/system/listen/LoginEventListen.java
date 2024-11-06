@@ -8,7 +8,7 @@ import cn.youngkbt.ag.core.exception.ApiGeneratorException;
 import cn.youngkbt.ag.system.service.LoginLogService;
 import cn.youngkbt.redis.constants.AuthRedisConstant;
 import cn.youngkbt.redis.utils.RedisUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

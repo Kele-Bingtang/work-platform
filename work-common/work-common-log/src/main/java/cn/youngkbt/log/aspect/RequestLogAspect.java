@@ -6,7 +6,7 @@ import cn.youngkbt.log.properties.RequestLogProperties;
 import cn.youngkbt.utils.ClassUtil;
 import cn.youngkbt.utils.JacksonUtil;
 import cn.youngkbt.utils.StringUtil;
-import cn.youngkbt.utils.WebUtil;
+import cn.youngkbt.web.utils.WebUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;

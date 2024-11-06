@@ -26,6 +26,11 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
+            <groupId>cn.youngkbt</groupId>
+            <artifactId>work-common-web</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
         </dependency>

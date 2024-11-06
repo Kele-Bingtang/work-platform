@@ -8,7 +8,7 @@ import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.uac.core.bo.LoginUserBO;
 import cn.youngkbt.uac.core.constant.AuthConstant;
 import cn.youngkbt.utils.JacksonUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -6,7 +6,7 @@ package cn.youngkbt.integrate.system.service.impl;
  * @note
  */
 
-import cn.youngkbt.core.error.Assert;
+import cn.youngkbt.core.http.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.integrate.core.constants.GlobalConstant;
 import cn.youngkbt.integrate.system.feign.FormFeign;

@@ -7,7 +7,7 @@ import cn.youngkbt.auth.provider.AuthTokenGeneratorProvider;
 import cn.youngkbt.auth.service.OpenApiService;
 import cn.youngkbt.auth.service.impl.OpenApiServiceImpl;
 import cn.youngkbt.auth.vo.OpenApiTokenVO;
-import cn.youngkbt.core.error.Assert;
+import cn.youngkbt.core.http.Assert;
 import cn.youngkbt.core.exception.ServiceException;
 import cn.youngkbt.core.http.HttpResult;
 import cn.youngkbt.core.http.Response;
@@ -16,7 +16,6 @@ import cn.youngkbt.security.enumeration.AuthGrantTypeEnum;
 import cn.youngkbt.utils.StringUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;

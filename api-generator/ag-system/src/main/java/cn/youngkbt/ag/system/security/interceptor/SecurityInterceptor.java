@@ -8,7 +8,7 @@ import cn.youngkbt.security.domain.LoginUser;
 import cn.youngkbt.security.enumeration.AuthErrorCodeEnum;
 import cn.youngkbt.security.properties.SecurityProperties;
 import cn.youngkbt.security.utils.JwtTokenUtils;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

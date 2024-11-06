@@ -15,7 +15,7 @@ import cn.youngkbt.uac.system.service.SysLoginLogService;
 import cn.youngkbt.uac.system.service.SysUserService;
 import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import cn.youngkbt.utils.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;

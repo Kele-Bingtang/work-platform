@@ -20,7 +20,7 @@ import cn.youngkbt.uac.system.security.handler.LoginFailureHandler;
 import cn.youngkbt.uac.system.security.handler.LoginSuccessHandler;
 import cn.youngkbt.utils.AddressUtil;
 import cn.youngkbt.utils.MapstructUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import cn.youngkbt.utils.ValidatorUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

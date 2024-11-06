@@ -1,6 +1,6 @@
-package cn.youngkbt.core.http.annotation.resolver;
+package cn.youngkbt.web.annotation.resolver;
 
-import cn.youngkbt.core.http.annotation.RequestURL;
+import cn.youngkbt.web.annotation.RequestURL;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

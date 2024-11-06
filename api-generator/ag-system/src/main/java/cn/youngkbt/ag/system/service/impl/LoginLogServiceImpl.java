@@ -10,7 +10,7 @@ import cn.youngkbt.ag.system.model.po.LoginLog;
 import cn.youngkbt.ag.system.service.LoginLogService;
 import cn.youngkbt.ag.system.service.UserService;
 import cn.youngkbt.utils.AddressUtil;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

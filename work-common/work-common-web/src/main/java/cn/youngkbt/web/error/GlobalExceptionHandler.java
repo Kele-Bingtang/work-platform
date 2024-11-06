@@ -1,4 +1,4 @@
-package cn.youngkbt.core.error;
+package cn.youngkbt.web.error;
 
 import cn.youngkbt.core.exception.BaseException;
 import cn.youngkbt.core.exception.ServiceException;

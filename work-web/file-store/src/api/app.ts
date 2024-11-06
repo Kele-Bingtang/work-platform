@@ -10,14 +10,14 @@ export declare namespace App {
     failedSm: number; // 失败短信提醒（0 不发送 1 发送）
     failedEm: string; // 失败信息邮件通知（0 不发送 1 发送）
     remark: string; // 备注
-    status: string; // 状态（0 异常 1 正常）
+    status: number; // 状态（0 异常 1 正常）
     createTime: string; // 创建时间
   }
 }
 
 const baseUri = "/app";
 
-export const listAppPage = (params: Partial<App.AppInfo>) => {
+export const listAppPage = (params?: Partial<App.AppInfo>) => {
   return http.get<http.Response<App.AppInfo[]>>(`${baseUri}/listPage`, params);
 };
 
@@ -25,7 +25,7 @@ export const registerApp = (data: Partial<App.AppInfo>) => {
   return http.post<http.Response<Boolean>>(baseUri, data);
 };
 
-export const editApp = (data: App.AppInfo) => {
+export const editApp = (data: Partial<App.AppInfo>) => {
   return http.put<http.Response<boolean>>(baseUri, data);
 };
 

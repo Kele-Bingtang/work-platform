@@ -1,6 +1,6 @@
 package cn.youngkbt.integrate.system.handler;
 
-import cn.youngkbt.core.error.Assert;
+import cn.youngkbt.core.http.Assert;
 import cn.youngkbt.core.exception.ServerException;
 import cn.youngkbt.core.instance.BeanInstance;
 import cn.youngkbt.helper.SpringHelper;

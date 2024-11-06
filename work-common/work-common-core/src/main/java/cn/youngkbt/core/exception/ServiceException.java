@@ -9,6 +9,11 @@ import cn.youngkbt.core.base.BaseCommonEnum;
  * @note
  */
 public class ServiceException extends BaseException {
+
+    public ServiceException() {
+        super();
+    }
+
     public ServiceException(Integer code) {
         super(code);
     }

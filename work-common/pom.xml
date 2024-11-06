@@ -31,6 +31,7 @@
         <module>work-common-rateLimit</module>
         <module>work-common-cache</module>
         <module>work-common-bom</module>
+        <module>work-common-web</module>
     </modules>
 
     <properties>

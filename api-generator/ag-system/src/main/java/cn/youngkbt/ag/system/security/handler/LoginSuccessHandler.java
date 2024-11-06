@@ -4,7 +4,7 @@ import cn.youngkbt.ag.core.constant.AuthConstant;
 import cn.youngkbt.ag.core.event.LoginInfoEvent;
 import cn.youngkbt.helper.SpringHelper;
 import cn.youngkbt.security.domain.SecurityUser;
-import cn.youngkbt.utils.ServletUtil;
+import cn.youngkbt.web.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

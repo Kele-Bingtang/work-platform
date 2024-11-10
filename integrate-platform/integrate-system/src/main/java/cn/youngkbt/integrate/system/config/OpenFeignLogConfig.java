@@ -24,7 +24,11 @@ public class OpenFeignLogConfig {
     private String logLevel;
 
     /**
-     * OpenFeign日志级别： * NONE: 不记录任何日志，是OpenFeign默认日志级别（性能最佳，适用于生产环境） * BASIC: 仅记录请求方法、URL、响应状态码、执行时间（适用于生产环境追踪问题） * HEADERS: 在记录BASIC级别的基础上，记录请求和响应的header头部信息 * FULL: 记录请求响应的header、body 和 元数据（适用于开发和测试环境定位问题）
+     * OpenFeign 日志级别：
+     * NONE: 不记录任何日志，是 OpenFeign 默认日志级别（性能最佳，适用于生产环境）
+     * BASIC: 仅记录请求方法、URL、响应状态码、执行时间（适用于生产环境追踪问题）
+     * HEADERS: 在记录 BASIC 级别的基础上，记录请求和响应的 header 头部信息
+     * FULL: 记录请求响应的 header、body 和元数据（适用于开发和测试环境定位问题）
      */
     @Bean
     Logger.Level feignLoggerLeave() {

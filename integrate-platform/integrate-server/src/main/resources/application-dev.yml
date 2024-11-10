@@ -66,3 +66,6 @@ spring.boot.admin.client:
     service-host-type: IP
   username: work
   password: 123456
+
+feign:
+  log: full

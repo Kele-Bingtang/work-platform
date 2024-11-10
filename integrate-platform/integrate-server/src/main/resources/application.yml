@@ -87,4 +87,9 @@ thread-pool:
   queueCapacity: 128
   # 线程池维护线程所允许的空闲时间
   keepAliveSeconds: 300
-  
+
+spring:
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true

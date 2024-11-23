@@ -160,22 +160,22 @@
         <root level="info">
             <appender-ref ref="console" />
             <appender-ref ref="debug_file" />
-            <appender-ref ref="async_info" />
+            <appender-ref ref="info_file" />
             <appender-ref ref="warn_file" />
-            <appender-ref ref="async_error" />
+            <appender-ref ref="error_file" />
         </root>
     </springProfile>
 
     <!-- 生产环境 -->
-    <springProfile name="pro">
+    <springProfile name="prod">
         <logger name="cn.youngkbt" level="debug"/>
         <logger name="org.springframework.web" level="warn"/>
         <root level="info">
             <appender-ref ref="console" />
             <appender-ref ref="debug_file" />
-            <appender-ref ref="async_info" />
+            <appender-ref ref="info_file" />
             <appender-ref ref="warn_file" />
-            <appender-ref ref="async_error" />
+            <appender-ref ref="error_file" />
         </root>
     </springProfile>
 </configuration>

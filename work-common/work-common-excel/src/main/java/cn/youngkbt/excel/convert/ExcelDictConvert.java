@@ -48,7 +48,7 @@ public class ExcelDictConvert implements Converter<Object> {
 
         ExcelDictHandler excelDictHandlerBean = SpringHelper.getBeanIfPresent(excelDictFormat.handler());
         // 先从 Spring 容器获取
-        ExcelDictHandler excelDictHandler = Optional.of(excelDictHandlerBean).orElse(ReflectUtil.newInstance(excelDictFormat.handler()));
+        ExcelDictHandler excelDictHandler = Optional.ofNullable(excelDictHandlerBean).orElse(ReflectUtil.newInstance(excelDictFormat.handler()));
 
         if (!(excelDictHandler instanceof DefaultExcelDictHandler)) {
             String value = ExcelHelper.reverseValueByExp(originValue, excelDictFormat.readExp(), excelDictFormat.mappingKey(), excelDictFormat.separator());

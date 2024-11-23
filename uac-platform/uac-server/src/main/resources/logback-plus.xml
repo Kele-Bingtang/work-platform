@@ -160,9 +160,9 @@
         <root level="info">
             <appender-ref ref="console" />
             <appender-ref ref="debug_file" />
-            <appender-ref ref="info_file" />
+            <appender-ref ref="async_info" />
             <appender-ref ref="warn_file" />
-            <appender-ref ref="error_file" />
+            <appender-ref ref="async_error" />
         </root>
     </springProfile>
 
@@ -173,9 +173,9 @@
         <root level="info">
             <appender-ref ref="console" />
             <appender-ref ref="debug_file" />
-            <appender-ref ref="info_file" />
+            <appender-ref ref="async_info" />
             <appender-ref ref="warn_file" />
-            <appender-ref ref="error_file" />
+            <appender-ref ref="async_error" />
         </root>
     </springProfile>
 </configuration>

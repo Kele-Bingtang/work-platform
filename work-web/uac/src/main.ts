@@ -10,6 +10,7 @@ import "virtual:svg-icons-register";
 import { Icon } from "@work/components";
 import { errorHandler, checkNeed } from "@/utils";
 import { Auth, Role } from "@/components";
+import "@work/styles/tailwind.css";
 
 const app = createApp(App);
 

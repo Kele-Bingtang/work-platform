@@ -2,7 +2,7 @@
   <div :class="prefixClass">
     <TreeFilter :requestApi="listDeptTreeList" @change="handleTreeChange" id="value">
       <template #default="{ node }">
-        <Icon v-if="node.data.icon" :icon="node.data.icon"></Icon>
+        <Icon v-if="node.data.icon" :icon="node.data.icon" class="inline-block"></Icon>
         <span>{{ node.label }}</span>
       </template>
     </TreeFilter>

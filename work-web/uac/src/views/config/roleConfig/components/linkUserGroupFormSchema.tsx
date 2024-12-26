@@ -1,5 +1,5 @@
 import type { DialogFormSchemaProps, TransferTableColumn } from "@work/components";
-import { type FormRules } from "element-plus";
+import type { FormRules } from "element-plus";
 import { TransferSelect } from "work";
 import { User } from "@element-plus/icons-vue";
 import { listWithDisabledByRoleId } from "@/api/user/userGroup";

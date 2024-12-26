@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { type Dict } from "./interface";
+import type { Dict } from "./interface";
 import { list, listDataTreeList } from "@/api/dictData";
 import { ref } from "vue";
 

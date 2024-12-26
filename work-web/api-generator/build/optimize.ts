@@ -6,22 +6,13 @@
  */
 const include = [
   "qs",
-  "mitt",
-  "xlsx",
-  "axios",
   "pinia",
   "echarts",
   "vue-i18n",
   "sortablejs",
   "@vueuse/core",
-  "path-to-regexp",
   "pinia-plugin-persistedstate",
   "@vueuse/core",
-  "@wangeditor/editor",
-  "@wangeditor/editor-for-vue",
-  "@wangeditor/plugin-upload-attachment",
-  "tinymce",
-  "@tinymce/tinymce-vue",
 ];
 
 /**

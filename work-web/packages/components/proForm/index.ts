@@ -10,7 +10,6 @@ export { useProForm } from "./src/hooks/useProForm";
 
 export { Tree, ProFormItem };
 
-// eslint-disable-next-line no-var
 export var ProForm = useInstall(index);
 
 export default index;

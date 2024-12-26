@@ -13,7 +13,11 @@ export const useChange = (
     const statusEnum = await useLayoutStore().getDictData("sys_normal_status");
     const filterData = findItemNested(statusEnum.data, value + "", "dictValue", "");
 
-    if (!filterData?.dictLabel) return (row.status = 1) && message.warning("不存在状态");
+    if (!filterData?.dictLabel) {
+      row.status = 1;
+      message.warning("不存在状态");
+      return;
+    }
 
     ElMessageBox.confirm(
       `确认要 <span style="color: teal">${filterData?.dictLabel}</span> 【${row[name]}】${desc}吗`,

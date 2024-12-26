@@ -74,6 +74,7 @@ const tabs: CommonTab[] = [
 ];
 
 // 项目分类
+/* eslint-disable no-unused-vars */
 enum belongType {
   all = 0,
   creator = 1,

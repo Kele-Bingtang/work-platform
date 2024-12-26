@@ -1,6 +1,5 @@
 import { createApp } from "vue";
 import pinia from "@/stores";
-import "@/styles/index.scss";
 import App from "./App.vue";
 import router from "./router";
 import "@work/styles/normalize.css"; // CSS Reset

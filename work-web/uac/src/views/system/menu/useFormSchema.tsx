@@ -4,7 +4,6 @@ import { ElInput, ElOption, ElSelect, type FormRules } from "element-plus";
 import { httpPrefix, httpsPrefix } from "@work/constants";
 import { layoutFormSchema } from "./layoutSchema";
 import { iframeFormSchema } from "./iframeSchema";
-import { isObject } from "@work/utils";
 
 const rules = reactive<FormRules>({
   appId: [{ required: true, message: "请选择 App", trigger: "blur" }],

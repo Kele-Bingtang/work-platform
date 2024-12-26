@@ -48,7 +48,7 @@ const handleSave = async () => {
   let breakingRespond;
   try {
     breakingRespond = JSON.parse(unref(jsonCode));
-  } catch (error) {
+  } catch {
     return message.error("JSON 格式错误");
   }
 

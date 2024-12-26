@@ -3,26 +3,26 @@
   "version": "0.0.1",
   "description": "all components are settled here",
   "dependencies": {
-    "@codemirror/commands": "^6.5.0",
-    "@codemirror/language": "^6.10.1",
-    "@codemirror/lint": "^6.7.1",
-    "@codemirror/merge": "^6.6.2",
-    "@codemirror/state": "^6.4.1",
-    "@codemirror/view": "^6.26.3",
+    "@codemirror/commands": "^6.7.1",
+    "@codemirror/language": "^6.10.8",
+    "@codemirror/lint": "^6.8.4",
+    "@codemirror/merge": "^6.7.5",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.1",
     "@element-plus/icons-vue": "^2.3.1",
     "codemirror": "^6.0.1",
-    "element-plus": "^2.7.3",
-    "sortablejs": "^1.15.2",
-    "vue": "^3.4.27",
-    "vue-router": "^4.3.2"
+    "element-plus": "^2.9.1",
+    "sortablejs": "^1.15.6",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@iconify/vue": "^4.1.2",
+    "@iconify/vue": "^4.2.0",
+    "@tinymce/tinymce-vue": "^5.1.1",
+    "@types/sortablejs": "^1.15.8",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "@wangeditor/plugin-upload-attachment": "^1.1.0",
-    "@tinymce/tinymce-vue": "^5.1.1",
-    "@types/sortablejs": "^1.15.8",
     "tinymce": "^6.8.2"
   }
 }

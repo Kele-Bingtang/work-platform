@@ -92,7 +92,7 @@ export const useUserStore = defineStore(
   },
   {
     persist: {
-      paths: ["token"],
+      pick: ["token"],
     },
   }
 );

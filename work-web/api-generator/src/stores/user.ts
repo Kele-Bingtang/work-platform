@@ -12,8 +12,6 @@ export const useUserStore = defineStore(
     const userInfo = ref<UserInfo>({
       id: 0,
       userId: "",
-      tenantId: "",
-      deptId: "",
       username: "",
       nickname: "",
       email: "",
@@ -97,7 +95,7 @@ export const useUserStore = defineStore(
   },
   {
     persist: {
-      paths: ["token"],
+      pick: ["token"],
     },
   }
 );

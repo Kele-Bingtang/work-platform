@@ -53,7 +53,7 @@ const handleSave = async () => {
   let responseTemplate;
   try {
     responseTemplate = JSON.parse(unref(jsonCode));
-  } catch (error) {
+  } catch {
     return message.error("JSON 格式错误");
   }
 

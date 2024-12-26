@@ -190,7 +190,7 @@ export const useLayoutStore = defineStore(
   },
   {
     persist: {
-      paths: ["layoutSize", "language", "device"],
+      pick: ["layoutSize", "language", "device"],
     },
   }
 );

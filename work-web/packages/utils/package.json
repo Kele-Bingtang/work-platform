@@ -4,12 +4,12 @@
   "description": "all utils are settled here",
   "dependencies": {
     "crypto-js": "^4.2.0",
-    "element-plus": "^2.7.3",
+    "element-plus": "^2.9.1",
     "file-saver": "^2.0.5",
     "jsencrypt": "^3.3.2",
     "mitt": "^3.0.1",
     "nprogress": "^0.2.0",
-    "vue": "^3.4.27",
+    "vue": "^3.5.13",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

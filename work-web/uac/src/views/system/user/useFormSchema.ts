@@ -1,7 +1,7 @@
 import { useLayoutStore } from "@/stores";
 import type { DialogFormSchemaProps } from "@work/components";
 import type { FormRules } from "element-plus";
-import { type User } from "@/api/user/user";
+import type { User } from "@/api/user/user";
 import { userSelectPostList } from "@/api/system/post";
 import { listDeptTreeList } from "@/api/system/dept";
 import { useFormRules } from "@/hooks/useFormRules";

@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "all hooks are settled here",
   "dependencies": {
-		"echarts": "^5.5.0",
-    "vue": "^3.4.27",
-    "@vueuse/core": "10.9.0",
-		"element-plus": "^2.7.3"
+    "@vueuse/core": "12.2.0",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.9.1",
+    "vue": "^3.5.13"
   }
 }

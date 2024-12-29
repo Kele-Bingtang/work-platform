@@ -55,7 +55,6 @@ $prefix-class: #{$admin-namespace}-service-main;
 
   .el-tabs {
     display: flex;
-    flex-direction: column;
 
     :deep(.el-tabs__content, .el-tab-pane) {
       flex: 1;
